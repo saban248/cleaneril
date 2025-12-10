@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{company_name}}</title>
+    <link rel="stylesheet" href="/static/css/home.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon-16x16.png">
+    <link rel="shortcut icon" href="/static/images/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="head-home">
+        <div class="head-h-body">
+            <img src="/static/images/logo.png">
+        </div>
+    </div>
+    <div class="welcome">
+        <div class="wel-text">
+            <span class="wtt1">ניקוי ריפודים 
+                <span class="wtt2">מקצועי</span>
+            </span>
+        </div>
+        <div class="wel-continue">
+            <i class="fa-solid fa-arrow-down"></i>
+        </div>
+    </div>
+    <div class="clean-cards">
+        {% from "/home/card_category.html" import render_card %}
+        {% for card in cards %}
+            {{ render_card(card.title) }}
+        {% endfor %}
+    </div>
+    
+</body>
+</html>
+
+
+
+
