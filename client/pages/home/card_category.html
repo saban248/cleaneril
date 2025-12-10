@@ -1,10 +1,29 @@
-{% macro render_card(card_title) %}
+{% macro render_card(card_title, card_img, card_id, special) %}
 
-<div class="clean-card">
+<div class="clean-card" id="{{card_id}}">
     <div class="card-head">
-        {{card_title}}
+        <div class="card-title">
+            {{card_title}}
+        </div>
+        <div class="card-action">
+            <i class="fa-solid fa-phone phonecell"></i>
+            <i class="fa-solid fa-comment whatsapp"></i>
+        </div>
     </div>
-    <div class="card-body"></div>
+    <div class="card-body">
+        <div class="card-img">
+            <!-- <img src="{{card_img}}" > -->
+            <img src="/static/images/ba/sofa.jpg" >
+        </div>
+        <div class="special-things">
+            {%for spel in special|list%}
+                <div class="sp-item">
+                    <i class="fa-solid fa-circle-check plus"></i>
+                    <span>{{spel}}</span>
+                </div>
+            {%endfor%}
+        </div>
+    </div>
 </div>
 
 {% endmacro %}

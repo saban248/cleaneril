@@ -5,9 +5,33 @@
   font-optical-sizing: auto;
   font-weight: normal;
   font-style: normal;
-  height: 100vw;
 }
 
+
+.icon {
+    width: 28px;
+    height: 28px;
+    display: inline-block;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.whatsapp{
+    color: #238741;
+}
+.phonecell{
+    color: #1a5497;
+}
+.off{
+    background: linear-gradient(90deg, #f53030, #518fd6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.plus{
+    background: linear-gradient(135deg, #304b44, #368666);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
 body, *{
     margin: 0;
@@ -17,6 +41,10 @@ body, *{
 .head-home{
     padding: 0;
     margin: 0;
+    position: sticky;
+    top: 0;
+    z-index: -1;
+    
 }
 .head-h-body{
     background-image: url('/static/images/head-home-bg.jpg');
@@ -39,12 +67,15 @@ body, *{
     padding: 10px;
 }
 
+.body-home{
+    background: rgb(237, 241, 245);
+}
 .welcome{
     position: relative;
     margin:0;
+    margin-bottom: 20px;
     display: flex;
     justify-content: center;
-    background: rgb(237, 241, 245);
     padding: 5rem 0 5rem 0;
 }
 
@@ -52,7 +83,8 @@ body, *{
     display: flex;
     flex-direction: column;
 }
-.wtt1, .wtt2{
+.wtt1, .wtt2, .wtt3{
+    direction: rtl;
     font-size: 3rem;
     font-weight: bold;
     text-align:center;
@@ -62,6 +94,9 @@ body, *{
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     display: block;
+}
+.wtt3{
+    font-size: 5rem;
 }
 
 .wel-continue {
@@ -91,23 +126,106 @@ body, *{
 
 
 .clean-cards{
+    direction: rtl;
     padding: 5px;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    column-gap: 22px;
+}
+.cards-nevigate{
+    display: none;
+    justify-content: space-between;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+.cards-nevigate>i{
+    padding: 10px;
+    font-size: 2rem;
+    background: linear-gradient(135deg, rgb(40, 54, 54), rgb(42, 67, 63));
+    color: rgb(205, 206, 209);
+    border-radius: 10px;
+    box-shadow: 0 0 11px #2d2e3189;
 }
 /* CARDS */
+.cards{
+    display: flex;
+    column-gap: 22px;
+
+}
 .clean-card{
+    scroll-snap-align: center;
+    flex-shrink: 0;
     border-radius: 15px;
-    border: 1px solid #d9d9d99e;
-    box-shadow:  0 0 11px #c5c5c5;
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
+    padding: .75rem;
+    max-width: 350px;
+    background: rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
 }
 
 .card-head{
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgb(194, 196, 198);
+    align-items: center;
+}
+.card-title{
+    font-size: 2.5rem;
+    padding: 10px;
+}
+.card-body{
+    padding: 10px;
+}
+.card-img{
+    display: flex;
+    justify-content: center;
+}
+.card-img > img{
+    width: 100%;
+    height: auto;
+    border-radius: 13px;
+}
+.card-action{
 
 }
+.card-action > i{
+    font-size: 1.75rem;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 200ms;
+}
+.card-action > i:hover,
+.card-action > i:active{
+    box-shadow: 0 0 15px #95959789;
+    border-radius: 50%;
 
+}
+.card-action > .whatsapp{
+    box-shadow: 0 0 15px #95959789;
+    border-radius: 50%;
+}
 
+.special-things{
+    padding: 10px;
+    display: flex;
+    flex-direction: column;  /* forces rows */
+    row-gap: 10px; 
 
+}
+.sp-item{
+    display: flex;
+    column-gap: 10px;  
+    
+}
+.sp-item:last-child {
+    margin-bottom: 0;         /* לא נותן רווח אחרון */
+}
 @keyframes jump {
     0%   { transform: translate(-50%, 0); }
     25%  { transform: translate(-50%, -14px); }  /* jump up */
@@ -124,4 +242,28 @@ body, *{
     .wtt1{
         font-size: 2rem;
     }
-}
+    .wtt3{
+        font-size: 3em;
+    }
+    .clean-cards{
+        flex-direction: column;
+        row-gap: 22px;
+    }
+    .cards-nevigate{
+        display: flex;
+    }
+    .clean-card{
+        min-width: 85%;
+        justify-content: none;
+    }
+    .cards{
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        display: flex;
+        flex-direction: row;
+        -webkit-overflow-scrolling: touch;
+        padding: 10px 0;
+        column-gap:  15px;
+
+    }
+}   

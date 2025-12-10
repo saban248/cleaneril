@@ -1,7 +1,7 @@
 import binascii
 import os
 from datetime import timedelta
-from enum import Enum
+from enum import Enum, IntFlag
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -21,6 +21,13 @@ cleaneril.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
 cleaneril.secret_key = binascii.hexlify(os.urandom(8)).decode()
 cleaneril_db = SQLAlchemy(cleaneril)
 migrate = Migrate(cleaneril, cleaneril_db)
+
+
+
+
+class State(IntFlag):
+    DRAFT           = 1<<0
+    SAVED           = 1<<1
 
 
 

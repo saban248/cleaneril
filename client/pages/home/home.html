@@ -23,27 +23,47 @@
 
     <div class="head-home">
         <div class="head-h-body">
-            <img src="/static/images/logo.png">
+            <img src="/static/images/logo.png" id="logo">
         </div>
     </div>
-    <div class="welcome">
-        <div class="wel-text">
-            <span class="wtt1">ניקוי ריפודים 
-                <span class="wtt2">מקצועי</span>
-            </span>
+    <div class="body-home">
+        <div class="welcome">
+            <div class="wel-text">
+                <span class="wtt3" style="display: block;">{{company_name}}</span>
+                <span class="wtt1">ניקוי כל סוגי הריפודים 
+                    <span class="wtt2">מהיום להיום.</span>
+                </span>
+            </div>
+            <div class="wel-continue">
+                <i class="fa-solid fa-arrow-down"></i>
+            </div>
         </div>
-        <div class="wel-continue">
-            <i class="fa-solid fa-arrow-down"></i>
+        <div class="clean-cards">
+            <div class="cards-nevigate">
+                <i class="fa-solid fa-circle-arrow-right"></i>
+                <i class="fa-solid fa-circle-arrow-left"></i>
+            </div>
+            <div class="cards">
+            {% from "/home/card_category.html" import render_card %}
+            {% for card in cards %}
+                {% if card.state == 1%}{{continue}}{%endif%}
+
+                {{ render_card(card.title, card.img_path, card.card_id, special_things) }}
+            {% endfor %}
+            </div>
+
         </div>
-    </div>
-    <div class="clean-cards">
-        {% from "/home/card_category.html" import render_card %}
-        {% for card in cards %}
-            {{ render_card(card.title) }}
-        {% endfor %}
+        <div class="networks">
+            <div class="welcome">
+                <div class="wel-text">
+                    <span class="wtt3" style="display: block;">לקוחות ממליצים</span>
+                </div>
+            </div>
+        </div>
     </div>
     
 </body>
+<script src="/static/js/home.js"></script>
 </html>
 
 
