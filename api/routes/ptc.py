@@ -14,7 +14,9 @@ class RoutePagesBase(Enum):
 
 class RoutePages(RoutePagesBase):
 
-    home = 1
+    home = 1<<0
+    auth = 1<<1
+    dashboard = 1<<2
 
 
 class RouteApi(RoutePagesBase):
@@ -24,6 +26,8 @@ class RouteApi(RoutePagesBase):
 
 class Pages(IntFlag):
     home = 1<<0
+    auth = 1<<1
+    dashboard = 1<<2
 
     def __str__(self):
         return self.__repr__()

@@ -30,4 +30,10 @@ class State(IntFlag):
     SAVED           = 1<<1
 
 
+class ManagerPermissions(IntFlag):
+    VIEW            = 1<<0
+    EDIT            = 1<<1
+
+
+
 
