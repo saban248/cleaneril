@@ -362,4 +362,11 @@ body, *{
         column-gap:  15px;
 
     }
+    .aboutus-items{
+        flex-direction: column;
+        margin-right: 2%;
+        margin-left: 2%;
+        row-gap: 30px;
+    }
+
 }   
