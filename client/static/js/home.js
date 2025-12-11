@@ -12,3 +12,11 @@ window.addEventListener("scroll", () => {
     logo.style.transform = `scale(${scale})`;
 });
 
+
+
+
+
+function openSocielMedia(social){
+    console.log(social)
+    
+}

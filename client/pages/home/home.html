@@ -31,8 +31,14 @@
             <div class="wel-text">
                 <span class="wtt3" style="display: block;">{{company_name}}</span>
                 <span class="wtt1">ניקוי כל סוגי הריפודים 
-                    <span class="wtt2">מהיום להיום.</span>
+                    <span class="wtt2">שירות. מקצועיות. ייסודיות.</span>
                 </span>
+            </div>
+
+        </div>
+        <div class="works">
+            <div class="wel-text">
+                <span class="wtt3" style="display: block;">עבודות שלנו</span>
             </div>
             <div class="wel-continue">
                 <i class="fa-solid fa-arrow-down"></i>
@@ -53,10 +59,71 @@
             </div>
 
         </div>
+        <div class="aboutus">
+            <div class="welcome">
+                <div class="wel-text">
+                    <span class="wtt3">למה אנחנו</span>
+                </div>
+            </div>
+            <div class="aboutus-items">
+                <div class="aboutus-item">
+                    <div class="about-title">
+                        <span>שירות</span>
+                        אנחנו נותנים 100% שירות
+                    </div>
+                    <div class="about-description">
+                        אנחנו מגיעים בזמן לבית הלקוח, סבלנות וחיוך, ותמיד שמחים להסביר על תהליך ניקוי הריפוד שלכם
+                    </div>
+                </div>
+                 <div class="aboutus-item">
+                    <div class="about-title">
+                        <span>חיטוי</span>
+                        הריפוד שלכם יחזור להיות כמו חדש
+                    </div>
+                    <div class="about-description">
+                        הריפוד שלך אם זה הספה / כורסא וגם המזרן צוברים אבק ובעיקר חיידקים במליונים, הניקוי שלנו מתמקד בחיטוי הריפוד להעלמת כל הריחות הלא נעימים, הסרת כתמי מים לכלוך אוכל וזיעה ועוד..
+                    </div>
+                </div>
+                 <div class="aboutus-item">
+                    <div class="about-title">
+                        <span>נסיון</span>
+                        השירות שלנו
+                    </div>
+                    <div class="about-description">
+                        United States Citizenship and Immigration Services facilitates an in-depth background check and process to vet the potential card holder.
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="networks">
             <div class="welcome">
                 <div class="wel-text">
-                    <span class="wtt3" style="display: block;">לקוחות ממליצים</span>
+                    <span class="wtt3" style="display: block;">עקבו אחרינו</span>
+                </div>
+            </div>
+            <div class="social-media">
+                <i class="icon" style="font-size: 30px;" onclick="openSocielMedia(SocialMedia.GOOGLE)">
+                    {% include "icon/google.svg" %}
+                </i>
+                <i class="icon" style="font-size: 30px;" onclick="openSocielMedia(SocialMedia.INSTEGRAM)">
+                    {% include "icon/instegram.svg" %}
+                </i>
+                <i class="icon" style="font-size: 30px;" onclick="openSocielMedia(SocialMedia.FACEBOOK)">
+                    {% include "icon/facebook.svg" %}
+                </i>
+                 <i class="icon" style="font-size: 30px;" onclick="openSocielMedia(SocialMedia.TIKTOK)">
+                    {% include "icon/tiktok.svg" %}
+                </i>
+            </div>
+           <div class="frame-social">
+                <div style="position:relative; width:100%; padding-bottom:175%; height:0;">
+                    <iframe
+                        src="https://www.instagram.com/reel/DR7XGsZCOQ1/embed"
+                        style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
                 </div>
             </div>
         </div>
@@ -64,6 +131,7 @@
     
 </body>
 <script src="/static/js/home.js"></script>
+<script src="/static/js/protocol.js"></script>
 </html>
 
 
