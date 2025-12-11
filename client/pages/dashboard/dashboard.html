@@ -6,7 +6,6 @@
     <title>{{company_name}}</title>
     <link rel="stylesheet" href="/static/css/manager.css">
     <link rel="stylesheet" href="/static/css/home.css">
-    
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -20,44 +19,42 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
-
-
 </head>
-<body>
-    <div class="auth-login">
-        <div class="auth-box">
-            <div class="auth-head">
-                <i class="fa-solid fa-lock"></i>
-                <span>{{company_name}} - התחברות</span>
-                
-            </div>
-            <div class="auth-body">
-                <div class="input-field">
-                    <input type="text" placeholder="שם מנהל" class="auth-input" id="username">
-                </div>
-                <div class="input-field">
-                    <input type="password" placeholder="סיסמה" class="auth-input" id="password">
-                </div>
-            </div>
-            <div class="auth-footer">
-                <button class="btn-login" onclick="doLogin()">כניסה</button>
-            </div>
 
-            <div class="extra-links">
-                <a>Forgot Password?</a>
-            </div>
-        </div>
+<body>
+    <div class="dashbord-page">
+        {% include "dashboard/cards.html" %}
+        {% include "dashboard/links.html" %}
+        {% include "dashboard/social.html" %}
     </div>
-    <div id="popupOverlay" class="popup-overlay hidden">
-        <div class="popup">
-            <button class="popup-close" onclick="closePopup()">&times;</button>
-            <h2 id="popupTitle"></h2>
-            <p id="popupMessage"></p>
+    <div class="dashboard-menu">
+        <div class="menu-items">
+            <div class="menu-item master">
+                <i class="icon " style="width: 32px;" onclick="openMenuGeneral()">
+                    {% include "icon/menu.svg" %}
+                </i>
+            </div>
+            <div class="menu-item">
+                <i class="icon icon-24" onclick="switchPageManager(PageManager.CARDS)">
+                    {% include "icon/add-card.svg" %}
+                </i>
+            </div>
+            <div class="menu-item">
+                <i class="icon icon-24" onclick="switchPageManager(PageManager.SOCIAL)">
+                    {% include "icon/social.svg" %}
+                </i>
+            </div>
+            <div class="menu-item">
+                <i class="icon icon-24" onclick="switchPageManager(PageManager.LINKS)">
+                    {% include "icon/link.svg" %}
+                </i>
+            </div>
         </div>
     </div>
 
 </body>
+<script src="/static/js/all.js"></script>
 <script src="/static/js/protocol.js"></script>
 <script src="/static/js/manager.js"></script>
-<script src="/static/js/all.js"></script>
+<script src="/static/js/cache.js"></script>
 </html>

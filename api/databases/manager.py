@@ -1,10 +1,11 @@
 from typing import Union
 
-from api.databases.ptc import cleaneril_db
+from api.databases.ptc import cleaneril_db, ManagerPermissions
 
 
 class Manager(cleaneril_db.Model):
     __tablename__ = "manager"
+    key = cleaneril_db.Column(cleaneril_db.Integer, nullable=False, primary_key=True)
     username = cleaneril_db.Column(cleaneril_db.String(64), nullable=False)
     permission = cleaneril_db.Column(cleaneril_db.Integer, nullable=False)
     password = cleaneril_db.Column(cleaneril_db.String(32), nullable=False)
@@ -15,9 +16,9 @@ class Manager(cleaneril_db.Model):
 
 class ApiManager:
     @staticmethod
-    def register(username:str, permissions:int, password:str):
-        assert username.__len__() <5
-        assert password.__len__() <5
+    def register(username:str, permission:int, password:str):
+        assert not username.__len__() <5
+        assert not password.__len__() <5
 
         manager = ApiManager.get_manager(username=username, password=password)
         if manager:
@@ -25,7 +26,7 @@ class ApiManager:
         new = Manager()
         new.username = username
         new.password = password
-        new.permission = permissions
+        new.permission = permission
         cleaneril_db.session.add(new)
         cleaneril_db.session.commit()
 
@@ -46,3 +47,12 @@ class ApiManager:
             return 1
 
         return 0
+
+
+def new_manager():
+    manager = dict(username = "avraham",
+         password = "Ghs553321",
+         permission = ManagerPermissions.VIEW | ManagerPermissions.EDIT,
+         )
+
+    ApiManager.register(**manager)

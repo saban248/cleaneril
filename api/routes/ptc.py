@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from enum import Enum, IntFlag
 
 
@@ -20,7 +21,7 @@ class RoutePages(RoutePagesBase):
 
 
 class RouteApi(RoutePagesBase):
-    ...
+    do_auth = 1<<0
 
 
 
@@ -43,4 +44,23 @@ class Pages(IntFlag):
     @property
     def css(self):
         return self.__root__+self.name+".css"
+
+
+
+def struct_builder(cls, **data):
+    for k, v in data.items():
+        if k in cls.__dict__:
+            setattr(cls, k, v)
+
+
+class ResponseStruct:
+    @dataclass
+    class Auth:
+        username:str        = None
+        password:str        = None
+
+        def build(self, **data):
+            struct_builder(self, **data)
+            return self
+
 

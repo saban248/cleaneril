@@ -133,13 +133,14 @@
         </div>
     </div>
     
-        <div id="popupOverlay" class="popup-overlay hidden">
-  <div class="popup">
-    <button class="popup-close" id="closePopupBtn">&times;</button>
-    <h2>Title here</h2>
-    <p>This is a pure JavaScript popup.</p>
-  </div>
-</div>
+    <div id="popupOverlay" class="popup-overlay hidden">
+        <div class="popup">
+            <button class="popup-close" onclick="closePopup()">&times;</button>
+            <h2 id="popupTitle"></h2>
+            <p id="popupMessage"></p>
+        </div>
+    </div>
+
 </body>
 <script src="/static/js/home.js"></script>
 <script src="/static/js/manager.js"></script>

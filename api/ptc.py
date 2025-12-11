@@ -1,8 +1,15 @@
 import binascii
 import os
+from copy import deepcopy
 from typing import Union
 
+from flask import Request
 from flask.sessions import SessionMixin
+
+CONTENT_TYPE_DATA = "multipart/form-data"
+CONTENT_TYPE_FORM = "application/x-www-form-urlencoded"
+CONTENT_TYPE_JSON = "application/json"
+CONTENT_TYPE_ARGS = "a"
 
 special_things = [
     "חיטוי מחיידקים",
@@ -48,7 +55,7 @@ class SJson:
     msg_json = {"success":None, "title":None, "notice":None, "code":0}
 
     @staticmethod
-    def error(error_content:Union[str, int], **errors):
+    def error(error_content:Union[str, int] = 'error', **errors):
         msg = dict(SJson.msg_json, **errors)
         msg["success"] = False
         msg["title"] = "התרחשה שגיאה"
@@ -56,7 +63,7 @@ class SJson:
         return msg
 
     @staticmethod
-    def success(success_content:Union[str, int], **success):
+    def success(success_content:Union[str, int] = 'success', **success):
         msg = dict(SJson.msg_json, **success)
         msg["success"] = True
         msg["title"] = "הושלם"
@@ -71,3 +78,19 @@ class SJson:
         elif isinstance(notice, int):
             msg["notice"] = 'unknown'
             msg["code"] = notice
+
+
+
+def get_dictionary_http(req:Request, content_type:str = str()) -> dict:
+    _ctype = req.content_type or str()
+    if CONTENT_TYPE_FORM in _ctype or CONTENT_TYPE_DATA in _ctype:
+        return deepcopy(req.form.to_dict())
+
+    elif CONTENT_TYPE_JSON in _ctype:
+        return deepcopy(req.json)
+
+    elif req.method == 'GET':
+        return deepcopy(req.args.to_dict())
+
+    # else return empty dictionary
+    return dict()

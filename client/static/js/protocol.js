@@ -1,5 +1,4 @@
 
-
  const SocialMedia = {
     TIKTOK:1,
     INSTEGRAM:2,
@@ -23,4 +22,32 @@ function getSocialMedia(social) {
 }
 
 
+const PageManager = {
+    SOCIAL:1<<0,
+    LINKS:1<<1,
+    CARDS:1<<2
+}
+
+function getPageManager(page) {
+    const result = [];
+
+    for (const key in PageManager) {
+        if (page & PageManager[key]) {
+            result.push(key);
+        }
+    }
+    if (result.length==1){
+        return result[0]
+    }
+    return result;
+}
+
+
+const ApiRoute = {
+    auth:"do_auth",
+}
+
+
+
 window.SocialMedia = SocialMedia;
+window.PageManager = PageManager;
