@@ -11,6 +11,7 @@ from flask_sqlalchemy import SQLAlchemy
 class ServerConfig:
     FILE_NAME_DB        = "cleaneril"
     COMPANY_NAME        = 'הברקה בדקה'
+    DEFAULT_IMAGE_CARD  = '/static/images/ba/example.jpg'
 
 cleaneril = Flask(ServerConfig.FILE_NAME_DB, template_folder=os.path.join("client", "pages"),
                   static_folder=os.path.join("client", "static"))

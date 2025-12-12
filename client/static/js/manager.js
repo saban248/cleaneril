@@ -73,3 +73,39 @@ function closeCreateCard(){
     mainEdit.classList.remove("show")
     mainEdit.classList.add("hide")
 }
+
+
+function publishCard(){
+    const card_id   = document.getElementById("the-card").dataset.ci
+    const card_title = document.getElementById("card-title")
+    const fileInput = document.getElementById("imgInput");
+    const file = fileInput.files[0];
+    const whatsapp = document.getElementById("whatsapp-text")
+    const off_price = document.getElementById("off-price")
+    data = {
+        ci:card_id,
+        ct:card_title.value,
+        wt:whatsapp.value,
+        o:1?off_price!=0:0,
+        op:parseInt(off_price.value)
+    }
+
+}
+
+
+function draftCard(){
+    
+}
+
+
+function triggerFileSelect() {
+    document.getElementById("imgInput").click();
+}
+
+function setImage(input, imgTagId) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const img = document.getElementById(imgTagId);
+    img.src = URL.createObjectURL(file);
+}

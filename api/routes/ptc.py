@@ -72,9 +72,13 @@ class ResponseStruct:
             return self
 
     @dataclass
-    class Api:
+    class CardEditor:
         action:int      = None
-        card_id:str     = None
+        ci:str
+        ct:str          = None
+        wt:str          = None
+        o:bool          = None
+        op:int          = None
         def build(self, **data):
             struct_builder(self, **data)
             return self

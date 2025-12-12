@@ -190,15 +190,13 @@
 }
 .main-edit-card{
     display: none;
-    position: absolute;
-    z-index: 1000;
-    bottom: 70px;
+    position: fixed;
+    z-index: 10000;
     top: 0;
-    left: 0;
-    right: 0;
     width: 100%;
+    height: 100%;  
+    overflow-y: auto;
     background: white;
-    height: 100%;
 }
 .ce-head{
     padding: 10px;
@@ -215,8 +213,81 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    row-gap: 20px;
+}
+.input-card-edit{
+    font-size: inherit;
+    max-width: 150px;
+    min-width: 50px;
+    padding: 4px 6px;
+    border-radius: 7px;
+    transition: width .1s ease;
+    width: auto;
+    border: 1px solid #ddd;
+    outline: none;
+}
+.img-editor{
+    position: relative !important;
+}
+.add-image{
+    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(1px);
+
+    background: rgba(255, 255, 255, 0.117);
+    position: absolute;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    font-size: 2rem;
+    color: white;
+    transform: all 200ms;
+    cursor: pointer;
+}
+.add-image > i:active, .add-image > span:active{
+    transform: scale(1.1);
 }
 
+.card-editor-settings{
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    
+}
+
+.setting-item-input{
+    display: flex;
+    padding: 10px;
+}
+.setting-item-input > i{
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+.setting-item-input > input{
+   flex: 1 !important;
+   max-width: 100% !important;
+}
+
+.card-action-editor{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    padding-bottom: 20px;
+}
+.card-action-editor> .draft-btn{
+    flex-shrink: 0;
+    width: auto !important;
+    background: rgb(48, 47, 47) !important;
+}
+.card-action-editor> .save-btn{
+    flex: 1;
+}
 @media (max-width: 768px) {
     .auth-box{
         padding: .75rem
@@ -243,4 +314,9 @@
     }
     .dashboard-page{
         padding: 1rem;
+    }
+    .card-editor-settings{
+        width: 100%;
+    }
+        
 }
