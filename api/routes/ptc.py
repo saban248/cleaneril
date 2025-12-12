@@ -22,6 +22,7 @@ class RoutePages(RoutePagesBase):
 
 class RouteApi(RoutePagesBase):
     do_auth = 1<<0
+    api     = 1<<1
 
 
 
@@ -44,7 +45,14 @@ class Pages(IntFlag):
     @property
     def css(self):
         return self.__root__+self.name+".css"
+    @property
+    def path(self):
+        return self.__root__
 
+
+
+class ApiCall(IntFlag):
+    card_editor = 1<<0
 
 
 def struct_builder(cls, **data):
@@ -63,4 +71,10 @@ class ResponseStruct:
             struct_builder(self, **data)
             return self
 
-
+    @dataclass
+    class Api:
+        action:int      = None
+        card_id:str     = None
+        def build(self, **data):
+            struct_builder(self, **data)
+            return self

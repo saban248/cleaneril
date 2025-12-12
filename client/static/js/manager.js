@@ -47,3 +47,29 @@ function switchPageManager(page){
     ManagerCache.setManagerPage(page)
 }
 
+
+
+function createCard(card_id=null){
+    const mainEdit = document.getElementById("card-editor")
+    mainEdit.classList.remove('hide');
+    mainEdit.classList.add('show');
+
+    data = {action:ApiCall.card_editor, card_id:card_id}
+    apiPost(ApiRoute.api, data).then(
+        (res) => {
+            if (!res.success){
+                openPopup(res.title, res.notice)
+            }
+            const editBody = document.getElementById('card-template')
+            console.log(res)
+            editBody.innerHTML = res.template;
+        }
+    )
+
+}
+
+function closeCreateCard(){
+    const mainEdit = document.getElementById("card-editor")
+    mainEdit.classList.remove("show")
+    mainEdit.classList.add("hide")
+}

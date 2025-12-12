@@ -25,7 +25,7 @@ migrate = Migrate(cleaneril, cleaneril_db)
 
 
 
-class State(IntFlag):
+class StateDocument(IntFlag):
     DRAFT           = 1<<0
     SAVED           = 1<<1
 

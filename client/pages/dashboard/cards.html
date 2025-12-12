@@ -1,12 +1,24 @@
 <div class="dashboard-page" id="CARDS">
     <div class="page-head">
         <h2>כרטיסים - לפני / אחרי</h2>
+        <i class="fa-solid fa-circle-plus create-card" onclick="createCard()"></i>
     </div>
     <div class="page-body">
         <div class="list-cards">
             {% for card in cards %}
-                {{}}
+                <div class="card-item" data-key="{{card.key}}">
+                    <div class="card-title">{{ card.title }}</div>
+                </div>
             {% endfor %}
         </div>
     </div>
+</div>
+<div class="main-edit-card" id="card-editor">
+    <div class="ce-head">
+        <i class="fa-solid fa-circle-xmark" onclick="closeCreateCard()"></i>
+    </div>
+    <div class="ce-body" id="card-template">
+        <h1 >33</h1>
+    </div>
+
 </div>

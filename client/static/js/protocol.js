@@ -45,9 +45,12 @@ function getPageManager(page) {
 
 const ApiRoute = {
     auth:"do_auth",
+    api:"api"
 }
 
-
+const ApiCall = {
+    card_editor:1<<0
+}
 
 window.SocialMedia = SocialMedia;
 window.PageManager = PageManager;

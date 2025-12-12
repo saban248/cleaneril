@@ -150,7 +150,71 @@
     padding: 1.75rem;
 }
 .show{
-    display: block;
+    display: block !important;
+}
+.hide{
+    display: none !important;
+}
+
+.page-head{
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+    align-items: start;
+    
+}
+.create-card{
+    border-radius: 50%;
+    padding: 10px;
+    font-size: 1rem;
+    background: #1a4678;
+    color: white;
+    cursor: pointer;
+    transition: all 200ms;
+    
+}
+.create-card:active,
+.create-card:hover{
+    padding: 5px;
+    font-size: 1.5rem;
+    box-shadow: 0 0 11px #939393;
+    transform: scale(1.1);
+}
+.page-body{
+    margin-top: 2.5rem;
+}
+.list-cards{
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+}
+.main-edit-card{
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    bottom: 70px;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: white;
+    height: 100%;
+}
+.ce-head{
+    padding: 10px;
+}
+.ce-head > i{
+    font-size: 2rem;
+    padding: 10px;
+    border-radius: 50% ;
+    border: 1px solid #ddd;
+    background: rgb(199, 199, 199);
+    cursor: pointer;
+}
+.ce-body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 @media (max-width: 768px) {
@@ -177,4 +241,6 @@
         width: 100%;
         margin: 0;
     }
+    .dashboard-page{
+        padding: 1rem;
 }
