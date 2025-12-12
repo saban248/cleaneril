@@ -74,7 +74,7 @@ class ResponseStruct:
     @dataclass
     class CardEditor:
         action:int      = None
-        ci:str
+        ci:str          = None
         ct:str          = None
         wt:str          = None
         o:bool          = None
