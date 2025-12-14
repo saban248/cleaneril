@@ -23,9 +23,10 @@
 
 <body>
     <div class="dashbord-page">
+        {% set cards = cards %}
         {% include "dashboard/cards.html" %}
         {% include "dashboard/links.html" %}
-        {% include "dashboard/social.html" %}
+        {% include "dashboard/gifts.html" %}
     </div>
     <div class="dashboard-menu">
         <div class="menu-items">
@@ -40,8 +41,8 @@
                 </i>
             </div>
             <div class="menu-item">
-                <i class="icon icon-24" onclick="switchPageManager(PageManager.SOCIAL)">
-                    {% include "icon/social.svg" %}
+                <i class="icon icon-24" onclick="switchPageManager(PageManager.GIFTS)">
+                    {% include "icon/gift.svg" %}
                 </i>
             </div>
             <div class="menu-item">
@@ -51,7 +52,13 @@
             </div>
         </div>
     </div>
-
+        <div id="popupOverlay" class="popup-overlay hidden">
+        <div class="popup">
+            <button class="popup-close" onclick="closePopup()">&times;</button>
+            <h2 id="popupTitle"></h2>
+            <p id="popupMessage"></p>
+        </div>
+    </div>
 </body>
 <script src="/static/js/all.js"></script>
 <script src="/static/js/protocol.js"></script>

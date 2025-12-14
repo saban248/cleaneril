@@ -1,4 +1,6 @@
-
+const CONFIG = {
+    CARD_EDIT:false
+}
  const SocialMedia = {
     TIKTOK:1,
     INSTEGRAM:2,
@@ -23,7 +25,7 @@ function getSocialMedia(social) {
 
 
 const PageManager = {
-    SOCIAL:1<<0,
+    GIFTS:1<<0,
     LINKS:1<<1,
     CARDS:1<<2
 }
@@ -45,11 +47,15 @@ function getPageManager(page) {
 
 const ApiRoute = {
     auth:"do_auth",
-    api:"api"
+    api:"api",
+    upImage:"up_image"
 }
 
 const ApiCall = {
-    card_editor:1<<0
+    card_editor :1<<0,
+    card_draft:1<<1,
+    card_delete:1<<2,
+    card_save:1<<3
 }
 
 window.SocialMedia = SocialMedia;

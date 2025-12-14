@@ -26,6 +26,9 @@
     color: rgb(236, 236, 236);
     background: #099a35;
 }
+.trash{
+    color: #b25353;
+}
 .phonecell{
     color: #1a5497;
 }
@@ -161,6 +164,7 @@ body, *{
 
 
 .clean-cards{
+    position: relative;
     direction: rtl;
     padding: 5px;
     padding-top: 20px;
@@ -170,26 +174,39 @@ body, *{
     column-gap: 22px;
 }
 .cards-nevigate{
+    display: flex;
+    position: absolute;
     display: none;
     justify-content: space-between;
-    margin-left: 5%;
-    margin-right: 5%;
+    top: 50%;
+    margin-left: 10%;
+    margin-right: 10%;
+    width: 80%;
+    z-index: 1000;
 }
 .cards-nevigate>i{
     padding: 10px;
     font-size: 2rem;
-    background: linear-gradient(135deg, rgb(40, 54, 54), rgb(42, 67, 63));
-    color: rgb(205, 206, 209);
+    background: linear-gradient(135deg, rgba(40, 54, 54, 0.34), rgba(42, 67, 63, 0.412));
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+    color: rgb(249, 249, 249);
     border-radius: 10px;
     box-shadow: 0 0 11px #2d2e3189;
 }
 
 
 /* CARDS */
+
+
 .cards{
     display: flex;
     column-gap: 22px;
-
+    row-gap: 22px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-left: 5%;
+    margin-right: 5%;
 }
 .clean-card{
     scroll-snap-align: center;
@@ -215,6 +232,80 @@ body, *{
 .card-title{
     font-size: 2.5rem;
     padding: 10px;
+}
+
+.card-off-price{
+    position: absolute;
+    top: 72px;
+    right: 12px;
+
+    padding: 10px 18px;
+    background:  linear-gradient(135deg, #ff3d3d, #f7b733);
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+
+    animation: badgeFloat 2.2s ease-in-out infinite;
+    transform-origin: center;
+}
+.btn-off-price {
+    position: relative;
+    padding: 14px 32px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 7px;
+    background: #fff;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 1;
+    border: 1px solid #000000f0;
+}
+
+/* The glowing animated border */
+.btn-off-price::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 2px; /* border thickness */
+    border-radius: 7px;
+    background: linear-gradient(
+        90deg,
+        #b8860b,
+        #a9a59c,
+        #ffd700,
+        #cbac25,
+        #daa520,
+        #b8860b
+    );
+
+    background-size: 400% 400%;
+    animation: borderMove 20s linear infinite;
+    z-index: -1;
+}
+
+/* inner layer to keep button white */
+.bbtn-off-price::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: 7px;
+    background: white;
+    z-index: -1;
+}
+
+@keyframes borderMove {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 400% 50%; }
+}
+@keyframes badgeFloat {
+    0%   { transform: translateY(0) scale(1); }
+    40%  { transform: translateY(-4px) scale(1.03); }
+    70%  { transform: translateY(2px) scale(0.97); }
+    100% { transform: translateY(0) scale(1); }
 }
 .card-body{
     padding: 10px;
@@ -307,6 +398,10 @@ body, *{
     flex-direction: column;
     row-gap: 25px;
 }
+.aboutus-head{
+    display: flex;
+    flex-direction: column;
+}
 .about-title{
     position: relative;
     font-weight: bold;
@@ -318,6 +413,36 @@ body, *{
     padding: 10px;
     transform: translateX(15deg);
 }
+.balloon-frame {
+    border-radius: 60px 35px;
+    background: #ffffff;
+    display: inline-block;
+    box-shadow:
+        0 20px 40px rgba(0,0,0,0.15),      /* outer shadow */
+        inset 0 4px 10px rgba(255,255,255,0.7), /* inner bright */
+        inset 0 -6px 15px rgba(0,0,0,0.08);      /* inner soft depth */
+    border: 3px solid rgba(255,255,255,0.6);
+
+    /* Optional: subtle floating effect */
+    animation: balloonFloat 4s ease-in-out infinite;
+    width: 50%;
+    background: transparent;
+}
+
+.balloon-frame img {
+    display: block;
+    width: 100%;
+    border-radius: 60px 35px;
+    background:transparent;
+}
+
+@keyframes balloonFloat {
+    0%   { transform: translateY(0); }
+    50%  { transform: translateY(-6px); }
+    100% { transform: translateY(0); }
+}
+
+
 
 @keyframes jump {
     0%   { transform: translate(-50%, 0); }
@@ -356,11 +481,18 @@ body, *{
         overflow-x: auto;
         scroll-snap-type: x mandatory;
         display: flex;
+        flex-wrap: nowrap;
         flex-direction: row;
         -webkit-overflow-scrolling: touch;
         padding: 10px 0;
         column-gap:  15px;
+        margin: 0;
 
+    }
+    .cards-nevigate{
+        margin-left: 2%;
+        margin-right: 2%;
+        width: 96%;
     }
     .aboutus-items{
         flex-direction: column;

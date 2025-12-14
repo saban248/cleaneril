@@ -1,22 +1,28 @@
 import binascii
 import os
 from datetime import timedelta
-from enum import Enum, IntFlag
+from enum import IntFlag
+
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
-
-
-class ServerConfig:
-    FILE_NAME_DB        = "cleaneril"
-    COMPANY_NAME        = 'הברקה בדקה'
-    DEFAULT_IMAGE_CARD  = '/static/images/ba/example.jpg'
-
-cleaneril = Flask(ServerConfig.FILE_NAME_DB, template_folder=os.path.join("client", "pages"),
+FILE_NAME_DB = "cleaneril"
+cleaneril = Flask(FILE_NAME_DB, template_folder=os.path.join("client", "pages"),
                   static_folder=os.path.join("client", "static"))
 
-cleaneril.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{ServerConfig.FILE_NAME_DB}.db"
+class ServerConfig:
+    COMPANY_NAME        = 'הברקה בדקה'
+    FOLDER_IMAGE_PATH   = os.path.join(os.path.basename(cleaneril.static_folder), "images")
+    FOLDER_IMAGE_BA   = os.path.join(FOLDER_IMAGE_PATH, "ba")
+    DEFAULT_IMAGE_CARD  = os.path.join(FOLDER_IMAGE_BA,'example.jpg')
+    DEFAULT_WHATSAPP_MSG = "אשמח להזמין ניקוי ספה"
+    DEFAULT_PHONE = '585005617'
+    WHATSAPP_LINK = 'https://api.whatsapp.com/send/?phone=972{phone}&text={text}&type=phone_number&app_absent=0'
+    DEFAULT_WHATSAPP_LINK = WHATSAPP_LINK.format(phone=DEFAULT_PHONE, text=DEFAULT_WHATSAPP_MSG)
+
+
+cleaneril.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{FILE_NAME_DB}.db"
 cleaneril.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False  # // default
 cleaneril.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
 cleaneril.secret_key = binascii.hexlify(os.urandom(8)).decode()

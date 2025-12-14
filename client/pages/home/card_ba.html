@@ -1,0 +1,83 @@
+{% macro render_card(card, special, editor=False) %}
+
+<div class="clean-card card" data-ci="{{card.card_id}}" {% if editor %}id="the-card"{% endif %}>
+    <div class="card-head">
+        {% if not editor %}
+            <div class="card-title">
+                {{card.title}}
+            </div>
+        {%else%}
+             <div class="card-title">
+                <input class="input-card-edit" id="card-title" placeholder="כותרת" value="{{card.title}}">
+            </div>
+        {% endif %}
+
+        <div class="card-action">
+            <i class="fa-solid fa-phone phonecell"></i>
+            <i class="icon icon-32 whatsapp">
+                {% include "icon/whatsapp.svg" %}
+            </i>
+        </div>
+    </div>
+    {%if card.off %}
+        <div class="card-off-price">
+        <span class="c-off">{{card.off_price}}%</span>
+        <span class="c-desc">מתנה </span>
+    </div>
+    {%endif%}
+    <div class="card-body">
+        <div class="card-img {% if editor %}img-editor{% endif %}">
+            {% if not editor %}
+                <img src="{{card.img_path}}" >
+            {%else%}
+                <div class="add-image" onclick="triggerFileSelect()">
+                    <span>4:3</span>
+                    <i class="fa-solid fa-panorama"></i>
+                    <input type="file" id="imgInput" accept="image/*" style="display:none" onchange="setImage(this, 'previewImg')">
+                </div>
+                <img id='previewImg' src="{% if card.img_path%}{{card.img_path}}{%else%}/static/images/ba/example.jpg{%endif%}">
+            {% endif %}
+        </div>
+        <div class="special-things">
+            {%for spel in special|list%}
+                <div class="sp-item">
+                    <i class="fa-solid fa-circle-check plus"></i>
+                    <span>{{spel}}</span>
+                </div>
+            {%endfor%}
+        </div>
+        <div class="card-footer">
+            <button class="card-btn {% if card.off %}btn-off-price{% endif %}" type="button">
+                <span>לתאם עכשיו</span>
+            </button>
+        </div>
+    </div>
+
+</div>
+    {% if editor %}
+        <div class="card-editor-settings">
+            <div class="setting-item-input">
+                <i class="fa-solid fa-comment"></i>
+                <input class="input-card-edit" type="text" placeholder="טקסט לוואצאפ" id="whatsapp-text" value="{{card.whatsapp_text}}">
+
+            </div>
+            <div class="setting-item-input">
+                <i class="fa-solid fa-gift"></i>
+                <input class="input-card-edit" type="tel" placeholder="הנחה באחוזים (0 ללא)" id="off-price" value="{{card.off_price}}">
+            </div>
+            <div class="card-action-editor">
+                <button type="button" class="card-btn draft-btn" onclick="draftCard()" id="btn-draf">
+                    <i class="fa-solid fa-bookmark"></i>
+                </button>
+                <button type="button" class="card-btn save-btn" onclick="publishCard()" id="btn-save">
+                    <span>פרסם</span>
+                </button>
+            </div>
+ 
+        </div>
+    {%endif %}
+
+{% endmacro %}
+{% if editor %}
+{{ render_card(card, special, editor) }}
+{%endif%}

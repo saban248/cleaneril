@@ -1,9 +1,12 @@
+import base64
+import os
+
 from flask import session, request
 
 from api.api_action import get_api_action
 from api.databases.manager import ApiManager
-from api.databases.ptc import cleaneril
-from api.ptc import ShortSession, SJson, get_dictionary_http
+from api.databases.ptc import cleaneril, ServerConfig
+from api.ptc import ShortSession, SJson, get_dictionary_http, generate_hex
 from api.routes.ptc import RouteApi, ResponseStruct
 
 
@@ -29,9 +32,24 @@ def api():
         return SJson.error()
 
     breq = get_dictionary_http(request)
-    res_call = ResponseStruct.Api().build(**breq)
-    get_ac = get_api_action(res_call.action, res_call)
+    get_ac = get_api_action(**breq)
 
     return SJson.success(**get_ac)
 
 
+
+@cleaneril.route(RouteApi.up_image.path, methods=["POST"])
+def up_image():
+
+    data = request.json
+    filename = data["filename"]
+    img_data = data["data"]  # base64 string
+
+    image_bytes = base64.b64decode(img_data)
+    fullpath = os.path.join("client", str(os.path.join(ServerConfig.FOLDER_IMAGE_BA, filename)))
+    if os.path.exists(fullpath):return SJson.success()
+
+    with open(fullpath, "wb") as f:
+        f.write(image_bytes)
+
+    return SJson.success()

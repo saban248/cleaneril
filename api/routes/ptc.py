@@ -1,5 +1,8 @@
+import os.path
 from dataclasses import dataclass
 from enum import Enum, IntFlag
+
+from api.databases.ptc import ServerConfig
 
 
 class RoutePagesBase(Enum):
@@ -23,6 +26,7 @@ class RoutePages(RoutePagesBase):
 class RouteApi(RoutePagesBase):
     do_auth = 1<<0
     api     = 1<<1
+    up_image = 1<<2
 
 
 
@@ -53,6 +57,9 @@ class Pages(IntFlag):
 
 class ApiCall(IntFlag):
     card_editor = 1<<0
+    card_draft = 1<<1
+    card_delete = 1<<2
+    card_save = 1<<3
 
 
 def struct_builder(cls, **data):
@@ -79,6 +86,22 @@ class ResponseStruct:
         wt:str          = None
         o:bool          = None
         op:int          = None
+        imp:str         = None
+        desc:str        = None
+        wtl:str         = None
         def build(self, **data):
             struct_builder(self, **data)
+            self.o = bool(self.o)
+            if not self.desc:
+                self.desc = "unknown"
+            if not self.imp:
+                self.imp = ServerConfig.DEFAULT_IMAGE_CARD
+            else:
+                self.imp = os.path.join(ServerConfig.FOLDER_IMAGE_BA, self.imp)
+            if not self.wt:
+                self.wt = ServerConfig.DEFAULT_WHATSAPP_MSG
+
+            self.wtl = ServerConfig.DEFAULT_WHATSAPP_LINK.format(phone=ServerConfig.DEFAULT_PHONE,
+                                                                 text=self.wt)
+
             return self

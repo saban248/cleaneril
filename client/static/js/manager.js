@@ -33,7 +33,7 @@ function switchPageManager(page){
     }
     var _page_ = null;
     switch (page) {
-        case PageManager.SOCIAL:
+        case PageManager.GIFTS:
         case PageManager.LINKS:
         case PageManager.CARDS:
             _page_ = document.getElementById(getPageManager(page));
@@ -54,47 +54,99 @@ function createCard(card_id=null){
     mainEdit.classList.remove('hide');
     mainEdit.classList.add('show');
 
-    data = {action:ApiCall.card_editor, card_id:card_id}
+    data = {action:ApiCall.card_editor, ci:card_id}
     apiPost(ApiRoute.api, data).then(
         (res) => {
             if (!res.success){
                 openPopup(res.title, res.notice)
+                return
             }
+
             const editBody = document.getElementById('card-template')
-            console.log(res)
             editBody.innerHTML = res.template;
         }
     )
 
 }
 
-function closeCreateCard(){
+function closeCreateCard(no_api=false){
     const mainEdit = document.getElementById("card-editor")
     mainEdit.classList.remove("show")
     mainEdit.classList.add("hide")
+    const card_id   = document.getElementById("the-card").dataset.ci;
+   ( !no_api && !CONFIG.CARD_EDIT)&& deleteCard(card_id)
+   CONFIG.CARD_EDIT =false;
 }
 
 
-function publishCard(){
+async function publishCard(state_card=ApiCall.card_save){
     const card_id   = document.getElementById("the-card").dataset.ci
-    const card_title = document.getElementById("card-title")
+    const card_title = document.getElementById("card-title").value
     const fileInput = document.getElementById("imgInput");
-    const file = fileInput.files[0];
-    const whatsapp = document.getElementById("whatsapp-text")
-    const off_price = document.getElementById("off-price")
-    data = {
-        ci:card_id,
-        ct:card_title.value,
-        wt:whatsapp.value,
-        o:1?off_price!=0:0,
-        op:parseInt(off_price.value)
+    let file = fileInput.files[0];
+    if (!file){
+        const src = document.getElementById("previewImg").src;
+
+        // Fetch the image data from the src
+        const res = await fetch(src);
+        const blob = await res.blob();
+
+        // Create File object from Blob
+        a = src.split(".")
+        eof = a[a.length-1]
+        file = new File([blob], card_id+"."+eof, { type: blob.type });
     }
+    const filename = file.name;
+    const whatsapp = document.getElementById("whatsapp-text").value
+    var off_price = parseInt(document.getElementById("off-price").value)
+    if (!off_price){
+        off_price = 0
+    }
+    data = {
+        action:state_card,
+        ci:card_id,
+        ct:card_title,
+        wt:whatsapp,
+        o:1?off_price!=0:0,
+        op:off_price,
+        imp:filename
+    }
+    uploadImage(file, filename);
+    apiPost(ApiRoute.api, data).then(
+        (res) =>{
+            if (!res.success){
+                openPopup(res.title, res.notice)
+            }
+            closeCreateCard(true)
+        }
+    )
 
 }
 
 
 function draftCard(){
-    
+    publishCard(ApiCall.card_draft)
+}
+
+function deleteCard(card_id){
+    if (!confirm("continue?"))return;
+    data = {ci:card_id, action:ApiCall.card_delete}
+    apiPost(ApiRoute.api,data).then(
+        (res) =>{
+            if (!res.success || res.deleted){
+                return
+            }
+            document.getElementById(card_id)?.remove();
+
+        }
+    )
+
+
+}
+
+function editExistCard(card_id){
+    CONFIG.CARD_EDIT = true;
+    createCard(card_id)
 }
 
 
@@ -109,3 +161,26 @@ function setImage(input, imgTagId) {
     const img = document.getElementById(imgTagId);
     img.src = URL.createObjectURL(file);
 }
+
+
+
+function uploadImage(file, name) {
+
+    if (!file)return;
+    const reader = new FileReader();
+    reader.onload = function () {
+        const base64Data = reader.result.split(",")[1]; // remove prefix
+        console.log(file)
+        apiPost(ApiRoute.upImage, {
+            filename:name,
+            data: base64Data
+        }).then(res => {
+
+        });
+    };
+
+    reader.readAsDataURL(file);
+}
+
+
+setTimeout(function(){switchPageManager(PageManager.CARDS);},500)

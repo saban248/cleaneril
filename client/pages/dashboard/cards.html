@@ -6,8 +6,26 @@
     <div class="page-body">
         <div class="list-cards">
             {% for card in cards %}
-                <div class="card-item" data-key="{{card.key}}">
-                    <div class="card-title">{{ card.title }}</div>
+                <div class="card-item" data-key="{{card.key}}" id="{{card.card_id}}">
+                    <div class="card-title">
+                        <span class="ctitle">{{ card.title }}</span>
+                        <span class="ctype">
+                            {% if card.state== 2 %}
+                                published
+                            {% else %}
+                                draft
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="card-body"></div>
+                    <div class="card-footer">
+                        {% if card.state== 2 %}
+                            <i class="fa-solid fa-bookmark" onclick="draftCard()"></i>
+                        {% endif %}
+                        <i class="fa-solid fa-trash-can trash" onclick="deleteCard('{{card.card_id}}')"></i>
+                        <i class="fa-solid fa-pencil" onclick="editExistCard('{{card.card_id}}')"></i>
+                    </div>
+
                 </div>
             {% endfor %}
         </div>
@@ -18,7 +36,7 @@
         <i class="fa-solid fa-circle-xmark" onclick="closeCreateCard()"></i>
     </div>
     <div class="ce-body" id="card-template">
-        <h1 >33</h1>
+        <h1 >building..</h1>
     </div>
 
 </div>

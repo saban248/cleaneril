@@ -54,11 +54,12 @@
             {% for card in cards %}
                 {% if card.state == 1%}{{continue}}{%endif%}
 
-                {{ render_card(card.title, card.img_path, card.card_id, special_things) }}
+                {{ render_card(card, special_things) }}
             {% endfor %}
             </div>
 
         </div>
+        
         <div class="aboutus">
             <div class="welcome">
                 <div class="wel-text">
@@ -67,12 +68,17 @@
             </div>
             <div class="aboutus-items">
                 <div class="aboutus-item">
-                    <div class="about-title">
-                        <span>שירות</span>
-                        אנחנו נותנים 100% שירות
+                    <div class="aboutus-head">
+                            <div class="balloon-frame">
+                                <img src="/static/images/us01jpg.jpg" alt="">
+                            </div>
+                        <div  class="about-title">
+                            <span>ריפודים</span>
+                            100% טיפול ייסודי לריפוד
+                        </div>
                     </div>
                     <div class="about-description">
-                        אנחנו מגיעים בזמן לבית הלקוח, סבלנות וחיוך, ותמיד שמחים להסביר על תהליך ניקוי הריפוד שלכם
+                        קיימים 
                     </div>
                 </div>
                  <div class="aboutus-item">
@@ -121,6 +127,9 @@
         </div>
     </div>
         <div class="footer-home" id="footer-home">
+            <div class="fuck-you-bitch" style="display:none;">
+                * האתר עושה שימוש בעוגיות (Cookies) לשיפור חוויית הגלישה, ניתוח שימוש באתר ולהצגת תוכן מותאם אישית. המשך גלישה באתר מהווה הסכמה לשימוש זה. לפרטים נוספים ראו מדיניות פרטיות
+            </div>
         <div class="reversed">
             כל הזכויות שמורות 
             <span class="name">
@@ -143,8 +152,8 @@
 
 </body>
 <script src="/static/js/home.js"></script>
-<script src="/static/js/manager.js"></script>
 <script src="/static/js/all.js"></script>
+<script src="/static/js/protocol.js"></script>
 </html>
 
 

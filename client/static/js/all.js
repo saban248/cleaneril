@@ -46,3 +46,15 @@ async function apiGet(url) {
 async function apiPost(url, data) {
     return apiRequest("POST", url, data);
 }
+
+
+function generateHex(len = 16) {
+    let result = "";
+    const chars = "0123456789abcdef";
+
+    for (let i = 0; i < len; i++) {
+        result += chars[Math.floor(Math.random() * 16)];
+    }
+    return result;
+}
+
