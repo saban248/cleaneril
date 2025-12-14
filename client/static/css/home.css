@@ -86,6 +86,7 @@ body, *{
     display: flex;
     justify-content: center;
     padding: 5rem 0 5rem 0;
+    padding-bottom: 7rem;
 }
 
 .wel-text{
@@ -383,30 +384,31 @@ body, *{
 }
 
 
-.aboutus{
+.whyus{
 }
-.aboutus-items{
+.whyus-items{
     margin-right: 15%;
     margin-left: 15%;
     display: flex;
     flex-direction: row;
 }
-.aboutus-item{
+.whyus-item{
     
     padding: 10px;
     display: flex;
     flex-direction: column;
     row-gap: 25px;
 }
-.aboutus-head{
+.whyus-head{
     display: flex;
     flex-direction: column;
 }
-.about-title{
+.why-title{
     position: relative;
     font-weight: bold;
+    line-height: 1.9;
 }
-.about-title > span{
+.why-title > span{
     font-weight: lighter;
     background:black;
     color: whitesmoke;
@@ -454,8 +456,9 @@ body, *{
 
 @media (max-width: 768px) {
     .head-h-body > img{
-        width: 70%;
+        width: 80%;
         height: auto;
+        justify-content: center;
     }
     .wtt1{
         font-size: 2rem;
@@ -494,7 +497,7 @@ body, *{
         margin-right: 2%;
         width: 96%;
     }
-    .aboutus-items{
+    .whyus-items{
         flex-direction: column;
         margin-right: 2%;
         margin-left: 2%;
