@@ -88,8 +88,10 @@ class ApiCards:
         cleaneril_db.session.commit()
 
         if image_path == ServerConfig.DEFAULT_IMAGE_CARD:return 0
-        if not os.path.exists(image_path):return 0
-        os.remove(image_path)
+        fip = os.path.join(os.getcwd(), "client")
+        fip = os.path.join(fip, image_path)
+        if not os.path.exists(fip):return 0
+        os.remove(fip)
 
         return 0
 

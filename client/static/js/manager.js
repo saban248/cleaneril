@@ -84,6 +84,7 @@ async function publishCard(state_card=ApiCall.card_save){
     const card_title = document.getElementById("card-title").value
     const fileInput = document.getElementById("imgInput");
     let file = fileInput.files[0];
+    var filename = null;
     if (!file){
         const src = document.getElementById("previewImg").src;
 
@@ -95,8 +96,12 @@ async function publishCard(state_card=ApiCall.card_save){
         a = src.split(".")
         eof = a[a.length-1]
         file = new File([blob], card_id+"."+eof, { type: blob.type });
+        filename = file.name;
     }
-    const filename = file.name;
+    else{
+        filename = card_id+"."+file.name.split(".")[file.name.split(".").length-1]
+    }
+
     const whatsapp = document.getElementById("whatsapp-text").value
     var off_price = parseInt(document.getElementById("off-price").value)
     if (!off_price){
@@ -170,7 +175,6 @@ function uploadImage(file, name) {
     const reader = new FileReader();
     reader.onload = function () {
         const base64Data = reader.result.split(",")[1]; // remove prefix
-        console.log(file)
         apiPost(ApiRoute.upImage, {
             filename:name,
             data: base64Data
