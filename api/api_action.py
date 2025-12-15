@@ -18,7 +18,7 @@ def get_api_action(**breq) -> dict:
             else: state = StateDocument.SAVED
             card = ResponseStruct.CardEditor().build(**breq)
             _stat_ = ApiCards.add_card(card.ci,state,card.ct,card.o,
-                              card.op,card.imp,card.desc,card.wt, card.wtl)
+                              card.op,card.imp,card.desc,card.wt, card.wtl,card.phone)
             return {"card_id":card.ci}
         case ApiCall.card_delete:
             card = ResponseStruct.CardEditor().build(**breq)

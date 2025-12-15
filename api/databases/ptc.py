@@ -17,7 +17,7 @@ class ServerConfig:
     FOLDER_IMAGE_BA   = os.path.join(FOLDER_IMAGE_PATH, "ba")
     DEFAULT_IMAGE_CARD  = os.path.join(FOLDER_IMAGE_BA,'example.jpg')
     DEFAULT_WHATSAPP_MSG = "אשמח להזמין ניקוי ספה"
-    DEFAULT_PHONE = '585005617'
+    DEFAULT_PHONE = '0585005617'
     WHATSAPP_LINK = 'https://api.whatsapp.com/send/?phone=972{phone}&text={text}&type=phone_number&app_absent=0'
     DEFAULT_WHATSAPP_LINK = WHATSAPP_LINK.format(phone=DEFAULT_PHONE, text=DEFAULT_WHATSAPP_MSG)
 

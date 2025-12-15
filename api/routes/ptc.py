@@ -89,9 +89,9 @@ class ResponseStruct:
         imp:str         = None
         desc:str        = None
         wtl:str         = None
+        phone:str       = None
         def build(self, **data):
             struct_builder(self, **data)
-            print(self.wt)
             self.o = bool(self.o)
             if not self.desc:
                 self.desc = "unknown"
@@ -101,9 +101,11 @@ class ResponseStruct:
                 self.imp = os.path.join(ServerConfig.FOLDER_IMAGE_BA, self.imp)
             if not self.wt:
                 self.wt = ServerConfig.DEFAULT_WHATSAPP_MSG
+            if not self.phone:
+                self.phone = ServerConfig.DEFAULT_PHONE
             if self.o:
                 self.wt = f'{self.wt} כולל {self.op}% הנחה '
-            self.wtl = ServerConfig.WHATSAPP_LINK.format(phone=ServerConfig.DEFAULT_PHONE,
+            self.wtl = ServerConfig.WHATSAPP_LINK.format(phone=self.phone,
                                                                  text=self.wt)
 
             return self

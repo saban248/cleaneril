@@ -14,7 +14,13 @@ window.addEventListener("scroll", () => {
 
 
 
+function openWhatsApp(full_link){
+    open(full_link, "_blank")
+}
 
+function phoneCall(number){
+    location.href = 'tel:'+number
+}
 
 function openSocielMedia(social){
     switch (social){

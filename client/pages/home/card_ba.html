@@ -13,8 +13,8 @@
         {% endif %}
 
         <div class="card-action">
-            <i class="fa-solid fa-phone phonecell"></i>
-            <i class="icon icon-32 whatsapp">
+            <i class="fa-solid fa-phone phonecell" onclick="phoneCall('{{card.phone}}')"></i>
+            <i class="icon icon-32 whatsapp" onclick="openWhatsApp('{{card.whatsapp_link}}')">
                 {% include "icon/whatsapp.svg" %}
             </i>
         </div>
@@ -47,7 +47,7 @@
             {%endfor%}
         </div>
         <div class="card-footer">
-            <button class="card-btn {% if card.off %}btn-off-price{% endif %}" type="button" onclick="function x(){location.href = '{{card.whatsapp_link}}'};x()">
+            <button class="card-btn {% if card.off %}btn-off-price{% endif %}" type="button" onclick="openWhatsApp('{{card.whatsapp_link}}')">
                 <span>לתאם עכשיו</span>
             </button>
         </div>

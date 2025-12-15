@@ -1,3 +1,4 @@
+import os
 from typing import Union
 from api.ptc import generate_hex
 
@@ -17,6 +18,7 @@ class Cards(cleaneril_db.Model):
     description = cleaneril_db.Column(cleaneril_db.String(5000), nullable=False)
     whatsapp_text = cleaneril_db.Column(cleaneril_db.String, nullable=False)
     whatsapp_link = cleaneril_db.Column(cleaneril_db.String, nullable=False)
+    phone = cleaneril_db.Column(cleaneril_db.String, nullable=False)
 
 
 
@@ -54,7 +56,7 @@ class ApiCards:
                  title:str = unknown, off:bool = False,
                  off_price:int = 0, img_path:str = ServerConfig.DEFAULT_IMAGE_CARD,
                  description:str = unknown, whatsapp_text:str = ServerConfig.DEFAULT_WHATSAPP_MSG,
-                 whatsapp_link:str = ServerConfig.DEFAULT_WHATSAPP_LINK):
+                 whatsapp_link:str = ServerConfig.DEFAULT_WHATSAPP_LINK, phone:str = ServerConfig.DEFAULT_PHONE):
 
         if not card_id:
             card = Cards()
@@ -69,6 +71,7 @@ class ApiCards:
         card.description = description
         card.whatsapp_text = whatsapp_text
         card.whatsapp_link = whatsapp_link
+        card.phone = phone
         if not card_id:
             cleaneril_db.session.add(card)
 
@@ -78,10 +81,15 @@ class ApiCards:
 
     @staticmethod
     def delete_card(card_id:str):
-        card = ApiCards.get_cards(card_id=card_id).first()
+        card:Cards = ApiCards.get_cards(card_id=card_id).first()
         if not card:return 1
+        image_path = card.img_path
         cleaneril_db.session.delete(card)
         cleaneril_db.session.commit()
+
+        if image_path == ServerConfig.DEFAULT_IMAGE_CARD:return 0
+        if not os.path.exists(image_path):return 0
+        os.remove(image_path)
 
         return 0
 
