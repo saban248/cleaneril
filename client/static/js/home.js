@@ -39,3 +39,42 @@ function openSocielMedia(social){
 }
 
 
+const cards = document.querySelectorAll('.recommend');
+const nextBtn = document.querySelector('.fa-circle-arrow-left');   // LEFT = NEXT
+const prevBtn = document.querySelector('.fa-circle-arrow-right'); // RIGHT = PREV
+
+let index = 0; // Start from the rightmost card (index 0)
+
+function updateSlider() {
+    cards.forEach(c => {
+        c.classList.remove('current', 'next', 'previous', 'r-front');
+        c.style.display = "none";
+    });
+
+    const total = cards.length;
+
+    let current = index;
+    let next = (index + 1) % total;
+    let prev = (index - 1 + total) % total;
+
+    cards[current].classList.add('current', 'r-front');
+    cards[current].style.display = "block";
+
+    cards[next].classList.add('next');
+    cards[next].style.display = "block";
+
+    cards[prev].classList.add('previous');
+    cards[prev].style.display = "block";
+}
+
+nextBtn.addEventListener('click', () => {
+    index = (index + 1) % cards.length; // move leftwards
+    updateSlider();
+});
+
+prevBtn.addEventListener('click', () => {
+    index = (index - 1 + cards.length) % cards.length; // move rightwards
+    updateSlider();
+});
+
+updateSlider();

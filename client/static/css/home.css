@@ -196,7 +196,107 @@ body, *{
     box-shadow: 0 0 11px #2d2e3189;
 }
 
+.client-recommends{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+   margin-left: 20%;
+   margin-right: 20%;
+    position: relative;
+    height: 400px;
+    overflow: hidden;
+}
+.recommend{
+    display: none;
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+    border-radius: 50px;
+    border:1px solid #ddd;
+    position: absolute;
+    opacity: 0.2;
+    transform: scale(0.8);
+    transition: transform 200ms ease-in,
+                left 400ms ease-out,
+                right 400ms ease-in,
+                opacity 400ms ease-in;
+}
+.recommend.current {
+    display: block;
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    z-index: 3;
+}
 
+.recommend.next {
+    display: block;
+    opacity: 0.4;
+    transform: translateX(-180px) scale(0.85);
+    z-index: 2;
+}
+
+.recommend.previous {
+    display: block;
+    opacity: 0.4;
+    transform: translateX(180px) scale(0.85);
+    z-index: 2;
+}
+
+.recommend.r-front {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    z-index: 3;
+}
+.recommend .cr-head{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.recommend > .cr-head > .stars{
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.recommend .cr-head i {
+    font-size: 16px;
+    color: #d9ba21;
+    animation: vipSpinHorizontal 5s infinite;
+    transform-style: preserve-3d;
+    display: inline-block;
+    border-radius: 50%;
+    box-shadow: 0 0 11px #ececec;
+}
+.recommend .cr-head img {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    object-fit: cover;
+}
+.cr-body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+}
+.cr-body > *{
+    padding: 10px;
+}
+.cr-body > i{
+    color: #517bac;
+}
+.cr-nevigate{
+    cursor: pointer;
+    display: flex;
+}
+.cr-nevigate>i{
+    background-color: #e7dc79;
+}
+/* Mobile */
+@media (max-width: 768px) {
+    .fade-slider {
+        height: 250px;
+    }
+}
 /* CARDS */
 
 
@@ -502,6 +602,21 @@ body, *{
         margin-right: 2%;
         margin-left: 2%;
         row-gap: 30px;
+    }
+    .client-recommends{
+        margin-right: 1%;
+        margin-left: 1%;
+    }
+    .recommend{
+        width: 80% !important;
+        padding: 10px;
+    }
+    .cr-nevigate{
+        backdrop-filter: blur(0px);
+        -webkit-backdrop-filter: blur(0px);
+    }
+    .cr-nevigate>i{
+        background-color: #e7dc7919 !important;
     }
 
 }   
