@@ -47,7 +47,7 @@
             {%endfor%}
         </div>
         <div class="card-footer">
-            <button class="card-btn {% if card.off %}btn-off-price{% endif %}" type="button">
+            <button class="card-btn {% if card.off %}btn-off-price{% endif %}" type="button" onclick="function x(){location.href = '{{card.whatsapp_link}}'};x()">
                 <span>לתאם עכשיו</span>
             </button>
         </div>

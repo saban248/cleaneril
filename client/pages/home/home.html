@@ -287,9 +287,10 @@
             <div class="cards">
             {% from "/home/card_ba.html" import render_card %}
             {% for card in cards %}
-                {% if card.state == 1%}{{continue}}{%endif%}
-
+                {% if card.state != 1%}
                 {{ render_card(card, special_things) }}
+                {%endif%}
+                
             {% endfor %}
             </div>
 

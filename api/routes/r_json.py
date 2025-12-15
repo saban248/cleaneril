@@ -40,7 +40,8 @@ def api():
 
 @cleaneril.route(RouteApi.up_image.path, methods=["POST"])
 def up_image():
-
+    if not ShortSession.is_admin(session):
+        return SJson.error()
     data = request.json
     filename = data["filename"]
     img_data = data["data"]  # base64 string
