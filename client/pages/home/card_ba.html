@@ -13,7 +13,7 @@
         {% endif %}
 
         <div class="card-action">
-            <i class="fa-solid fa-phone phonecell" onclick="phoneCall('{{card.phone}}')"></i>
+            <i class="fa-solid fa-phone phonecell" onclick="phoneCall('{{card.phone}}')" class="cta-button" href="tel:{{card.phone}}"></i>
             <i class="icon icon-32 whatsapp" onclick="openWhatsApp('{{card.whatsapp_link}}')">
                 {% include "icon/whatsapp.svg" %}
             </i>
@@ -28,7 +28,7 @@
     <div class="card-body">
         <div class="card-img {% if editor %}img-editor{% endif %}">
             {% if not editor %}
-                <img src="{{card.img_path}}" >
+                <img src="{{card.img_path}}" alt="הברקה בדקה - ניקוי ריפודים - לפני אחרי">
             {%else%}
                 <div class="add-image" onclick="triggerFileSelect()">
                     <span>4:3</span>
