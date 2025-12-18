@@ -57,15 +57,16 @@ body, *{
     
 }
 .head-h-body{
-    background-image: url('/static/images/head-home-bg.jpg');
-    background-size: cover;      
-    background-position: center;
+    background-image: url('/static/images/head-home-bg2.jpg');
+    background-size: cover;
     background-repeat: no-repeat;
     display: flex;
     justify-content: right;
     border-bottom: 1px solid #2d2e3189;
+    height: 500px;
 }
 .head-h-body > img{
+    display: none;
     border-radius: 50%;
     width: 25%;
     height: auto;
@@ -618,6 +619,9 @@ body, *{
 }
 
 @media (max-width: 768px) {
+    .head-h-body{
+        height: 180px;
+    }
     .head-h-body > img{
         width: 80%;
         height: auto;
