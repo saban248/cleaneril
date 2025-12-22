@@ -1,4 +1,5 @@
 import base64
+import json
 import os
 
 from flask import session, request
@@ -9,6 +10,10 @@ from api.databases.ptc import cleaneril, ServerConfig
 from api.ptc import ShortSession, SJson, get_dictionary_http, generate_hex
 from api.routes.ptc import RouteApi, ResponseStruct
 
+# jinja functions
+@cleaneril.template_filter("to_dict")
+def fromjson(value):
+    return json.loads(value)
 
 @cleaneril.route(RouteApi.do_auth.path, methods=["POST"])
 def authorize():
@@ -47,7 +52,7 @@ def up_image():
     img_data = data["data"]  # base64 string
 
     image_bytes = base64.b64decode(img_data)
-    fullpath = os.path.join("client", str(os.path.join(ServerConfig.FOLDER_IMAGE_BA, filename)))
+    fullpath = os.path.join(os.path.basename(os.path.dirname(cleaneril.static_folder)), str(os.path.join(ServerConfig.FOLDER_IMAGE_BA, filename)))
     if os.path.exists(fullpath):return SJson.success()
 
     with open(fullpath, "wb") as f:

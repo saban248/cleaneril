@@ -4,6 +4,7 @@ import os
 
 from flask import session, request, jsonify, render_template, redirect, url_for, abort
 
+from api.databases.clients import ApiClients
 from api.databases.crads import ApiCards
 from api.databases.ptc import cleaneril, ServerConfig
 from api.ptc import special_things, SJson, ShortSession
@@ -33,4 +34,6 @@ def dashboard():
     e_invalid = SJson.error()
     if not ShortSession.is_admin(session):
         return redirect(url_for("auth"))
-    return render_template(Pages.dashboard.html, cards=ApiCards.get_cards(False).all())
+    return render_template(Pages.dashboard.html,
+                           cards=ApiCards.get_cards(False).all(),
+                           clients=ApiClients.get_clients(False).all())

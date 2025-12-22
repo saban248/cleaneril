@@ -5,6 +5,16 @@ from enum import Enum, IntFlag
 from api.databases.ptc import ServerConfig
 
 
+class ClientLeadFrom(IntFlag):
+    TIKTOK          = 1<<0
+    INSTEGRAM       = 1<<1
+    FACEBOOK        = 1<<2
+    GOOGLE          = 1<<3
+    WHATSAPP        = 1<<4
+
+
+
+
 class RoutePagesBase(Enum):
 
     @property
@@ -60,6 +70,8 @@ class ApiCall(IntFlag):
     card_draft = 1<<1
     card_delete = 1<<2
     card_save = 1<<3
+    client_editor = 1<<4
+    client_delete = 1<<5
 
 
 def struct_builder(cls, **data):
@@ -107,5 +119,29 @@ class ResponseStruct:
                 self.wt = f'{self.wt} כולל {self.op}% הנחה '
             self.wtl = ServerConfig.WHATSAPP_LINK.format(phone=self.phone,
                                                                  text=self.wt)
+
+            return self
+
+    @dataclass
+    class ClientEditor:
+        ci:str              = None
+        s:int               = None
+        phone:str               = None
+        o:bool              = None
+        op:int              = None
+        fn:str              = None
+        c:str               = None
+        street:str          = None
+        i:str               = None
+        lf:int              = None
+        date:float          = None
+        notes:str           = None
+        price:int           = None
+        vat:bool            = None
+        sn:str              = None
+        def build(self, **data):
+            struct_builder(self, **data)
+
+            self.o = bool(self.o)
 
             return self

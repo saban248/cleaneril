@@ -24,9 +24,11 @@
 <body>
     <div class="dashbord-page">
         {% set cards = cards %}
+        {% set clients = clients%}
         {% include "dashboard/cards.html" %}
         {% include "dashboard/links.html" %}
         {% include "dashboard/gifts.html" %}
+        {% include "dashboard/clients.html" %}
     </div>
     <div class="dashboard-menu">
         <div class="menu-items">
@@ -35,18 +37,23 @@
                     {% include "icon/menu.svg" %}
                 </i>
             </div>
-            <div class="menu-item">
-                <i class="icon icon-24" onclick="switchPageManager(PageManager.CARDS)">
+            <div class="menu-item" onclick="switchPageManager(PageManager.CLIENTS)">
+                <i class="icon icon-24">
+                    {% include "icon/clients.svg" %}
+                </i>
+            </div>
+            <div class="menu-item"  onclick="switchPageManager(PageManager.CARDS)">
+                <i class="icon icon-24">
                     {% include "icon/add-card.svg" %}
                 </i>
             </div>
-            <div class="menu-item">
-                <i class="icon icon-24" onclick="switchPageManager(PageManager.GIFTS)">
+            <div class="menu-item"  onclick="switchPageManager(PageManager.GIFTS)">
+                <i class="icon icon-24">
                     {% include "icon/gift.svg" %}
                 </i>
             </div>
-            <div class="menu-item">
-                <i class="icon icon-24" onclick="switchPageManager(PageManager.LINKS)">
+            <div class="menu-item" onclick="switchPageManager(PageManager.LINKS)">
+                <i class="icon icon-24">
                     {% include "icon/link.svg" %}
                 </i>
             </div>
@@ -64,4 +71,5 @@
 <script src="/static/js/protocol.js"></script>
 <script src="/static/js/manager.js"></script>
 <script src="/static/js/cache.js"></script>
+<script src="/static/js/clients.js"></script>
 </html>

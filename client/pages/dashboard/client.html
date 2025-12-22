@@ -1,0 +1,67 @@
+{% macro render_client(client, editor=False) %}
+
+
+<div class="client-card" {% if editor %}id="the-card"{% endif %} data-ci="{{client.client_id}}">
+    <div class="client-head">
+        <div class="client-h-title">
+            <img src="/static/images/logo.png">
+            <div class="dcompany">
+                <span id="dc1">הזמנת ניקוי ריפודים</span>
+                <span id="dc2">הברקה בדקה • ניקוי ריפודים מקצועי</span>
+            </div>
+        </div>
+        <div class="client-details">
+            <div class="cd-item">
+                <span>לכבוד</span>
+                <span class="cd-name">{{client.fullname}}</span>
+            </div>
+            <div class="cd-item">
+                <span>לתאריך</span>
+                <span class="cd-name">{{client.date}}</span>
+            </div>
+            <div class="cd-item">
+                <span>שעות הגעה</span>
+                <span class="cd-name">{{client.date}}-08:00</span>
+            </div>
+        </div>
+    </div>
+    <div class="client-body">
+        <div class="clean-items">
+            <div class="ci-head">
+                פריטים שהוזמנו
+            </div>
+            <div class="ci-body">
+                <div class="items-ordered">
+                    <div class="header ordered">
+                        <span>שם</span>
+                        <span>כמות</span>
+                        <span>מחיר</span>
+                    </div>
+                    {% if client.items|to_dict %}
+                    {%else%}
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+        <div class="ci-notes">
+            <span>הערות</span>
+            <div class="notes-content">
+                {% if client.notes %}
+                    {{client.notes}}
+                {%else%}
+                    אין הערות
+                {%endif%}
+            </div>
+        </div>
+        <div class="prices">
+            <span class="price-all">800.0₪</span>
+            <span class="p-vat">כולל מעמ</span>
+        </div>
+    </div>
+</div>
+
+{% endmacro %}
+{% if editor %}
+{{ render_client(client, editor) }}
+{%endif%}

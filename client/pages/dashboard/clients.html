@@ -1,0 +1,44 @@
+<div class="dashboard-page" id="CLIENTS">
+    <div class="page-head">
+        <h2>לקוחות - ניהול  סגירות</h2>
+        <i class="fa-solid fa-circle-plus create-card" onclick="createClient()"></i>
+    </div>
+
+    <div class="page-body">
+        <div class="list-clients">
+            {% for client in clients %}
+                <div class="client-item" data-key="{{client.key}}" id="{{client.client_id}}">
+                    <div class="client-title">
+                        <span class="ctitle">{{ client.fullname }}</span>
+                        <span class="ctype">
+                            {% if client.state == 8 %}
+                                done
+                            {% else %}
+                                wait
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="client-body"></div>
+                    <div class="client-footer">
+                        {% if client.state== 2 %}
+                            <i class="fa-solid fa-bookmark" onclick="()=>{}"></i>
+                        {% endif %}
+                        <i class="fa-solid fa-trash-can trash" onclick="deleteClient('{{client.client_id}}')"></i>
+                        <i class="fa-solid fa-pencil" onclick="editExistClient('{{client.client_id}}')"></i>
+                    </div>
+
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+        <div class="main-edit-client" id="client-editor">
+        <div class="ce-head">
+            <i class="fa-solid fa-circle-xmark" onclick="closeCreateClient()"></i>
+        </div>
+        <div class="ce-body" id="client-template">
+            <h1 >building..</h1>
+        </div>
+
+    </div>
+    
+</div>

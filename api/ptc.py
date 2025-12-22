@@ -100,3 +100,5 @@ def generate_hex(length:int=5):
     g = binascii.b2a_hex(os.urandom(length)).decode()
     index = (length - ord(g[length])) % length
     return g[index].upper()+g
+
+

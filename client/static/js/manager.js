@@ -27,15 +27,20 @@ function openMenuGeneral(){
 
 function switchPageManager(page){
     const last_page = ManagerCache.managerPage();
-    if (last_page!=-1){
-        const lp = document.getElementById(getPageManager(last_page));
-        lp.classList.remove("show")
+    if (last_page == -1){
+        last_page = PageManager.CARDS
+        CONFIG.CURRENT_PAGE = last_page;
     }
+
+    const lp = document.getElementById(getPageManager(last_page));
+    console.log(lp)
+    lp.classList.remove("show")
     var _page_ = null;
     switch (page) {
         case PageManager.GIFTS:
         case PageManager.LINKS:
         case PageManager.CARDS:
+        case PageManager.CLIENTS:
             _page_ = document.getElementById(getPageManager(page));
             
     
@@ -45,6 +50,7 @@ function switchPageManager(page){
     if (!_page_)return
     _page_.classList.add("show")
     ManagerCache.setManagerPage(page)
+    CONFIG.CURRENT_PAGE = page;
 }
 
 
@@ -187,4 +193,10 @@ function uploadImage(file, name) {
 }
 
 
-setTimeout(function(){switchPageManager(PageManager.CARDS);},500)
+
+
+
+
+
+
+// setTimeout(function(){switchPageManager(PageManager.CARDS);},500)

@@ -37,9 +37,16 @@ class StateDocument(IntFlag):
     SAVED           = 1<<1
 
 
+class StateClient(IntFlag):
+    WAIT            = 1<<0
+    CLOSED          = 1<<1
+    CANCELED        = 1<<2
+    DONE            = 1<<3
+
 class ManagerPermissions(IntFlag):
     VIEW            = 1<<0
     EDIT            = 1<<1
+
 
 
 

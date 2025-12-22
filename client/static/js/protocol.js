@@ -1,11 +1,14 @@
 const CONFIG = {
-    CARD_EDIT:false
+    CARD_EDIT:false,
+    CLIENT_EDIT:false,
+    CURRENT_PAGE:-1
 }
  const SocialMedia = {
     TIKTOK:1,
     INSTEGRAM:2,
     FACEBOOK:4,
-    GOOGLE:8
+    GOOGLE:8,
+    WHATSAPP:1<<4
 
 }
 
@@ -27,7 +30,8 @@ function getSocialMedia(social) {
 const PageManager = {
     GIFTS:1<<0,
     LINKS:1<<1,
-    CARDS:1<<2
+    CARDS:1<<2,
+    CLIENTS:1<<3
 }
 
 function getPageManager(page) {
@@ -55,7 +59,9 @@ const ApiCall = {
     card_editor :1<<0,
     card_draft:1<<1,
     card_delete:1<<2,
-    card_save:1<<3
+    card_save:1<<3,
+    client_editor:1<<4,
+    client_delete:1<<5
 }
 
 window.SocialMedia = SocialMedia;
