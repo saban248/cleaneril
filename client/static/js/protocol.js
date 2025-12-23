@@ -11,7 +11,12 @@ const CONFIG = {
     WHATSAPP:1<<4
 
 }
-
+const StateClient = {
+    WAIT            :1<<0,
+    CLOSED          :1<<1,
+    CANCELED        :1<<2,
+    DONE            :1<<3
+}
 function getSocialMedia(social) {
     const result = [];
 
@@ -61,7 +66,9 @@ const ApiCall = {
     card_delete:1<<2,
     card_save:1<<3,
     client_editor:1<<4,
-    client_delete:1<<5
+    client_delete:1<<5,
+    client_save:1<<6,
+    client_view:1<<7
 }
 
 window.SocialMedia = SocialMedia;

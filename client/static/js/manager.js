@@ -26,7 +26,7 @@ function openMenuGeneral(){
 }
 
 function switchPageManager(page){
-    const last_page = ManagerCache.managerPage();
+    var last_page = ManagerCache.managerPage();
     if (last_page == -1){
         last_page = PageManager.CARDS
         CONFIG.CURRENT_PAGE = last_page;

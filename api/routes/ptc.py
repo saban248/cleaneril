@@ -1,8 +1,9 @@
+import json
 import os.path
 from dataclasses import dataclass
 from enum import Enum, IntFlag
 
-from api.databases.ptc import ServerConfig
+from api.databases.ptc import ServerConfig, StateClient
 
 
 class ClientLeadFrom(IntFlag):
@@ -72,6 +73,8 @@ class ApiCall(IntFlag):
     card_save = 1<<3
     client_editor = 1<<4
     client_delete = 1<<5
+    client_save = 1<<6
+    client_view = 1<<7
 
 
 def struct_builder(cls, **data):
@@ -125,23 +128,47 @@ class ResponseStruct:
     @dataclass
     class ClientEditor:
         ci:str              = None
-        s:int               = None
+        s:StateClient       = None
         phone:str               = None
         o:bool              = None
         op:int              = None
         fn:str              = None
-        c:str               = None
-        street:str          = None
+        address:str          = None
         i:str               = None
         lf:int              = None
         date:float          = None
         notes:str           = None
         price:int           = None
         vat:bool            = None
-        sn:str              = None
         def build(self, **data):
             struct_builder(self, **data)
 
             self.o = bool(self.o)
+            self.vat = bool(self.vat)
+            if self.s:
+                self.s = int(self.s)
+            if self.op:
+                self.op = int(self.op)
+            if self.price:
+                self.price = int(self.price)
+            if self.lf:
+                self.lf = int(self.lf)
+            if self.date:
+                self.date = float(self.date)
+
+            self.get_full_price()
 
             return self
+
+        def get_full_price(self):
+            if not self.price or not self.op or not self.i:return
+            price = 0
+            for key, value in json.loads(self.i).items():
+                price += value['price']
+
+            self.price = price
+            if self.o:
+                self.price -= (self.price -self.op)
+
+
+

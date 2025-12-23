@@ -1,7 +1,7 @@
 {% macro render_client(client, editor=False) %}
 
 
-<div class="client-card" {% if editor %}id="the-card"{% endif %} data-ci="{{client.client_id}}">
+<div class="client-card" {% if editor %}id="the-client-card"{% endif %} data-ci="{{client.client_id}}">
     <div class="client-head">
         <div class="client-h-title">
             <img src="/static/images/logo.png">
@@ -13,30 +13,61 @@
         <div class="client-details">
             <div class="cd-item">
                 <span>לכבוד</span>
-                <span class="cd-name">{{client.fullname}}</span>
+                {% if not editor %}
+                    <span class="cd-name">{{client.fullname}}</span>
+                {%else%}
+                    <input class="c-input-fn" type="text" id="fullname" placeholder="שם מלא" value="{{client.fullname}}">
+                {%endif%}
             </div>
             <div class="cd-item">
                 <span>לתאריך</span>
-                <span class="cd-name">{{client.date}}</span>
+                {% if not editor %}
+                    <span class="cd-name">{{client.date}}</span>
+                {%else%}
+                    <input class="c-input-date" type="date" id="client-date">
+                {%endif%}
             </div>
             <div class="cd-item">
                 <span>שעות הגעה</span>
-                <span class="cd-name">{{client.date}}-08:00</span>
+                {% if not editor %}
+                    <span class="cd-name">{{client.date}}-08:00</span>
+                {%else%}
+                    <input class="c-input-date" type="time" id="client-time" step="3600">
+                {%endif%}
+            </div>
+            <div class="cd-item">
+                <span>בכתובת</span>
+                {% if not editor %}
+                    <span class="cd-name">{{client.address}}</span>
+                {%else%}
+                    <input class="c-input-location" type="text" id="client-location" placeholder="כתובת מלאה" value="{{client.address}}">
+                {%endif%}
+            </div>
+            <div class="cd-item">
+                <span>פאלפון</span>
+                {% if not editor %}
+                    <span class="cd-name">{{client.phone}}</span>
+                {%else%}
+                    <input class="c-input-fn" type="text" id="client-phone" placeholder="מספר נייד" value="{{client.phone}}">
+                {%endif%}
             </div>
         </div>
     </div>
     <div class="client-body">
         <div class="clean-items">
             <div class="ci-head">
-                פריטים שהוזמנו
+                <span>פריטים שהוזמנו</span>
+                {% if editor%}
+                    <i class="fa-solid fa-circle-plus" onclick="addItemOrder()"></i>
+                {% endif %}
             </div>
             <div class="ci-body">
-                <div class="items-ordered">
+                <div class="items-ordered"  id="items-ordered">
                     <div class="header ordered">
                         <span>שם</span>
-                        <span>כמות</span>
                         <span>מחיר</span>
                     </div>
+
                     {% if client.items|to_dict %}
                     {%else%}
                     {% endif %}
@@ -47,21 +78,51 @@
         <div class="ci-notes">
             <span>הערות</span>
             <div class="notes-content">
-                {% if client.notes %}
-                    {{client.notes}}
-                {%else%}
-                    אין הערות
-                {%endif%}
+                <textarea class="c-input-notes {% if not editor %}dis-notes{% endif %}" placeholder="הכנס הערות..." id="client-notes">
+                    {% if client.notes and not editor %}
+                        {{client.notes}}
+                    {%else%}
+                        אין הערות
+                    {%endif%}
+                </textarea>
             </div>
         </div>
         <div class="prices">
-            <span class="price-all">800.0₪</span>
-            <span class="p-vat">כולל מעמ</span>
+            <div class="m-price">
+                {% if not editor %}
+                    <span>₪</span>
+                    <span class="price-all">{{client.price}}</span>
+                    <span class="p-vat">{% if client.vat%}כולל{%endif%} מע"מ</span>
+                {%else%}
+                    <input type="tel" class="c-input-fn price-all" placeholder="0.00" id="client-price">
+                    <div class="c-inpu-p-vat">
+                        <input type="checkbox" checked="true" id="client-vat">
+                        מע"מ
+                    </div>
+
+                {%endif%}
+            </div> 
+            {% if editor %}
+            <div class="off-price">
+                <span>הנחה</span>
+                <input type="tel" class="c-input-fn price-all" placeholder="0.00" id="client-off-price">
+            </div>
+            {%endif%}          
+        </div>
+        <span class="price-notes">
+            <i class="fa-solid fa-circle-info"></i>
+            ניתן לשלם בהעברה בנקאית / ביט / פייבוקס / מזומן<br>
+            בכל אופן אחר נא לתאם מראש
+        </span>
+    </div>
+    <div class="client-footer">
+        <div class="card-action-editor">
+            <i class="fa-solid fa-user-plus" onclick="publishClient('{{client.client_id}}')"></i>
         </div>
     </div>
 </div>
 
+
 {% endmacro %}
-{% if editor %}
+
 {{ render_client(client, editor) }}
-{%endif%}

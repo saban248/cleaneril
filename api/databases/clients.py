@@ -17,9 +17,7 @@ class Clients(cleaneril_db.Model):
     fullname = cleaneril_db.Column(cleaneril_db.String, nullable=False)
     date = cleaneril_db.Column(cleaneril_db.Float, nullable=False)
     items   = cleaneril_db.Column(cleaneril_db.String, nullable=False)
-    street = cleaneril_db.Column(cleaneril_db.String, nullable=False)
-    street_number = cleaneril_db.Column(cleaneril_db.String, nullable=False)
-    city = cleaneril_db.Column(cleaneril_db.String, nullable=False)
+    address = cleaneril_db.Column(cleaneril_db.String, nullable=False)
     vat = cleaneril_db.Column(cleaneril_db.Boolean, nullable=False)
     price = cleaneril_db.Column(cleaneril_db.Float, nullable=False)
     off_price = cleaneril_db.Column(cleaneril_db.Integer, nullable=False)
@@ -52,8 +50,8 @@ class ApiClients:
 
     @staticmethod
     def add_client(client_id:str = None, state:StateClient = StateClient.WAIT, phone:str = unknown,
-                   items:dict = None, off:bool = False, off_p:int = 0, fullname:str = unknown, date:float = 0.0, street:str = unknown,
-                   street_number:str = unknown, city:str = unknown, lead_from:int = ClientLeadFrom.WHATSAPP,
+                   items:dict = None, off:bool = False, off_p:int = 0, fullname:str = unknown, date:float = 0.0,
+                   address:str = unknown, lead_from:int = ClientLeadFrom.WHATSAPP,
                    notes:str = unknown, price:float = 0.0, vat:bool = False):
         if not client_id:
             client = Clients()
@@ -68,9 +66,7 @@ class ApiClients:
         client.off = off
         client.fullname = fullname
         client.date = date
-        client.street = street
-        client.street_number = street_number
-        client.city = city
+        client.address = address
         client.lead_from = lead_from
         client.notes = notes
         client.off_price = off_p

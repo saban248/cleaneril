@@ -15,7 +15,17 @@ def get_api_action(**breq) -> dict:
             return {"template":get_card_edit_template(card.ci)}
         case ApiCall.client_editor:
             client = ResponseStruct.ClientEditor().build(**breq)
-            return {"template":get_client_edit_template(client.ci)}
+            return {"template":get_client_template(client.ci)}
+        case ApiCall.client_view:
+            client = ResponseStruct.ClientEditor().build(**breq)
+            return {"template":get_client_template(client.ci, False)}
+        case ApiCall.client_save:
+            client = ResponseStruct.ClientEditor().build(**breq)
+            _stat_ = ApiClients.add_client(client.ci,client.s,client.phone,client.i,
+                                           client.o,client.op,client.fn,client.date,client.address,
+                                           client.lf,client.notes,client.price,client.vat)
+            return {'client_id':_stat_}
+
         case ApiCall.card_draft | ApiCall.card_save:
             if ApiCall.card_draft&action:state = StateDocument.DRAFT
             else: state = StateDocument.SAVED
@@ -28,7 +38,6 @@ def get_api_action(**breq) -> dict:
             return  {"deleted":ApiCards.delete_card(card_id=card.ci)}
         case ApiCall.client_delete:
             client = ResponseStruct.ClientEditor().build(**breq)
-            print(client)
             return {"deleted":ApiClients.delete_client(client_id=client.ci)}
 
     return {}
@@ -40,8 +49,11 @@ def get_card_edit_template(card_id:str, **_):
                            special=special_things
                        )
 
-def get_client_edit_template(client_id:str, **_):
+def get_client_template(client_id:str, edit:bool = True, **_):
     client:Clients = ApiClients.create_client(client_id)
     return render_template(f'{Pages.dashboard.path}client.html',
-                           editor=True, client=client)
+                           editor=edit, client=client,
+                           items=client.items)
+
+
 
