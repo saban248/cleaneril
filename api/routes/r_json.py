@@ -1,4 +1,5 @@
 import base64
+from datetime import datetime
 import json
 import os
 
@@ -14,6 +15,33 @@ from api.routes.ptc import RouteApi, ResponseStruct
 @cleaneril.template_filter("to_dict")
 def fromjson(value):
     return json.loads(value)
+
+@cleaneril.template_filter("cda")
+def client_date_arrive(ts):
+    return datetime.fromtimestamp(ts).strftime("%d.%m.%Y")
+
+@cleaneril.template_filter("cdar")
+def client_date_arrive(ts):
+    ts = float(ts)
+    if ts > 1e12:
+        ts /= 1000
+
+    return datetime.fromtimestamp(ts).strftime("%Y-%m-%d")
+
+@cleaneril.template_filter("cdah")
+def client_date_arrive_hour(ts):
+    ts = float(ts)
+    if ts > 1e12:
+        ts /= 1000
+
+    return datetime.fromtimestamp(ts).strftime("%H:%M")
+
+@cleaneril.template_filter("jrt")
+def json_roundtrip(obj):
+    return json.loads(obj).items()
+
+
+
 
 @cleaneril.route(RouteApi.do_auth.path, methods=["POST"])
 def authorize():

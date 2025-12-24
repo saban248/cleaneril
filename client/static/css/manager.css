@@ -399,6 +399,15 @@
     justify-content: space-between;
     align-items: flex-start;
     flex-wrap: wrap;
+    row-gap: 15px;
+}
+.s-item-name{
+    font-size: .8rem;
+    color:#313131;
+}
+.s-item-price{
+    color: #557777;
+    font-size: 1rem;
 }
 .cd-item{
     display: flex;
@@ -407,8 +416,8 @@
     font-size: .7rem;
 }
 .cd-name, .ci-notes{
-    font-size: 1rem;
-    color: #000000;
+    font-size: .9rem;
+    color: #262626;
 
 }
 .client-body{
@@ -492,6 +501,7 @@
     outline: none;
     overflow: hidden;
     resize: none;
+    direction: rtl;
 }
 .dis-notes{
     pointer-events: none;
@@ -499,15 +509,19 @@
 .prices{
     display: flex;
     margin-bottom: 20px;
-    justify-content: space-between;
+    justify-content:center;
     border-top: 1px solid #dfdfdf;
     padding-top: 5px;
+
+}
+.price-off-price{
+    justify-content: right !important;
 }
 .m-price{
-
     display: flex;
-    align-items: end;
     column-gap: 5px;
+    align-items: end;
+    line-height: 1;
 }
 .off-price{
     display: flex;
@@ -522,15 +536,36 @@
     font-size: 1.7rem;
     color: rgb(63, 152, 36);
     text-align: end;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: #2e7d32; /* ירוק כמו בתמונה */
+    line-height: 1;
+    letter-spacing: -0.5px;
+    font-variant-numeric: tabular-nums;
+}
+.price-all-off{
+    font-size: 1.4rem !important;
+    text-decoration: line-through;
+    text-decoration-color: rgb(230, 76, 76);
+    color: #a2a2a2;
+    font-weight: normal;
+}
+#spnprice{
+    text-decoration: none !important;
 }
 .p-vat{
     color: #5f6060;
     font-size: .8rem;
 }
 .price-notes{
-    display: block;
+    display: grid;
     font-size: .7rem;
     color: #9198a0;
+    grid-template-columns: 1fr 10fr;
+}
+.price-notes>i{
+    width: 32px;
 }
 .client-footer{
     margin-top: 20px;

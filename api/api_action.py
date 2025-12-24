@@ -24,8 +24,7 @@ def get_api_action(**breq) -> dict:
             _stat_ = ApiClients.add_client(client.ci,client.s,client.phone,client.i,
                                            client.o,client.op,client.fn,client.date,client.address,
                                            client.lf,client.notes,client.price,client.vat)
-            return {'client_id':_stat_}
-
+            return {'client_id':client.ci}
         case ApiCall.card_draft | ApiCall.card_save:
             if ApiCall.card_draft&action:state = StateDocument.DRAFT
             else: state = StateDocument.SAVED
@@ -52,8 +51,7 @@ def get_card_edit_template(card_id:str, **_):
 def get_client_template(client_id:str, edit:bool = True, **_):
     client:Clients = ApiClients.create_client(client_id)
     return render_template(f'{Pages.dashboard.path}client.html',
-                           editor=edit, client=client,
-                           items=client.items)
+                           editor=edit, client=client)
 
 
 

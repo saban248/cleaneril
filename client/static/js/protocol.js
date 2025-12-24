@@ -1,6 +1,7 @@
 const CONFIG = {
     CARD_EDIT:false,
     CLIENT_EDIT:false,
+    CLIENT_VIEW:false,
     CURRENT_PAGE:-1
 }
  const SocialMedia = {

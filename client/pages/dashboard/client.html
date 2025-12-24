@@ -22,17 +22,17 @@
             <div class="cd-item">
                 <span>לתאריך</span>
                 {% if not editor %}
-                    <span class="cd-name">{{client.date}}</span>
+                    <span class="cd-name">{{client.date | cda}}</span>
                 {%else%}
-                    <input class="c-input-date" type="date" id="client-date">
+                    <input class="c-input-date" type="date" id="client-date" value="{{client.date|cdar}}">
                 {%endif%}
             </div>
             <div class="cd-item">
                 <span>שעות הגעה</span>
                 {% if not editor %}
-                    <span class="cd-name">{{client.date}}-08:00</span>
+                    <span class="cd-name">{{client.date | cdah}}</span>
                 {%else%}
-                    <input class="c-input-date" type="time" id="client-time" step="3600">
+                    <input class="c-input-date" type="time" id="client-time" step="3600" value="{{client.date | cdah}}">
                 {%endif%}
             </div>
             <div class="cd-item">
@@ -68,9 +68,15 @@
                         <span>מחיר</span>
                     </div>
 
-                    {% if client.items|to_dict %}
-                    {%else%}
-                    {% endif %}
+                    {% for k,v in client.items|jrt %}
+                        <div class="ordered" id="{{k}}">
+                            <span class="s-item-name" id="{{k}}-name">{{v.name}}</span>
+                            <span class="s-item-price" id="{{k}}-price">{{v.price}}₪</span>
+                            {% if editor %}
+                                <i class= "fa-solid fa-trash-can trash-order" onclick="deleteItemOrder('{{k}}')"></i>
+                            {%endif%}
+                        </div>
+                    {%endfor%}
                 </div>
 
             </div>
@@ -78,23 +84,19 @@
         <div class="ci-notes">
             <span>הערות</span>
             <div class="notes-content">
-                <textarea class="c-input-notes {% if not editor %}dis-notes{% endif %}" placeholder="הכנס הערות..." id="client-notes">
-                    {% if client.notes and not editor %}
-                        {{client.notes}}
-                    {%else%}
-                        אין הערות
-                    {%endif%}
-                </textarea>
+                <textarea class="c-input-notes {% if not editor %}dis-notes{% endif %}" placeholder="הכנס הערות..." id="client-notes">{{client.notes}}</textarea>
             </div>
         </div>
-        <div class="prices">
-            <div class="m-price">
+        <div class="prices {% if client.off%}price-off-price{%endif%}">
+            <div class="m-price">                         
                 {% if not editor %}
-                    <span>₪</span>
-                    <span class="price-all">{{client.price}}</span>
-                    <span class="p-vat">{% if client.vat%}כולל{%endif%} מע"מ</span>
+                    {% if client.off%}
+                        <span class="price-all {{client.off}}">{{client.price-client.off_price}}<span style="color: #6e6e6e;font-size: 1.1rem;">₪</span></span>
+                    {%endif%}
+                    <span class="price-all {% if client.off%}price-all-off{%endif%}">{{client.price}}<span id='spnprice' style="color: #6e6e6e;font-size: 1.1rem;">₪</span></span>
+                    <span class="p-vat">{% if client.vat%}כולל{%endif%} מע"מ</span> 
                 {%else%}
-                    <input type="tel" class="c-input-fn price-all" placeholder="0.00" id="client-price">
+                    <input type="tel" class="c-input-fn price-all" placeholder="0.00" id="client-price" value="{{client.price | int}}">
                     <div class="c-inpu-p-vat">
                         <input type="checkbox" checked="true" id="client-vat">
                         מע"מ
@@ -105,17 +107,19 @@
             {% if editor %}
             <div class="off-price">
                 <span>הנחה</span>
-                <input type="tel" class="c-input-fn price-all" placeholder="0.00" id="client-off-price">
+                <input type="tel" class="c-input-fn price-all" placeholder="0.00" id="client-off-price" value="{{client.off_price|int}}">
             </div>
             {%endif%}          
         </div>
-        <span class="price-notes">
+        <div class="price-notes">
             <i class="fa-solid fa-circle-info"></i>
+            <span>
             ניתן לשלם בהעברה בנקאית / ביט / פייבוקס / מזומן<br>
             בכל אופן אחר נא לתאם מראש
         </span>
+        </div>
     </div>
-    <div class="client-footer">
+    <div class="client-footer {% if not editor %} disable {%endif%}">
         <div class="card-action-editor">
             <i class="fa-solid fa-user-plus" onclick="publishClient('{{client.client_id}}')"></i>
         </div>

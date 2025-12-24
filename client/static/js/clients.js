@@ -8,6 +8,7 @@ function viewclientDetails(client_id){
     const mainEdit = document.getElementById("client-editor")
     mainEdit.classList.remove('hide');
     mainEdit.classList.add('show');
+    CONFIG.CLIENT_VIEW =true;
 
     data = {action:ApiCall.client_view, ci:client_id}
     apiPost(ApiRoute.api, data).then(
@@ -19,7 +20,6 @@ function viewclientDetails(client_id){
 
             const editBody = document.getElementById('client-template')
             editBody.innerHTML = res.template;
-            console.log(res)
         }
     )
 
@@ -50,10 +50,10 @@ function closeCreateClient(no_api=false){
     const mainEdit = document.getElementById("client-editor")
     mainEdit.classList.remove("show")
     mainEdit.classList.add("hide")
-
-    const client_id   = document.getElementById("the-client-card").dataset.ci;
-   ( !no_api && !CONFIG.CLIENT_EDIT)&& deleteClient(client_id)
+    const client_id   = document.getElementById("the-client-card")?.dataset.ci;
+   ( !no_api && (!CONFIG.CLIENT_EDIT && !CONFIG.CLIENT_VIEW))&& deleteClient(client_id)
    CONFIG.CLIENT_EDIT =false;
+   CONFIG.CLIENT_VIEW =false;
 
 }
 
@@ -121,11 +121,10 @@ function publishClient(client_id){
     const __items_ordered = document.getElementById('items-ordered').children.length;
 
     for (let i=1;i<__items_ordered;i++){
-        var n = document.getElementById(i+'-name').value;
-        var p = document.getElementById(i+'-price').value; 
-        c_runtime.items_ordered[i] = {name:n, price:p}
+        var n = document.getElementById(i+'-name');
+        var p = document.getElementById(i+'-price'); 
+        c_runtime.items_ordered[i] = {name:n.value||n.textContent, price:parseInt((p.value||p.textContent).replace(/\D+/g, ''),10)}
     }
-    console.log(JSON.stringify(c_runtime.items_ordered))
     const notes = document.getElementById('client-notes').value;
     const price = document.getElementById('client-price').value;
     const vat = Boolean(document.getElementById('client-vat').checked)
@@ -133,7 +132,7 @@ function publishClient(client_id){
 
     const data = {action:ApiCall.client_save,
         ci:client_id, s:StateClient.WAIT,
-        phone:phone,o:Boolean(offPrice),
+        phone:phone,o:Boolean(parseInt(offPrice)),
         op:offPrice,fn:fullname,
         address:address, i:JSON.stringify(c_runtime.items_ordered),
         lf:SocialMedia.WHATSAPP,date:timing,
@@ -142,7 +141,7 @@ function publishClient(client_id){
 
     apiPost(ApiRoute.api,data).then(
         (res)=>{
-            if (!res.success || !res.client_id){
+            if (!res.success){
                 openPopup(res.title, res.notice)
                 return
             }

@@ -142,7 +142,6 @@ class ResponseStruct:
         vat:bool            = None
         def build(self, **data):
             struct_builder(self, **data)
-
             self.o = bool(self.o)
             self.vat = bool(self.vat)
             if self.s:
@@ -155,20 +154,19 @@ class ResponseStruct:
                 self.lf = int(self.lf)
             if self.date:
                 self.date = float(self.date)
-
+            if self.i:
+                self.i = json.loads(self.i)
             self.get_full_price()
 
             return self
 
         def get_full_price(self):
-            if not self.price or not self.op or not self.i:return
+            if not self.price or not self.i:return
             price = 0
-            for key, value in json.loads(self.i).items():
+            for key, value in self.i.items():
                 price += value['price']
 
             self.price = price
-            if self.o:
-                self.price -= (self.price -self.op)
 
 
 
