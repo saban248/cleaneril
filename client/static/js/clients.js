@@ -157,3 +157,75 @@ function editExistClient(client_id){
     createClient(client_id)
 }
 
+
+function setStateClient(client_id, state){
+    data = {action: ApiCall.client_state, ci:client_id, s:state}
+
+    apiPost(ApiRoute.api, data).then(
+        (res) =>{
+            if (!res.success){
+                openPopup(res.title, res.notice)
+                return
+            }
+            location.reload();
+        }
+    )
+
+}
+
+
+
+const menuItems = [
+    { text: "צפיה", action: (cid) => viewclientDetails(cid), icon:'<i class="fa-solid fa-eye"></i>'},
+    { text: "עריכה", action: (cid) => editExistClient(cid), icon:'<i class="fa-solid fa-pencil"></>'},
+    { text: "מחיקה", action: (cid) => deleteClient(cid), icon:'<i class="fa-solid fa-trash-can trash"></i>'},
+    {text:'בוטל',action:(cid)=>setStateClient(cid, StateClient.CANCELED),icon:'<i class="fa-solid fa-ban"></i>'},
+    {text:'הושלם', action:(cid)=>setStateClient(cid, StateClient.DONE), icon:'<i class="fa-solid fa-clipboard-check"></i>'},
+    {text:'לא נסגר',action:(cid)=>setStateClient(cid, StateClient.WAIT), icon:'<i class="fa-solid fa-question"></i>'},
+    {text:'בהמתנה',action:(cid)=>setStateClient(cid, StateClient.CLOSED), icon:'<i class="fa-solid fa-hourglass-half"></i>'}
+
+]
+
+function openMenuClient(t, cid) {
+    const menu = document.getElementById("clientMenu")
+
+    if (menu.classList.contains("show")) {
+        menu.classList.remove("show")
+        return
+    }
+    const rect = t.getBoundingClientRect()
+    menu.innerHTML = "" // ניקוי
+
+    menuItems.forEach(item => {
+        let cma = document.createElement("div")
+        cma.className = "cma"
+        let cma1 = document.createElement('div')
+        cma1.className = "cma1"
+        cma1.innerHTML = item.icon
+        
+        let cma2 = document.createElement("div")
+        cma2.className = 'cma2'
+        cma2.textContent = item.text
+        cma.appendChild(cma1)
+        cma.appendChild(cma2)
+
+        cma.onclick = () => {
+            item.action(cid)
+            menu.classList.remove("show")
+        }
+        menu.appendChild(cma)
+    })
+
+    menu.style.top = `${rect.bottom + window.scrollY + 6}px`
+    menu.style.left = `${rect.left + window.scrollX}px`
+
+    menu.classList.add("show")
+}
+
+// סגירה בלחיצה מחוץ
+document.addEventListener("click", e => {
+    const menu = document.getElementById("clientMenu")
+    if (!menu.contains(e.target) && !e.target.classList.contains("menu-client")) {
+        menu.classList.remove("show")
+    }
+})

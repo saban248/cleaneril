@@ -75,6 +75,7 @@ class ApiCall(IntFlag):
     client_delete = 1<<5
     client_save = 1<<6
     client_view = 1<<7
+    client_state = 1<<8
 
 
 def struct_builder(cls, **data):

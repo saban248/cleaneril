@@ -10,12 +10,8 @@
                 <div class="client-item" data-key="{{client.key}}" id="{{client.client_id}}">
                     <div class="client-title">
                         <span class="ctitle">{{ client.fullname }}</span>
-                        <span class="ctype">
-                            {% if client.state == 8 %}
-                                done
-                            {% else %}
-                                wait
-                            {% endif %}
+                        <span class="ctype ctype-{{client.state}}">
+                            {{client.state | cft}}
                         </span>
                     </div>
                     <div class="client-body"></div>
@@ -23,13 +19,13 @@
                         {% if client.state== 2 %}
                             <i class="fa-solid fa-bookmark" onclick="()=>{}"></i>
                         {% endif %}
-                        <i class="fa-solid fa-trash-can trash" onclick="deleteClient('{{client.client_id}}')"></i>
-                        <i class="fa-solid fa-pencil" onclick="editExistClient('{{client.client_id}}')"></i>
                         <i class="fa-solid fa-eye" onclick="viewclientDetails('{{client.client_id}}')"></i>
+                        <i class="fa-solid fa-bars menu-client" onclick="openMenuClient(this, '{{client.client_id}}')"></i>
                     </div>
 
                 </div>
             {% endfor %}
+            <div id="clientMenu" class="client-menu-action"></div>
         </div>
     </div>
         <div class="main-edit-client" id="client-editor">

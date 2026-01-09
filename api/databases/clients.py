@@ -87,3 +87,11 @@ class ApiClients:
         cleaneril_db.session.delete(client)
         cleaneril_db.session.commit()
         return 0
+
+    @staticmethod
+    def set_state(client_id:str, state:StateClient):
+        client = ApiClients.get_clients(client_id=client_id).first()
+        if not client:return 1
+        client.state = state
+        cleaneril_db.session.commit()
+        return 0

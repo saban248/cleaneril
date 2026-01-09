@@ -69,7 +69,8 @@ const ApiCall = {
     client_editor:1<<4,
     client_delete:1<<5,
     client_save:1<<6,
-    client_view:1<<7
+    client_view:1<<7,
+    client_state:1<<8
 }
 
 window.SocialMedia = SocialMedia;

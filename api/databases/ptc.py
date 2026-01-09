@@ -7,6 +7,7 @@ from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
+
 FILE_NAME_DB = "cleaneril"
 cleaneril = Flask(FILE_NAME_DB, template_folder=os.path.join("client", "pages"),
                   static_folder=os.path.join("client", "static"))
@@ -46,7 +47,6 @@ class StateClient(IntFlag):
 class ManagerPermissions(IntFlag):
     VIEW            = 1<<0
     EDIT            = 1<<1
-
 
 
 

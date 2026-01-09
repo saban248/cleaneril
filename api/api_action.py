@@ -38,6 +38,9 @@ def get_api_action(**breq) -> dict:
         case ApiCall.client_delete:
             client = ResponseStruct.ClientEditor().build(**breq)
             return {"deleted":ApiClients.delete_client(client_id=client.ci)}
+        case ApiCall.client_state:
+            client = ResponseStruct.ClientEditor().build(**breq)
+            return {"stated":ApiClients.set_state(client_id=client.ci, state=client.s)}
 
     return {}
 

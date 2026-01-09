@@ -205,18 +205,35 @@
     justify-content: space-between;
 }
 .card-title, .client-title{
-    display: flex;
+    display: grid;
     column-gap: 10px;
     align-items: end;
 }
 .card-title>.ctitle, .client-title>.ctitle{
     font-size: 1rem;
-    border-left: 1px solid #ddd;
     padding-left: 5px;
 }
 .card-title>.ctype, .client-title>.ctype{
     font-size: .8rem;
     color: #828486;
+}
+.ctype-1, .ctype-2, .ctype-4, .ctype-8{
+        color: white !important;
+    padding: 2px;
+    border-radius: 4px;
+}
+
+.ctype-1{
+    background: #a79d0a;
+}
+.ctype-2{
+    background: #e8d400;
+}
+.ctype-4{
+    background: rgb(161, 10, 10);
+}
+.ctype-8{
+    background: #07a910;
 }
 .card-body, .client-body{
 
@@ -225,6 +242,16 @@
     display: flex;
     justify-content: space-around;
     column-gap: 10px;
+    align-items: center;
+}
+.menu-client{
+    padding: 10px;
+    border-radius: 6px !important;
+    border: 1px solid #ebebeb;
+    cursor: pointer;
+}
+.menu-client:hover{
+    box-shadow:  0 0 11px #e2e2e2 !important;
 }
 .card-footer>i, .client-footer>i{
     border-radius: 50%;
@@ -567,9 +594,6 @@
 .price-notes>i{
     width: 32px;
 }
-.client-footer{
-    margin-top: 20px;
-}
 .client-footer.disable{
     display: none !important;
 }
@@ -579,6 +603,42 @@
     cursor: pointer;
     box-shadow: 0 0 11px #ddd;
 }
+
+/* container */
+.client-menu-action {
+    position: absolute;
+    min-width: 180px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+    transition: 0.15s ease;
+    z-index: 9999999;
+}
+.client-menu-action.show {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+.client-menu-action > .cma{
+    display: flex;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    cursor: pointer;
+    column-gap: 10px;
+}
+.cma> .cma1{
+    padding: 10px;
+    box-shadow: 0 0 11px #ddd;
+    border-radius: 50%;
+}
+.cma> .cma2{
+    flex: 1;
+    padding: 10px;
+}
+
 @media (max-width: 768px) {
     .auth-box{
         padding: .75rem

@@ -7,7 +7,7 @@ from flask import session, request
 
 from api.api_action import get_api_action
 from api.databases.manager import ApiManager
-from api.databases.ptc import cleaneril, ServerConfig
+from api.databases.ptc import cleaneril, ServerConfig, StateClient
 from api.ptc import ShortSession, SJson, get_dictionary_http, generate_hex
 from api.routes.ptc import RouteApi, ResponseStruct
 
@@ -41,6 +41,17 @@ def json_roundtrip(obj):
     return json.loads(obj).items()
 
 
+@cleaneril.template_filter("cft")
+def client_flag_text(flag):
+    match flag:
+        case StateClient.WAIT:
+            return "לא נסגר"
+        case StateClient.CANCELED:
+            return "בוטל"
+        case StateClient.CLOSED:
+            return "בהמתנה"
+        case StateClient.DONE:
+            return "הושלם"
 
 
 @cleaneril.route(RouteApi.do_auth.path, methods=["POST"])
