@@ -35,5 +35,5 @@ def dashboard():
     if not ShortSession.is_admin(session):
         return redirect(url_for("auth"))
     return render_template(Pages.dashboard.html,
-                           cards=ApiCards.get_cards(False).all(),
-                           clients=ApiClients.get_clients(False).all())
+                           cards=list(reversed(ApiCards.get_cards(False).all())),
+                           clients=list(reversed(ApiClients.get_clients(False).all())))
