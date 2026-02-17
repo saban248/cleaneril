@@ -28,12 +28,12 @@ function openMenuGeneral(){
 function switchPageManager(page){
     var last_page = ManagerCache.managerPage();
     if (last_page == -1){
-        last_page = PageManager.CARDS
+        last_page = PageManager.CLIENTS
         CONFIG.CURRENT_PAGE = last_page;
     }
 
+
     const lp = document.getElementById(getPageManager(last_page));
-    console.log(lp)
     lp.classList.remove("show")
     var _page_ = null;
     switch (page) {
@@ -42,7 +42,8 @@ function switchPageManager(page){
         case PageManager.CARDS:
         case PageManager.CLIENTS:
             _page_ = document.getElementById(getPageManager(page));
-            
+        case PageManager.FUNDS:
+            _page_ = document.getElementById(getPageManager(page))
     
         default:
             break;
@@ -199,4 +200,4 @@ function uploadImage(file, name) {
 
 
 
-// setTimeout(function(){switchPageManager(PageManager.CARDS);},500)
+setTimeout(()=>{switchPageManager(ManagerCache.managerPage());},500)

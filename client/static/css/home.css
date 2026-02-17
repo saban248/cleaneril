@@ -691,10 +691,58 @@ body, *{
 
 
 
+.quickcall{
+    position: fixed;
+    bottom: 40px;
+    right: 0;
+    background: #fff;
+    padding: 10px;
+    padding-right: 10px;
+    border-radius: 7px;
+    box-shadow: 0 0 11px #e6e6e6;
+    z-index: 99999;
+
+}
+
+.qc-head{
+    display: flex;
+    column-gap: 10px;
+    align-items: center;
+}
+.qc-head>i{
+    color: #099a35;
+    font-size: 20px;
+    background: #94dcaa;
+    border-radius: 50%;
+    padding: 10px;
+    cursor: pointer;
+    transition: 200ms;
+    border-right: 1px solid #000;
+    /* animation: phoneFloat 2.8s ease-in-out infinite;; */
+}
+.qc-head>i.whatsapp{
+    color: #ffffff;
+    background: #189e40
+}
+.qc-head>i:hover,
+.qc-head>i:active{
+    transform: scale(1.1);
+    color: #ffffff;
+    background: #00dc42
+}
 
 
-
-
+@keyframes phoneFloat {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
 
 
 /* popup */

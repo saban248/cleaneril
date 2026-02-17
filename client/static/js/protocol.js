@@ -37,7 +37,8 @@ const PageManager = {
     GIFTS:1<<0,
     LINKS:1<<1,
     CARDS:1<<2,
-    CLIENTS:1<<3
+    CLIENTS:1<<3,
+    FUNDS:1<<4
 }
 
 function getPageManager(page) {
@@ -70,7 +71,8 @@ const ApiCall = {
     client_delete:1<<5,
     client_save:1<<6,
     client_view:1<<7,
-    client_state:1<<8
+    client_state:1<<8,
+    funds_income:1<<9
 }
 
 window.SocialMedia = SocialMedia;

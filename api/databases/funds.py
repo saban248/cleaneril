@@ -1,0 +1,54 @@
+from datetime import datetime
+from typing import Generator
+
+from api.databases.clients import Clients
+from api.databases.ptc import StateClient
+
+
+class ApiFunds:
+
+    @staticmethod
+    def get_done_client():
+        clients = Clients.query.filter_by(state=StateClient.DONE).all()
+        return clients
+
+    @staticmethod
+    def get_current_year_client() :
+        clients:list[Clients] = ApiFunds.get_done_client()
+        for client in clients:
+            if not datetime.fromtimestamp(float(client.date)).year == datetime.now().year:
+                continue
+            yield client
+
+    @staticmethod
+    def get_income_funds():
+        income = 0
+        clients:list[Clients] = ApiFunds.get_done_client()
+        for client in clients:
+            income += (client.price-client.off_price)
+
+        return income
+
+    @staticmethod
+    def get_expense_funds():return 0
+    @staticmethod
+    def get_profit_funds():return ApiFunds.get_income_funds()
+
+    @staticmethod
+    def get_total_off_price():
+        off_price = 0
+        clients:list[Clients] = ApiFunds.get_done_client()
+        for client in clients:
+            off_price += client.off_price
+
+        return off_price
+
+    @staticmethod
+    def get_client_profit_years():
+        data = []
+        clients = ApiFunds.get_current_year_client()
+        for client in clients:
+            cd = {"date": datetime.fromtimestamp(float(client.date)).strftime("%Y.%m.%d"), "amount": client.price - client.off_price}
+            data.append(cd)
+
+        return data

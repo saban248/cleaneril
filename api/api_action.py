@@ -2,6 +2,7 @@ from flask import render_template_string, render_template
 
 from api.databases.clients import Clients, ApiClients
 from api.databases.crads import ApiCards, Cards
+from api.databases.funds import ApiFunds
 from api.databases.ptc import StateDocument
 from api.ptc import special_things
 from api.routes.ptc import Pages, ApiCall, ResponseStruct
@@ -41,6 +42,12 @@ def get_api_action(**breq) -> dict:
         case ApiCall.client_state:
             client = ResponseStruct.ClientEditor().build(**breq)
             return {"stated":ApiClients.set_state(client_id=client.ci, state=client.s)}
+        case ApiCall.funds_income:
+            data = {"data":ApiFunds.get_client_profit_years(),
+                    "in":ApiFunds.get_income_funds(),
+                    "ex":ApiFunds.get_expense_funds(),
+                    "pr":ApiFunds.get_profit_funds()}
+            return data
 
     return {}
 

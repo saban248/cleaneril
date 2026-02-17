@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{company_name}}</title>
     <link rel="stylesheet" href="/static/css/manager.css">
     <link rel="stylesheet" href="/static/css/home.css">
@@ -20,6 +20,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    
 
 </head>
 
@@ -31,6 +34,7 @@
         {% include "dashboard/links.html" %}
         {% include "dashboard/gifts.html" %}
         {% include "dashboard/clients.html" %}
+        {% include "dashboard/funds.html" %}
     </div>
     <div class="dashboard-menu">
         <div class="menu-items">
@@ -54,9 +58,14 @@
                     {% include "icon/gift.svg" %}
                 </i>
             </div>
-            <div class="menu-item" onclick="switchPageManager(PageManager.LINKS)">
+            <!-- <div class="menu-item" onclick="switchPageManager(PageManager.LINKS)">
                 <i class="icon icon-24">
-                    {% include "icon/link.svg" %}
+            
+                </i>
+            </div> -->
+            <div class="menu-item" onclick="switchPageManager(PageManager.FUNDS)">
+                <i class="icon icon-24">
+                    {% include "icon/funds.svg" %}
                 </i>
             </div>
         </div>
@@ -74,4 +83,5 @@
 <script src="/static/js/manager.js"></script>
 <script src="/static/js/cache.js"></script>
 <script src="/static/js/clients.js"></script>
+<script src="/static/js/funds.js"></script>
 </html>

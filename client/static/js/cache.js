@@ -2,7 +2,7 @@ class ManagerCache{
 
     static create_cache(){
         if (ManagerCache.exist())return;
-            localStorage.setItem("exit",'1')
+            localStorage.setItem("exist",'1')
     }
     static managerPage(){
         const page =  localStorage.getItem("MANAGER_PAGE")
@@ -21,4 +21,4 @@ class ManagerCache{
 
 
 
-switchPageManager(ManagerCache.managerPage())
+ManagerCache.create_cache()
