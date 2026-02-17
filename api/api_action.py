@@ -43,7 +43,8 @@ def get_api_action(**breq) -> dict:
             client = ResponseStruct.ClientEditor().build(**breq)
             return {"stated":ApiClients.set_state(client_id=client.ci, state=client.s)}
         case ApiCall.funds_income:
-            data = {"data":ApiFunds.get_client_profit_years(),
+            funds = ResponseStruct.Funds().build(**breq)
+            data = {"data":ApiFunds.get_client_profit_years(funds.year),
                     "in":ApiFunds.get_income_funds(),
                     "ex":ApiFunds.get_expense_funds(),
                     "pr":ApiFunds.get_profit_funds()}

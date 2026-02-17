@@ -13,10 +13,10 @@ class ApiFunds:
         return clients
 
     @staticmethod
-    def get_current_year_client() :
+    def get_year_client(year:int) :
         clients:list[Clients] = ApiFunds.get_done_client()
         for client in clients:
-            if not datetime.fromtimestamp(float(client.date)).year == datetime.now().year:
+            if not datetime.fromtimestamp(float(client.date)).year == year:
                 continue
             yield client
 
@@ -44,9 +44,9 @@ class ApiFunds:
         return off_price
 
     @staticmethod
-    def get_client_profit_years():
+    def get_client_profit_years(year:int):
         data = []
-        clients = ApiFunds.get_current_year_client()
+        clients = ApiFunds.get_year_client(year)
         for client in clients:
             cd = {"date": datetime.fromtimestamp(float(client.date)).strftime("%Y.%m.%d"), "amount": client.price - client.off_price}
             data.append(cd)

@@ -170,5 +170,15 @@ class ResponseStruct:
 
             self.price = price
 
+    @dataclass
+    class Funds:
+        year:int        = None
+
+        def build(self, **data):
+            struct_builder(self, **data)
+            self.year = int(self.year)
+
+            return self
+
 
 
