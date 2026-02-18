@@ -692,7 +692,9 @@
 
 
 
-
+#chartClientIncome{
+    direction: rtl !important;
+}
 .chart-wrapper {
   padding: 5px;
 }
@@ -731,6 +733,9 @@
 }
 .color-ex{color: rgb(134, 29, 29);}
 .color-pr{color: rgb(27, 146, 97);}
+.color-ppc{color: #9508ad;}
+.color-epc{color:#c7c41d}
+.color-tc{color: #074b98;}
 
 
 .card-shadow {
@@ -751,8 +756,10 @@
 
 .main-cards-in-ex-pr{
     display: flex;
+    flex-wrap: wrap;
     flex-direction: row;
     column-gap: 15px;
+    row-gap: 15px;
 }
 
 .card-in-ex-pr{
@@ -775,7 +782,9 @@
     font-variant-numeric: tabular-nums;
 }
 .chartbody{
+    direction: rtl;
     max-width: 700px;
+    overflow: visible !important;
 }
 
 .year-select{

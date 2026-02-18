@@ -47,7 +47,10 @@ def get_api_action(**breq) -> dict:
             data = {"data":ApiFunds.get_client_profit_years(funds.year),
                     "in":ApiFunds.get_income_funds(),
                     "ex":ApiFunds.get_expense_funds(),
-                    "pr":ApiFunds.get_profit_funds()}
+                    "pr":ApiFunds.get_profit_funds(),
+                    "ave_ipc_ever":ApiFunds.get_average_income_per_client_ever(),
+                    "ave_epc_ever":ApiFunds.get_average_expense_per_client_ever(),
+                    "total_client":len(ApiFunds.get_done_client())}
             return data
 
     return {}

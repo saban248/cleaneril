@@ -52,3 +52,13 @@ class ApiFunds:
             data.append(cd)
 
         return data
+
+    @classmethod
+    def get_average_income_per_client_ever(cls) -> float:
+        clients = ApiFunds.get_done_client()
+        total_profit = ApiFunds.get_profit_funds()
+        return float(f"{total_profit/(len(clients) or 1):.2f}")
+
+    @classmethod
+    def get_average_expense_per_client_ever(cls) -> float:
+        return 0
