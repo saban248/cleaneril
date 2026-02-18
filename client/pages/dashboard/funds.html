@@ -1,0 +1,60 @@
+<div class="dashboard-page" id="FUNDS">
+    <div class="page-head">
+        <h2>הכנסות / הוצאות</h2>
+        <div class="main-cards">
+            <!-- כרטיסי סכומים -->
+            <div class="main-cards-in-ex-pr">
+                <div class="card-in-ex-pr card-shadow">
+                    <p class="card-inexpr-title">סה״כ הכנסות</p>
+                    <p id="incomeTotal" class="card-inexpr-text color-in">0 ₪</p>
+                </div>
+
+                <div class="card-in-ex-pr card-shadow">
+                <p class="card-inexpr-title">סה״כ הוצאות</p>
+                <p id="expenseTotal" class="card-inexpr-text color-ex">0 ₪</p>
+                </div>
+
+                <div class="card-in-ex-pr card-shadow">
+                <p class="card-inexpr-title">רווח נקי</p>
+                <p id="profitTotal" class="card-inexpr-text color-pr">0 ₪</p>
+                </div>
+                <div class="card-in-ex-pr card-shadow">
+                <p class="card-inexpr-title">ממוצע ר.פ.ל</p>
+                <p id="averageProfitPerClient" class="card-inexpr-text color-ppc">0 ₪</p>
+                </div>
+                <div class="card-in-ex-pr card-shadow">
+                <p class="card-inexpr-title">ממוצע ה.פ.ל</p>
+                <p id="averageExpensePerClient" class="card-inexpr-text color-epc">0 ₪</p>
+                </div>
+                <div class="card-in-ex-pr card-shadow">
+                <p class="card-inexpr-title">לקוחות השולמו</p>
+                <p id="totalDoneclient" class="card-inexpr-text color-tc">0 ₪</p>
+                </div>
+            </div>
+
+            <!-- גרפים -->
+            <div class="chart-wrapper">
+                    <div class="chart-header">
+                        <h2>ביצועי השנה</h2>
+                        <div class="chart-header-action">
+                            <i class="fa-solid fa-arrows-rotate" onclick="updateInExPrAndChartClientAndIncome()"></i>
+                            <div class="year-select" id="selectedYear" onclick="openMenuSelectYear(this)">2026
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="chartbody">
+                        <div id="chartClientIncome" class="chart-card"></div>
+                    </div>
+            </div>
+
+            <div>
+                <canvas id="expenseChart"></canvas>
+            </div>
+            
+        </div>
+
+    </div>
+</div>
+
+<div id="yearFundsMenu" class="year-funds-menu"></div>
