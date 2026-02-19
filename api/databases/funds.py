@@ -48,17 +48,35 @@ class ApiFunds:
         data = []
         clients = ApiFunds.get_year_client(year)
         for client in clients:
-            cd = {"date": datetime.fromtimestamp(float(client.date)).strftime("%Y.%m.%d"), "amount": client.price - client.off_price}
+            date = datetime.fromtimestamp(float(client.date))
+            cd = {"date": date.strftime("%Y.%m.%d"),
+                  "amount": client.price - client.off_price,
+                  "ave_ipcm":ApiFunds.get_average_income_per_client_month(date.year, date.month)
+                  }
             data.append(cd)
 
         return data
 
-    @classmethod
-    def get_average_income_per_client_ever(cls) -> float:
+    @staticmethod
+    def get_average_income_per_client_ever() -> float:
         clients = ApiFunds.get_done_client()
         total_profit = ApiFunds.get_profit_funds()
-        return float(f"{total_profit/(len(clients) or 1):.2f}")
+        return float(f"{total_profit/(len(clients) or 1):.1f}")
 
-    @classmethod
-    def get_average_expense_per_client_ever(cls) -> float:
+    @staticmethod
+    def get_average_income_per_client_month(year:int, month:int):
+        clients = ApiFunds.get_done_client()
+        profit = 0
+        length_clients = 0
+        for client in clients:
+            date = datetime.fromtimestamp(float(client.date))
+            if date.year == year and month == date.month:
+                profit += (client.price-client.off_price)
+                length_clients+=1
+
+        if not length_clients:return 0
+        return float(f"{profit/length_clients:.1f}")
+
+    @staticmethod
+    def get_average_expense_per_client_ever() -> float:
         return 0

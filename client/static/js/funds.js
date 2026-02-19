@@ -5,20 +5,26 @@ function initCharts(monthlyIncome, monthlyCustomers) {
     document.querySelector("#chartClientIncome"),
     options(monthlyIncome, monthlyCustomers)
   );
-  chartClientIncome.render();
+  chartClientIncome.render()
 }
 
-function updateChartClientIncome(monthlyIncome, monthlyCustomers) {
+function updateChartClientIncome(monthlyIncome, monthlyCustomers, monthlyAIPCM) {
   chartClientIncome.updateSeries([
     {
       name: 'הכנסות',
       type: 'column',
-      data: monthlyIncome
+      data: monthlyIncome,
     },
     {
       name: 'לקוחות',
       type: 'line',
-      data: monthlyCustomers
+      data: monthlyCustomers,
+    },
+    {
+      name: 'ממוצע ר.פ.ל',
+      type: 'line',
+      data: monthlyAIPCM,
+      visible: false
     }
   ]);
 }
@@ -69,9 +75,9 @@ function updateInExPrAndChartClientAndIncome(year){
                 openPopup(res.title, res.notice);
                 return;
             }
-            const {monthlyIncome, monthlyCustomers} = prepareMonthlyData(res.data, year);
+            const {monthlyIncome, monthlyCustomers, monthlyAIPCM} = prepareMonthlyData(res.data, year);
             
-            updateChartClientIncome(monthlyIncome, monthlyCustomers)
+            updateChartClientIncome(monthlyIncome, monthlyCustomers, monthlyAIPCM)
 
             setIncome(res.in)
             setExpense(res.ex)
@@ -90,31 +96,34 @@ function updateInExPrAndChartClientAndIncome(year){
 
 
 
-// הכנת נתונים חודשי
 function prepareMonthlyData(transactions, year){
   const monthlyIncome = Array(12).fill(0);
   const monthlyCustomers = Array(12).fill(0);
+  const monthlyAIPCM = Array(12).fill(0)
 
   transactions.forEach(t => {
-    const date = new Date(t.date);
-    if(date.getFullYear() == year){
-      const month = date.getMonth();
-      monthlyIncome[month] += t.amount;
-      monthlyCustomers[month] += 1;
+    const [y, m] = t.date.split("."); 
+
+    if(Number(y) === Number(year)){
+      const monthIndex = Number(m) - 1;
+
+      monthlyIncome[monthIndex] += Number(t.amount);
+      monthlyCustomers[monthIndex] += 1;
+      monthlyAIPCM[monthIndex] = Number(t.ave_ipcm)
     }
   });
 
-  return { monthlyIncome, monthlyCustomers };
+  return { monthlyIncome, monthlyCustomers, monthlyAIPCM };
 }
 
 
-const options = (monthlyIncome, monthlyCustomers)=> {return{
+const options = (monthlyIncome, monthlyCustomers, monthlyAIPCM)=> {return{
     chart: {
     type: 'line',
     height: 350,
     stacked: false,
     toolbar: { show: false },
-    zoom: { enabled: true }
+    zoom: { enabled: true },
   },
   stroke: {
     width: [0, 4]
@@ -122,6 +131,7 @@ const options = (monthlyIncome, monthlyCustomers)=> {return{
   plotOptions: {
     bar: { borderRadius: 8 }
   },
+  legend: { position: 'top',horizontalAlign: 'right'},
   series: [
     {
       name: 'הכנסות',
@@ -132,25 +142,32 @@ const options = (monthlyIncome, monthlyCustomers)=> {return{
       name: 'לקוחות',
       type: 'line',
       data: monthlyCustomers
+    },
+    {
+      name: 'ממוצע ר.פ.ל',
+      type: 'line',
+      data: monthlyAIPCM,
+      visible:false
     }
   ],
-  dataLabels: { enabled: true, formatter: val => val.toLocaleString('he-IL') },
+  dataLabels: { enabled: false, formatter: val => val.toLocaleString('he-IL')},
   labels: ["ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"],
   yaxis: [
-    { title: { text: '' }, labels: { formatter: val => val.toLocaleString('he-IL') } },
-    { opposite: true, min: 0, forceNiceScale: true }
+    { forceNiceScale: true, labels: { formatter: val => val?.toLocaleString('he-IL') }, show:true},
+    { opposite: true, min: 0, forceNiceScale: true, show:false},
+    { opposite: true, min: 0, forceNiceScale: true, show:false, labels: { formatter: val => val?.toLocaleString('he-IL') +"₪" }}
   ],
   tooltip: {
     shared: true,
     intersect: false
   },
-  colors: ['#1c9548', '#3b82f6'],
+  colors: ['#1c9548', '#3b82f6','#9508ad', '#c7c41d'],
   responsive: [
     {
       breakpoint: 600,
       options: {
         chart: { height: 300 },
-        legend: { position: 'bottom' }
+        legend: { position: 'top' }
       }
     }
   ]

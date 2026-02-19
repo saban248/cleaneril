@@ -759,6 +759,7 @@
     flex-wrap: wrap;
     flex-direction: row;
     column-gap: 15px;
+    justify-content: space-around;
     row-gap: 15px;
 }
 
