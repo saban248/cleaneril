@@ -169,7 +169,7 @@ function updateMenuActionClientsSorted(t, state, cache = true){
     }
     if (!cache)return
 
-    updateStateClientSetting(c_runtime.state_client_selected)
+    updateStateClientSetting(c_runtime.state_client_selected, ManagerCache.getClientsCalender())
     setTimeout(()=>{location.reload()},  2000)
 }
 
@@ -276,6 +276,7 @@ function openMenuClient(t, cid) {
 
 const calanderItems = [
     {text:'תמיד', action:(cc)=>{updateCalanderClient(CalanderClients.FOREVER)}, icon:'<i class="fa-solid fa-clock"></i>'},
+    {text:'מחר', action:(cc)=>{updateCalanderClient(CalanderClients.TOMORROW)}, icon:'<i class="fa-solid fa-clock"></i>'},
     {text:"היום", action: (cc)=>{updateCalanderClient(CalanderClients.DAY)}, icon:'<i class="fa-solid fa-clock"></i>'},
     {text:"השבוע", action: (cc)=>{updateCalanderClient(CalanderClients.WEEK)}, icon:'<i class="fa-solid fa-clock"></i>'},
     {text:"שבועיים", action: (cc)=>{updateCalanderClient(CalanderClients.DWEEK)}, icon:'<i class="fa-solid fa-clock"></i>'},
@@ -342,7 +343,7 @@ document.addEventListener("DOMContentLoaded", function () {
         updateStateClientSetting(state, ManagerCache.getClientsCalender())
     }
     else{
-        updateStateClientSetting(ManagerCache.getClientsSortedState())
+        updateStateClientSetting(ManagerCache.getClientsSortedState(), calender?calender:ManagerCache.getClientsCalender())
     }
     updateMACSOnLoad(false)
 });

@@ -1,5 +1,6 @@
 import json
 import os.path
+import time
 from dataclasses import dataclass
 from enum import Enum, IntFlag
 
@@ -15,11 +16,12 @@ class ClientLeadFrom(IntFlag):
 
 
 class CalenderClients(IntFlag):
-    DAY             = 1<<0
-    WEEK            = 1<<1
-    DWEEK           = 1<<2
-    MONTH           = 1<<3
-    FOREVER         = 1<<4
+    TOMORROW        = 1<<0
+    DAY             = 1<<1
+    WEEK            = 1<<2
+    DWEEK           = 1<<3
+    MONTH           = 1<<4
+    FOREVER         = 1<<5
 
 def get_calender_client(cc:int):
     __day__ = 3600 * 24
@@ -33,6 +35,16 @@ def get_calender_client(cc:int):
         case CalenderClients.FOREVER:
             return float("inf")
     return 0
+
+def is_bwt_date(client_date:float, cc:int):
+    t = time.time() - client_date
+    if CalenderClients.FOREVER&cc:return True
+    if CalenderClients.TOMORROW&cc:
+        return 0 <= client_date-time.time() < (3600*24)
+    if t<0:return False
+
+    return t<=get_calender_client(cc)
+
 
 class RoutePagesBase(Enum):
 
@@ -126,7 +138,7 @@ class ResponseStruct:
             else:self.s = int(state)
             if not calender or not calender.isdigit():self.c = CalenderClients.FOREVER
             else:self.c = int(calender)
-
+            if not self.s:self.s = StateClient.ALL
             return self
 
 

@@ -48,7 +48,7 @@ class ManagerCache{
     static getClientsCalender(){
         const key = "calender_client"
         const data = localStorage.getItem(key)
-        if (!data){
+        if (data == null){
             return CalanderClients.FOREVER
         }
         return data

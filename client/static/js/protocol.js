@@ -33,11 +33,12 @@ function getStateClient(state) {
 }
 
 const CalanderClients = {
-    DAY:1<<0,
-    WEEK:1<<1,
-    DWEEK:1<<2,
-    MONTH:1<<3,
-    FOREVER:1<<4
+    TOMORROW:   1<<0,
+    DAY:        1<<1,
+    WEEK:       1<<2,
+    DWEEK:      1<<3,
+    MONTH:      1<<4,
+    FOREVER:    1<<5
 }
 function getCalenderClient(cc) {
     const result = [];
@@ -56,6 +57,8 @@ function getCalenderClient(cc) {
 
 function getCalenderClientText(cc){
     switch (cc){
+        case cc&CalanderClients.TOMORROW:
+            return "מחר"
         case cc&CalanderClients.DAY:
             return "היום"
         case cc&CalanderClients.WEEK:

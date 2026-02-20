@@ -8,7 +8,7 @@ from zoneinfo import ZoneInfo
 from api.ptc import generate_hex
 
 from api.databases.ptc import cleaneril_db, StateDocument, ServerConfig, StateClient
-from api.routes.ptc import ClientLeadFrom, CalenderClients, get_calender_client
+from api.routes.ptc import ClientLeadFrom, CalenderClients, get_calender_client, is_bwt_date
 
 unknown = 'unknown'
 
@@ -101,9 +101,9 @@ class ApiClients:
 
     @staticmethod
     def get_clients_lately(state:int, calender = CalenderClients.FOREVER):
-        is_before = lambda d: time.time() - get_calender_client(calender) < d
+
         clients = [client for client in ApiClients.get_clients() if
-                   (client.state&state and is_before(client.date)) or not state]
+                   (client.state&state and is_bwt_date(client.date, calender))]
         return sorted(clients, key=lambda client: client.date, reverse=True)
 
     @staticmethod
