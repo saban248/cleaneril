@@ -1,7 +1,9 @@
 import base64
+import time
 from datetime import datetime
 import json
 import os
+from zoneinfo import ZoneInfo
 
 from flask import session, request
 
@@ -34,12 +36,15 @@ def client_date_arrive_hour(ts):
     if ts > 1e12:
         ts /= 1000
 
-    return datetime.fromtimestamp(ts).strftime("%H:%M")
+    return datetime.fromtimestamp(ts, ZoneInfo("Asia/Jerusalem")).strftime("%H:%M")
 
 @cleaneril.template_filter("jrt")
 def json_roundtrip(obj):
     return json.loads(obj).items()
 
+@cleaneril.template_filter("ctime")
+def get_ctime_from_time(ctime:float):
+    return time.ctime(ctime)
 
 @cleaneril.template_filter("cft")
 def client_flag_text(flag):

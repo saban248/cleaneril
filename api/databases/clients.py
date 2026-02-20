@@ -1,7 +1,10 @@
 import json
 import os
 import time
+from datetime import datetime
 from typing import Union
+from zoneinfo import ZoneInfo
+
 from api.ptc import generate_hex
 
 from api.databases.ptc import cleaneril_db, StateDocument, ServerConfig, StateClient
@@ -56,7 +59,7 @@ class ApiClients:
         if not client_id:
             client = Clients()
             client.client_id = generate_hex(7)
-            client.timestamp_entered = time.time()
+            client.timestamp_entered = datetime.fromtimestamp(time.time(), tz=ZoneInfo("Asia/Jerusalem")).timestamp()
         else:
             client = ApiClients.get_clients(client_id=client_id).first()
 

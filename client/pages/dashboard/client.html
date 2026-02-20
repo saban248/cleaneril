@@ -119,6 +119,9 @@
         </span>
         </div>
     </div>
+    <div class="footer-time-signature {% if editor %} disable {%endif%}">
+        <span>{% include "icon/verify.svg" %}</span> {{client.timestamp_entered|ctime}} • {{client.key}}-{{client.client_id}}
+    </div>
     <div class="client-footer {% if not editor %} disable {%endif%}">
         <div class="card-action-editor">
             <i class="fa-solid fa-user-plus" onclick="publishClient('{{client.client_id}}')"></i>
