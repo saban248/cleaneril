@@ -8,7 +8,7 @@ from zoneinfo import ZoneInfo
 from api.ptc import generate_hex
 
 from api.databases.ptc import cleaneril_db, StateDocument, ServerConfig, StateClient
-from api.routes.ptc import ClientLeadFrom
+from api.routes.ptc import ClientLeadFrom, CalenderClients, get_calender_client
 
 unknown = 'unknown'
 
@@ -100,8 +100,21 @@ class ApiClients:
         return 0
 
     @staticmethod
-    def get_clients_lately(state:int):
-        clients = [client for client in ApiClients.get_clients() if client.state&state or not state]
-        for client  in clients:
-            print(client.state, state)
+    def get_clients_lately(state:int, calender = CalenderClients.FOREVER):
+        is_before = lambda d: time.time() - get_calender_client(calender) < d
+        clients = [client for client in ApiClients.get_clients() if
+                   (client.state&state and is_before(client.date)) or not state]
         return sorted(clients, key=lambda client: client.date, reverse=True)
+
+    @staticmethod
+    def count_client_wait(calender = CalenderClients.FOREVER):
+        return ApiClients.get_clients_lately(calender=calender, state=StateClient.WAIT).__len__()
+    @staticmethod
+    def count_client_done(calender = CalenderClients.FOREVER):
+        return ApiClients.get_clients_lately(calender=calender, state=StateClient.DONE).__len__()
+    @staticmethod
+    def count_client_closed(calender = CalenderClients.FOREVER):
+        return ApiClients.get_clients_lately(calender=calender,state=StateClient.CLOSED).__len__()
+    @staticmethod
+    def count_client_canceled(calender = CalenderClients.FOREVER):
+        return ApiClients.get_clients_lately(calender=calender, state=StateClient.CANCELED).__len__()

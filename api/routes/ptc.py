@@ -14,7 +14,25 @@ class ClientLeadFrom(IntFlag):
     WHATSAPP        = 1<<4
 
 
+class CalenderClients(IntFlag):
+    DAY             = 1<<0
+    WEEK            = 1<<1
+    DWEEK           = 1<<2
+    MONTH           = 1<<3
+    FOREVER         = 1<<4
 
+def get_calender_client(cc:int):
+    __day__ = 3600 * 24
+    match cc:
+        case CalenderClients.DAY:
+            return __day__
+        case CalenderClients.WEEK:
+            return __day__ * 7
+        case CalenderClients.DWEEK:
+            return __day__ * 31
+        case CalenderClients.FOREVER:
+            return float("inf")
+    return 0
 
 class RoutePagesBase(Enum):
 
@@ -98,14 +116,17 @@ class ResponseStruct:
     @dataclass
     class Dashboard:
         s:int               = None
+        c:int               = None
 
         def build(self, **data):
             state:str = data.get("s", 0)
+            calender:str = data.get("c", 0)
 
-            if not state or not state.isdigit():
-                self.s = StateClient.ALL
-            else:
-                self.s = int(state)
+            if not state or not state.isdigit():self.s = StateClient.ALL
+            else:self.s = int(state)
+            if not calender or not calender.isdigit():self.c = CalenderClients.FOREVER
+            else:self.c = int(calender)
+
             return self
 
 

@@ -258,11 +258,15 @@
     box-shadow: 0 0 3px #d5d6d8;
     cursor: pointer;
     transition: 200ms all;
+    font-size: 13px;
 }
 .action-client:hover,
 .action-client:active,
 .action-client:focus, .ac-selected{
     box-shadow: 0 0 11px #d5d6d8 !important;
+}
+.ac1, .ac2, .ac3, .ac4{
+    word-break: keep-all;
 }
 .ac1.ac-selected{
     background:#046b09;
@@ -670,7 +674,7 @@
 }
 
 /* container */
-.client-menu-action, .year-funds-menu{
+.client-menu-action, .year-funds-menu, .calander-clients-menu{
     position: absolute;
     min-width: 180px;
     background: #fff;
@@ -682,12 +686,12 @@
     transition: 0.15s ease;
     z-index: 9999999;
 }
-.client-menu-action.show, .year-funds-menu.show{
+.client-menu-action.show, .year-funds-menu.show, .calander-clients-menu.show{
     opacity: 1;
     transform: scale(1);
     pointer-events: auto;
 }
-.client-menu-action > .cma, .year-funds-menu > .cma{
+.client-menu-action > .cma, .year-funds-menu > .cma, .calander-clients-menu > .cma{
     display: flex;
     border: 1px solid #ddd;
     border-radius: 2px;

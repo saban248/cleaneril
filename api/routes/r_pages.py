@@ -7,8 +7,8 @@ from flask import session, request, jsonify, render_template, redirect, url_for,
 from api.databases.clients import ApiClients
 from api.databases.crads import ApiCards
 from api.databases.ptc import cleaneril, ServerConfig
-from api.ptc import special_things, SJson, ShortSession
-from api.routes.ptc import RoutePages, Pages
+from api.ptc import special_things, SJson, ShortSession, get_dictionary_http
+from api.routes.ptc import RoutePages, Pages, ResponseStruct
 
 
 @cleaneril.route(RoutePages.home.path, methods=['GET'])
@@ -34,6 +34,11 @@ def dashboard():
     e_invalid = SJson.error()
     if not ShortSession.is_admin(session):
         return redirect(url_for("auth"))
+
+    breq = get_dictionary_http(request)
+    dash = ResponseStruct.Dashboard().build(**breq)
     return render_template(Pages.dashboard.html,
                            cards=list(reversed(ApiCards.get_cards(False).all())),
-                           clients=list(reversed(ApiClients.get_clients(False).all())))
+                           clients=ApiClients.get_clients_lately(dash.s, dash.c),
+                           counts=[ApiClients.count_client_wait(dash.c),ApiClients.count_client_done(dash.c),
+                                   ApiClients.count_client_closed(dash.c), ApiClients.count_client_canceled(dash.c)])

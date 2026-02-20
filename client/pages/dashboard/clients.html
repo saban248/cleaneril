@@ -7,16 +7,19 @@
     <div class="page-body">
         <div id="macs", class="menu-actions-clients">
             <div class="action-client ac1" onclick="selectClientsState(this)" data-s="8">
-                הושלם
+                הושלם{% if counts[1] %} ({{ counts[1] }}){% endif %}
             </div>
             <div class="action-client ac2" onclick="selectClientsState(this)" data-s="2">
-                בהמתנה
+                בהמתנה{% if counts[2] %} ({{ counts[2] }}){% endif %}
             </div>
             <div class="action-client ac3" onclick="selectClientsState(this)" data-s="1">
-                לא נסגר
+                לא נסגר{% if counts[0] %} ({{ counts[0] }}){% endif %}
             </div>
             <div class="action-client ac4" onclick="selectClientsState(this)" data-s="4">
-                בוטל
+                בוטל{% if counts[3] %} ({{ counts[3] }}){% endif %}
+            </div>
+            <div class="action-client" onclick="openMenuCalander(this)">
+                <i class="fa-solid fa-calendar-days"></i><span style="padding-right: 10px;" id="acc"></span> 
             </div>
         </div>
         <div class="list-clients">
@@ -53,3 +56,5 @@
     </div>
     
 </div>
+
+<div id="calanderClients" class="calander-clients-menu"></div>

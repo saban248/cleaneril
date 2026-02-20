@@ -24,6 +24,8 @@ def client_date_arrive(ts):
 
 @cleaneril.template_filter("cdar")
 def client_date_arrive(ts):
+    if not ts:
+        ts = time.time()
     ts = float(ts)
     if ts > 1e12:
         ts /= 1000

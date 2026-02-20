@@ -32,6 +32,45 @@ function getStateClient(state) {
     return result;
 }
 
+const CalanderClients = {
+    DAY:1<<0,
+    WEEK:1<<1,
+    DWEEK:1<<2,
+    MONTH:1<<3,
+    FOREVER:1<<4
+}
+function getCalenderClient(cc) {
+    const result = [];
+
+    for (const key in CalanderClients) {
+        if (cc & CalanderClients[key]) {
+            result.push(key);
+        }
+    }
+    if (result.length==1){
+        return result[0]
+    }
+    return result;
+}
+
+
+function getCalenderClientText(cc){
+    switch (cc){
+        case cc&CalanderClients.DAY:
+            return "היום"
+        case cc&CalanderClients.WEEK:
+            return "השבוע"
+        case cc&CalanderClients.DWEEK:
+            return "שבועיים"
+        case cc&CalanderClients.MONTH:
+            return "החודש" 
+        case cc&CalanderClients.FOREVER:
+            return "תמיד"
+        
+        default:
+            return "תמיד"
+    }
+}
 
 function getSocialMedia(social) {
     const result = [];

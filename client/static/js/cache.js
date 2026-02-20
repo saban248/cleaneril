@@ -40,6 +40,20 @@ class ManagerCache{
         if (data == undefined || data == null)return 0
         return parseInt(data, 10)
     }
+    static setClientsCalender(c){
+        const key = "calender_client"
+        localStorage.setItem(key, c)
+
+    }
+    static getClientsCalender(){
+        const key = "calender_client"
+        const data = localStorage.getItem(key)
+        if (!data){
+            return CalanderClients.FOREVER
+        }
+        return data
+    }
+
     static exist(){
         return Boolean(localStorage.getItem("exist"));
     }

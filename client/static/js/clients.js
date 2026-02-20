@@ -1,5 +1,3 @@
-
-
 const c_runtime = {
     items_ordered:{},
     state_client_selected:0
@@ -184,11 +182,15 @@ function updateMACSOnLoad(cache = true){
             updateMenuActionClientsSorted(state, s,cache)
         }
     }
+    const calender = document.getElementById("acc")
+    calender.innerText = getCalenderClientText(parseInt(ManagerCache.getClientsCalender()))
+
 }
 
-function updateStateClientSetting(state){
+function updateStateClientSetting(state, calender){
     const params = new URLSearchParams(window.location.search);
     params.set("s", state)
+    params.set("c", calender)
     window.history.replaceState({}, "", window.location.pathname + "?" + params.toString());
     ManagerCache.setClientsSortedState(state)
     c_runtime.state_client_selected = state
@@ -212,6 +214,14 @@ function setStateClient(client_id, state){
         }
     )
 
+}
+
+function updateCalanderClient(cc){
+    const params = new URLSearchParams(window.location.search);
+    params.set("c", cc)
+    window.history.replaceState({}, "", window.location.pathname + "?" + params.toString());
+    ManagerCache.setClientsCalender(cc)
+    location.reload()
 }
 
 
@@ -263,6 +273,51 @@ function openMenuClient(t, cid) {
     menu.classList.add("show")
 }
 
+
+const calanderItems = [
+    {text:'תמיד', action:(cc)=>{updateCalanderClient(CalanderClients.FOREVER)}, icon:'<i class="fa-solid fa-clock"></i>'},
+    {text:"היום", action: (cc)=>{updateCalanderClient(CalanderClients.DAY)}, icon:'<i class="fa-solid fa-clock"></i>'},
+    {text:"השבוע", action: (cc)=>{updateCalanderClient(CalanderClients.WEEK)}, icon:'<i class="fa-solid fa-clock"></i>'},
+    {text:"שבועיים", action: (cc)=>{updateCalanderClient(CalanderClients.DWEEK)}, icon:'<i class="fa-solid fa-clock"></i>'},
+    {text:"החודש", action: (cc)=>{updateCalanderClient(CalanderClients.MONTH)}, icon:'<i class="fa-solid fa-clock"></i>'}
+]
+
+
+function openMenuCalander(t){
+    const menu = document.getElementById("calanderClients")
+    if (menu.classList.contains("show")) {
+        menu.classList.remove("show")
+        return
+    }
+    const rect = t.getBoundingClientRect()
+    menu.innerHTML = "" // ניקוי
+    calanderItems.forEach(item => {
+        let cma = document.createElement("div")
+        cma.className = "cma"
+        let cma1 = document.createElement('div')
+        cma1.className = "cma1"
+        cma1.innerHTML = item.icon
+        
+        let cma2 = document.createElement("div")
+        cma2.className = 'cma2'
+        cma2.textContent = item.text
+        cma.appendChild(cma1)
+        cma.appendChild(cma2)
+
+        cma.onclick = () => {
+            item.action(item.text)
+            menu.classList.remove("show")
+        }
+        menu.appendChild(cma)
+    })
+
+    menu.style.top = `${rect.bottom + window.scrollY + 6}px`
+    menu.style.left = `${rect.left + window.scrollX}px`
+
+    menu.classList.add("show")
+} 
+
+
 // סגירה בלחיצה מחוץ
 document.addEventListener("click", e => {
     const menu = document.getElementById("clientMenu")
@@ -271,12 +326,20 @@ document.addEventListener("click", e => {
     }
 })
 
+// document.addEventListener("click", e => {
+//     const menu = document.getElementById("calanderClients")
+//     if (!menu.contains(e.target) && !e.target.classList.contains("action-client")) {
+//         menu.classList.remove("show")
+//     }
+// })
+
 
 document.addEventListener("DOMContentLoaded", function () {
     const params = new URLSearchParams(window.location.search);
     const state = params.get("s")
+    const calender = params.get("c")
     if (state){
-        updateStateClientSetting(state)
+        updateStateClientSetting(state, ManagerCache.getClientsCalender())
     }
     else{
         updateStateClientSetting(ManagerCache.getClientsSortedState())
