@@ -31,7 +31,9 @@ def get_calender_client(cc:int):
         case CalenderClients.WEEK:
             return __day__ * 7
         case CalenderClients.DWEEK:
-            return __day__ * 31
+            return __day__ * 14
+        case CalenderClients.MONTH:
+            return __day__*31
         case CalenderClients.FOREVER:
             return float("inf")
     return 0
