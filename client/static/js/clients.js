@@ -1,7 +1,8 @@
 
 
 const c_runtime = {
-    items_ordered:{}
+    items_ordered:{},
+    state_client_selected:0
 }
 
 function viewclientDetails(client_id){
@@ -108,7 +109,7 @@ function deleteItemOrder(id_order){
 
 
 
-function publishClient(client_id){
+function publishClient(client_id, state){
     const fullname = document.getElementById('fullname').value;
     const date = document.getElementById('client-date').value;
     const ldate = new Date(date);
@@ -131,7 +132,7 @@ function publishClient(client_id){
     const offPrice = document.getElementById('client-off-price').value;
 
     const data = {action:ApiCall.client_save,
-        ci:client_id, s:StateClient.WAIT,
+        ci:client_id, s:state,
         phone:phone,o:Boolean(parseInt(offPrice)),
         op:offPrice,fn:fullname,
         address:address, i:JSON.stringify(c_runtime.items_ordered),
@@ -146,12 +147,52 @@ function publishClient(client_id){
                 return
             }
             closeCreateClient(true)
+            location.reload()
         }
     )
 
 }
 
 
+function selectClientsState(t){
+    updateMenuActionClientsSorted(t, t.dataset.s)
+}
+
+
+function updateMenuActionClientsSorted(t, state, cache = true){
+    const cSelected = "ac-selected"
+    if (!t.classList.contains(cSelected)&& (!(state&c_runtime.state_client_selected) || !cache)){
+        t.classList.add(cSelected)
+        c_runtime.state_client_selected |= state
+    }
+    else{
+        t.classList.remove(cSelected)
+        c_runtime.state_client_selected &= ~state
+    }
+    if (!cache)return
+
+    updateStateClientSetting(c_runtime.state_client_selected)
+    setTimeout(()=>{location.reload()},  2000)
+}
+
+function updateMACSOnLoad(cache = true){
+    const parent = document.getElementById("macs").children
+    const ca = Array.from(parent);
+    for (state of ca){
+        const s = state.dataset.s
+        if (c_runtime.state_client_selected&s){
+            updateMenuActionClientsSorted(state, s,cache)
+        }
+    }
+}
+
+function updateStateClientSetting(state){
+    const params = new URLSearchParams(window.location.search);
+    params.set("s", state)
+    window.history.replaceState({}, "", window.location.pathname + "?" + params.toString());
+    ManagerCache.setClientsSortedState(state)
+    c_runtime.state_client_selected = state
+}
 function editExistClient(client_id){
     CONFIG.CLIENT_EDIT = true;
     createClient(client_id)
@@ -229,3 +270,16 @@ document.addEventListener("click", e => {
         menu.classList.remove("show")
     }
 })
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const params = new URLSearchParams(window.location.search);
+    const state = params.get("s")
+    if (state){
+        updateStateClientSetting(state)
+    }
+    else{
+        updateStateClientSetting(ManagerCache.getClientsSortedState())
+    }
+    updateMACSOnLoad(false)
+});

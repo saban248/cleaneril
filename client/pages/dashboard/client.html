@@ -124,7 +124,8 @@
     </div>
     <div class="client-footer {% if not editor %} disable {%endif%}">
         <div class="card-action-editor">
-            <i class="fa-solid fa-user-plus" onclick="publishClient('{{client.client_id}}')"></i>
+            <i class="fa-solid fa-person-circle-question" onclick="publishClient('{{client.client_id}}', StateClient.WAIT)"></i>
+            <i class="fa-solid fa-user-clock" onclick="publishClient('{{client.client_id}}', StateClient.CLOSED)"></i>
         </div>
     </div>
 </div>

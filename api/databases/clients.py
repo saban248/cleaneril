@@ -98,3 +98,10 @@ class ApiClients:
         client.state = state
         cleaneril_db.session.commit()
         return 0
+
+    @staticmethod
+    def get_clients_lately(state:int):
+        clients = [client for client in ApiClients.get_clients() if client.state&state or not state]
+        for client  in clients:
+            print(client.state, state)
+        return sorted(clients, key=lambda client: client.date, reverse=True)

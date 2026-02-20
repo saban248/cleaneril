@@ -30,6 +30,16 @@ class ManagerCache{
         if (data == undefined || data == '{}'){return 2026}
         return JSON.parse(data).year
     }
+    static setClientsSortedState(state){
+        const key = "state_client"
+        localStorage.setItem(key, state)
+    }
+    static getClientsSortedState(){
+        const key = "state_client"
+        const data = localStorage.getItem(key)
+        if (data == undefined || data == null)return 0
+        return parseInt(data, 10)
+    }
     static exist(){
         return Boolean(localStorage.getItem("exist"));
     }

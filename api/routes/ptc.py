@@ -96,6 +96,20 @@ class ResponseStruct:
             return self
 
     @dataclass
+    class Dashboard:
+        s:int               = None
+
+        def build(self, **data):
+            state:str = data.get("s", 0)
+
+            if not state or not state.isdigit():
+                self.s = StateClient.ALL
+            else:
+                self.s = int(state)
+            return self
+
+
+    @dataclass
     class CardEditor:
         action:int      = None
         ci:str          = None

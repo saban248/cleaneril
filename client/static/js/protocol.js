@@ -18,6 +18,21 @@ const StateClient = {
     CANCELED        :1<<2,
     DONE            :1<<3
 }
+function getStateClient(state) {
+    const result = [];
+
+    for (const key in StateClient) {
+        if (state & StateClient[key]) {
+            result.push(key);
+        }
+    }
+    if (result.length==1){
+        return result[0]
+    }
+    return result;
+}
+
+
 function getSocialMedia(social) {
     const result = [];
 
@@ -77,3 +92,4 @@ const ApiCall = {
 
 window.SocialMedia = SocialMedia;
 window.PageManager = PageManager;
+window.StateClient = StateClient

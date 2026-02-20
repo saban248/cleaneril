@@ -44,6 +44,9 @@ class StateClient(IntFlag):
     CANCELED        = 1<<2
     DONE            = 1<<3
 
+    #mask
+    ALL = WAIT|CLOSED|CANCELED|DONE
+
 class ManagerPermissions(IntFlag):
     VIEW            = 1<<0
     EDIT            = 1<<1

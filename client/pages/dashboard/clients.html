@@ -5,6 +5,20 @@
     </div>
 
     <div class="page-body">
+        <div id="macs", class="menu-actions-clients">
+            <div class="action-client ac1" onclick="selectClientsState(this)" data-s="8">
+                הושלם
+            </div>
+            <div class="action-client ac2" onclick="selectClientsState(this)" data-s="2">
+                בהמתנה
+            </div>
+            <div class="action-client ac3" onclick="selectClientsState(this)" data-s="1">
+                לא נסגר
+            </div>
+            <div class="action-client ac4" onclick="selectClientsState(this)" data-s="4">
+                בוטל
+            </div>
+        </div>
         <div class="list-clients">
             {% for client in clients %}
                 <div class="client-item" data-key="{{client.key}}" id="{{client.client_id}}">
