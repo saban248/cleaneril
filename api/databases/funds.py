@@ -30,9 +30,17 @@ class ApiFunds:
         return income
 
     @staticmethod
-    def get_expense_funds():return 0
+    def get_expense_funds():
+        clients = ApiFunds.get_done_client()
+        expense = 0
+        for client in clients:
+            expense += client.expense
+
+        return expense
+
     @staticmethod
-    def get_profit_funds():return ApiFunds.get_income_funds()
+    def get_profit_funds():
+        return ApiFunds.get_income_funds()-ApiFunds.get_expense_funds()
 
     @staticmethod
     def get_total_off_price():
@@ -51,7 +59,8 @@ class ApiFunds:
             date = datetime.fromtimestamp(float(client.date))
             cd = {"date": date.strftime("%Y.%m.%d"),
                   "amount": client.price - client.off_price,
-                  "ave_ipcm":ApiFunds.get_average_income_per_client_month(date.year, date.month)
+                  "ave_ipcm":ApiFunds.get_average_income_per_client_month(date.year, date.month),
+                  "ave_epcm":ApiFunds.get_average_expense_per_client_month(date.year, date.month)
                   }
             data.append(cd)
 
@@ -60,23 +69,42 @@ class ApiFunds:
     @staticmethod
     def get_average_income_per_client_ever() -> float:
         clients = ApiFunds.get_done_client()
-        total_profit = ApiFunds.get_profit_funds()
-        return float(f"{total_profit/(len(clients) or 1):.1f}")
+        total_income = ApiFunds.get_income_funds()
+        return float(f"{total_income/(len(clients) or 1):.1f}")
 
     @staticmethod
     def get_average_income_per_client_month(year:int, month:int):
         clients = ApiFunds.get_done_client()
-        profit = 0
+        income = 0
         length_clients = 0
         for client in clients:
             date = datetime.fromtimestamp(float(client.date))
             if date.year == year and month == date.month:
-                profit += (client.price-client.off_price)
+                income += (client.price - client.off_price)
                 length_clients+=1
 
         if not length_clients:return 0
-        return float(f"{profit/length_clients:.1f}")
+        return float(f"{income / length_clients:.1f}")
+
+    @staticmethod
+    def get_average_expense_per_client_month(year:int, month:int):
+        clients = ApiFunds.get_done_client()
+        expense = 0
+        length_clients = 0
+        for client in clients:
+            date = datetime.fromtimestamp(float(client.date))
+            if date.year == year and month == date.month:
+                expense += client.expense
+                length_clients+=1
+
+        if not length_clients:return 0
+        return float(f"{expense/length_clients:.1f}")
+
 
     @staticmethod
     def get_average_expense_per_client_ever() -> float:
-        return 0
+        clients = ApiFunds.get_done_client()
+        if not clients:return 0
+        total_expense = ApiFunds.get_expense_funds()
+        return  float(f"{total_expense/len(clients):.1f}")
+

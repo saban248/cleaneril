@@ -128,6 +128,7 @@ function publishClient(client_id, state){
     const price = document.getElementById('client-price').value;
     const vat = Boolean(document.getElementById('client-vat').checked)
     const offPrice = document.getElementById('client-off-price').value;
+    const expense = document.getElementById("client-expense").value;
 
     const data = {action:ApiCall.client_save,
         ci:client_id, s:state,
@@ -135,7 +136,7 @@ function publishClient(client_id, state){
         op:offPrice,fn:fullname,
         address:address, i:JSON.stringify(c_runtime.items_ordered),
         lf:SocialMedia.WHATSAPP,date:timing,
-        notes:notes,price:price,vat:vat
+        notes:notes,price:price,vat:vat,ex:expense
     }
 
     apiPost(ApiRoute.api,data).then(

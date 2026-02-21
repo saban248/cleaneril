@@ -29,6 +29,7 @@ class Clients(cleaneril_db.Model):
     lead_from = cleaneril_db.Column(cleaneril_db.Integer, nullable=False)
     notes = cleaneril_db.Column(cleaneril_db.String, nullable=False)
     timestamp_entered = cleaneril_db.Column(cleaneril_db.Float, nullable=False)
+    expense = cleaneril_db.Column(cleaneril_db.Float, nullable=False, default=0.0)
 
 
 
@@ -55,7 +56,7 @@ class ApiClients:
     def add_client(client_id:str = None, state:StateClient = StateClient.WAIT, phone:str = unknown,
                    items:dict = None, off:bool = False, off_p:int = 0, fullname:str = unknown, date:float = 0.0,
                    address:str = unknown, lead_from:int = ClientLeadFrom.WHATSAPP,
-                   notes:str = unknown, price:float = 0.0, vat:bool = False):
+                   notes:str = unknown, price:float = 0.0, vat:bool = False, expense:float = 0.0):
         if not client_id:
             client = Clients()
             client.client_id = generate_hex(7)
@@ -75,6 +76,7 @@ class ApiClients:
         client.off_price = off_p
         client.price = price
         client.vat = vat
+        client.expense = expense
         if not client_id:
             cleaneril_db.session.add(client)
 

@@ -8,7 +8,7 @@ function initCharts(monthlyIncome, monthlyCustomers) {
   chartClientIncome.render()
 }
 
-function updateChartClientIncome(monthlyIncome, monthlyCustomers, monthlyAIPCM) {
+function updateChartClientIncome(monthlyIncome, monthlyCustomers, monthlyAIPCM, monthlyAEPCM) {
   chartClientIncome.updateSeries([
     {
       name: 'הכנסות',
@@ -24,6 +24,12 @@ function updateChartClientIncome(monthlyIncome, monthlyCustomers, monthlyAIPCM) 
       name: 'ממוצע ר.פ.ל',
       type: 'line',
       data: monthlyAIPCM,
+      visible: false
+    },
+    {
+      name: 'ממוצע ה.פ.ל',
+      type: 'line',
+      data: monthlyAEPCM,
       visible: false
     }
   ]);
@@ -75,9 +81,9 @@ function updateInExPrAndChartClientAndIncome(year){
                 openPopup(res.title, res.notice);
                 return;
             }
-            const {monthlyIncome, monthlyCustomers, monthlyAIPCM} = prepareMonthlyData(res.data, year);
+            const {monthlyIncome, monthlyCustomers, monthlyAIPCM, monthlyAEPCM} = prepareMonthlyData(res.data, year);
             
-            updateChartClientIncome(monthlyIncome, monthlyCustomers, monthlyAIPCM)
+            updateChartClientIncome(monthlyIncome, monthlyCustomers, monthlyAIPCM, monthlyAEPCM)
 
             setIncome(res.in)
             setExpense(res.ex)
@@ -100,6 +106,7 @@ function prepareMonthlyData(transactions, year){
   const monthlyIncome = Array(12).fill(0);
   const monthlyCustomers = Array(12).fill(0);
   const monthlyAIPCM = Array(12).fill(0)
+  const monthlyAEPCM = Array(12).fill(0)
 
   transactions.forEach(t => {
     const [y, m] = t.date.split("."); 
@@ -110,10 +117,11 @@ function prepareMonthlyData(transactions, year){
       monthlyIncome[monthIndex] += Number(t.amount);
       monthlyCustomers[monthIndex] += 1;
       monthlyAIPCM[monthIndex] = Number(t.ave_ipcm)
+      monthlyAEPCM[monthIndex] = Number(t.ave_epcm)
     }
   });
 
-  return { monthlyIncome, monthlyCustomers, monthlyAIPCM };
+  return { monthlyIncome, monthlyCustomers, monthlyAIPCM, monthlyAEPCM};
 }
 
 
@@ -148,6 +156,12 @@ const options = (monthlyIncome, monthlyCustomers, monthlyAIPCM)=> {return{
       type: 'line',
       data: monthlyAIPCM,
       visible:false
+    },
+    {
+      name: 'ממוצע ה.פ.ל',
+      type: 'line',
+      data: [],
+      visible:false
     }
   ],
   dataLabels: { enabled: false, formatter: val => val.toLocaleString('he-IL')},
@@ -155,6 +169,7 @@ const options = (monthlyIncome, monthlyCustomers, monthlyAIPCM)=> {return{
   yaxis: [
     { forceNiceScale: true, labels: { formatter: val => val?.toLocaleString('he-IL') }, show:true},
     { opposite: true, min: 0, forceNiceScale: true, show:false},
+    { opposite: true, min: 0, forceNiceScale: true, show:false, labels: { formatter: val => val?.toLocaleString('he-IL') +"₪" }},
     { opposite: true, min: 0, forceNiceScale: true, show:false, labels: { formatter: val => val?.toLocaleString('he-IL') +"₪" }}
   ],
   tooltip: {

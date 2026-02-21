@@ -26,16 +26,16 @@
             {% for client in clients %}
                 <div class="client-item" data-key="{{client.key}}" id="{{client.client_id}}">
                     <div class="client-title">
-                        <span class="ctitle">{{ client.fullname }}</span>
-                        <span class="ctype ctype-{{client.state}}">
-                            {{client.state | cft}}
-                        </span>
+                        <div class="ctitle">{{ client.fullname }}
+                            <span class="ctype-{{client.state}}">{{client.state | cft}}</span>
+                        </div>
+                        <div class="ctype">
+                            <span>{{client.date | cda }}-{{client.date | cdah }}</span>
+                            <span>{{client.price-client.off_price}}₪</span>
+                        </div>
                     </div>
                     <div class="client-body"></div>
                     <div class="client-footer">
-                        {% if client.state== 2 %}
-                            <i class="fa-solid fa-bookmark" onclick="()=>{}"></i>
-                        {% endif %}
                         <i class="fa-solid fa-eye" onclick="viewclientDetails('{{client.client_id}}')"></i>
                         <i class="fa-solid fa-bars menu-client" onclick="openMenuClient(this, '{{client.client_id}}')"></i>
                     </div>

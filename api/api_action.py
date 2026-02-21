@@ -24,7 +24,7 @@ def get_api_action(**breq) -> dict:
             client = ResponseStruct.ClientEditor().build(**breq)
             _stat_ = ApiClients.add_client(client.ci,client.s,client.phone,client.i,
                                            client.o,client.op,client.fn,client.date,client.address,
-                                           client.lf,client.notes,client.price,client.vat)
+                                           client.lf,client.notes,client.price,client.vat, client.ex)
             return {'client_id':client.ci}
         case ApiCall.card_draft | ApiCall.card_save:
             if ApiCall.card_draft&action:state = StateDocument.DRAFT

@@ -109,8 +109,13 @@
                 <span>הנחה</span>
                 <input type="tel" class="c-input-fn price-all" placeholder="0.00" id="client-off-price" value="{{client.off_price|int}}">
             </div>
+            <div class="off-price">
+                <span>הוצאות</span>
+                <input type="tel" class="c-input-fn price-all" placeholder="0.00" id="client-expense" value="{{client.off_price|int}}">
+            </div>
             {%endif%}          
         </div>
+        {% if not editor %}
         <div class="price-notes">
             <i class="fa-solid fa-circle-info"></i>
             <span>
@@ -118,6 +123,7 @@
             בכל אופן אחר נא לתאם מראש
         </span>
         </div>
+        {% endif %}
     </div>
     <div class="footer-time-signature {% if editor %} disable {%endif%}">
         <span>{% include "icon/verify.svg" %}</span> {{client.timestamp_entered|ctime}} • {{client.key}}-{{client.client_id}}
