@@ -138,7 +138,6 @@ function publishClient(client_id, state){
         lf:SocialMedia.WHATSAPP,date:timing,
         notes:notes,price:price,vat:vat,ex:expense
     }
-
     apiPost(ApiRoute.api,data).then(
         (res)=>{
             if (!res.success){
