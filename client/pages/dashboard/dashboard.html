@@ -6,6 +6,7 @@
     <title>{{company_name}}</title>
     <link rel="stylesheet" href="/static/css/manager.css">
     <link rel="stylesheet" href="/static/css/home.css">
+    <link rel="stylesheet" href="/static/css/settings.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -35,12 +36,16 @@
         {% include "dashboard/gifts.html" %}
         {% include "dashboard/clients.html" %}
         {% include "dashboard/funds.html" %}
+        {% include "dashboard/settings.html" %}
     </div>
     <div class="dashboard-menu">
         <div class="menu-items">
             <div class="menu-item master">
-                <i class="icon " style="width: 32px;" onclick="openMenuGeneral()">
+                <i id="mtdasboard-open" class="icon " style="width: 32px;" onclick="openMenuTabsDashboard(this)">
                     {% include "icon/menu.svg" %}
+                </i>
+                <i id="mtdasboard-close" class="icon " style="width: 32px; display: none;" onclick="closeMenuTabsDashboard(this)">
+                    {% include "icon/menu2.svg" %}
                 </i>
             </div>
             <div class="menu-item" onclick="switchPageManager(PageManager.CLIENTS)">
@@ -53,11 +58,6 @@
                     {% include "icon/add-card.svg" %}
                 </i>
             </div>
-            <div class="menu-item"  onclick="switchPageManager(PageManager.GIFTS)">
-                <i class="icon icon-24">
-                    {% include "icon/gift.svg" %}
-                </i>
-            </div>
             <!-- <div class="menu-item" onclick="switchPageManager(PageManager.LINKS)">
                 <i class="icon icon-24">
             
@@ -66,6 +66,11 @@
             <div class="menu-item" onclick="switchPageManager(PageManager.FUNDS)">
                 <i class="icon icon-24">
                     {% include "icon/funds.svg" %}
+                </i>
+            </div>
+            <div class="menu-item"  onclick="switchPageManager(PageManager.SETTINGS)">
+                <i class="icon icon-24">
+                    {% include "icon/settings.svg" %}
                 </i>
             </div>
         </div>
@@ -77,6 +82,7 @@
             <p id="popupMessage"></p>
         </div>
     </div>
+    <div id="generalMenu" class="year-funds-menu"></div>
 </body>
 <script src="/static/js/all.js"></script>
 <script src="/static/js/protocol.js"></script>
@@ -84,4 +90,5 @@
 <script src="/static/js/cache.js"></script>
 <script src="/static/js/clients.js"></script>
 <script src="/static/js/funds.js"></script>
+<script src="/static/js/settings.js"></script>
 </html>

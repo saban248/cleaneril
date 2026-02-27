@@ -17,6 +17,7 @@ class ServerConfig:
     FOLDER_IMAGE_PATH   = os.path.join(os.path.basename(cleaneril.static_folder), "images")
     FOLDER_IMAGE_BA   = os.path.join(FOLDER_IMAGE_PATH, "ba")
     DEFAULT_IMAGE_CARD  = os.path.join(FOLDER_IMAGE_BA,'example.jpg')
+    FOLDER_LOGOS_PATH = os.path.join(FOLDER_IMAGE_PATH, "logo")
     DEFAULT_WHATSAPP_MSG = "אשמח להזמין ניקוי ספה"
     DEFAULT_PHONE = '0585005617'
     WHATSAPP_LINK = 'https://api.whatsapp.com/send/?phone=972{phone}&text={text}&type=phone_number&app_absent=0'
@@ -50,6 +51,8 @@ class StateClient(IntFlag):
 class ManagerPermissions(IntFlag):
     VIEW            = 1<<0
     EDIT            = 1<<1
+    ADMIN           = 1<<2
+    ROOT            = 1<<3
 
 
 

@@ -58,3 +58,23 @@ function generateHex(len = 16) {
     return result;
 }
 
+
+
+function rectMenu(menu, btn, menur){
+    let top = btn.bottom + 6;
+    let left = btn.left;
+
+    // אם אין מקום למטה → תעלה למעלה
+    if (btn.bottom + menur.height > window.innerHeight) {
+        top = btn.top - menur.height - 6;
+    }
+
+    // אם יוצא ימינה → תיישר שמאלה
+    if (btn.left + menur.width > window.innerWidth) {
+        left = window.innerWidth - menur.width - 10;
+    }
+
+    menu.style.top = `${top}px`;
+    menu.style.left = `${left}px`;
+
+}

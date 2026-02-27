@@ -38,6 +38,12 @@ def get_calender_client(cc:int):
             return float("inf")
     return 0
 
+
+class ApiUploadFile(IntFlag):
+    CARD            = 1<<0
+    LOGO            = 1<<1
+
+
 def is_bwt_date(client_date:float, cc:int):
     t = time.time() - client_date
     if CalenderClients.FOREVER&cc:return True
@@ -109,6 +115,7 @@ class ApiCall(IntFlag):
     client_view = 1<<7
     client_state = 1<<8
     funds_income = 1<<9
+    conf_company = 1<<10
 
 
 def struct_builder(cls, **data):
@@ -228,9 +235,24 @@ class ResponseStruct:
 
         def build(self, **data):
             struct_builder(self, **data)
+
             self.year = int(self.year)
 
             return self
 
+    @dataclass
+    class Company:
+        #company name
+        c_name:str        = None
+        c_desc:str        = None
+        c_owner:str      = None
+        c_vat:bool      = None
+
+        def build(self, **data):
+            struct_builder(self,**data)
+
+            if self.c_vat is not None:
+                self.c_vat = bool(self.c_vat)
+            return self
 
 

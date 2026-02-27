@@ -101,4 +101,3 @@ def generate_hex(length:int=5):
     index = (length - ord(g[length])) % length
     return g[index].upper()+g
 
-

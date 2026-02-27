@@ -1,0 +1,67 @@
+from typing import Union
+
+from api.databases.ptc import cleaneril_db
+from api.ptc import generate_hex
+
+unknown = 'unknown'
+
+class Company(cleaneril_db.Model):
+    __tablename__ = "settings"
+    key = cleaneril_db.Column(cleaneril_db.Integer, nullable=False, primary_key=True)
+    logo_path = cleaneril_db.Column(cleaneril_db.String(256), nullable=False)
+    company_name = cleaneril_db.Column(cleaneril_db.String(60), nullable=False)
+    owner_fullname = cleaneril_db.Column(cleaneril_db.String(60), nullable=False)
+    company_id = cleaneril_db.Column(cleaneril_db.String(32), nullable=False)
+    manager_id = cleaneril_db.Column(cleaneril_db.String(32), nullable=False)
+    company_description = cleaneril_db.Column(cleaneril_db.String(100), nullable=False)
+    vat_company = cleaneril_db.Column(cleaneril_db.Boolean, nullable=False, default=False)
+
+
+
+
+class ApiCompany:
+
+    @staticmethod
+    def get_companies(source:bool = True, **kwargs) -> Union[Company, list[Union[dict, Company]]]:
+        companies = Company.query.filter_by(**kwargs)
+        if source:
+            return companies
+        for company in companies:del company.__dict__["_sa_instance_state"]
+
+        return companies
+
+    @staticmethod
+    def create_company(c_name:str, o_name:str, manager_id:str, c_vat:bool):
+        company = Company.query.filter_by(manager_id=manager_id).first()
+        if company:return 1
+        new_company = Company()
+        new_company.company_name = c_name
+        new_company.owner_fullname = o_name
+        new_company.manager_id = manager_id
+        new_company.vat_company = c_vat
+        new_company.company_id = generate_hex(15)
+        new_company.logo_path = "unknown"
+        new_company.company_description = "unknown"
+
+        cleaneril_db.session.add(new_company)
+        cleaneril_db.session.commit()
+
+        return 0
+
+    @staticmethod
+    def update_company_details(manager_id:str, c_name:str = None, o_name:str = None, c_vat:bool = None,
+                               c_desc:str = None):
+        company:Company = ApiCompany.get_companies(manager_id=manager_id).first()
+        if not company:return 1
+        if c_name:
+            company.company_name = c_name
+        if o_name:
+            company.owner_fullname = o_name
+        if c_vat:
+            company.vat_company = c_vat
+        if c_desc:
+            company.company_description = c_desc
+
+        cleaneril_db.session.commit()
+
+        return 0

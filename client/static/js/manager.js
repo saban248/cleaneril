@@ -19,12 +19,6 @@ function doLogin(){
     )
 }
 
-
-
-function openMenuGeneral(){
-
-}
-
 function switchPageManager(page){
     var last_page = ManagerCache.managerPage();
     if (last_page == -1){
@@ -40,6 +34,8 @@ function switchPageManager(page){
         case PageManager.GIFTS:
         case PageManager.LINKS:
         case PageManager.CARDS:
+        case PageManager.SETTINGS:
+            _page_ = document.getElementById(getPageManager(page))
         case PageManager.CLIENTS:
             _page_ = document.getElementById(getPageManager(page));
         case PageManager.FUNDS:
@@ -123,7 +119,7 @@ async function publishCard(state_card=ApiCall.card_save){
         op:off_price,
         imp:filename
     }
-    uploadImage(file, filename);
+    uploadImage(file, filename, ApiUploadFile.CARD);
     apiPost(ApiRoute.api, data).then(
         (res) =>{
             if (!res.success){
@@ -176,26 +172,98 @@ function setImage(input, imgTagId) {
 
 
 
-function uploadImage(file, name) {
-
+function uploadImage(file, name, action) {
     if (!file)return;
     const reader = new FileReader();
-    reader.onload = function () {
-        const base64Data = reader.result.split(",")[1]; // remove prefix
-        apiPost(ApiRoute.upImage, {
-            filename:name,
-            data: base64Data
-        }).then(res => {
+    switch (action){
+        case ApiUploadFile.CARD:
+        case ApiUploadFile.LOGO:
+            reader.onload = function () {
+                const base64Data = reader.result.split(",")[1]; // remove prefix
+                apiPost(ApiRoute.upImage, {
+                    filename:name,
+                    action:action,
+                    data: base64Data
+                }).then(res => {
+                    if (!res.success)return
+                    if (action == ApiUploadFile.LOGO){
+                            const setView = document.getElementById("logoView")
+                            const previewUrl = URL.createObjectURL(file);
+                            setView.src = previewUrl;
+                            setView.onload = () => {
+                                URL.revokeObjectURL(previewUrl);
+                            };
+                        location.reload();
+                    }
 
-        });
-    };
-
-    reader.readAsDataURL(file);
+                });
+            };
+            reader.readAsDataURL(file);
+        case ApiUploadFile.LOGO:
+            
+    }
 }
 
 
 
+function openMenuTabsDashboard(t){
+    showMenuGeneralItems(t)
+    const iconMenuO = document.getElementById("mtdasboard-open");
+    const iconMenuC = document.getElementById("mtdasboard-close");
+    iconMenuO.style.display = 'none';
+    iconMenuC.style.display = 'inline-flex';
+}
 
+function closeMenuTabsDashboard(){
+    const iconMenuO = document.getElementById("mtdasboard-open");
+    const iconMenuC = document.getElementById("mtdasboard-close");
+    iconMenuO.style.display = 'inline-flex';
+    iconMenuC.style.display = 'none';
+    const menu = document.getElementById("generalMenu")
+    menu.classList.remove("show")
+}
+
+
+const GeneralMenuitems = [
+    { text: "עובדים", action: (p) => switchPageManager(PageManager.USERS) || closeMenuTabsDashboard(), icon:'<i class="fa-solid fa-users"></i>'}
+]
+function showMenuGeneralItems(t){
+    const menu = document.getElementById("generalMenu")
+
+    if (menu.classList.contains("show")) {
+        menu.classList.remove("show")
+        return
+    }
+    menu.innerHTML = "";
+
+    GeneralMenuitems.forEach(item => {
+        let cma = document.createElement("div")
+        cma.className = "cma"
+        let cma1 = document.createElement('div')
+        cma1.className = "cma1"
+        cma1.innerHTML = item.icon
+        
+        let cma2 = document.createElement("div")
+        cma2.className = 'cma2'
+        cma2.textContent = item.text
+        cma.appendChild(cma1)
+        cma.appendChild(cma2)
+
+        cma.onclick = () => {
+            item.action(item.text)
+            menu.classList.remove("show")
+        }
+        menu.appendChild(cma)
+    })
+
+    const rect = t.getBoundingClientRect();
+    const menuRect = menu.getBoundingClientRect();
+    rectMenu(menu, rect, menuRect)
+
+    // ברירת מחדל – למטה
+
+    menu.classList.add("show")
+}
 
 
 

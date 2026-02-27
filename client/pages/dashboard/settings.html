@@ -1,0 +1,33 @@
+<div class="dashboard-page" id="SETTINGS">
+    <div class="page-head">
+        <h2>הגדרות מערכת</h2>
+    </div>
+    <div class="page-body">
+        <div class="conf-logo">
+            <div class="conf">
+                <span>לוגו העסק</span>
+                <div class="logo-img">
+                    <img class="conf-logo-img" src="/static/images/logo/{{company.manager_id}}.png" alt="company logo" id="logoView">
+                    <i class="fa-solid fa-image edit-logo-img" onclick="setLogo()"></i>
+                    <input type="file" id="setLogo" accept="image/*" style="display:none">
+                </div>
+            </div>
+            <div class="conf-cd">
+                <div class="conf">
+                    <span>שם העסק</span>
+                    <div onclick="editNameCompany()">
+                        <span id="nameCompanyView" class="cl-c-name">{{company.company_name}}</span>
+                        <input placeholder="שם העסק" value="{{company.company_name}}" class="input-setting input-name-company" type="hidden" maxlength="20" id="nameCompany">
+                    </div>
+                </div>
+                <div class="conf">
+                    <span>תיאור קצר לעסק</span>
+                    <div onclick="editDescCompany(this)">
+                        <span id="descCompanyView" class="cl-c-desc">{{company.company_description}}</span>
+                        <input placeholder="תיאור לעסק" value="{{company.company_description}}" class="input-setting input-desc-company" type="hidden" maxlength="30" id="descCompany">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -7,7 +7,7 @@ from zoneinfo import ZoneInfo
 
 from flask import session, request
 
-from api.api_action import get_api_action
+from api.api_action import get_api_action, api_upload_file
 from api.databases.manager import ApiManager
 from api.databases.ptc import cleaneril, ServerConfig, StateClient
 from api.ptc import ShortSession, SJson, get_dictionary_http, generate_hex
@@ -73,7 +73,9 @@ def authorize():
         return SJson.error()
 
     ShortSession.set_admin(session)
-    ShortSession.set_admin_details(session, auth)
+    details = ApiManager.get_managers(False, **breq).first().__dict__
+    del details["_sa_instance_state"]
+    ShortSession.set_admin_details(session, details)
     return SJson.success()
 
 
@@ -83,7 +85,7 @@ def api():
         return SJson.error()
 
     breq = get_dictionary_http(request)
-    get_ac = get_api_action(**breq)
+    get_ac = get_api_action(session, request, **breq)
 
     return SJson.success(**get_ac)
 
@@ -94,14 +96,6 @@ def up_image():
     if not ShortSession.is_admin(session):
         return SJson.error()
     data = request.json
-    filename = data["filename"]
-    img_data = data["data"]  # base64 string
+    response = api_upload_file(session, data)
 
-    image_bytes = base64.b64decode(img_data)
-    fullpath = os.path.join(os.path.basename(os.path.dirname(cleaneril.static_folder)), str(os.path.join(ServerConfig.FOLDER_IMAGE_BA, filename)))
-    if os.path.exists(fullpath):return SJson.success()
-
-    with open(fullpath, "wb") as f:
-        f.write(image_bytes)
-
-    return SJson.success()
+    return response

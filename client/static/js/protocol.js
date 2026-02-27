@@ -95,7 +95,9 @@ const PageManager = {
     LINKS:1<<1,
     CARDS:1<<2,
     CLIENTS:1<<3,
-    FUNDS:1<<4
+    FUNDS:1<<4,
+    SETTINGS:1<<5,
+    USERS:1<<6
 }
 
 function getPageManager(page) {
@@ -129,8 +131,16 @@ const ApiCall = {
     client_save:1<<6,
     client_view:1<<7,
     client_state:1<<8,
-    funds_income:1<<9
+    funds_income:1<<9,
+    conf_company:1<<10
 }
+
+
+const ApiUploadFile = {
+    CARD:1<<0,
+    LOGO:1<<1
+}
+
 
 window.SocialMedia = SocialMedia;
 window.PageManager = PageManager;

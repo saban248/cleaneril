@@ -4,10 +4,10 @@
 <div class="client-card" {% if editor %}id="the-client-card"{% endif %} data-ci="{{client.client_id}}">
     <div class="client-head">
         <div class="client-h-title">
-            <img src="/static/images/logo.png">
+            <img src="/static/images/logo/{{manager.manager_id}}.png">
             <div class="dcompany">
                 <span id="dc1">הזמנת ניקוי ריפודים</span>
-                <span id="dc2">הברקה בדקה • ניקוי ריפודים מקצועי</span>
+                <span id="dc2">{{company.company_name}} • {{company.company_description}}</span>
             </div>
         </div>
         <div class="client-details">

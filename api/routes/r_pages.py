@@ -6,7 +6,9 @@ from flask import session, request, jsonify, render_template, redirect, url_for,
 
 from api.databases.clients import ApiClients
 from api.databases.crads import ApiCards
+from api.databases.manager import ApiManager
 from api.databases.ptc import cleaneril, ServerConfig
+from api.databases.company import ApiCompany
 from api.ptc import special_things, SJson, ShortSession, get_dictionary_http
 from api.routes.ptc import RoutePages, Pages, ResponseStruct
 
@@ -37,8 +39,12 @@ def dashboard():
 
     breq = get_dictionary_http(request)
     dash = ResponseStruct.Dashboard().build(**breq)
+    manager = ShortSession.get_admin_details(session)
+    company = ApiCompany.get_companies(manager_id=manager["manager_id"]).first()
     return render_template(Pages.dashboard.html,
                            cards=list(reversed(ApiCards.get_cards(False).all())),
                            clients=ApiClients.get_clients_lately(dash.s, dash.c),
                            counts=[ApiClients.count_client_wait(dash.c),ApiClients.count_client_done(dash.c),
-                                   ApiClients.count_client_closed(dash.c), ApiClients.count_client_canceled(dash.c)])
+                                   ApiClients.count_client_closed(dash.c), ApiClients.count_client_canceled(dash.c)],
+                           company=company,
+                           manager=manager)
