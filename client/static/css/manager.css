@@ -394,6 +394,7 @@
 }
 
 .card-action-editor{
+    border-top:1px solid #ddd;
     display: flex;
     width: 100%;
     justify-content: center;
@@ -448,20 +449,36 @@
     font-size: 1.75rem;
     font-weight: bold;
 }
-.client-h-title>.dcompany>#dc2{
+.client-h-title>.dcompany>#dc2, .cd-calls{
     font-size: .75rem;
     color: #5f6060;
+}
+.cd-calls{
+    display: flex;
+    column-gap: 5px;
+    transform: skewX(-8deg);
+}
+.cd-calls > div > i{
+    border: 1px solid #e8ebef;
+    border-radius: 5px;
+    padding: 2px;
+    font-size: .55rem;
+}
+.cd-calls > div > span{
+    opacity: 0.8;
+    font-size: .6rem;
 }
 .c-input-fn, .c-input-date, .c-input-location, .c-input-item-name{
     padding: 5px;
     border-radius: 5px;
-    width: 80px !important;
     outline: none;
     border: 1px solid #dddddda5;
     font-size: .7rem;
+    text-align: right;
 }
 .c-inpu-p-vat{
     padding: 5px;
+    position: relative;
 }
 .c-input-date{
     font-weight: normal !important;
@@ -476,11 +493,11 @@
     font-size: .8rem;
     display: flex;
     flex-direction: row;
-    column-gap: 15px;
+    column-gap: 5px;
     justify-content: space-between;
     align-items: flex-start;
     flex-wrap: wrap;
-    row-gap: 15px;
+    row-gap: 10px;
 }
 .s-item-name{
     font-size: .8rem;
@@ -590,6 +607,8 @@
 }
 .prices{
     display: flex;
+    row-gap: 10px;
+    flex-direction: column;
     margin-bottom: 20px;
     justify-content:center;
     border-top: 1px solid #dfdfdf;
@@ -599,10 +618,48 @@
 .price-off-price{
     justify-content: right !important;
 }
+.checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #555;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    background-color: #fff;
+}
+
+/* Hover */
+.checkbox:hover {
+    border-color: #000;
+    transform: scale(1.05);
+}
+
+/* Checked state */
+.checkbox:checked {
+    background-color: #000;
+    border-color: #000;
+}
+
+/* Check mark */
+.checkbox:checked::after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 0px;
+    width: 5px;
+    height: 10px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
 .m-price{
     display: flex;
     column-gap: 5px;
     align-items: end;
+    flex-wrap: nowrap;
     line-height: 1;
 }
 .off-price{
@@ -619,15 +676,14 @@
     color: rgb(63, 152, 36);
     text-align: end;
     font-family: 'Inter', system-ui, sans-serif;
-    font-size: 32px;
     font-weight: 600;
-    color: #2e7d32; /* ירוק כמו בתמונה */
+    color: #2e7d32;
     line-height: 1;
     letter-spacing: -0.5px;
     font-variant-numeric: tabular-nums;
 }
 .price-all-off{
-    font-size: 1.4rem !important;
+    font-size: 1.3rem !important;
     text-decoration: line-through;
     text-decoration-color: rgb(230, 76, 76);
     color: #a2a2a2;

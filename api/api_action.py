@@ -61,7 +61,7 @@ def get_api_action(session, request, **breq) -> dict:
             config = ResponseStruct.Company().build(**breq)
             manager = ShortSession.get_admin_details(session)
             state = ApiCompany.update_company_details(manager["manager_id"], config.c_name,config.c_owner, config.c_vat,
-                                              config.c_desc)
+                                              config.c_desc,config.c_phone, config.c_email, config.c_vat_code)
             return {"success":bool(not state)}
 
     return {}
@@ -98,10 +98,13 @@ def api_upload_file(session, data:dict):
                 f.write(image_bytes)
         case ApiUploadFile.LOGO:
             manager_id:str = ShortSession.get_admin_details(session)["manager_id"]
+            name = manager_id+".png"
             fullpath = os.path.join(os.path.basename(os.path.dirname(cleaneril.static_folder)),
-                                    os.path.join(ServerConfig.FOLDER_LOGOS_PATH, manager_id+".png"))
+                                    os.path.join(ServerConfig.FOLDER_LOGOS_PATH, name))
             with open(fullpath, "wb") as f:
                 f.write(image_bytes)
+
+            ApiCompany.change_logo(manager_id, name)
 
 
     return SJson.success()

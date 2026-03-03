@@ -4,11 +4,20 @@
 <div class="client-card" {% if editor %}id="the-client-card"{% endif %} data-ci="{{client.client_id}}">
     <div class="client-head">
         <div class="client-h-title">
-            <img src="/static/images/logo/{{manager.manager_id}}.png">
+            <img src="/static/images/logo/{{company.logo_path}}">
             <div class="dcompany">
                 <span id="dc1">הזמנת ניקוי ריפודים</span>
+                <div class="cd-calls">
+                    <div><i class="fa-solid fa-phone-flip" ></i>
+                        <span>{{company.company_phone}}</span>
+                    </div>
+                    <div><i class="fa-solid fa-envelope"></i>
+                        <span>{{company.company_email}}</span>
+                    </div>
+                </div>
                 <span id="dc2">{{company.company_name}} • {{company.company_description}}</span>
             </div>
+
         </div>
         <div class="client-details">
             <div class="cd-item">
@@ -87,21 +96,19 @@
                 <textarea class="c-input-notes {% if not editor %}dis-notes{% endif %}" placeholder="הכנס הערות..." id="client-notes">{{client.notes}}</textarea>
             </div>
         </div>
-        <div class="prices {% if client.off%}price-off-price{%endif%}">
-            <div class="m-price">                         
+        <div class="prices{% if client.off%} price-off-price{%endif%}">
+            <div class="{% if not editor %} m-price{%endif%}">                         
                 {% if not editor %}
                     {% if client.off%}
                         <span class="price-all {{client.off}}">{{client.price-client.off_price}}<span style="color: #6e6e6e;font-size: 1.1rem;">₪</span></span>
                     {%endif%}
                     <span class="price-all {% if client.off%}price-all-off{%endif%}">{{client.price}}<span id='spnprice' style="color: #6e6e6e;font-size: 1.1rem;">₪</span></span>
-                    <span class="p-vat">{% if client.vat%}כולל{%endif%} מע"מ</span> 
+                    <span class="p-vat">כולל מע"מ</span> 
                 {%else%}
-                    <input type="tel" class="c-input-fn price-all" placeholder="0.00" id="client-price" value="{{client.price | int}}">
-                    <div class="c-inpu-p-vat">
-                        <input type="checkbox" checked="true" id="client-vat">
-                        מע"מ
+                    <div class="off-price">
+                        <span>מחיר סופי (לפני הנחה / הוצאות)</span>
+                        <input type="tel" class="c-input-fn price-all" placeholder="0.00" id="client-price" value="{{client.price | int}}">
                     </div>
-
                 {%endif%}
             </div> 
             {% if editor %}
@@ -110,8 +117,12 @@
                 <input type="tel" class="c-input-fn price-all" placeholder="0.00" id="client-off-price" value="{{client.off_price|int}}">
             </div>
             <div class="off-price">
-                <span>הוצאות</span>
+                <span>הוצאות דלק / פרסום</span>
                 <input type="tel" class="c-input-fn price-all" placeholder="0.00" id="client-expense" value="{{client.expense}}">
+            </div>
+            <div class="off-price">
+                <span>הוסף מע"מ</span>
+                <input class="checkbox" type="checkbox" id="client-vat" onclick="compareVatOfPrice(this)">
             </div>
             {%endif%}          
         </div>
@@ -130,8 +141,10 @@
     </div>
     <div class="client-footer {% if not editor %} disable {%endif%}">
         <div class="card-action-editor">
+            <i class="fa-solid fa-user-xmark" onclick="publishClient('{{client.client_id}}', StateClient.CANCELED)"></i>
             <i class="fa-solid fa-person-circle-question" onclick="publishClient('{{client.client_id}}', StateClient.WAIT)"></i>
             <i class="fa-solid fa-user-clock" onclick="publishClient('{{client.client_id}}', StateClient.CLOSED)"></i>
+            <i class="fa-solid fa-user-check" onclick="publishClient('{{client.client_id}}', StateClient.DONE)"></i>
         </div>
     </div>
 </div>

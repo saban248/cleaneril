@@ -7,7 +7,7 @@
             <div class="conf">
                 <span>לוגו העסק</span>
                 <div class="logo-img">
-                    <img class="conf-logo-img" src="/static/images/logo/{{company.manager_id}}.png" alt="company logo" id="logoView">
+                    <img class="conf-logo-img" src="/static/images/logo/{{company.logo_path}}" alt="company logo" id="logoView">
                     <i class="fa-solid fa-image edit-logo-img" onclick="setLogo()"></i>
                     <input type="file" id="setLogo" accept="image/*" style="display:none">
                 </div>
@@ -25,6 +25,27 @@
                     <div onclick="editDescCompany(this)">
                         <span id="descCompanyView" class="cl-c-desc">{{company.company_description}}</span>
                         <input placeholder="תיאור לעסק" value="{{company.company_description}}" class="input-setting input-desc-company" type="hidden" maxlength="30" id="descCompany">
+                    </div>
+                </div>
+                <div class="conf">
+                    <span>מספר פאלפון - בעלים</span>
+                    <div onclick="editPhoneCompany(this)">
+                        <span id="phoneCompanyView" class="cl-c-desc">{{company.company_phone}}</span>
+                        <input placeholder="מספר פאלפון לעסק" value="{{company.company_phone}}" class="input-setting input-desc-company" type="hidden" maxlength="30" id="phoneCompany">
+                    </div>
+                </div>
+                <div class="conf">
+                    <span>אימייל העסק</span>
+                    <div onclick="editEmailCompany(this)">
+                        <span id="emailCompanyView" class="cl-c-desc">{{company.company_email}}</span>
+                        <input placeholder="מספר אימייל לעסק" value="{{company.company_email}}" class="input-setting input-desc-company" type="hidden" maxlength="30" id="emailCompany">
+                    </div>
+                </div>
+                <div class="conf">
+                    <span>מספר עוסק</span>
+                    <div onclick="editVATCompany(this)">
+                        <span id="VATCompanyView" class="cl-c-desc">{{company.company_VAT}}</span>
+                        <input placeholder="מספר עוסק פטור/מורשה" value="{{company.company_VAT}}" class="input-setting input-desc-company" type="hidden" maxlength="30" id="VATCompany">
                     </div>
                 </div>
             </div>

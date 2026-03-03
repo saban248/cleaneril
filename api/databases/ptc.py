@@ -18,10 +18,12 @@ class ServerConfig:
     FOLDER_IMAGE_BA   = os.path.join(FOLDER_IMAGE_PATH, "ba")
     DEFAULT_IMAGE_CARD  = os.path.join(FOLDER_IMAGE_BA,'example.jpg')
     FOLDER_LOGOS_PATH = os.path.join(FOLDER_IMAGE_PATH, "logo")
+    DEFAULT_COMPANY_LOGO = "default_logo.png"
     DEFAULT_WHATSAPP_MSG = "אשמח להזמין ניקוי ספה"
     DEFAULT_PHONE = '0585005617'
     WHATSAPP_LINK = 'https://api.whatsapp.com/send/?phone=972{phone}&text={text}&type=phone_number&app_absent=0'
     DEFAULT_WHATSAPP_LINK = WHATSAPP_LINK.format(phone=DEFAULT_PHONE, text=DEFAULT_WHATSAPP_MSG)
+    DEFAULT_COMPANY_EMAIL = "example@company.com"
 
 
 cleaneril.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{FILE_NAME_DB}.db"

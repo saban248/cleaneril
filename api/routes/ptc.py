@@ -246,13 +246,18 @@ class ResponseStruct:
         c_name:str        = None
         c_desc:str        = None
         c_owner:str      = None
+        c_email:str     = None
         c_vat:bool      = None
+        c_vat_code:int      = None
+        c_phone:str     = None
 
         def build(self, **data):
             struct_builder(self,**data)
 
             if self.c_vat is not None:
                 self.c_vat = bool(self.c_vat)
+            if self.c_vat_code:
+                self.c_vat_code = int(self.c_vat_code)
             return self
 
 

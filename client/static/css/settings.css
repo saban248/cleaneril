@@ -100,3 +100,14 @@
 .input-name-company{
     font-size: 1.5rem;
 }
+
+
+
+
+@media (max-width: 768px) {
+
+    .conf-logo-img{
+        width: 64px !important;
+        height: 64px;
+    }
+}

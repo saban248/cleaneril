@@ -88,7 +88,9 @@ function addItemOrder() {
 
 
     const inputPrice = document.createElement("input");
+    inputPrice.oninput = (e)=>{mainSyncTotalPrice(e.target)}
     inputPrice.classList.add('c-input-fn')
+    inputPrice.type = 'tel'
     inputPrice.id = `${div.id}-price`
 
     const trash = document.createElement('i')
@@ -101,11 +103,48 @@ function addItemOrder() {
 }
 
 function deleteItemOrder(id_order){
-    document.getElementById(id_order)?.remove()
+    const parent = document.getElementById(id_order) 
+    const element = document.getElementById(id_order+"-price")
+    element.value = -parseInt(element.innerText)
+    mainSyncTotalPrice(element)
     delete c_runtime.items_ordered[id_order]
+    parent.remove()
 }
 
 
+function mainSyncTotalPrice(element){
+    var currentValue = element.value;
+    if (!currentValue == '' && !/^\d+$/.test(currentValue))return
+    if (currentValue == ''){currentValue = 0}
+    const clientPrice = document.getElementById("client-price")
+    const __items_ordered = document.getElementById('items-ordered').children.length;
+    let total = 0
+    for (let i=1;i<__items_ordered;i++){
+        var p = document.getElementById(i+'-price'); 
+        const value = p?.value?p.value.replace(/[^\d]/g, ""):p.innerText.replace(/[^\d]/g, "")
+        if (element == p)continue
+        total += parseInt((value||0))
+    }
+
+    clientPrice.value = total+parseInt(currentValue)
+}
+
+function compareVatOfPrice(t){
+    const p_element = document.getElementById("client-price")
+    const price = parseInt(p_element.value)
+    const plhldr = parseInt(p_element.placeholder)
+    if (!t.checked){
+        p_element.value = plhldr
+        return
+    }
+
+    p_element.value = price+(price*0.18)
+    p_element.placeholder = price
+
+
+
+
+}
 
 function publishClient(client_id, state){
     const fullname = document.getElementById('fullname').value;
