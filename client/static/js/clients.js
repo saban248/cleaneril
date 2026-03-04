@@ -157,10 +157,10 @@ function publishClient(client_id, state){
     const address = document.getElementById('client-location').value;
     const phone = document.getElementById('client-phone').value;
     const __items_ordered = document.getElementById('items-ordered').children.length;
-
-    for (let i=1;i<__items_ordered;i++){
+    for (let i=1;i<=__items_ordered;i++){
         var n = document.getElementById(i+'-name');
         var p = document.getElementById(i+'-price'); 
+        if (n==null||p==null)continue
         c_runtime.items_ordered[i] = {name:n.value||n.textContent, price:parseInt((p.value||p.textContent).replace(/\D+/g, ''),10)}
     }
     const notes = document.getElementById('client-notes').value;
@@ -184,7 +184,7 @@ function publishClient(client_id, state){
                 return
             }
             closeCreateClient(true)
-            location.reload()
+            // location.reload()
         }
     )
 
