@@ -1,6 +1,7 @@
 const c_runtime = {
     items_ordered:{},
-    state_client_selected:0
+    state_client_selected:0,
+    workers:[]
 }
 
 function viewclientDetails(client_id){
@@ -38,6 +39,9 @@ function createClient(client_id=null){
 
             const editBody = document.getElementById('client-template')
             editBody.innerHTML = res.template;
+            if (CONFIG.CLIENT_EDIT){
+                onLoadEditClient()
+            }
             
         }
     )
@@ -356,6 +360,60 @@ function openMenuCalander(t){
 
     menu.classList.add("show")
 } 
+
+function onLoadEditClient(){
+    fetchWorkers()
+    const input = document.getElementById("client-worker");
+    const dropdown = document.getElementById("worker-dropdown");
+
+    input.addEventListener("input", () => {
+
+        const value = input.value.toLowerCase();
+        dropdown.innerHTML = "";
+
+        const filtered = c_runtime.workers.filter(w =>
+            w.toLowerCase().includes(value)
+        );
+
+        if(filtered.length === 0){
+            dropdown.style.display = "none";
+            return;
+        }
+
+        filtered.forEach(worker=>{
+            const div = document.createElement("div");
+            div.className = "worker-item";
+            div.textContent = worker;
+
+            div.onclick = () =>{
+                input.value = worker;
+                dropdown.style.display = "none";
+            };
+
+            dropdown.appendChild(div);
+        });
+
+        dropdown.style.display = "block";
+    });
+
+    document.addEventListener("click",(e)=>{
+        if(!e.target.closest(".worker-select")){
+            dropdown.style.display = "none";
+        }
+    });
+}
+
+function fetchWorkers(){
+    const data = {action:ApiCall.client_workers}
+    apiPost(ApiRoute.api, data).then( res =>{
+        if (!res.success){
+            openPopup(res.title, res.notice);
+            return;
+        }
+        c_runtime.workers = res.workers;
+
+    })
+}
 
 
 // סגירה בלחיצה מחוץ

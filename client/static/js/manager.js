@@ -20,6 +20,7 @@ function doLogin(){
 }
 
 function switchPageManager(page){
+    closeMenuTabsDashboard()
     var last_page = ManagerCache.managerPage();
     if (last_page == -1){
         last_page = PageManager.CLIENTS
@@ -30,6 +31,7 @@ function switchPageManager(page){
     const lp = document.getElementById(getPageManager(last_page));
     lp.classList.remove("show")
     var _page_ = null;
+    console.log(page)
     switch (page) {
         case PageManager.GIFTS:
         case PageManager.LINKS:
@@ -39,6 +41,8 @@ function switchPageManager(page){
         case PageManager.CLIENTS:
             _page_ = document.getElementById(getPageManager(page));
         case PageManager.FUNDS:
+            _page_ = document.getElementById(getPageManager(page))
+        case PageManager.WORKERS:
             _page_ = document.getElementById(getPageManager(page))
     
         default:
@@ -221,14 +225,17 @@ function closeMenuTabsDashboard(){
     iconMenuC.style.display = 'none';
     const menu = document.getElementById("generalMenu")
     menu.classList.remove("show")
+    const mMaster = document.getElementById("menuMaster")
+    mMaster.classList.remove("open")
 }
 
 
 const GeneralMenuitems = [
-    { text: "עובדים", action: (p) => switchPageManager(PageManager.USERS) || closeMenuTabsDashboard(), icon:'<i class="fa-solid fa-users"></i>'}
+    { text: "עובדים", action: (p) => switchPageManager(PageManager.WORKERS), icon:'<i class="fa-solid fa-users"></i>'}
 ]
 function showMenuGeneralItems(t){
     const menu = document.getElementById("generalMenu")
+    const mMaster = document.getElementById("menuMaster")
 
     if (menu.classList.contains("show")) {
         menu.classList.remove("show")
@@ -238,7 +245,7 @@ function showMenuGeneralItems(t){
 
     GeneralMenuitems.forEach(item => {
         let cma = document.createElement("div")
-        cma.className = "cma"
+        cma.className = "master-menu-item"
         let cma1 = document.createElement('div')
         cma1.className = "cma1"
         cma1.innerHTML = item.icon
@@ -256,13 +263,10 @@ function showMenuGeneralItems(t){
         menu.appendChild(cma)
     })
 
-    const rect = t.getBoundingClientRect();
-    const menuRect = menu.getBoundingClientRect();
-    rectMenu(menu, rect, menuRect)
-
     // ברירת מחדל – למטה
 
     menu.classList.add("show")
+    mMaster.classList.add('open')
 }
 
 

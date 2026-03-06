@@ -118,10 +118,10 @@
     margin: 10px;
     display: flex;
     justify-content: space-around;
-    align-items: center;
+    align-items: start;
 }
 
-.menu-item{
+.menu-item, .master-menu-item{
     background: white;
     position: relative;
     padding: 7px;
@@ -135,15 +135,33 @@
     box-shadow: 0 0 11px #ddd;
     transform: scale(1.2);
 }
+.master-menu-item{
+    display: flex;
+    justify-content: space-between;
+}
 
 .master{
-    width: 48px;
+    width: 48px !important;
     height: auto;
     text-align: center;
     transform: scale(1.2);
     top: -15px;
+    position: relative;
 }
 
+.master.open{
+    width: 110px !important;
+    top: -50px;
+    transform: scale(1.0);
+}
+.menu-master{
+    display: none;
+
+
+}
+.menu-master.show{
+    display: block;
+}
 .dashboard-page{
     display: none;
     padding: 1.75rem;
@@ -468,7 +486,7 @@
     opacity: 0.8;
     font-size: .6rem;
 }
-.c-input-fn, .c-input-date, .c-input-location, .c-input-item-name{
+.c-input-fn, .c-input-date, .c-input-location, .c-input-item-name, .c-input-fw{
     padding: 5px;
     border-radius: 5px;
     outline: none;
@@ -488,6 +506,10 @@
 }
 .c-input-item-name{
     width: 95% !important;
+}
+.c-input-fw{
+    text-align: start !important;
+    font-size: 1rem !important;
 }
 .client-details{
     font-size: .8rem;
@@ -755,7 +777,7 @@
     transform: scale(1);
     pointer-events: auto;
 }
-.client-menu-action > .cma, .year-funds-menu > .cma, .calander-clients-menu > .cma{
+.cma{
     display: flex;
     border: 1px solid #ddd;
     border-radius: 2px;

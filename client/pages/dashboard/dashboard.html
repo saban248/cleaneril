@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/static/css/manager.css">
     <link rel="stylesheet" href="/static/css/home.css">
     <link rel="stylesheet" href="/static/css/settings.css">
+    <link rel="stylesheet" href="/static/css/clients.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -37,16 +38,19 @@
         {% include "dashboard/clients.html" %}
         {% include "dashboard/funds.html" %}
         {% include "dashboard/settings.html" %}
+        {% include "dashboard/workers.html" %}
     </div>
-    <div class="dashboard-menu">
+        <div class="dashboard-menu">
         <div class="menu-items">
-            <div class="menu-item master">
+            <div class="menu-item master" id="menuMaster">
+
                 <i id="mtdasboard-open" class="icon " style="width: 32px;" onclick="openMenuTabsDashboard(this)">
                     {% include "icon/menu.svg" %}
                 </i>
                 <i id="mtdasboard-close" class="icon " style="width: 32px; display: none;" onclick="closeMenuTabsDashboard(this)">
-                    {% include "icon/menu2.svg" %}
+                    {% include "icon/close.svg" %}
                 </i>
+                <div id="generalMenu" class="menu-master"></div>
             </div>
             <div class="menu-item" onclick="switchPageManager(PageManager.CLIENTS)">
                 <i class="icon icon-24">
@@ -82,7 +86,6 @@
             <p id="popupMessage"></p>
         </div>
     </div>
-    <div id="generalMenu" class="year-funds-menu"></div>
 </body>
 <script src="/static/js/all.js"></script>
 <script src="/static/js/protocol.js"></script>
@@ -91,4 +94,5 @@
 <script src="/static/js/clients.js"></script>
 <script src="/static/js/funds.js"></script>
 <script src="/static/js/settings.js"></script>
+<script src="/static/js/workers.js"></script>
 </html>

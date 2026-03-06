@@ -6,7 +6,9 @@ from flask import render_template_string, render_template
 from api.databases.clients import Clients, ApiClients
 from api.databases.company import ApiCompany
 from api.databases.crads import ApiCards, Cards
+from api.databases.employee import ApiEmployee
 from api.databases.funds import ApiFunds
+from api.databases.manager import ApiManager
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril
 from api.ptc import special_things, SJson, ShortSession
 from api.routes.ptc import Pages, ApiCall, ResponseStruct, ApiUploadFile
@@ -26,10 +28,12 @@ def get_api_action(session, request, **breq) -> dict:
             client = ResponseStruct.ClientEditor().build(**breq)
             return {"template":get_client_template(manager, client.ci, False)}
         case ApiCall.client_save:
+            manager_id = ShortSession.get_admin_details(session)["manager_id"]
             client = ResponseStruct.ClientEditor().build(**breq)
             _stat_ = ApiClients.add_client(client.ci,client.s,client.phone,client.i,
                                            client.o,client.op,client.fn,client.date,client.address,
-                                           client.lf,client.notes,client.price,client.vat, client.ex)
+                                           client.lf,client.notes,client.price,client.vat, client.ex,
+                                           client.worker or manager_id)
             return {'client_id':client.ci}
         case ApiCall.card_draft | ApiCall.card_save:
             if ApiCall.card_draft&action:state = StateDocument.DRAFT
@@ -61,8 +65,13 @@ def get_api_action(session, request, **breq) -> dict:
             config = ResponseStruct.Company().build(**breq)
             manager = ShortSession.get_admin_details(session)
             state = ApiCompany.update_company_details(manager["manager_id"], config.c_name,config.c_owner, config.c_vat,
-                                              config.c_desc,config.c_phone, config.c_email, config.c_vat_code)
+                                              config.c_desc,config.c_phone, config.c_email, config.c_vat_code,
+                                                      config.c_gpse)
             return {"success":bool(not state)}
+        case ApiCall.client_workers:
+            manager = ShortSession.get_admin_details(session)
+            workers = list(ApiEmployee.get_employees(manager_id=manager["manager_id"]).all())
+            return {"workers":workers}
 
     return {}
 

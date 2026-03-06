@@ -97,7 +97,7 @@ const PageManager = {
     CLIENTS:1<<3,
     FUNDS:1<<4,
     SETTINGS:1<<5,
-    USERS:1<<6
+    WORKERS:1<<6
 }
 
 function getPageManager(page) {
@@ -132,7 +132,8 @@ const ApiCall = {
     client_view:1<<7,
     client_state:1<<8,
     funds_income:1<<9,
-    conf_company:1<<10
+    conf_company:1<<10,
+    client_workers:1<<11
 }
 
 

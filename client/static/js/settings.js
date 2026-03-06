@@ -87,6 +87,18 @@ function saveEditVATCompany(){
     saveConfig(view, input, {c_vat_code:input.value})
 }
 
+function editGPSECompany(){
+    const view = document.getElementById("GPSECompanyView")
+    const input = document.getElementById("GPSECompany")
+    editConfig(view, input)
+}
+
+function saveGPSECompany(){
+    const view = document.getElementById("GPSECompanyView")
+    const input = document.getElementById("GPSECompany")
+    saveConfig(view,input, {c_gpse:input.value.replace(/\D+/g, '')})
+}
+
 document.addEventListener("DOMContentLoaded", function (){
     const inputLogo = document.getElementById("setLogo");
     const inputName = document.getElementById("nameCompany")
@@ -94,6 +106,7 @@ document.addEventListener("DOMContentLoaded", function (){
     const inputPhone = document.getElementById("phoneCompany")
     const inputEmail = document.getElementById("emailCompany")
     const inputVAT = document.getElementById("VATCompany")
+    const inputGPSE = document.getElementById("GPSECompany")
     inputLogo.addEventListener("change", async () => {
         uploadImage(inputLogo.files[0], "nullptr", ApiUploadFile.LOGO)
     });
@@ -112,5 +125,8 @@ document.addEventListener("DOMContentLoaded", function (){
 
     inputVAT.addEventListener("blur", () => {saveEditVATCompany()});
     inputVAT.addEventListener("keydown", (e) => {if (e.key === "Enter") {saveEditVATCompany()}})
+
+    inputGPSE.addEventListener("blur", () => {saveGPSECompany()});
+    inputGPSE.addEventListener("keydown", (e) => {if (e.key === "Enter") {saveGPSECompany()}})
 
 });

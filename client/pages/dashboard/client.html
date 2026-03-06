@@ -126,6 +126,15 @@
             </div>
             {%endif%}          
         </div>
+        {% if editor %}
+        <div class="prices{% if client.off%} price-off-price{%endif%}">
+            <div class="off-price worker-select">
+                <span>קבלן / עובד מבצע</span>
+                    <input type="text" class="c-input-fw price-all" placeholder="חפש עובד" id="client-worker" autocomplete="off">
+                    <div class="worker-dropdown" id="worker-dropdown" style="display: none;"></div>
+            </div>
+        </div>
+        {% endif %}
         {% if not editor %}
         <div class="price-notes">
             <i class="fa-solid fa-circle-info"></i>

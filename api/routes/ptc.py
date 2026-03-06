@@ -116,6 +116,7 @@ class ApiCall(IntFlag):
     client_state = 1<<8
     funds_income = 1<<9
     conf_company = 1<<10
+    client_workers = 1<<11
 
 
 def struct_builder(cls, **data):
@@ -199,6 +200,7 @@ class ResponseStruct:
         price:int           = None
         vat:bool            = None
         ex:float       = None
+        worker:str      = None
         def build(self, **data):
             struct_builder(self, **data)
             self.o = bool(self.o)
@@ -250,6 +252,7 @@ class ResponseStruct:
         c_vat:bool      = None
         c_vat_code:int      = None
         c_phone:str     = None
+        c_gpse:int      = None
 
         def build(self, **data):
             struct_builder(self,**data)
@@ -258,6 +261,8 @@ class ResponseStruct:
                 self.c_vat = bool(self.c_vat)
             if self.c_vat_code:
                 self.c_vat_code = int(self.c_vat_code)
+            if self.c_gpse:
+                self.c_gpse = int(self.c_gpse)
             return self
 
 

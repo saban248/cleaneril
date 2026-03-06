@@ -18,6 +18,8 @@ class Company(cleaneril_db.Model):
     company_phone = cleaneril_db.Column(cleaneril_db.String(20), nullable=False, default=False)
     company_email = cleaneril_db.Column(cleaneril_db.String(50), nullable=False, default=False)
     company_VAT = cleaneril_db.Column(cleaneril_db.String(32), nullable=False, default=False)
+    # general profit sharing employee
+    gpse = cleaneril_db.Column(cleaneril_db.Integer, nullable=True, default=50)
 
 
 class ApiCompany:
@@ -46,6 +48,7 @@ class ApiCompany:
         new_company.company_phone = "unknown"
         new_company.company_email = ServerConfig.DEFAULT_COMPANY_EMAIL
         new_company.company_VAT = "000-000-000"
+        new_company.gpse = ServerConfig.DEFAULT_GPSE
 
         cleaneril_db.session.add(new_company)
         cleaneril_db.session.commit()
@@ -54,7 +57,8 @@ class ApiCompany:
 
     @staticmethod
     def update_company_details(manager_id:str, c_name:str = None, o_name:str = None, c_vat:bool = None,
-                               c_desc:str = None, c_phone:str = None, c_email:str = None, c_vat_code:str = None):
+                               c_desc:str = None, c_phone:str = None, c_email:str = None, c_vat_code:str = None,
+                               c_gpse:int = None):
         company:Company = ApiCompany.get_companies(manager_id=manager_id).first()
         if not company:return 1
         if c_name:
@@ -71,6 +75,8 @@ class ApiCompany:
             company.company_email = c_email
         if c_vat_code:
             company.company_VAT = c_vat_code
+        if c_gpse:
+            company.gpse = c_gpse
 
         cleaneril_db.session.commit()
 

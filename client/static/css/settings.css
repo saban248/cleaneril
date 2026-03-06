@@ -1,12 +1,29 @@
 
 
 
-.conf-logo{
+.main-config{
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+.conf-group{
     display: flex;
     align-items: start;
     column-gap: 10px;
-    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 20px;
     
+}
+
+.conf-group::before{
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 2px;
+    background: #f5f5f5d9;
 }
 
 
@@ -15,9 +32,16 @@
     border: 1px solid #ffffff;
     transition: 200ms;
 }
-.conf-logo-img{
+
+.conf-group-img, .conf-group-icon{
     width: 128px !important;
     height: 128px;
+
+}
+.conf-group-icon{
+    text-align: center;
+    width: 90px;
+    height: 90px;
 }
 .logo-img:hover .edit-logo-img{
     display: block !important;
