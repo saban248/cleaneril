@@ -262,7 +262,7 @@
 .card-body, .client-body, .worker-body{
 
 }
-.card-footer, .client-footer{
+.card-footer, .client-footer, .worker-footer{
     display: flex;
     justify-content: space-around;
     column-gap: 10px;
@@ -411,7 +411,7 @@
    max-width: 100% !important;
 }
 
-.card-action-editor{
+.card-action-editor, .worker-action{
     border-top:1px solid #ddd;
     display: flex;
     width: 100%;

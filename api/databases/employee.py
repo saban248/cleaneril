@@ -17,6 +17,7 @@ class Employee(cleaneril_db.Model):
     idc = cleaneril_db.Column(cleaneril_db.String(14), nullable=False)
     manager_id = cleaneril_db.Column(cleaneril_db.String(32), nullable=False)
     profit_sharing = cleaneril_db.Column(cleaneril_db.Integer, nullable=False)
+    pay_vat = cleaneril_db.Column(cleaneril_db.Boolean, nullable=False, default=False)
 
 
 class ApiEmployee:
@@ -24,14 +25,14 @@ class ApiEmployee:
     @staticmethod
     def create_employee(employee_id:str, manager_id:str):
         worker = None
-        if worker:
+        if employee_id:
             worker = ApiEmployee.get_employees(employee_id=employee_id).first()
         if worker:return worker
         return ApiEmployee.add_employee(ServerConfig.DEF_wNAME, ServerConfig.DEF_wPWD, manager_id, employee_id)
 
     @staticmethod
     def add_employee(name:str, pwd:str, mid:str, employee_id:str = None, permission:int = ManagerPermissions.VIEW,
-                        phone:str = unknown, idc:str = "0", ps:int = ServerConfig.DEFAULT_GPSE):
+                        phone:str = unknown, idc:str = "0", ps:int = ServerConfig.DEFAULT_GPSE, pay_vat:bool = False):
         employee = None
         if not employee_id:
             employee = Employee()
@@ -46,6 +47,7 @@ class ApiEmployee:
         employee.manager_id = mid
         employee.profit_sharing = ps
         employee.permission = permission
+        employee.pay_vat = pay_vat
         if not employee_id:
             cleaneril_db.session.add(employee)
         cleaneril_db.session.commit()
@@ -57,8 +59,12 @@ class ApiEmployee:
         if source:
             return employees
 
-        for employee in employees: del employee.__dict__['_sa_instance_state']
-        return employees
+        return [{c.name: getattr(e, c.name) for c in e.__table__.columns}for e in employees]
+
+    @staticmethod
+    def get_employees_search(manager_id):
+        employees = ApiEmployee.get_employees(manager_id=manager_id)
+        return [{"username":e.username, "employee_id":e.employee_id}for e in employees]
 
     @staticmethod
     def auth(**kwargs):
@@ -68,4 +74,12 @@ class ApiEmployee:
 
         return 0
 
+    @staticmethod
+    def delete_employee(mid:str, wid:str):
+        employee = ApiEmployee.get_employees(manager_id=mid, employee_id=wid).first()
+        if not employee:
+            return 1
 
+        cleaneril_db.session.delete(employee)
+        cleaneril_db.session.commit()
+        return 0

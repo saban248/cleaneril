@@ -8,6 +8,7 @@ from zoneinfo import ZoneInfo
 from flask import session, request
 
 from api.api_action import get_api_action, api_upload_file
+from api.databases.employee import Employee
 from api.databases.manager import ApiManager
 from api.databases.ptc import cleaneril, ServerConfig, StateClient
 from api.ptc import ShortSession, SJson, get_dictionary_http, generate_hex
@@ -59,6 +60,10 @@ def client_flag_text(flag):
             return "בהמתנה"
         case StateClient.DONE:
             return "הושלם"
+
+@cleaneril.template_filter("eper")
+def employee_permission(employee:Employee, flag:int):
+    return flag & employee.permission
 
 
 @cleaneril.route(RouteApi.do_auth.path, methods=["POST"])

@@ -17,6 +17,7 @@ from api.routes.ptc import Pages, ApiCall, ResponseStruct, ApiUploadFile
 def get_api_action(session, request, **breq) -> dict:
     action = int(breq.get("action", -1))
     manager = ShortSession.get_admin_details(session)
+    manager_id = manager["manager_id"]
     match action:
         case ApiCall.card_editor:
             card = ResponseStruct.CardEditor().build(**breq)
@@ -28,7 +29,6 @@ def get_api_action(session, request, **breq) -> dict:
             client = ResponseStruct.ClientEditor().build(**breq)
             return {"template":get_client_template(manager, client.ci, False)}
         case ApiCall.client_save:
-            manager_id = ShortSession.get_admin_details(session)["manager_id"]
             client = ResponseStruct.ClientEditor().build(**breq)
             _stat_ = ApiClients.add_client(client.ci,client.s,client.phone,client.i,
                                            client.o,client.op,client.fn,client.date,client.address,
@@ -63,14 +63,12 @@ def get_api_action(session, request, **breq) -> dict:
             return data
         case ApiCall.conf_company:
             config = ResponseStruct.Company().build(**breq)
-            manager = ShortSession.get_admin_details(session)
-            state = ApiCompany.update_company_details(manager["manager_id"], config.c_name,config.c_owner, config.c_vat,
+            state = ApiCompany.update_company_details(manager_id, config.c_name,config.c_owner, config.c_vat,
                                               config.c_desc,config.c_phone, config.c_email, config.c_vat_code,
                                                       config.c_gpse)
             return {"success":bool(not state)}
         case ApiCall.client_workers:
-            manager = ShortSession.get_admin_details(session)
-            workers = list(ApiEmployee.get_employees(manager_id=manager["manager_id"]).all())
+            workers = list(ApiEmployee.get_employees_search(manager_id=manager_id))
             return {"workers":workers}
         case ApiCall.worker_editor:
             worker = ResponseStruct.Employee().build(**breq)
@@ -80,10 +78,13 @@ def get_api_action(session, request, **breq) -> dict:
             return {"template": get_worker_template(manager, worker.wid, False)}
         case ApiCall.worker_save:
             worker = ResponseStruct.Employee().build(**breq)
-            manager_id = ShortSession.get_admin_details(session)["manager_id"]
             empl = ApiEmployee.add_employee(worker.e_name, worker.e_pwd, manager_id, worker.wid,
-                                               worker.permission,worker.e_phone,worker.e_idc, worker.ps)
+                                               worker.permission,worker.e_phone,worker.e_idc, worker.ps, worker.pvat)
             return {"success":bool(empl)}
+        case ApiCall.worker_delete:
+            worker = ResponseStruct.Employee().build(**breq)
+            _state_ = ApiEmployee.delete_employee(manager_id, worker.wid)
+            return {"success":bool(not _state_)}
 
 
     return {}

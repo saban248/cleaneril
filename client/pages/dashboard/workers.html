@@ -12,9 +12,21 @@
         <div class="list-workers">
             {% for worker in workers %}
                 <div class="worker-item" data-key="{{worker.key}}" id="{{worker.employee_id}}">
-
+                    <div class="client-title">
+                        <div class="ctitle">{{ worker.username }}
+                            <span class="ctype-1">{{worker.permission}}</span>
+                        </div>
+                        <div class="ctype">
+                        </div>
+                    </div>
+                    <div class="client-body"></div>
+                    <div class="client-footer">
+                        <i class="fa-solid fa-eye" onclick="viewEmployeeDetails('{{worker.employee_id}}')"></i>
+                        <i class="fa-solid fa-bars menu-client" onclick="openMenuWorker(this, '{{worker.employee_id}}')"></i>
+                    </div>
                 </div>
             {% endfor %}
+            <div id="workerMenu" class="client-menu-action"></div>
         </div>
     </div>
 

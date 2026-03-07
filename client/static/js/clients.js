@@ -39,7 +39,7 @@ function createClient(client_id=null){
 
             const editBody = document.getElementById('client-template')
             editBody.innerHTML = res.template;
-            if (CONFIG.CLIENT_EDIT){
+            if (CONFIG.CLIENT_EDIT || !client_id){
                 onLoadEditClient()
             }
             
@@ -187,7 +187,7 @@ function publishClient(client_id, state){
                 return
             }
             closeCreateClient(true)
-            // location.reload()
+            location.reload()
         }
     )
 
@@ -371,7 +371,7 @@ function onLoadEditClient(){
         dropdown.innerHTML = "";
 
         const filtered = c_runtime.workers.filter(w =>
-            w.toLowerCase().includes(value)
+            w.username.toLowerCase().includes(value)
         );
 
         if(filtered.length === 0){
@@ -382,10 +382,10 @@ function onLoadEditClient(){
         filtered.forEach(worker=>{
             const div = document.createElement("div");
             div.className = "worker-item";
-            div.textContent = worker;
+            div.textContent = worker.username;
 
             div.onclick = () =>{
-                input.value = worker;
+                input.value = worker.username;
                 dropdown.style.display = "none";
             };
 

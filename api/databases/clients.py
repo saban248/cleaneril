@@ -41,9 +41,8 @@ class ApiClients:
         clients = Clients.query.filter_by(**kwargs)
         if source:
             return clients
-        for card in clients:del card.__dict__["_sa_instance_state"]
 
-        return clients
+        return [{c.name: getattr(e, c.name) for c in e.__table__.columns} for e in clients]
 
     @staticmethod
     def create_client(client_id:str):

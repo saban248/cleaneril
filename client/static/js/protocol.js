@@ -116,6 +116,11 @@ function getPageManager(page) {
     return result;
 }
 
+const mPermissions = {
+    VIEW:1<<0,
+    EDIT:1<<1,
+    ADMIN:1<<2
+}
 
 const ApiRoute = {
     auth:"do_auth",

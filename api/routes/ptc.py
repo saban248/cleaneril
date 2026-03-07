@@ -277,6 +277,7 @@ class ResponseStruct:
         e_idc:str           = None
         wid:str             = None
         ps:int              = None
+        pvat:bool           = None
         permission:int      = None
 
         def build(self, **data):
@@ -285,6 +286,8 @@ class ResponseStruct:
                 self.permission = int(self.permission)
             if self.ps:
                 self.ps = int(self.ps)
+            if self.pvat is not None:
+                self.pvat = bool(self.pvat)
             return self
 
 
