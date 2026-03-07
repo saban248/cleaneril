@@ -1,0 +1,76 @@
+{% macro render_employee(worker, editor=False) %}
+
+
+
+
+<div class="worker-card" {% if editor %}id="the-worker-card"{% endif %} data-ci="{{worker.employee_id}}">
+    <div class="worker-head">
+        <div class="worker-h-title">
+            <img src="/static/images/logo/default_logo.png">
+            <div class="dcompany">
+                <span id="dc1">כרטיס קבלן / עובד</span>
+                <div class="cd-calls">
+                    <div>ניהול:<i class="fa-solid fa-phone-flip" ></i>
+                        <span>{{company.company_phone}}</span>
+                    </div>
+                    <div><i class="fa-solid fa-envelope"></i>
+                        <span>{{company.company_email}}</span>
+                    </div>
+                </div>
+                <span id="dc2">{{company.company_name}} • {{company.company_description}}</span>
+            </div>
+        </div>
+        <div class="worker-details">
+            <div class="cd-item">
+                <div>
+                    <i class="fa-regular fa-user"></i>
+                   <span>שם מלא עובד</span>
+                </div>
+                {% if not editor %}
+                    <span class="cd-name">{{worker.name}}</span>
+                {%else%}
+                    <input class="c-input-fn" type="text" id="wname" placeholder="שם מלא" value="{{worker.username}}">
+                {%endif%}
+            </div>
+            <div class="cd-item">
+                <div>
+                    <i class="fa-solid fa-lock"></i>
+                    <span>סיסמת גישה</span>
+                </div>
+                {% if not editor %}
+                    <span class="cd-name">{{worker.password}}</span>
+                {%else%}
+                    <input class="c-input-fn" type="text" id="wpassword" placeholder="סיסמה" value="{{worker.password}}">
+                {%endif%}
+            </div>
+            <div class="cd-item">
+                <div>
+                    <i class="fa-solid fa-square-phone-flip"></i>
+                    <span>מספר פלאפון</span>
+                </div>
+                {% if not editor %}
+                    <span class="cd-name">{{worker.phone}}</span>
+                {%else%}
+                    <input class="c-input-fn" type="tel" id="wphone" placeholder="פלאפון" value="{{worker.phone}}">
+                {%endif%}
+            </div>
+            <div class="cd-item">
+                <div>
+                    <i class="fa-regular fa-id-card"></i>
+                    <span>מספר תעודת זהות</span>
+                </div>
+                {% if not editor %}
+                    <span class="cd-name">{{worker.idc}}</span>
+                {%else%}
+                    <input class="c-input-fn" type="tel" id="widc" placeholder="פלאפון" value="{{worker.idc}}">
+                {%endif%}
+            </div>
+        </div>
+    </div>
+    <div class="worker-body"></div>
+</div>
+
+
+{% endmacro %}
+
+{{ render_employee(worker, editor) }}
