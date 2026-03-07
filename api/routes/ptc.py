@@ -117,6 +117,10 @@ class ApiCall(IntFlag):
     funds_income = 1<<9
     conf_company = 1<<10
     client_workers = 1<<11
+    worker_editor = 1<<12
+    worker_view = 1<<13
+    worker_save = 1<<14
+    worker_delete = 1<<15
 
 
 def struct_builder(cls, **data):
@@ -263,6 +267,24 @@ class ResponseStruct:
                 self.c_vat_code = int(self.c_vat_code)
             if self.c_gpse:
                 self.c_gpse = int(self.c_gpse)
+            return self
+
+    @dataclass
+    class Employee:
+        e_name:str          = None
+        e_pwd:str           = None
+        e_phone:str         = None
+        e_idc:str           = None
+        wid:str             = None
+        ps:int              = None
+        permission:int      = None
+
+        def build(self, **data):
+            struct_builder(self, **data)
+            if self.permission:
+                self.permission = int(self.permission)
+            if self.ps:
+                self.ps = int(self.ps)
             return self
 
 

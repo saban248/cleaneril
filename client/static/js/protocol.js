@@ -2,6 +2,8 @@ const CONFIG = {
     CARD_EDIT:false,
     CLIENT_EDIT:false,
     CLIENT_VIEW:false,
+    WORKER_EDIT:false,
+    WORKER_VIEW:false,
     CURRENT_PAGE:-1
 }
  const SocialMedia = {
@@ -133,7 +135,11 @@ const ApiCall = {
     client_state:1<<8,
     funds_income:1<<9,
     conf_company:1<<10,
-    client_workers:1<<11
+    client_workers:1<<11,
+    worker_editor:1<<12,
+    worker_view:1<<13,
+    worker_save:1<<14,
+    worker_delete:1<<15
 }
 
 

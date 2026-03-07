@@ -64,7 +64,6 @@ function closeCreateClient(no_api=false){
 function deleteClient(client_id){
     if (!confirm("continue?"))return;
     data = {ci:client_id, action:ApiCall.client_delete}
-    console.log(data)
     apiPost(ApiRoute.api,data).then(
         (res) =>{
             if (!res.success || res.deleted){

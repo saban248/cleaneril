@@ -6,7 +6,7 @@ from flask import render_template_string, render_template
 from api.databases.clients import Clients, ApiClients
 from api.databases.company import ApiCompany
 from api.databases.crads import ApiCards, Cards
-from api.databases.employee import ApiEmployee
+from api.databases.employee import ApiEmployee, Employee
 from api.databases.funds import ApiFunds
 from api.databases.manager import ApiManager
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril
@@ -72,6 +72,19 @@ def get_api_action(session, request, **breq) -> dict:
             manager = ShortSession.get_admin_details(session)
             workers = list(ApiEmployee.get_employees(manager_id=manager["manager_id"]).all())
             return {"workers":workers}
+        case ApiCall.worker_editor:
+            worker = ResponseStruct.Employee().build(**breq)
+            return {"template": get_worker_template(manager, worker.wid)}
+        case ApiCall.worker_view:
+            worker = ResponseStruct.Employee().build(**breq)
+            return {"template": get_worker_template(manager, worker.wid, False)}
+        case ApiCall.worker_save:
+            worker = ResponseStruct.Employee().build(**breq)
+            manager_id = ShortSession.get_admin_details(session)["manager_id"]
+            empl = ApiEmployee.add_employee(worker.e_name, worker.e_pwd, manager_id, worker.wid,
+                                               worker.permission,worker.e_phone,worker.e_idc, worker.ps)
+            return {"success":bool(empl)}
+
 
     return {}
 
@@ -88,6 +101,13 @@ def get_client_template(manager, client_id:str, edit:bool = True, **_):
     return render_template(f'{Pages.dashboard.path}client.html',
                            editor=edit, client=client, manager=manager, company=company)
 
+
+def get_worker_template(manager, worker_id:str, edit:bool = True, **_):
+    manager_id = manager["manager_id"]
+    worker:Employee = ApiEmployee.create_employee(worker_id, manager_id)
+    company = ApiCompany.get_companies(manager_id=manager_id).first()
+    return render_template(f'{Pages.dashboard.path}worker.html',
+                           editor=edit, worker=worker, manager=manager, company=company)
 
 
 

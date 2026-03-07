@@ -1,6 +1,29 @@
 <div class="dashboard-page" id="WORKERS">
     <div class="page-head">
         <h2>עובדים / קבלנים - ניהול</h2>
-        <i class="fa-solid fa-circle-plus create-card" onclick="createClient()"></i>
+        <i class="fa-solid fa-circle-plus create-card" onclick="createEmployee()"></i>
+    </div>
+    <div class="page-body">
+        <div id="maw" class="menu-actions-workers">
+            <div class="action-client ac1"  data-s="8">
+                זמינים
+            </div>
+        </div>
+        <div class="list-workers">
+            {% for worker in workers %}
+                <div class="worker-item" data-key="{{worker.key}}" id="{{worker.employee_id}}">
+
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="main-edit-worker" id="worker-editor">
+        <div class="ce-head">
+            <i class="fa-solid fa-circle-xmark" onclick="closeCreateWorker()"></i>
+        </div>
+        <div class="ce-body" id="worker-template">
+            <h1 >building..</h1>
+        </div>
     </div>
 </div>

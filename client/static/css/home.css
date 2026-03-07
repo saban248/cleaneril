@@ -378,7 +378,7 @@ body, *{
     margin-left: 5%;
     margin-right: 5%;
 }
-.clean-card, .client-card{
+.clean-card, .client-card, .worker-card{
     scroll-snap-align: center;
     flex-shrink: 0;
     border-radius: 15px;

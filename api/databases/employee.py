@@ -1,9 +1,10 @@
 from typing import Union
 
 from api.databases.company import ApiCompany
-from api.databases.ptc import cleaneril_db, ManagerPermissions
+from api.databases.ptc import cleaneril_db, ManagerPermissions, ServerConfig
 from api.ptc import generate_hex
 
+unknown = 'unknown'
 
 class Employee(cleaneril_db.Model):
     __tablename__ = "employee"
@@ -19,24 +20,36 @@ class Employee(cleaneril_db.Model):
 
 
 class ApiEmployee:
-    @staticmethod
-    def create_employee(name:str, pwd:str, permission:int, phone:str, idc:str, mid:str, ps:int):
-        employee = ApiEmployee.get_employees(username=name, password=pwd).first()
-        if employee:
-            return employee
 
-        new_employee = Employee()
-        new_employee.username = name
-        new_employee.permission = permission
-        new_employee.password = pwd
-        new_employee.employee_id = generate_hex(15)
-        new_employee.phone = phone
-        new_employee.idc = idc
-        new_employee.manager_id = mid
-        new_employee.profit_sharing = ps
-        cleaneril_db.session.add(new_employee)
+    @staticmethod
+    def create_employee(employee_id:str, manager_id:str):
+        worker = None
+        if worker:
+            worker = ApiEmployee.get_employees(employee_id=employee_id).first()
+        if worker:return worker
+        return ApiEmployee.add_employee(ServerConfig.DEF_wNAME, ServerConfig.DEF_wPWD, manager_id, employee_id)
+
+    @staticmethod
+    def add_employee(name:str, pwd:str, mid:str, employee_id:str = None, permission:int = ManagerPermissions.VIEW,
+                        phone:str = unknown, idc:str = "0", ps:int = ServerConfig.DEFAULT_GPSE):
+        employee = None
+        if not employee_id:
+            employee = Employee()
+            employee.employee_id = generate_hex(15)
+        else:
+            employee = ApiEmployee.get_employees(employee_id=employee_id).first()
+
+        employee.password = pwd
+        employee.username = name
+        employee.phone = phone
+        employee.idc = idc
+        employee.manager_id = mid
+        employee.profit_sharing = ps
+        employee.permission = permission
+        if not employee_id:
+            cleaneril_db.session.add(employee)
         cleaneril_db.session.commit()
-        return new_employee
+        return employee
 
     @staticmethod
     def get_employees(source:bool = True, **kwargs):
