@@ -510,6 +510,9 @@
 .c-input-fw{
     text-align: start !important;
     font-size: 1rem !important;
+    padding-right: 0px;
+    min-width:340px;
+    box-sizing: border-box;
 }
 .client-details, .worker-details{
     font-size: .8rem;

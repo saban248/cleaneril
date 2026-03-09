@@ -362,54 +362,101 @@ function openMenuCalander(t){
 
 function onLoadEditClient(){
     fetchWorkers()
+    selectWorkerToClient(c_runtime.workers[0])
+
+}
+
+function onSearchWorker(){
     const input = document.getElementById("client-worker");
     const dropdown = document.getElementById("worker-dropdown");
 
-    input.addEventListener("input", () => {
+    const value = input.value.toLowerCase();
+    if (value == ''){
+        hideDropdownWorkerSearch()
+        return;
+    };
+    dropdown.innerHTML = "";
 
-        const value = input.value.toLowerCase();
-        dropdown.innerHTML = "";
+    const filtered = c_runtime.workers.filter(w =>
+        w.username.toLowerCase().includes(value)
+    );
 
-        const filtered = c_runtime.workers.filter(w =>
-            w.username.toLowerCase().includes(value)
-        );
+    if(filtered.length === 0){
+        hideDropdownWorkerSearch()
+        return;
+    }
 
-        if(filtered.length === 0){
-            dropdown.style.display = "none";
-            return;
-        }
+    filtered.forEach(worker=>{
+        const parent = document.createElement("div");
+        parent.id = worker.employee_id
+        const icon = `<i class="fa-regular fa-user"></i>`
+        const span = `<span>${worker.username}</span>`
+        parent.className = "worker-search-item";
+        parent.innerHTML = icon+span
 
-        filtered.forEach(worker=>{
-            const div = document.createElement("div");
-            div.className = "worker-item";
-            div.textContent = worker.username;
+        parent.onclick = () =>{
+            selectWorkerToClient(worker)
+        };
 
-            div.onclick = () =>{
-                input.value = worker.username;
-                dropdown.style.display = "none";
-            };
 
-            dropdown.appendChild(div);
-        });
-
-        dropdown.style.display = "block";
+        dropdown.appendChild(parent);
     });
+    showDropdownWorkerSearch()
+}
+function showDropdownWorkerSearch(){
+    const dropdown = document.getElementById("worker-dropdown");
+    dropdown.classList.add("show");
+}
+function hideDropdownWorkerSearch(){
+    const dropdown = document.getElementById("worker-dropdown");
+    dropdown.classList.remove("show");
+}
 
-    document.addEventListener("click",(e)=>{
-        if(!e.target.closest(".worker-select")){
-            dropdown.style.display = "none";
-        }
-    });
+function ft(nww){
+    return parseInt(nww.replace(/[^\d]/g)||0)
+}
+/**
+ * 
+ * @param {{username:'', employee_id:''}} worker 
+ */
+function selectWorkerToClient(worker){
+    if (document.getElementById("s"+worker.employee_id))return;
+    const inputfw = document.getElementById("client-worker")
+    inputfw.value =''
+    onSearchWorker()
+    const parent = document.getElementById("esm");
+    const ws = document.createElement('div')
+    ws.textContent = worker.username;
+    ws.id = 's'+worker.employee_id;
+    ws.classList.add("employee-selected");
+    ws.onclick = () => {
+        unSelectedworkerToClient(worker);
+    }
+    parent.appendChild(ws); 
+    const toAdd = ws.offsetWidth+5
+    inputfw.style.paddingRight = `${ft(inputfw.style.paddingRight)+toAdd}px`
+    inputfw.style.width = `${inputfw.offsetWidth-ft(inputfw.style.paddingRight)}px`
+}
+
+function unSelectedworkerToClient(worker){
+    const inputfw = document.getElementById("client-worker")
+    const workerSelected = document.getElementById("s"+worker.employee_id);
+    const toAdd = workerSelected.offsetWidth+5
+    inputfw.style.width = `${inputfw.offsetWidth-ft(inputfw.style.paddingRight)}px`
+    inputfw.style.paddingRight = `${ft(inputfw.style.paddingRight)-toAdd}px`
+    workerSelected.remove();
+
 }
 
 function fetchWorkers(){
+    c_runtime.workers.push({username:"אני (מנהל)", employee_id:"nullptr"})
     const data = {action:ApiCall.client_workers}
     apiPost(ApiRoute.api, data).then( res =>{
         if (!res.success){
             openPopup(res.title, res.notice);
             return;
         }
-        c_runtime.workers = res.workers;
+        c_runtime.workers.push(...res.workers);
 
     })
 }
@@ -443,3 +490,105 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     updateMACSOnLoad(false)
 });
+
+
+
+
+
+
+// async function sendOrderImage() {
+
+//     const element = document.getElementById("client-template");
+//     const ADD_HEIGHT = 30;
+//     const REAL_HEIGHT = element.offsetHeight;
+//     element.style.height = `${REAL_HEIGHT+ADD_HEIGHT}px`
+//     const rect = element.getBoundingClientRect();
+//     const SCALE = window.devicePixelRatio * 2
+//     const canvas = await html2canvas(element, {
+//         scale: SCALE,
+//         useCORS: true
+//     });
+
+//     const croppedCanvas = document.createElement("canvas");
+//     const ctx = croppedCanvas.getContext("2d");
+//     const HEIGHT = canvas.height
+//     const WIDTH = 410
+//     croppedCanvas.width = WIDTH * SCALE; 
+//     croppedCanvas.height = HEIGHT;
+
+//     ctx.drawImage(
+//         canvas,
+//         (rect.width * SCALE - WIDTH * SCALE) / 2,
+//         0,
+//         WIDTH * SCALE,
+//         HEIGHT,
+//         0,
+//         0,
+//         WIDTH * 2,
+//         HEIGHT
+//     );
+//     const image = croppedCanvas.toDataURL("image/png");
+
+//     const a = document.createElement("a");
+//     a.href = image;
+//     a.download = "order.png";
+
+//     document.body.appendChild(a);
+//     a.click();
+//     document.body.removeChild(a);
+//     element.style.height = `${REAL_HEIGHT}px`;
+
+// }
+
+
+async function sendOrderImage() {
+
+    const element = document.getElementById("client-template");
+
+    const scale = 3;
+    const targetWidth = 410;
+    const realHeight = element.offsetHeight;
+    element.style.height = `${realHeight+30}px`;
+
+    // Render element to canvas
+    const canvas = await html2canvas(element, {
+    scale: scale,
+    backgroundColor: "#ffffff",
+    useCORS: true
+    });
+
+    // Prepare crop canvas
+    const cropCanvas = document.createElement("canvas");
+    const ctx = cropCanvas.getContext("2d");
+
+    cropCanvas.width = targetWidth * scale;
+    cropCanvas.height = canvas.height;
+
+    const cropX = Math.max(0, (canvas.width - cropCanvas.width) / 2);
+
+    ctx.drawImage(
+    canvas,
+    cropX,
+    0,
+    cropCanvas.width,
+    canvas.height,
+    0,
+    0,
+    cropCanvas.width,
+    canvas.height
+    );
+
+    // Final image
+    const image = cropCanvas.toDataURL("image/png");
+
+    // Optional: insert into DOM to preview
+    const a = document.createElement("a");
+    a.href = image;
+    a.download = "order.png";
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    element.style.height = `${realHeight}px`;
+
+}

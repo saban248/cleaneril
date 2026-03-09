@@ -128,10 +128,15 @@
         </div>
         {% if editor %}
         <div class="prices{% if client.off%} price-off-price{%endif%}">
-            <div class="off-price worker-select">
-                <span>קבלן / עובד מבצע</span>
-                    <input type="text" class="c-input-fw price-all" placeholder="חפש עובד" id="client-worker" autocomplete="off">
+            <div class="off-price">
+                <span>קבלן / עובד שמבצע מטעמך (אם לא אתה)</span>
+                <div class="worker-select" id="pws">
+                    <div class="employee-selected-main" id="esm">
+                    </div>
+                    <input type="text" class="c-input-fw price-all" placeholder="חפש עובד" id="client-worker" autocomplete="off" oninput="onSearchWorker()">
                     <div class="worker-dropdown" id="worker-dropdown" style="display: none;"></div>
+
+                </div>
             </div>
         </div>
         {% endif %}

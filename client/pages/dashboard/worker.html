@@ -1,8 +1,4 @@
 {% macro render_employee(worker, editor=False) %}
-
-
-
-
 <div class="worker-card" {% if editor %}id="the-worker-card"{% endif %} data-ci="{{worker.employee_id}}">
     <div class="worker-head">
         <div class="worker-h-title">
@@ -97,7 +93,7 @@
                     <span>תשלום לקבלן באחוזים</span>
                 </div>
                 {% if not editor %}
-                    <span class="cd-name">{{worker.profit_sharing}}</span>
+                    <span class="cd-name">{{worker.profit_sharing}}%</span>
                 {% else %}
                     <input class="c-input-fn" type="tel" id="wps" placeholder="50% / 60%" value="{{worker.profit_sharing}}">
                 {% endif %}
@@ -118,9 +114,15 @@
     <div class="worker-body"></div>
     <div class="worker-footer {% if not editor %} disable {%endif%}">
         <div class="worker-action">
+            {% if editor%}
             <button type="button" class="worker-btn" onclick="publishWorker('{{worker.employee_id}}')">
                 <span>שמירה</span>
             </button>
+            {%else%}
+            <button type="button" class="worker-btn" onclick="closeCreateWorker()">
+                <span>סגירה</span>
+            </button>
+            {%endif%}
         </div>
     </div>
 </div>
