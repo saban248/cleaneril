@@ -123,13 +123,13 @@ body, *{
     color: #d4af37; /* Gold Premium */
 }
 
-/* כפתור קטן מפריד בין קרדיטים */
+
 .footer-home i.fa-circle {
     font-size: 0.35rem;
     color: #999;
 }
 
-/* “נבנה ע”י” */
+
 .footer-home .owner {
     opacity: 0.75;
 }

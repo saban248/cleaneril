@@ -120,6 +120,10 @@
                 <span>הוצאות דלק / פרסום</span>
                 <input type="tel" class="c-input-fn price-all" placeholder="0.00" id="client-expense" value="{{client.expense}}">
             </div>
+            <div class="off-price psharing" id="psharing">
+                <span>תשלום לקבלן באחוזים (ספציפית על עיסקה זו)</span>
+                <input class="c-input-fn price-all" type="tel" id="profitSharing" value="{{client.profit_sharing}}">
+            </div>
             <div class="off-price">
                 <span>הוסף מע"מ</span>
                 <input class="checkbox" type="checkbox" id="client-vat" onclick="compareVatOfPrice(this)">
@@ -129,12 +133,13 @@
         {% if editor %}
         <div class="prices{% if client.off%} price-off-price{%endif%}">
             <div class="off-price">
-                <span>קבלן / עובד שמבצע מטעמך (אם לא אתה)</span>
+                <span>קבלן / עובד שמבצע מטעמך</span>
                 <div class="worker-select" id="pws">
                     <div class="employee-selected-main" id="esm">
                     </div>
                     <input type="text" class="c-input-fw price-all" placeholder="חפש עובד" id="client-worker" autocomplete="off" oninput="onSearchWorker()">
                     <div class="worker-dropdown" id="worker-dropdown" style="display: none;"></div>
+                    <input type="hidden" id="lsw{{client.worker}}">
 
                 </div>
             </div>

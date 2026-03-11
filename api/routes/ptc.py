@@ -121,6 +121,7 @@ class ApiCall(IntFlag):
     worker_view = 1<<13
     worker_save = 1<<14
     worker_delete = 1<<15
+    calendar = 1<<16
 
 
 def struct_builder(cls, **data):
@@ -205,6 +206,7 @@ class ResponseStruct:
         vat:bool            = None
         ex:float       = None
         worker:str      = None
+        ps:int          = None
         def build(self, **data):
             struct_builder(self, **data)
             self.o = bool(self.o)
@@ -223,7 +225,12 @@ class ResponseStruct:
                 self.i = json.loads(self.i)
             if self.ex:
                 self.ex = float(self.ex)
+            if self.ps:
+                self.ps = int(self.ps)
+            else:
+                self.ps = 0
             self.get_full_price()
+
 
             return self
 

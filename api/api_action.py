@@ -3,6 +3,7 @@ import os
 
 from flask import render_template_string, render_template
 
+from api.databases.bridge import set_employee_to_client
 from api.databases.clients import Clients, ApiClients
 from api.databases.company import ApiCompany
 from api.databases.crads import ApiCards, Cards
@@ -30,10 +31,11 @@ def get_api_action(session, request, **breq) -> dict:
             return {"template":get_client_template(manager, client.ci, False)}
         case ApiCall.client_save:
             client = ResponseStruct.ClientEditor().build(**breq)
+
             _stat_ = ApiClients.add_client(client.ci,client.s,client.phone,client.i,
                                            client.o,client.op,client.fn,client.date,client.address,
                                            client.lf,client.notes,client.price,client.vat, client.ex,
-                                           client.worker or manager_id)
+                                           set_employee_to_client(client.worker, manager_id), client.ps)
             return {'client_id':client.ci}
         case ApiCall.card_draft | ApiCall.card_save:
             if ApiCall.card_draft&action:state = StateDocument.DRAFT

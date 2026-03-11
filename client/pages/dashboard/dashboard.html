@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/static/css/settings.css">
     <link rel="stylesheet" href="/static/css/clients.css">
     <link rel="stylesheet" href="/static/css/workers.css">
+    <link rel="stylesheet" href="/static/css/calendar.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -26,6 +27,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
     
 
 </head>
@@ -41,6 +46,7 @@
         {% include "dashboard/funds.html" %}
         {% include "dashboard/settings.html" %}
         {% include "dashboard/workers.html" %}
+        {% include "dashboard/calendar.html" %}
     </div>
         <div class="dashboard-menu">
         <div class="menu-items">
@@ -59,9 +65,9 @@
                     {% include "icon/clients.svg" %}
                 </i>
             </div>
-            <div class="menu-item"  onclick="switchPageManager(PageManager.CARDS)">
+            <div class="menu-item"  onclick="switchPageManager(PageManager.CALENDAR)">
                 <i class="icon icon-24">
-                    {% include "icon/add-card.svg" %}
+                    {% include "icon/calendar.svg" %}
                 </i>
             </div>
             <!-- <div class="menu-item" onclick="switchPageManager(PageManager.LINKS)">
@@ -97,4 +103,6 @@
 <script src="/static/js/funds.js"></script>
 <script src="/static/js/settings.js"></script>
 <script src="/static/js/workers.js"></script>
+<script src="/static/js/calendar.js"></script>
+
 </html>

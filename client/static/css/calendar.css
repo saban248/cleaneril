@@ -1,0 +1,155 @@
+
+.page-calendar{
+    margin-right: 15%;
+    margin-left: 15% ;
+}
+
+.main-calendar{
+    display:grid;
+    grid-template-rows:auto 1fr;
+    font-family:system-ui;
+    background: #f9f9f9;
+}
+
+.header-calendar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding: 10px;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.h-calendar-stat{
+    display: flex;
+    column-gap: 10px;
+    flex-direction: row;
+}
+
+.dispatch-layout{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    padding: 10px;
+}
+
+.calendar-panel,
+.map-panel{
+    border-radius:10px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.05);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    min-height: 400px;
+}
+
+#calendar{
+    flex:1;
+    padding:10px;
+}
+
+#map{
+    flex:1;
+}
+.fc{
+    font-size:11px;
+}
+.fc .fc-daygrid-event{
+    font-size:11px;
+    padding:2px 4px;
+}
+.fc .fc-toolbar-title{
+    font-size:16px;
+}
+
+.fc-highlight{
+    background: rgba(16,185,129,0.35) !important;
+}
+
+@media (max-width:1000px){
+
+    .dispatch-layout{
+        grid-template-columns:1fr;
+        grid-template-rows:1fr 1fr;
+        padding: 1px;
+    }
+    #calendar{
+        padding: 1px;
+    }
+
+}
+
+
+
+.cool-popup .leaflet-popup-content{
+    margin:0;
+}
+
+.client-popup{
+    font-family:system-ui;
+    width:220px;
+}
+
+/* header */
+
+.popup-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:8px;
+}
+
+.popup-avatar{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    background:#3b82f6;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+}
+
+.client-name{
+    font-weight:600;
+    font-size:14px;
+}
+
+.client-date{
+    font-size:12px;
+    color:#6b7280;
+}
+
+/* body */
+
+.popup-row{
+    display:flex;
+    gap:6px;
+    font-size:13px;
+    margin-bottom:8px;
+}
+
+.popup-icon{
+    opacity:0.7;
+}
+
+/* actions */
+
+.popup-actions{
+    display:flex;
+    justify-content:flex-end;
+}
+
+.popup-actions button{
+    border:none;
+    background:#3b82f6;
+    color:white;
+    font-size:12px;
+    padding:5px 10px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.popup-actions button:hover{
+    background:#2563eb;
+}

@@ -4,7 +4,8 @@ const CONFIG = {
     CLIENT_VIEW:false,
     WORKER_EDIT:false,
     WORKER_VIEW:false,
-    CURRENT_PAGE:-1
+    CURRENT_PAGE:-1,
+    IMG_ORDER:0
 }
  const SocialMedia = {
     TIKTOK:1,
@@ -99,7 +100,8 @@ const PageManager = {
     CLIENTS:1<<3,
     FUNDS:1<<4,
     SETTINGS:1<<5,
-    WORKERS:1<<6
+    WORKERS:1<<6,
+    CALENDAR:1<<7
 }
 
 function getPageManager(page) {

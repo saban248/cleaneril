@@ -60,3 +60,15 @@
     color: rgb(189, 233, 205);
     border-radius: 10px;
 }
+
+.psharing{
+    /* display: none; */
+    transition: 300ms;
+    opacity: 0;
+    height: 0px !important;
+}
+.psharing.show{
+    display: flex !important;
+    opacity: 1;
+    height: auto !important;
+}

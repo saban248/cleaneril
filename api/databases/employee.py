@@ -64,7 +64,9 @@ class ApiEmployee:
     @staticmethod
     def get_employees_search(manager_id):
         employees = ApiEmployee.get_employees(manager_id=manager_id)
-        return [{"username":e.username, "employee_id":e.employee_id}for e in employees]
+        __data__ =  [{"username":e.username, "employee_id":e.employee_id}for e in employees]
+        __data__.append({"username":"אני (מנהל)", "employee_id":manager_id})
+        return __data__
 
     @staticmethod
     def auth(**kwargs):

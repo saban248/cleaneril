@@ -4,14 +4,14 @@ const c_runtime = {
     workers:[]
 }
 
-function viewclientDetails(client_id){
+async function viewclientDetails(client_id){
     const mainEdit = document.getElementById("client-editor")
     mainEdit.classList.remove('hide');
     mainEdit.classList.add('show');
     CONFIG.CLIENT_VIEW =true;
 
     data = {action:ApiCall.client_view, ci:client_id}
-    apiPost(ApiRoute.api, data).then(
+    return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
         (res) => {
             if (!res.success){
                 openPopup(res.title, res.notice)
@@ -20,8 +20,9 @@ function viewclientDetails(client_id){
 
             const editBody = document.getElementById('client-template')
             editBody.innerHTML = res.template;
+            reslove();
         }
-    )
+    ))
 
 }
 function createClient(client_id=null){
@@ -77,8 +78,24 @@ function deleteClient(client_id){
 }
 
 
+function editOrdersClient(){
+    const parent = document.getElementById("items-ordered");
 
-function addItemOrder() {
+    const length = parent.childElementCount;
+    const temp = []
+    for (let index=1;index<length;index++){
+        const name = document.getElementById(index+"-name").textContent
+        const price = ft(document.getElementById(index+"-price").textContent)
+        document.getElementById(index).remove();
+        temp.push([name, price])
+    }
+    for (edit of temp){
+        addItemOrder(edit[0], edit[1]);
+    }
+
+}
+
+function addItemOrder(name, price) {
     const items = document.getElementById("items-ordered");
 
     const div = document.createElement("div");
@@ -88,6 +105,9 @@ function addItemOrder() {
     const inputName = document.createElement("input");
     inputName.classList.add('c-input-item-name')
     inputName.id = `${div.id}-name`
+    if (name){
+        inputName.value = name;
+    }
 
 
     const inputPrice = document.createElement("input");
@@ -95,6 +115,9 @@ function addItemOrder() {
     inputPrice.classList.add('c-input-fn')
     inputPrice.type = 'tel'
     inputPrice.id = `${div.id}-price`
+    if (price){
+        inputPrice.value = price;
+    }
 
     const trash = document.createElement('i')
     trash.classList = "fa-solid fa-trash-can trash-order"
@@ -171,6 +194,9 @@ function publishClient(client_id, state){
     const vat = Boolean(document.getElementById('client-vat').checked)
     const offPrice = document.getElementById('client-off-price').value;
     const expense = document.getElementById("client-expense").value;
+    const profitSharing = ft(document.getElementById("profitSharing").value);
+    const w = document.getElementById('esm')?.children[0]
+    const worker = w?w.id.substring(1,32):''
 
     const data = {action:ApiCall.client_save,
         ci:client_id, s:state,
@@ -178,7 +204,7 @@ function publishClient(client_id, state){
         op:offPrice,fn:fullname,
         address:address, i:JSON.stringify(c_runtime.items_ordered),
         lf:SocialMedia.WHATSAPP,date:timing,
-        notes:notes,price:price,vat:vat,ex:expense
+        notes:notes,price:price,vat:vat,ex:expense,ps:profitSharing,worker:worker
     }
     apiPost(ApiRoute.api,data).then(
         (res)=>{
@@ -270,6 +296,8 @@ function updateCalanderClient(cc){
 
 const menuItems = [
     { text: "צפיה", action: (cid) => viewclientDetails(cid), icon:'<i class="fa-solid fa-eye"></i>'},
+    { text: "שיתוף כתמונה", action: (cid) => shareOrderToClientAsPhoto(cid), icon:'<i class="fa-solid fa-share-from-square"></i>'},
+    { text: "שיתוף כקישור", action: (cid) => shareOrderToClientAsLink(cid), icon:'<i class="fa-solid fa-share-from-square"></i>'},
     { text: "עריכה", action: (cid) => editExistClient(cid), icon:'<i class="fa-solid fa-pencil"></>'},
     { text: "מחיקה", action: (cid) => deleteClient(cid), icon:'<i class="fa-solid fa-trash-can trash"></i>'},
     {text:'בוטל',action:(cid)=>setStateClient(cid, StateClient.CANCELED),icon:'<i class="fa-solid fa-ban"></i>'},
@@ -360,9 +388,22 @@ function openMenuCalander(t){
     menu.classList.add("show")
 } 
 
-function onLoadEditClient(){
-    fetchWorkers()
-    selectWorkerToClient(c_runtime.workers[0])
+async function onLoadEditClient(){
+    editOrdersClient()
+    await fetchWorkers()
+    
+    let worker = null
+    for (sw of c_runtime.workers){
+        let lastSelectWorker = document.getElementById("lsw"+sw.employee_id)
+        if (lastSelectWorker!=undefined){
+            worker = sw;
+            break;
+        }
+
+
+    }
+    if (!worker)return
+    selectWorkerToClient(worker);
 
 }
 
@@ -385,10 +426,9 @@ function onSearchWorker(){
         hideDropdownWorkerSearch()
         return;
     }
-
+    let x = 0
     filtered.forEach(worker=>{
         const parent = document.createElement("div");
-        parent.id = worker.employee_id
         const icon = `<i class="fa-regular fa-user"></i>`
         const span = `<span>${worker.username}</span>`
         parent.className = "worker-search-item";
@@ -398,8 +438,9 @@ function onSearchWorker(){
             selectWorkerToClient(worker)
         };
 
-
+        if (x>2)return;
         dropdown.appendChild(parent);
+        x+=1
     });
     showDropdownWorkerSearch()
 }
@@ -436,6 +477,8 @@ function selectWorkerToClient(worker){
     const toAdd = ws.offsetWidth+5
     inputfw.style.paddingRight = `${ft(inputfw.style.paddingRight)+toAdd}px`
     inputfw.style.width = `${inputfw.offsetWidth-ft(inputfw.style.paddingRight)}px`
+
+    onSetWorkerToClient(worker)
 }
 
 function unSelectedworkerToClient(worker){
@@ -446,17 +489,30 @@ function unSelectedworkerToClient(worker){
     inputfw.style.paddingRight = `${ft(inputfw.style.paddingRight)-toAdd}px`
     workerSelected.remove();
 
+    onSetWorkerToClient(worker);
+
 }
 
-function fetchWorkers(){
-    c_runtime.workers.push({username:"אני (מנהל)", employee_id:"nullptr"})
+function onSetWorkerToClient(worker){
+    const profitSharing = document.getElementById("psharing")
+    const lengthSelected = document.getElementById("esm")?.children.length;
+    if (worker.username.includes("אני") || !lengthSelected){
+        profitSharing.classList.remove("show")
+        return;
+    }
+    profitSharing.classList.add("show")
+
+}
+
+async function fetchWorkers(){
     const data = {action:ApiCall.client_workers}
-    apiPost(ApiRoute.api, data).then( res =>{
+    await apiPost(ApiRoute.api, data).then( res =>{
         if (!res.success){
             openPopup(res.title, res.notice);
-            return;
+            return null;
         }
-        c_runtime.workers.push(...res.workers);
+        c_runtime.workers = res.workers;
+        return res.workers;
 
     })
 }
@@ -494,54 +550,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
-
-// async function sendOrderImage() {
-
-//     const element = document.getElementById("client-template");
-//     const ADD_HEIGHT = 30;
-//     const REAL_HEIGHT = element.offsetHeight;
-//     element.style.height = `${REAL_HEIGHT+ADD_HEIGHT}px`
-//     const rect = element.getBoundingClientRect();
-//     const SCALE = window.devicePixelRatio * 2
-//     const canvas = await html2canvas(element, {
-//         scale: SCALE,
-//         useCORS: true
-//     });
-
-//     const croppedCanvas = document.createElement("canvas");
-//     const ctx = croppedCanvas.getContext("2d");
-//     const HEIGHT = canvas.height
-//     const WIDTH = 410
-//     croppedCanvas.width = WIDTH * SCALE; 
-//     croppedCanvas.height = HEIGHT;
-
-//     ctx.drawImage(
-//         canvas,
-//         (rect.width * SCALE - WIDTH * SCALE) / 2,
-//         0,
-//         WIDTH * SCALE,
-//         HEIGHT,
-//         0,
-//         0,
-//         WIDTH * 2,
-//         HEIGHT
-//     );
-//     const image = croppedCanvas.toDataURL("image/png");
-
-//     const a = document.createElement("a");
-//     a.href = image;
-//     a.download = "order.png";
-
-//     document.body.appendChild(a);
-//     a.click();
-//     document.body.removeChild(a);
-//     element.style.height = `${REAL_HEIGHT}px`;
-
-// }
-
-
-async function sendOrderImage() {
+async function prepareOrderImage() {
 
     const element = document.getElementById("client-template");
 
@@ -557,7 +566,8 @@ async function sendOrderImage() {
     useCORS: true
     });
 
-    // Prepare crop canvas
+
+        // Prepare crop canvas
     const cropCanvas = document.createElement("canvas");
     const ctx = cropCanvas.getContext("2d");
 
@@ -578,17 +588,31 @@ async function sendOrderImage() {
     canvas.height
     );
 
-    // Final image
-    const image = cropCanvas.toDataURL("image/png");
-
-    // Optional: insert into DOM to preview
-    const a = document.createElement("a");
-    a.href = image;
-    a.download = "order.png";
-
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    const image = await new Promise(resolve =>
+        cropCanvas.toBlob(resolve, "image/png")
+    );
+    CONFIG.IMG_ORDER = image;
     element.style.height = `${realHeight}px`;
 
+
+}
+
+
+async function shareOrderToClientAsPhoto(cid){
+    await viewclientDetails(cid)
+    await prepareOrderImage()
+    const file = new File([CONFIG.IMG_ORDER], "order.png", { type: "image/png" });
+
+    if (navigator.share) {
+        await navigator.share({
+            title: "הזמנה",
+            text: "הזמנה חדשה",
+            files: [file]
+        });
+    }
+    closeCreateClient()
+}
+
+function shareOrderToClientAsLink(cid){
+    
 }

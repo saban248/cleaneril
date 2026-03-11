@@ -44,6 +44,8 @@ function switchPageManager(page){
             _page_ = document.getElementById(getPageManager(page))
         case PageManager.WORKERS:
             _page_ = document.getElementById(getPageManager(page))
+        case PageManager.CALENDAR:
+            _page_ = document.getElementById(getPageManager(page))
     
         default:
             break;

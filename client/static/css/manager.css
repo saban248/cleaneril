@@ -310,7 +310,7 @@
     background: rgb(129, 6, 6);
     color:white;
 }
-.menu-client{
+.menu-client, .client-footer>i{
     padding: 10px;
     border-radius: 6px !important;
     border: 1px solid #ebebeb;
@@ -781,20 +781,23 @@
     pointer-events: auto;
 }
 .cma{
-    display: flex;
+    display: grid;
     border: 1px solid #ddd;
     border-radius: 2px;
     cursor: pointer;
     column-gap: 10px;
+    grid-template-columns: 1fr 3fr;
+    font-size: 14px;
 }
 .cma> .cma1{
-    padding: 10px;
-    box-shadow: 0 0 11px #ddd;
-    border-radius: 50%;
+    padding: 8px;
+    box-shadow: 0 0 11px #e4e4e4;
+    border-radius: 7px;
+    text-align: center;
 }
 .cma> .cma2{
     flex: 1;
-    padding: 10px;
+    padding: 8px;
 }
 
 @media (max-width: 768px) {
@@ -828,8 +831,8 @@
         width: 100%;
     }
     .page-body{
-        margin-right:  1%;
-        margin-left:  1%;
+        margin-right:  1% !important;
+        margin-left:  1% !important;
     }
     .client-card{
         width: 100%;
