@@ -13,18 +13,39 @@
 
 .header-calendar{
     display:flex;
-    justify-content:space-between;
+    justify-content:right;
+    column-gap: 10px;
     align-items:center;
     padding: 10px;
     border-bottom:1px solid #e5e7eb;
 }
 
-.h-calendar-stat{
+.h-calendar-stat, .h-calendar-from-to{
     display: flex;
     column-gap: 10px;
     flex-direction: row;
 }
 
+.h-calendar-from-to{
+    border-left: 1px solid #a4a9b5;
+    padding-left: 10px;
+}
+.from-to-item{
+    display: flex;
+    flex-direction: column;
+    row-gap: 1px;
+}
+
+.from-to-item > span{
+    color: #85888f;
+    font-size: 10px;
+    transform: skew(-10deg);
+}
+
+.from-to-item >div{
+    border: none !important;
+    padding: 0 !important;
+}
 .dispatch-layout{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -52,6 +73,7 @@
 }
 .fc{
     font-size:11px;
+    touch-action: manipulation;
 }
 .fc .fc-daygrid-event{
     font-size:11px;
@@ -62,7 +84,9 @@
 }
 
 .fc-highlight{
-    background: rgba(16,185,129,0.35) !important;
+    background: rgb(137, 205, 187) !important;
+
+    border-radius:4px;
 }
 
 @media (max-width:1000px){

@@ -291,14 +291,14 @@
 .action-client:focus, .ac-selected{
     box-shadow: 0 0 11px #d5d6d8 !important;
 }
-.ac1, .ac2, .ac3, .ac4{
+.ac1, .ac2, .ac3, .ac4, .sc1, .sc2, .sc4{
     word-break: keep-all;
 }
-.ac1.ac-selected{
+.ac1.ac-selected,.sc1.sc-selected{
     background:#046b09;
     color: white;
 }
-.ac2.ac-selected{
+.ac2.ac-selected,.sc2.sc-selected{
     background: #e8d400;
     color: white;
 }
@@ -306,7 +306,7 @@
     background: #a79d0a;
     color:white;
 }
-.ac4.ac-selected{
+.ac4.ac-selected, .sc4.sc-selected{
     background: rgb(129, 6, 6);
     color:white;
 }

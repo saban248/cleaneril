@@ -1,6 +1,7 @@
 const c_runtime = {
     items_ordered:{},
     state_client_selected:0,
+    state_calendar_selected:0,
     workers:[]
 }
 
