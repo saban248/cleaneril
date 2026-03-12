@@ -10,6 +10,10 @@ let selectS = null
 let selectE = null
 
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function getClientCalendar(){
     var s = document.getElementById("calendar-from").dataset.s;
     var e = document.getElementById("calendar-to").dataset.e;
@@ -205,22 +209,24 @@ function updateMenuActionCalendarSorted(t, state, cache = true){
 }
 
 
-function fetchClientsCalendar(){
+async function fetchClientsCalendar(){
     const data = {
         action:ApiCall.calendar,
         month:calendar.getDate().getMonth()+1,
         year:calendar.getDate().getFullYear()
     }
-    apiPost(ApiRoute.api, data).then( res =>{
+    await apiPost(ApiRoute.api, data).then( res =>{
         if (!res.success){
             return;
         }
-        console.log(res.data)
         calendarClients = res.data;
-        for (c of calendarClients){
-            geocodeAddressOSM(c)
-        }
     })
+
+    for (c of calendarClients){
+        geocodeAddressOSM(c)
+        await sleep(1200)
+        resetMarkersClients();
+    }
 }
 
 
@@ -228,7 +234,6 @@ async function geocodeAddressOSM(client) {
   const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(client.address)}&limit=1`;
   const resp = await fetch(url);
   const data = await resp.json();
-  console.log(client.address, data)
   if (data.length > 0) {
     client.lat = parseFloat(data[0].lat);
     client.lng = parseFloat(data[0].lon);
