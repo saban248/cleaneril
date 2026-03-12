@@ -9,6 +9,7 @@
     grid-template-rows:auto 1fr;
     font-family:system-ui;
     background: #f9f9f9;
+    row-gap: 10px;
 }
 
 .header-calendar{
@@ -49,8 +50,8 @@
 .dispatch-layout{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:10px;
-    padding: 10px;
+    gap:5px;
+    padding: 5px;
 }
 
 .calendar-panel,

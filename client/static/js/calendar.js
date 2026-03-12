@@ -1,6 +1,6 @@
 
-/** @type {{id:string, name:string,date:string,lat:number,lng:number,stat:number, address:string},[]} */
-var calendarClients = []
+/** @type {{id:string, name:string,date:string,lat:number,lng:number,stat:number, address:string},{[]}} */
+var calendarClients = {}
 var mapClients = null;
 /** @type {object[]} */
 var markersClients = {}
@@ -8,6 +8,7 @@ var markerLayer = null;
 var calendar = null;
 let selectS = null
 let selectE = null
+let lastDateFetched = 0;
 
 
 function sleep(ms) {
@@ -21,11 +22,11 @@ function getClientCalendar(){
         var [s, e] = getCurrentMonthRange()
     }
     const [start, end] = [new Date(s), new Date(e)];
-    return calendarClients
-        .filter(c => {
+    return calendarClients[lastDateFetched]
+        ?.filter(c => {
             const d = new Date(c.date)
             return (c.stat&c_runtime.state_calendar_selected) && (d >= start && d <= end)
-        });
+        })||[]
 }
 
 
@@ -65,7 +66,7 @@ function initialMapClients(){
     L.tileLayer(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     {
-        maxZoom:19
+        maxZoom:10
     }).addTo(mapClients)
 
     resetMarkersClients()
@@ -127,6 +128,7 @@ function initialCalendarClients(initial = false){
         longPressDelay: 100,
         selectLongPressDelay: 100,
         select: function(info){
+            fetchClientsCalendar()
             updateFromTo(info.startStr, info.endStr)
             onSelectRangeCalendar()
             calendar.getEventById("selected-range")?.remove();
@@ -150,6 +152,9 @@ function initialCalendarClients(initial = false){
             month: 'החודש',
             week: 'השבוע',
         },
+        datesSet: function(info){
+            fetchClientsCalendar();
+        },
         dayMaxEvents: 2,
         events: getClientCalendar().map(c=>({
             title:c.name,
@@ -163,7 +168,7 @@ function initialCalendarClients(initial = false){
             const id = info.event.id
             const marker = markersClients[id]
             if (marker==undefined)return
-            mapClients.setView(marker.getLatLng(), 11)
+            mapClients.setView(marker.getLatLng(), 8)
             marker.openPopup()
 
         }
@@ -191,8 +196,7 @@ function onSelectRangeCalendar(){
 
 function selectCalendarState(t){
     updateMenuActionCalendarSorted(t, t.dataset.s)
-    resetMarkersClients()
-    resetCalendarEvents()
+    onSelectRangeCalendar()
     calendar.select(selectS, selectE)
 }
 
@@ -215,17 +219,23 @@ async function fetchClientsCalendar(){
         month:calendar.getDate().getMonth()+1,
         year:calendar.getDate().getFullYear()
     }
+    const newDateToFetch = data.year+data.month
+    if (lastDateFetched in calendarClients){
+        lastDateFetched = newDateToFetch;
+        return
+    }
     await apiPost(ApiRoute.api, data).then( res =>{
         if (!res.success){
             return;
         }
-        calendarClients = res.data;
+        lastDateFetched = newDateToFetch
+        calendarClients[lastDateFetched] = res.data;
     })
 
-    for (c of calendarClients){
+    for (c of calendarClients[lastDateFetched]){
         geocodeAddressOSM(c)
         await sleep(1200)
-        resetMarkersClients();
+        onSelectRangeCalendar()
     }
 }
 
@@ -247,11 +257,12 @@ async function geocodeAddressOSM(client) {
 
 
 document.addEventListener("DOMContentLoaded", function (){
+    c_runtime.state_calendar_selected = StateClient.DONE|StateClient.CLOSED|StateClient.CANCELED
     initialMapClients()
     initialCalendarClients()
+    fetchClientsCalendar()
     const [s,e] = getCurrentMonthRange()
     calendar.select(s,e)
-    fetchClientsCalendar()
     const observer = new ResizeObserver(()=>{
 
         mapClients?.invalidateSize()
