@@ -87,7 +87,10 @@ def get_api_action(session, request, **breq) -> dict:
             worker = ResponseStruct.Employee().build(**breq)
             _state_ = ApiEmployee.delete_employee(manager_id, worker.wid)
             return {"success":bool(not _state_)}
-
+        case ApiCall.calendar:
+            calendar = ResponseStruct.Calendar().build(**breq)
+            clients = ApiClients.get_clients_by_calendar_date(calendar.month, calendar.year)
+            return {"data":clients}
 
     return {}
 

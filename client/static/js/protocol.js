@@ -146,7 +146,8 @@ const ApiCall = {
     worker_editor:1<<12,
     worker_view:1<<13,
     worker_save:1<<14,
-    worker_delete:1<<15
+    worker_delete:1<<15,
+    calendar:1<<16
 }
 
 

@@ -71,6 +71,8 @@
 #map{
     flex:1;
 }
+
+/* ------ FC ------ */
 .fc{
     font-size:11px;
     touch-action: manipulation;
@@ -84,9 +86,18 @@
 }
 
 .fc-highlight{
-    background: rgb(137, 205, 187) !important;
+    background: rgb(200, 236, 226) !important;
 
     border-radius:4px;
+}
+.fc-start-bold .fc-daygrid-day-number{
+    font-weight:700;
+    color:#2563eb;
+}
+
+.fc-end-bold .fc-daygrid-day-number{
+    font-weight:700;
+    color:#dc2626 !important;
 }
 
 @media (max-width:1000px){

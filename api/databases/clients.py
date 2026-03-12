@@ -124,3 +124,17 @@ class ApiClients:
     @staticmethod
     def count_client_canceled(calender = CalenderClients.FOREVER):
         return ApiClients.get_clients_lately(calender=calender, state=StateClient.CANCELED).__len__()
+
+    @staticmethod
+    def get_clients_by_calendar_date(month:int, year:int):
+        collector = []
+        clients:list[Clients] = ApiClients.get_clients()
+        for client in clients:
+            date = datetime.fromtimestamp(client.date)#tz=ZoneInfo("Asia/Jerusalem"))
+            if not client.state&(StateClient.DONE|StateClient.CLOSED|StateClient.CANCELED) or date.month+date.year!=month+year:
+                continue
+            collector.append({"id":client.client_id,"name":client.fullname,"date":date.strftime("%Y-%m-%d"),
+                              "stat":client.state, "lat":0, "lng":0, "address":client.address})
+
+        return collector
+

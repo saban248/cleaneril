@@ -298,3 +298,14 @@ class ResponseStruct:
             return self
 
 
+    @dataclass
+    class Calendar:
+        month:int          = None
+        year:int          = None
+
+        def build(self, **date):
+            struct_builder(self, **date)
+            if self.month:self.month = int(self.month)
+            if self.year:self.year = int(self.year)
+
+            return self

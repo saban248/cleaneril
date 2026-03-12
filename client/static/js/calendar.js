@@ -1,31 +1,27 @@
 
-/** @type {{id:string, name:string,date:string,lat:number,lng:number,stat:number}[]} */
-const calendarClients = [{
-    id:1,
-    name:"משה כהן",
-    date:"2026-03-12",
-    lat:32.18,
-    lng:34.87,
-    stat:2
-}]
+/** @type {{id:string, name:string,date:string,lat:number,lng:number,stat:number, address:string},[]} */
+var calendarClients = []
 var mapClients = null;
 /** @type {object[]} */
-const markersClients = {}
+var markersClients = {}
+var markerLayer = null;
 var calendar = null;
+let selectS = null
+let selectE = null
 
 
 function getClientCalendar(){
-    const startDate = document.getElementById("calendar-from").dataset.s;
-    const endDate = document.getElementById("calendar-from").dataset.e;
-    console.log(startDate, endDate)
+    var s = document.getElementById("calendar-from").dataset.s;
+    var e = document.getElementById("calendar-to").dataset.e;
+    if (!s||!e){
+        var [s, e] = getCurrentMonthRange()
+    }
+    const [start, end] = [new Date(s), new Date(e)];
     return calendarClients
         .filter(c => {
             const d = new Date(c.date)
-            return (d >= startDate && d <= endDate) && c.state&c_runtime.state_calendar_selected
-        })
-        .sort((a,b)=>{
-            return new Date(a.date) - new Date(b.date)
-        })
+            return (c.stat&c_runtime.state_calendar_selected) && (d >= start && d <= end)
+        });
 }
 
 
@@ -61,6 +57,7 @@ function getColorByStat(stat){
 
 function initialMapClients(){
     mapClients = L.map("map").setView([31.7100077,35.478982],8)
+    markerLayer = L.layerGroup().addTo(mapClients)
     L.tileLayer(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     {
@@ -70,12 +67,12 @@ function initialMapClients(){
     resetMarkersClients()
 }
 
-
+ 
 function resetMarkersClients(){
-    getClientCalendar().forEach(c=>{
+    markerLayer.clearLayers()
 
-    const marker = L.marker([c.lat,c.lng])
-        .addTo(mapClients)
+    getClientCalendar().forEach(c=>{
+        marker = L.marker([c.lat,c.lng])
         .bindPopup(`
             <div class="client-popup">
                 <div class="popup-header">
@@ -97,14 +94,26 @@ function resetMarkersClients(){
             `,{
                 className:"cool-popup",
                 maxWidth:260
-            })
+            }).addTo(markerLayer)
 
     markersClients[c.id] = marker
     })
+    
 }
 
+function resetCalendarEvents(){
+    calendar.removeAllEvents()
+    calendar.addEventSource(getClientCalendar().map(c=>({
+            title:c.name,
+            start:c.date,
+            id:c.id,
+            backgroundColor:getColorByStat(c.stat),
+            borderColor:getColorByStat(c.stat)
+        })
+    ))
+}
 
-function initialCalendarClients(){
+function initialCalendarClients(initial = false){
     calendar = new FullCalendar.Calendar(
     document.getElementById("calendar"),
     {
@@ -115,22 +124,27 @@ function initialCalendarClients(){
         selectLongPressDelay: 100,
         select: function(info){
             updateFromTo(info.startStr, info.endStr)
+            onSelectRangeCalendar()
             calendar.getEventById("selected-range")?.remove();
             calendar.addEvent({
                 id: "selected-range",
                 start: info.startStr,
                 end: info.endStr,
                 display: "background",
-                backgroundColor: "#60a5fa"
+                backgroundColor: "#d8e8fc"
             })},
+
         initialView: "dayGridMonth",
         headerToolbar:{
         start:'title',
-        center:'',
-        end:'today prev,next'
+        left: 'prev,next',      
+        center: 'title',   
+        right: 'dayGridMonth,timeGridWeek,dayGridDay' 
         },
-        buttonText:{
-            today:'היום'
+        buttonText: {
+            day: 'היום',
+            month: 'החודש',
+            week: 'השבוע',
         },
         dayMaxEvents: 2,
         events: getClientCalendar().map(c=>({
@@ -144,45 +158,38 @@ function initialCalendarClients(){
         eventClick: function(info){
             const id = info.event.id
             const marker = markersClients[id]
+            if (marker==undefined)return
             mapClients.setView(marker.getLatLng(), 11)
             marker.openPopup()
 
         }
     })
+
     calendar.render()
-    const [s,e] = getCurrentMonthRange();
-    updateFromTo(s, e)
 }
 
 function updateFromTo(s, e){
     const dateFrom = document.getElementById("calendar-from")
     const dateTo = document.getElementById("calendar-to")
-    setSelectionRange(s, e);
     dateFrom.dataset.s = s
     dateTo.dataset.e = e
     dateFrom.textContent = s.replace("-", ".").replace("-", ".")
     dateTo.textContent = e.replace("-", ".").replace("-", ".")
+    selectS = s
+    selectE = e
 }
 
-function setSelectionRange(start, end){
-
-    if(!start ||!end) return;
-    const prev = calendar.getEventById("selected-range");
-    if(prev) prev.remove();
-
-    calendar.addEvent({
-        id:"selected-range",
-        start:start,
-        end:end,
-        display:"background",
-        backgroundColor:"#60a5fa"
-    });
-
+function onSelectRangeCalendar(){
+    resetMarkersClients()
+    resetCalendarEvents()
+   
 }
 
-function selectcalendarState(t){
+function selectCalendarState(t){
     updateMenuActionCalendarSorted(t, t.dataset.s)
-    initialCalendarClients();
+    resetMarkersClients()
+    resetCalendarEvents()
+    calendar.select(selectS, selectE)
 }
 
 function updateMenuActionCalendarSorted(t, state, cache = true){
@@ -195,20 +202,51 @@ function updateMenuActionCalendarSorted(t, state, cache = true){
         t.classList.remove(cSelected)
         c_runtime.state_calendar_selected &= ~state
     }
-
-
-
 }
 
 
 function fetchClientsCalendar(){
-
+    const data = {
+        action:ApiCall.calendar,
+        month:calendar.getDate().getMonth()+1,
+        year:calendar.getDate().getFullYear()
+    }
+    apiPost(ApiRoute.api, data).then( res =>{
+        if (!res.success){
+            return;
+        }
+        console.log(res.data)
+        calendarClients = res.data;
+        for (c of calendarClients){
+            geocodeAddressOSM(c)
+        }
+    })
 }
+
+
+async function geocodeAddressOSM(client) {
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(client.address)}&limit=1`;
+  const resp = await fetch(url);
+  const data = await resp.json();
+  console.log(client.address, data)
+  if (data.length > 0) {
+    client.lat = parseFloat(data[0].lat);
+    client.lng = parseFloat(data[0].lon);
+  } else {
+    client.lat = 32.18
+    client.lng = 34.87
+  }
+  return client;
+}
+
 
 
 document.addEventListener("DOMContentLoaded", function (){
     initialMapClients()
     initialCalendarClients()
+    const [s,e] = getCurrentMonthRange()
+    calendar.select(s,e)
+    fetchClientsCalendar()
     const observer = new ResizeObserver(()=>{
 
         mapClients?.invalidateSize()
