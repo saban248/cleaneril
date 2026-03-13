@@ -78,3 +78,14 @@ function rectMenu(menu, btn, menur){
     menu.style.left = `${left}px`;
 
 }
+
+
+async function geocodeAddressOSM(address) {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`;
+    const resp = await fetch(url);
+    const data = await resp.json();
+    if (!(data.length > 0)) {
+        return [32.18,34.87]
+    }
+    return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+}

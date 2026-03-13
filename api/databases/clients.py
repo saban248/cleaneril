@@ -5,6 +5,8 @@ from datetime import datetime
 from typing import Union
 from zoneinfo import ZoneInfo
 
+from sqlalchemy import JSON
+
 from api.ptc import generate_hex
 
 from api.databases.ptc import cleaneril_db, StateDocument, ServerConfig, StateClient
@@ -32,6 +34,7 @@ class Clients(cleaneril_db.Model):
     expense = cleaneril_db.Column(cleaneril_db.Float, nullable=False, default=0.0)
     worker = cleaneril_db.Column(cleaneril_db.String(32), nullable=False)
     profit_sharing = cleaneril_db.Column(cleaneril_db.Integer, nullable=False, default=0)
+    coordinates = cleaneril_db.Column(JSON, nullable=False)
 
 
 
@@ -58,7 +61,7 @@ class ApiClients:
                    items:dict = None, off:bool = False, off_p:int = 0, fullname:str = unknown, date:float = 0.0,
                    address:str = unknown, lead_from:int = ClientLeadFrom.WHATSAPP,
                    notes:str = unknown, price:float = 0.0, vat:bool = False, expense:float = 0.0,
-                   worker:str = unknown, ps:int = 0):
+                   worker:str = unknown, ps:int = 0, coordinate:list|tuple = (0,0)):
         if not client_id:
             client = Clients()
             client.client_id = generate_hex(7)
@@ -81,6 +84,7 @@ class ApiClients:
         client.expense = expense
         client.worker = worker
         client.profit_sharing = ps
+        client.coordinates = list(coordinate)
         if not client_id:
             cleaneril_db.session.add(client)
 
@@ -130,11 +134,12 @@ class ApiClients:
         collector = []
         clients:list[Clients] = ApiClients.get_clients()
         for client in clients:
-            date = datetime.fromtimestamp(client.date)#tz=ZoneInfo("Asia/Jerusalem"))
+            date = datetime.fromtimestamp(client.date)
+            lat,lng = client.coordinates or [0,0]
             if not client.state&(StateClient.DONE|StateClient.CLOSED|StateClient.CANCELED) or date.month+date.year!=month+year:
                 continue
             collector.append({"id":client.client_id,"name":client.fullname,"date":date.strftime("%Y-%m-%d"),
-                              "stat":client.state, "lat":0, "lng":0, "address":client.address})
+                              "stat":client.state, "lat":lat, "lng":lng, "address":client.address})
 
         return collector
 

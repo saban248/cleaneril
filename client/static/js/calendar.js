@@ -66,7 +66,7 @@ function initialMapClients(){
     L.tileLayer(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     {
-        maxZoom:10
+        maxZoom:20
     }).addTo(mapClients)
 
     resetMarkersClients()
@@ -168,7 +168,7 @@ function initialCalendarClients(initial = false){
             const id = info.event.id
             const marker = markersClients[id]
             if (marker==undefined)return
-            mapClients.setView(marker.getLatLng(), 8)
+            mapClients.setView(marker.getLatLng(), 9)
             marker.openPopup()
 
         }
@@ -231,28 +231,9 @@ async function fetchClientsCalendar(){
         lastDateFetched = newDateToFetch
         calendarClients[lastDateFetched] = res.data;
     })
-
-    for (c of calendarClients[lastDateFetched]){
-        geocodeAddressOSM(c)
-        await sleep(1200)
-        onSelectRangeCalendar()
-    }
+    onSelectRangeCalendar();
 }
 
-
-async function geocodeAddressOSM(client) {
-  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(client.address)}&limit=1`;
-  const resp = await fetch(url);
-  const data = await resp.json();
-  if (data.length > 0) {
-    client.lat = parseFloat(data[0].lat);
-    client.lng = parseFloat(data[0].lon);
-  } else {
-    client.lat = 32.18
-    client.lng = 34.87
-  }
-  return client;
-}
 
 
 

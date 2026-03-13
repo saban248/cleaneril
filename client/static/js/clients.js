@@ -173,7 +173,7 @@ function compareVatOfPrice(t){
 
 }
 
-function publishClient(client_id, state){
+async function publishClient(client_id, state){
     const fullname = document.getElementById('fullname').value;
     const date = document.getElementById('client-date').value;
     const ldate = new Date(date);
@@ -199,13 +199,16 @@ function publishClient(client_id, state){
     const w = document.getElementById('esm')?.children[0]
     const worker = w?w.id.substring(1,32):''
 
+    /** coordinate */
+    const [lat, lng] = await geocodeAddressOSM(address)
+    console.log(lat, lng)
     const data = {action:ApiCall.client_save,
         ci:client_id, s:state,
         phone:phone,o:Boolean(parseInt(offPrice)),
         op:offPrice,fn:fullname,
         address:address, i:JSON.stringify(c_runtime.items_ordered),
         lf:SocialMedia.WHATSAPP,date:timing,
-        notes:notes,price:price,vat:vat,ex:expense,ps:profitSharing,worker:worker
+        notes:notes,price:price,vat:vat,ex:expense,ps:profitSharing,worker:worker,coordinate:[lat,lng]
     }
     apiPost(ApiRoute.api,data).then(
         (res)=>{
@@ -214,7 +217,7 @@ function publishClient(client_id, state){
                 return
             }
             closeCreateClient(true)
-            location.reload()
+            // location.reload()
         }
     )
 

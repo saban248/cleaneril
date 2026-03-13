@@ -207,6 +207,7 @@ class ResponseStruct:
         ex:float       = None
         worker:str      = None
         ps:int          = None
+        coordinate:list      = None
         def build(self, **data):
             struct_builder(self, **data)
             self.o = bool(self.o)
@@ -229,6 +230,9 @@ class ResponseStruct:
                 self.ps = int(self.ps)
             else:
                 self.ps = 0
+            if not self.coordinate:
+                self.coordinate = [32.18,34.87]
+
             self.get_full_price()
 
 
