@@ -72,3 +72,49 @@
     opacity: 1;
     height: auto !important;
 }
+
+.show-progress{
+    display: none;
+    font-size: 1.75rem;
+}
+.show-progress > span{
+    font-size: 1rem;
+}
+.show-progress > i{
+    padding: 10px;
+    border-radius: 6px;
+}
+.show-progress.show{
+    display: flex !important;
+    justify-content: right;
+    align-items: center;
+    column-gap: 10px;
+
+}
+.show-progress>div{
+    display: flex;
+    font-size: .7rem;
+    flex-direction: column;
+
+}
+.cpp-title{
+    font-size: 1.2rem;
+    color: rgb(138, 138, 138);
+
+}
+.progress-title-done{
+    color: rgb(16, 115, 60);
+}
+.progress-icon-done{
+    color: rgb(6, 83, 41);
+    border: 1px solid #dddddda5;
+    box-shadow: 0 0 11px #f9f9f9;
+}
+
+.card-action-editor-saved{
+    display: none;
+}
+
+.card-action-editor-saved.show{
+    display: flex !important;
+}

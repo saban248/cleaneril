@@ -34,6 +34,19 @@ function getStateClient(state) {
     }
     return result;
 }
+function getStateClientText(s){
+    switch (s){
+        case s&StateClient.WAIT:
+            return "לא נסגר"
+        case s&StateClient.CLOSED:
+            return "בהמתנה"
+        case s&StateClient.CANCELED:
+            return "בוטל"
+        case s&StateClient.DONE:
+            return "הושלם!"
+    }
+}
+
 
 const CalanderClients = {
     TOMORROW:   1<<0,

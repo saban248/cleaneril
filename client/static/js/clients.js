@@ -2,7 +2,8 @@ const c_runtime = {
     items_ordered:{},
     state_client_selected:0,
     state_calendar_selected:0,
-    workers:[]
+    workers:[],
+    blockPublishClient:false
 }
 
 async function viewclientDetails(client_id){
@@ -27,6 +28,7 @@ async function viewclientDetails(client_id){
 
 }
 function createClient(client_id=null){
+    if (c_runtime.blockPublishClient)return;
     const mainEdit = document.getElementById("client-editor")
     mainEdit.classList.remove('hide');
     mainEdit.classList.add('show');
@@ -52,6 +54,7 @@ function createClient(client_id=null){
 
 
 function closeCreateClient(no_api=false){
+    
     const mainEdit = document.getElementById("client-editor")
     mainEdit.classList.remove("show")
     mainEdit.classList.add("hide")
@@ -172,8 +175,52 @@ function compareVatOfPrice(t){
 
 
 }
+function onPublishClientShowProgress(fullname, stat, done = false){
+    const body = document.getElementById("clientOrderBody");
+    const details = document.getElementById("clientOrderDetails");
+    const progress = document.getElementById("clientProgressPublish");
+    const fn = document.getElementById("cpp-fn")
+    const st = document.getElementById("cpp-stat")
+    const icon = document.getElementById("cpp-icon")
+    const title = document.getElementById("cpp-title");
+    const bAction = document.getElementById("beforeProgressDone");
+    const aAction = document.getElementById("afterProgressDone")
+    if (!done){
+        iClass = "fa-solid fa-circle-notch fa-spin"
+        icon.classList = iClass
+    }
+    else{
+        iClass ="fa-solid fa-calendar-check progress-icon-done"
+        icon.classList = iClass
+        title.textContent = 'ההזמנה נשמרה'
+        title.classList.add("progress-title-done")
+        aAction.classList.add("show");
+        bAction.classList.add("hide");
+        
+        return;
+    }
+
+    fn.textContent = "עבור: "+fullname;
+    st.textContent = "סוג הזמנה: "+getStateClientText(parseInt(stat))
+    body.classList.add("hide");
+    details.classList.add("hide");
+    progress.classList.add("show");
+}   
+
+function onPublishClientHideProgress(){
+    const body = document.getElementById("clientOrderBody");
+    const details = document.getElementById("clientOrderDetails");
+    const progress = document.getElementById("clientProgressPublish");
+    body.classList.remove("hide");
+    details.classList.remove("hide");
+    progress.classList.remove("show");
+
+}
+
 
 async function publishClient(client_id, state){
+    if (c_runtime.blockPublishClient)return;
+    c_runtime.blockPublishClient =true;
     const fullname = document.getElementById('fullname').value;
     const date = document.getElementById('client-date').value;
     const ldate = new Date(date);
@@ -199,9 +246,10 @@ async function publishClient(client_id, state){
     const w = document.getElementById('esm')?.children[0]
     const worker = w?w.id.substring(1,32):''
 
+    onPublishClientShowProgress(fullname, state);
+
     /** coordinate */
     const [lat, lng] = await geocodeAddressOSM(address)
-    console.log(lat, lng)
     const data = {action:ApiCall.client_save,
         ci:client_id, s:state,
         phone:phone,o:Boolean(parseInt(offPrice)),
@@ -214,10 +262,15 @@ async function publishClient(client_id, state){
         (res)=>{
             if (!res.success){
                 openPopup(res.title, res.notice)
+                c_runtime.blockPublishClient = false;
+                onPublishClientHideProgress();
                 return
             }
-            closeCreateClient(true)
+            // closeCreateClient(true)
             // location.reload()
+            onPublishClientShowProgress(null,null,true)
+            c_runtime.blockPublishClient = false
+            c_runtime.items_ordered = {}
         }
     )
 

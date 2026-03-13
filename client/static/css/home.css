@@ -789,4 +789,10 @@ body, *{
 
 
 
+.fa-beat, .fa-bounce, .fa-fade, .fa-beat-fade, .fa-flip, .fa-pulse, .fa-shake, .fa-spin, .fa-spin-pulse
+{
+  animation-duration: 2s !important;
+  animation-iteration-count: infinite !important;
+}
+
 

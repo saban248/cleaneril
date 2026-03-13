@@ -19,7 +19,7 @@
             </div>
 
         </div>
-        <div class="client-details">
+        <div class="client-details" id="clientOrderDetails">
             <div class="cd-item">
                 <span>לכבוד</span>
                 {% if not editor %}
@@ -62,7 +62,15 @@
             </div>
         </div>
     </div>
-    <div class="client-body">
+    <div class="show-progress" id="clientProgressPublish">
+        <i id="cpp-icon"></i>
+        <div>
+            <span class="cpp-title" id="cpp-title">שומר את ההזמנה</span>
+            <span id="cpp-fn"></span>
+            <span id="cpp-stat"></span>
+        </div>
+    </div>
+    <div class="client-body" id="clientOrderBody">
         <div class="clean-items">
             <div class="ci-head">
                 <span>פריטים שהוזמנו</span>
@@ -159,11 +167,16 @@
         <span>{% include "icon/verify.svg" %}</span> {{client.timestamp_entered|ctime}} • {{client.key}}-{{client.client_id}}
     </div>
     <div class="client-footer {% if not editor %} disable {%endif%}">
-        <div class="card-action-editor">
+        <div class="card-action-editor" id="beforeProgressDone">
             <i class="fa-solid fa-user-xmark" onclick="publishClient('{{client.client_id}}', StateClient.CANCELED)"></i>
             <i class="fa-solid fa-person-circle-question" onclick="publishClient('{{client.client_id}}', StateClient.WAIT)"></i>
             <i class="fa-solid fa-user-clock" onclick="publishClient('{{client.client_id}}', StateClient.CLOSED)"></i>
             <i class="fa-solid fa-user-check" onclick="publishClient('{{client.client_id}}', StateClient.DONE)"></i>
+        </div>
+        <div class="card-action-editor-saved" id="afterProgressDone">
+            <i class="fa-solid fa-share-from-square" onclick="shareOrderToClientAsLink('{{client.client_id}}')">
+            </i>
+            <i class="fa-solid fa-image" onclick="shareOrderToClientAsPhoto('{{client.client_id}}')"></i>
         </div>
     </div>
 </div>
