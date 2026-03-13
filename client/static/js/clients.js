@@ -190,7 +190,7 @@ function onPublishClientShowProgress(fullname, stat, done = false){
         icon.classList = iClass
     }
     else{
-        iClass ="fa-solid fa-calendar-check progress-icon-done"
+        iClass ="fa-solid fa-calendar-check progress-icon-done ctype-"+stat;
         icon.classList = iClass
         title.textContent = 'ההזמנה נשמרה'
         title.classList.add("progress-title-done")
@@ -201,7 +201,7 @@ function onPublishClientShowProgress(fullname, stat, done = false){
     }
 
     fn.textContent = "עבור: "+fullname;
-    st.textContent = "סוג הזמנה: "+getStateClientText(parseInt(stat))
+    st.children[0].textContent = getStateClientText(parseInt(stat))
     body.classList.add("hide");
     details.classList.add("hide");
     progress.classList.add("show");
@@ -268,7 +268,7 @@ async function publishClient(client_id, state){
             }
             // closeCreateClient(true)
             // location.reload()
-            onPublishClientShowProgress(null,null,true)
+            onPublishClientShowProgress(fullname,state, true)
             c_runtime.blockPublishClient = false
             c_runtime.items_ordered = {}
         }

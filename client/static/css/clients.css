@@ -89,7 +89,6 @@
     justify-content: right;
     align-items: center;
     column-gap: 10px;
-
 }
 .show-progress>div{
     display: flex;
@@ -98,7 +97,7 @@
 
 }
 .cpp-title{
-    font-size: 1.2rem;
+    font-size: 1.2rem ;
     color: rgb(138, 138, 138);
 
 }
@@ -109,6 +108,7 @@
     color: rgb(6, 83, 41);
     border: 1px solid #dddddda5;
     box-shadow: 0 0 11px #f9f9f9;
+    font-size: 1.2rem !important;
 }
 
 .card-action-editor-saved{
@@ -117,4 +117,9 @@
 
 .card-action-editor-saved.show{
     display: flex !important;
+}
+
+.details-progress{
+    padding-right: 10px;
+    border-right: 1px solid #dddddda5;
 }
