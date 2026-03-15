@@ -2,6 +2,8 @@ import binascii
 import json
 import os
 
+import markdown
+from Tools.scripts.mkreal import join
 from flask import session, request, jsonify, render_template, redirect, url_for, abort
 
 from api.databases.clients import ApiClients
@@ -50,3 +52,29 @@ def dashboard():
                            counts=[ApiClients.count_client_wait(dash.c),ApiClients.count_client_done(dash.c),
                                    ApiClients.count_client_closed(dash.c), ApiClients.count_client_canceled(dash.c)],
                            company=company,manager=manager, workers=workers)
+
+
+@cleaneril.route(RoutePages.create_account.path, methods=['GET'])
+def create_account():
+    # e_invalid = SJson.error()
+    # if  ShortSession.is_admin(session):
+    #     return redirect(url_for("auth"))
+
+    return render_template(Pages.register.html)
+
+
+@cleaneril.route(RoutePages.terms.path, methods=["GET"])
+def terms_of_services():
+
+    with open(os.path.join(ServerConfig.PAGES_FOLDER, Pages.terms.md), encoding="utf-8") as f:
+        md = f.read()
+    html = markdown.markdown(
+        md,
+        extensions=[
+            "extra",
+            "nl2br",
+            "sane_lists"
+        ]
+    )
+
+    return render_template(Pages.terms.html, terms=html)

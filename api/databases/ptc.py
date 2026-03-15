@@ -17,6 +17,7 @@ class ServerConfig:
     DEF_wNAME    = FILE_NAME_DB
     DEF_wPWD     = "?"+DEF_wNAME
     COMPANY_NAME        = 'הברקה בדקה'
+    PAGES_FOLDER = os.path.join(os.path.dirname(cleaneril.static_folder), "pages")
     FOLDER_IMAGE_PATH   = os.path.join(os.path.basename(cleaneril.static_folder), "images")
     FOLDER_IMAGE_BA   = os.path.join(FOLDER_IMAGE_PATH, "ba")
     DEFAULT_IMAGE_CARD  = os.path.join(FOLDER_IMAGE_BA,'example.jpg')

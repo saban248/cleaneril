@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+    <title>יצירת חשבון</title>
+    <link rel="stylesheet" href="/static/css/register.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon-16x16.png">
+    <link rel="shortcut icon" href="/static/images/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+<div class="container">
+    <div class="left show" id="llevel-1">
+        <div class="head">
+            <h2>הצטרף לאפליקציה שלנו</h2>
+            <p>
+            הירשם למערכת ניהול לקוחות לעסק שלך בניקוי ריפודים, מזגנים, כדי לנהל בצורה נוחה את הלקוחות          
+            </p>
+            <div class="terms">
+                <p>השימוש באפליקציה היא ללא תשלום</p>
+                <p class="terms-service" onclick='redirect("terms")'>בהתאם לתנאי השימוש</p>
+            </div>
+        </div>
+        <button class="btn-continue" onclick="continueToLevel()">
+            <span>קדימה</span>
+            <i  class="fa-solid fa-circle-notch fa-spin registerLoad" style="display: none;"></i>
+        </button>
+    </div>
+    <div class="right show" id="rlevel-1">
+        <h1>יצירת חשבון</h1>
+        <form id="form">
+            <div class="input-group">
+                <label>
+                    <i class="fa-solid fa-circle-user"></i>
+                    שם מלא
+                </label>
+                <input type="text" placeholder=" " required class="register-input" id="fullname" autocomplete="on">
+            </div>
+            <div class="input-group">
+                <label>
+                    <i class="fa-solid fa-user-lock"></i>
+                    צור סיסמה
+                </label>
+                <input type="password" id="pwd1" placeholder=" " required class="register-input" autocomplete="on">
+            </div>
+            <div class="input-group">
+                <label>
+                    <i class="fa-solid fa-user-lock"></i>
+                    הקש הסיסמה שוב
+                </label>
+                <input type="password" id="pwd2" placeholder=" " required class="register-input" autocomplete="on">
+                <div class="strength">
+                    <div class="strength-bar" id="bar"></div>
+                </div>
+            </div>
+            <div class="accept-terms">
+                <i class="fa-solid fa-circle-info"></i>
+                בהרשמה אני מאשר תנאי שימוש
+            </div>
+            <button class="btn-register" onclick="doRegister(this)">
+                <span>צור חשבון</span>
+                <i  class="fa-solid fa-circle-notch fa-spin registerLoad" style="display: none;"></i>
+            </button>
+            <div class="divider">or</div>
+            <button type="button" class="google" onclick="redirect('auth')" >היכנס למערכת</button>
+        </form>
+        <div class="credit">
+            נכתב ונבנה ע"י
+            <a href="#">אברהם סבן</a>
+        </div>
+    </div>
+    <div class="left" id="llevel-2">
+        <div class="head">
+            <h2>פרטים על העסק</h2>
+            <p>
+                פרטים ראשוניים על העסק שלך, ישתקף בקבלות ובהזמנות ללקוחות שלך      
+            </p>
+        </div>
+        <button class="btn-continue" onclick="continueToLevel()">
+            <span>קדימה</span>
+            <i  class="fa-solid fa-circle-notch fa-spin registerLoad" style="display: none;"></i>
+        </button>
+    </div>
+        <div class="right" id="rlevel-2">
+        <h1>פרטי העסק</h1>
+        <form id="form">
+            <div class="input-group">
+                <label>
+                    <i class="fa-solid fa-building"></i>
+                    שם העסק (שלוש מילים)
+                </label>
+                <input type="text" placeholder=" " required class="register-input" id="companyName" >
+            </div>
+            <div class="input-group">
+                <label>
+                    <i class="fa-solid fa-align-left"></i>
+                    תיאור קצר של העסק
+                </label>
+                <input type="password" id="companyDesc" placeholder="לדוגמא: ניקוי מזגנים מקצועי" required class="register-input" >
+            </div>
+            <button class="btn-register" onclick="doRegister(this)">
+                <span>המשך</span>
+                <i class="fa-solid fa-circle-notch fa-spin registerLoad" style="display: none;"></i>
+            </button>
+        </form>
+        <div class="credit">
+            נכתב ונבנה ע"י
+            <a href="#">אברהם סבן</a>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="/static/js/register.js"></script>
+<script src="/static/js/all.js"></script>
+</html>

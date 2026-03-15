@@ -70,6 +70,8 @@ class RoutePages(RoutePagesBase):
     home = 1<<0
     auth = 1<<1
     dashboard = 1<<2
+    create_account = 1<<3
+    terms = 1<<4
 
 
 class RouteApi(RoutePagesBase):
@@ -83,12 +85,18 @@ class Pages(IntFlag):
     home = 1<<0
     auth = 1<<1
     dashboard = 1<<2
+    register = 1<<3
+    terms = 1<<4
 
     def __str__(self):
         return self.__repr__()
     @property
     def __root__(self):
         return self.name+"/"
+
+    @property
+    def md(self):
+        return self.__root__+self.name+".md"
     @property
     def html(self):
         return self.__root__+self.name+'.html'
