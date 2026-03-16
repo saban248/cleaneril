@@ -2,6 +2,7 @@ import base64
 import os
 
 from flask import render_template_string, render_template
+from flask_wtf.csrf import validate_csrf
 
 from api.databases.bridge import set_employee_to_client
 from api.databases.clients import Clients, ApiClients
@@ -9,10 +10,10 @@ from api.databases.company import ApiCompany
 from api.databases.crads import ApiCards, Cards
 from api.databases.employee import ApiEmployee, Employee
 from api.databases.funds import ApiFunds
-from api.databases.manager import ApiManager
+from api.databases.manager import ApiManager, on_register_create_company
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril
 from api.ptc import special_things, SJson, ShortSession
-from api.routes.ptc import Pages, ApiCall, ResponseStruct, ApiUploadFile
+from api.routes.ptc import Pages, ApiCall, ResponseStruct, ApiUploadFile, RegisterApi
 
 
 def get_api_action(session, request, **breq) -> dict:
@@ -95,6 +96,19 @@ def get_api_action(session, request, **breq) -> dict:
 
     return {}
 
+
+def get_register_action(session, **breq):
+    action = int(breq.get("action", -1))
+    match action:
+        case RegisterApi.level1:
+            register = ResponseStruct.Register().build(**breq)
+            valid = v_u(register.username) and v_p(register.password)
+            stat = on_register_create_company(register.username, register.password)
+            return {"success":valid and not stat and sess(register.xCSRF)}
+
+    return {}
+
+
 def get_card_edit_template(card_id:str, **_):
     card:Cards = ApiCards.create_card(card_id=card_id)
     return render_template(f"{Pages.home.path}card_ba.html",
@@ -144,3 +158,9 @@ def api_upload_file(session, data:dict):
 
 
     return SJson.success()
+
+
+def v_u(user:str):
+    return user.__len__() > 5
+def v_p(pwd:str):
+    return pwd.__len__() > 5

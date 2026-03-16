@@ -4,10 +4,9 @@ from datetime import datetime
 import json
 import os
 from zoneinfo import ZoneInfo
-
 from flask import session, request
 
-from api.api_action import get_api_action, api_upload_file
+from api.api_action import get_api_action, api_upload_file, get_register_action
 from api.databases.employee import Employee
 from api.databases.manager import ApiManager
 from api.databases.ptc import cleaneril, ServerConfig, StateClient
@@ -104,3 +103,9 @@ def up_image():
     response = api_upload_file(session, data)
 
     return response
+
+@cleaneril.route(RouteApi.register.path, methods=["POST"])
+def register():
+    breq = get_dictionary_http(request)
+    get_ac = get_register_action(**breq)
+    return SJson.success(**get_ac)

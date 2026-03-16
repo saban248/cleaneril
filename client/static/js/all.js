@@ -9,6 +9,20 @@ function closePopup() {
 }
 
 
+function showToast(text){
+
+    const toast = document.createElement("div")
+    toast.className = "toast"
+    toast.innerText = text
+
+    document.getElementById("toast-container").appendChild(toast)
+
+    setTimeout(()=>{
+        toast.remove()
+    },4000)
+
+}
+
 
 
 async function apiRequest(method, url, body = null) {

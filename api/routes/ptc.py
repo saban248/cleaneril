@@ -78,7 +78,14 @@ class RouteApi(RoutePagesBase):
     do_auth = 1<<0
     api     = 1<<1
     up_image = 1<<2
+    register = 1<<3
 
+
+class RegisterApi(IntFlag):
+    level1 = 1<<0
+    level2 = 1<<1
+    level3 = 1<<2
+    level4 = 1<<3
 
 
 class Pages(IntFlag):
@@ -319,5 +326,16 @@ class ResponseStruct:
             struct_builder(self, **date)
             if self.month:self.month = int(self.month)
             if self.year:self.year = int(self.year)
+
+            return self
+
+    @dataclass
+    class Register:
+        username:str        = None
+        password:str        = None
+        xCSRF:str           = None
+
+        def build(self, **data):
+            struct_builder(self, **data)
 
             return self

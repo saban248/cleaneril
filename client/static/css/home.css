@@ -796,3 +796,35 @@ body, *{
 }
 
 
+
+
+#toast-container{
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 9999;
+}
+
+.toast{
+    background: #2b2b2b;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+    min-width: 220px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    animation: slideIn 0.35s ease;
+}
+
+@keyframes slideIn{
+    from{
+        transform: translateX(120%);
+        opacity:0;
+    }
+    to{
+        transform: translateX(0);
+        opacity:1;
+    }
+}

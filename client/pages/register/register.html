@@ -70,10 +70,11 @@
                 בהרשמה אני מאשר תנאי שימוש
             </div>
             <button class="btn-register" onclick="doRegister(this)">
+                <input type="hidden" id="cXsXrF" value="{{ csrf }}">
                 <span>צור חשבון</span>
                 <i  class="fa-solid fa-circle-notch fa-spin registerLoad" style="display: none;"></i>
             </button>
-            <div class="divider">or</div>
+            <div class="divider">או</div>
             <button type="button" class="google" onclick="redirect('auth')" >היכנס למערכת</button>
         </form>
         <div class="credit">
@@ -120,9 +121,11 @@
             <a href="#">אברהם סבן</a>
         </div>
     </div>
+    <div id="toast-container"></div>
 </div>
 
 </body>
 <script src="/static/js/register.js"></script>
 <script src="/static/js/all.js"></script>
+<script src="/static/js/protocol.js"></script>
 </html>

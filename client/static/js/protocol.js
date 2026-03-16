@@ -140,8 +140,16 @@ const mPermissions = {
 const ApiRoute = {
     auth:"do_auth",
     api:"api",
-    upImage:"up_image"
+    upImage:"up_image",
+    register: "register"
 }
+const RegisterApi = {
+    level1:1<<0,
+    level2:1<<1,
+    level3:1<<3,
+    level4:1<<4
+}
+
 
 const ApiCall = {
     card_editor :1<<0,

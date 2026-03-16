@@ -46,7 +46,7 @@ function redirect(path){
 
 
 function onBtnRegister(level, t, done = false){
-    const icon = document.getElementsByClassName("registerLoad")[level-1]
+    const icon = t.children[1]
     if (done){
         icon.style.display = 'none'
         t.children[0].style.display = 'block';
@@ -63,13 +63,16 @@ function onBtnRegister(level, t, done = false){
 function doRegister(t){
     const fullname = document.getElementById("fullname")
     const pwd1 = document.getElementById("pwd1");
-    const pwd2 = document.getElementById("pwd2");
+    const csrf = document.getElementById("cXsXrF");
     onBtnRegister(LEVELS.AUTH, t)
-    setTimeout(() => {
-        completeRegsiterLevel(LEVELS.AUTH)
-        onBtnRegister(LEVELS.AUTH, t, true)
-    },1000)
-
+    const data = {action:RegisterApi.level1, username:fullname, password:pwd1, xCSRF:csrf}
+    apiPost(ApiRoute.register, data).then(
+        res =>{
+            if (!res.success){
+                showToast("Message sent successfully")
+            }
+        }
+    )
 }
 
 

@@ -7,7 +7,6 @@ from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
-
 FILE_NAME_DB = "cleaneril"
 cleaneril = Flask(FILE_NAME_DB, template_folder=os.path.join("client", "pages"),
                   static_folder=os.path.join("client", "static"))
@@ -36,7 +35,6 @@ cleaneril.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
 cleaneril.secret_key = binascii.hexlify(os.urandom(8)).decode()
 cleaneril_db = SQLAlchemy(cleaneril)
 migrate = Migrate(cleaneril, cleaneril_db)
-
 
 
 

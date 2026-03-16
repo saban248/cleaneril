@@ -53,6 +53,15 @@ class ApiManager:
         return 0
 
 
+def on_register_create_company(user:str, pwd:str):
+    null = 'unknown'
+    new = ApiManager.register(user, ManagerPermissions.ADMIN, pwd)
+    company = ApiCompany.create_company(null,null,new.manager_id,False)
+    if company:return 1
+
+
+    return 0
+
 def new_manager_hb():
     manager = dict(username = "avraham",
          password = "Ghs553321",
