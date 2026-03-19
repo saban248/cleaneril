@@ -3,7 +3,7 @@ from typing import Union
 from api.databases.company import ApiCompany
 from api.databases.ptc import cleaneril_db, ManagerPermissions
 from api.ptc import generate_hex
-
+from api.validator import core_msg, company as comp
 
 class Manager(cleaneril_db.Model):
     __tablename__ = "manager"
@@ -18,12 +18,10 @@ class Manager(cleaneril_db.Model):
 class ApiManager:
     @staticmethod
     def register(username:str, permission:int, password:str):
-        assert not username.__len__() <5
-        assert not password.__len__() <5
 
         manager = ApiManager.get_managers(username=username, password=password).first()
         if manager:
-            return manager
+            return None
 
         new = Manager()
         new.username = username
@@ -53,14 +51,12 @@ class ApiManager:
         return 0
 
 
-def on_register_create_company(user:str, pwd:str):
+def on_register_create_company(user:str, pwd:str) -> str:
     null = 'unknown'
     new = ApiManager.register(user, ManagerPermissions.ADMIN, pwd)
-    company = ApiCompany.create_company(null,null,new.manager_id,False)
-    if company:return 1
-
-
-    return 0
+    if not new:return core_msg.Company.account_exist
+    ApiCompany.create_company(null,null,new.manager_id,False)
+    return str()
 
 def new_manager_hb():
     manager = dict(username = "avraham",
@@ -69,5 +65,5 @@ def new_manager_hb():
          )
 
     new_manager = ApiManager.register(**manager)
-
+    if not new_manager:return
     ApiCompany.create_company("הברקה בדקה",new_manager.username, new_manager.manager_id, False)

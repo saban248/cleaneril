@@ -97,8 +97,6 @@ def api():
 
 @cleaneril.route(RouteApi.up_image.path, methods=["POST"])
 def up_image():
-    if not ShortSession.is_admin(session):
-        return SJson.error()
     data = request.json
     response = api_upload_file(session, data)
 
@@ -107,5 +105,5 @@ def up_image():
 @cleaneril.route(RouteApi.register.path, methods=["POST"])
 def register():
     breq = get_dictionary_http(request)
-    get_ac = get_register_action(**breq)
+    get_ac = get_register_action(session, **breq)
     return SJson.success(**get_ac)

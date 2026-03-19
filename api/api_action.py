@@ -14,7 +14,7 @@ from api.databases.manager import ApiManager, on_register_create_company
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril
 from api.ptc import special_things, SJson, ShortSession
 from api.routes.ptc import Pages, ApiCall, ResponseStruct, ApiUploadFile, RegisterApi
-
+from api.validator import core_msg, company
 
 def get_api_action(session, request, **breq) -> dict:
     action = int(breq.get("action", -1))
@@ -99,12 +99,35 @@ def get_api_action(session, request, **breq) -> dict:
 
 def get_register_action(session, **breq):
     action = int(breq.get("action", -1))
+    register = ResponseStruct.Register().build(**breq)
     match action:
         case RegisterApi.level1:
-            register = ResponseStruct.Register().build(**breq)
-            valid = v_u(register.username) and v_p(register.password)
+            user = company.username(register.username)
+            if user:return SJson.error(user)
+            pwd = company.password(register.password)
+            if pwd:return SJson.error(pwd)
             stat = on_register_create_company(register.username, register.password)
-            return {"success":valid and not stat and sess(register.xCSRF)}
+            if stat:
+                return SJson.error(stat)
+            return {"success":not stat,
+                    "mid":ApiManager.get_managers(username=register.username, password=register.password).first().manager_id}
+        case RegisterApi.level2:
+            manager = ApiManager.get_managers(manager_id=register.mid).first()
+            if not manager:
+                return {"success":False}
+            name = company.name(register.c_name)
+            if name:return SJson.error(name)
+            exist = ApiCompany.get_companies(company_name=register.c_name).first()
+            if exist:return SJson.error(core_msg.Company.exist_name)
+            desc = company.description(register.c_desc)
+            if desc:return SJson.error(desc)
+            phone = company.phone(register.c_phone)
+            if phone:return SJson.error(phone)
+            fullname = company.ownername(register.o_name)
+            if fullname:return SJson.error(fullname)
+            stat = ApiCompany.update_company_details(register.mid,register.c_name,None,None,
+                                                     register.c_desc,register.c_phone, None)
+            return {"success":bool(not stat)}
 
     return {}
 
@@ -138,8 +161,11 @@ def api_upload_file(session, data:dict):
     filename = data["filename"]
     img_data = data["data"]
     image_bytes = base64.b64decode(img_data)
+    manager_id: str = ShortSession.get_admin_details(session).get("manager_id") or data.get("mid")
     match flag:
         case ApiUploadFile.CARD:
+            if not ShortSession.is_admin(session):
+                return SJson.error()
             fullpath = os.path.join(os.path.basename(os.path.dirname(cleaneril.static_folder)),
                                     str(os.path.join(ServerConfig.FOLDER_IMAGE_BA, filename)))
             if ServerConfig.DEFAULT_IMAGE_CARD == fullpath: return SJson.success()
@@ -147,7 +173,9 @@ def api_upload_file(session, data:dict):
             with open(fullpath, "wb") as f:
                 f.write(image_bytes)
         case ApiUploadFile.LOGO:
-            manager_id:str = ShortSession.get_admin_details(session)["manager_id"]
+            exist = ApiManager.get_managers(manager_id=manager_id).first()
+            if not exist:
+                return SJson.error()
             name = manager_id+".png"
             fullpath = os.path.join(os.path.basename(os.path.dirname(cleaneril.static_folder)),
                                     os.path.join(ServerConfig.FOLDER_LOGOS_PATH, name))
@@ -158,9 +186,3 @@ def api_upload_file(session, data:dict):
 
 
     return SJson.success()
-
-
-def v_u(user:str):
-    return user.__len__() > 5
-def v_p(pwd:str):
-    return pwd.__len__() > 5

@@ -68,7 +68,7 @@ class SJson:
         msg["success"] = True
         msg["title"] = "הושלם"
         SJson.__set_notice(msg, success_content)
-        return msg
+        return msg | success
 
     @staticmethod
     def __set_notice(msg:dict, notice:Union[str, int]):

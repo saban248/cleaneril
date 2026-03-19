@@ -208,17 +208,18 @@
     margin-right: 20%;
 }
 .list-cards, .list-clients, .list-workers{
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr;
     row-gap: 10px;
     border-radius: 9px;
     border: 1px solid #ddd;
 }
 .card-item, .client-item, .worker-item{
-    display: flex;
-    align-items: end;
-    padding: 5px;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    column-gap:  5px;
+    padding: 10px;
+    border-bottom: 1px solid #e3e3e3;
 }
 .card-title, .client-title, .worker-title{
     display: grid;
@@ -230,21 +231,17 @@
     font-size: 1rem;
     padding-left: 5px;
 }
-.card-title>.ctype, .client-title>.ctype{
+.ctype{
     font-size: .8rem;
     color: #828486;
-    display: flex;
-    flex-direction: row;
-    column-gap: 10px;
-    padding: 2px;
-    align-items: end;
-    border-bottom: 1px dotted #f0f0f0;
 }
 .ctype-1, .ctype-2, .ctype-4, .ctype-8{
     color: white !important;
-    padding: 2px;
     border-radius: 4px;
     font-size: 13px;
+    text-align: center;
+    height: 20px;
+    max-width: 100px;
 }
 
 .ctype-1{
@@ -279,6 +276,7 @@
     column-gap: 5px;
 }
 .action-client{
+    position: relative;
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 0 3px #d5d6d8;

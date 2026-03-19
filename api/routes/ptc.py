@@ -334,6 +334,12 @@ class ResponseStruct:
         username:str        = None
         password:str        = None
         xCSRF:str           = None
+        c_name:str          = None
+        c_desc:str          = None
+        c_phone:str         = None
+        o_name:str          = None
+        c_email:str         = None
+        mid:str             = None
 
         def build(self, **data):
             struct_builder(self, **data)

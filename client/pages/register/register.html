@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
     <title>יצירת חשבון</title>
     <link rel="stylesheet" href="/static/css/register.css">
+    <link rel="stylesheet" href="/static/css/home.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
@@ -29,9 +30,16 @@
             הירשם למערכת ניהול לקוחות לעסק שלך בניקוי ריפודים, מזגנים, כדי לנהל בצורה נוחה את הלקוחות          
             </p>
             <div class="terms">
-                <p>השימוש באפליקציה היא ללא תשלום</p>
+                <p>השימוש באפליקציה היא ללא תשלום למשך 3 חודשים
+                    לאחר מכן 15₪/לחודש
+                </p>
                 <p class="terms-service" onclick='redirect("terms")'>בהתאם לתנאי השימוש</p>
             </div>
+        </div>
+        <div class="icons">
+            <i class="icon icon-128">{% include "icon/register.svg"%}</i>
+            <i class="icon icon-128">{% include "icon/globe.svg"%}</i>
+            <i class="icon icon-128">{% include "icon/graph.svg"%}</i>
         </div>
         <button class="btn-continue" onclick="continueToLevel()">
             <span>קדימה</span>
@@ -40,27 +48,27 @@
     </div>
     <div class="right show" id="rlevel-1">
         <h1>יצירת חשבון</h1>
-        <form id="form">
+        <form>
             <div class="input-group">
                 <label>
                     <i class="fa-solid fa-circle-user"></i>
-                    שם מלא
+                    שם משתמש (באנגלית)
                 </label>
-                <input type="text" placeholder=" " required class="register-input" id="fullname" autocomplete="on">
+                <input type="text" placeholder=" " required class="register-input" id="username" autocomplete="off">
             </div>
             <div class="input-group">
                 <label>
                     <i class="fa-solid fa-user-lock"></i>
                     צור סיסמה
                 </label>
-                <input type="password" id="pwd1" placeholder=" " required class="register-input" autocomplete="on">
+                <input type="password" id="pwd1" placeholder=" " required class="register-input" autocomplete="off">
             </div>
             <div class="input-group">
                 <label>
                     <i class="fa-solid fa-user-lock"></i>
                     הקש הסיסמה שוב
                 </label>
-                <input type="password" id="pwd2" placeholder=" " required class="register-input" autocomplete="on">
+                <input type="password" id="pwd2" placeholder=" " required class="register-input" autocomplete="off">
                 <div class="strength">
                     <div class="strength-bar" id="bar"></div>
                 </div>
@@ -69,13 +77,13 @@
                 <i class="fa-solid fa-circle-info"></i>
                 בהרשמה אני מאשר תנאי שימוש
             </div>
-            <button class="btn-register" onclick="doRegister(this)">
-                <input type="hidden" id="cXsXrF" value="{{ csrf }}">
+            <button class="btn-register" onclick="doRegister(this);event.preventDefault()">
                 <span>צור חשבון</span>
                 <i  class="fa-solid fa-circle-notch fa-spin registerLoad" style="display: none;"></i>
             </button>
+            <input type="hidden" id="cXsXrF" value="">
             <div class="divider">או</div>
-            <button type="button" class="google" onclick="redirect('auth')" >היכנס למערכת</button>
+            <button type="button" class="btn-login" onclick="redirect('auth')" >היכנס למערכת</button>
         </form>
         <div class="credit">
             נכתב ונבנה ע"י
@@ -89,18 +97,35 @@
                 פרטים ראשוניים על העסק שלך, ישתקף בקבלות ובהזמנות ללקוחות שלך      
             </p>
         </div>
+        <div class="icons">
+            <i class="icon icon-128">{% include "icon/house.svg"%}</i>
+        </div>
         <button class="btn-continue" onclick="continueToLevel()">
             <span>קדימה</span>
             <i  class="fa-solid fa-circle-notch fa-spin registerLoad" style="display: none;"></i>
         </button>
     </div>
-        <div class="right" id="rlevel-2">
+    <div class="right" id="rlevel-2">
         <h1>פרטי העסק</h1>
-        <form id="form">
+        <form>
+            <div class="input-group">
+                <label>
+                    <i class="fa-solid fa-address-card"></i>
+                   שם מלא בעל העסק  
+                </label>
+                <input type="text" placeholder=" " required class="register-input" id="onwerName" >
+            </div>
+            <div class="input-group">
+                <label>
+                    <i class="fa-solid fa-square-phone-flip"></i>
+                   מספר פאלפון אישי
+                </label>
+                <input type="tel" placeholder=" " required class="register-input" id="companyPhone" >
+            </div>
             <div class="input-group">
                 <label>
                     <i class="fa-solid fa-building"></i>
-                    שם העסק (שלוש מילים)
+                    שם העסק (שני מילים)
                 </label>
                 <input type="text" placeholder=" " required class="register-input" id="companyName" >
             </div>
@@ -109,9 +134,9 @@
                     <i class="fa-solid fa-align-left"></i>
                     תיאור קצר של העסק
                 </label>
-                <input type="password" id="companyDesc" placeholder="לדוגמא: ניקוי מזגנים מקצועי" required class="register-input" >
+                <input type="text" id="companyDesc" placeholder="לדוגמא: ניקוי מזגנים מקצועי" required class="register-input" >
             </div>
-            <button class="btn-register" onclick="doRegister(this)">
+            <button type="button" class="btn-register" onclick="doCompany(this);event.preventDefault()">
                 <span>המשך</span>
                 <i class="fa-solid fa-circle-notch fa-spin registerLoad" style="display: none;"></i>
             </button>
@@ -120,6 +145,55 @@
             נכתב ונבנה ע"י
             <a href="#">אברהם סבן</a>
         </div>
+    </div>
+    <div class="left" id="llevel-3">
+        <div class="head">
+            <h2>לוגו של העסק</h2>
+            <p>
+               לוגו העסק יוצג בהזמנות, בקבלות ובמסמכים שתפיק עבור הלקוחות שלך.
+            </p>
+        </div>
+        <div class="icons">
+            <i class="icon icon-128">{% include "icon/house.svg"%}</i>
+        </div>
+        <button class="btn-continue" onclick="continueToLevel()">
+            <span>קדימה</span>
+            <i  class="fa-solid fa-circle-notch fa-spin registerLoad" style="display: none;"></i>
+        </button>
+    </div>
+    <div class="right" id="rlevel-3">
+        <h1>לוגו של העסק</h1>
+        <form>
+            <div class="input-group">
+                <label>הגדר לוגו (תמונה עד 1 מ"ב)</label>
+                <div class="logo-img">
+                    <img class="logo-img-self" src="/static/images/logo/default_logo.png" alt="company logo" id="logoView">
+                    <i class="fa-solid fa-image edit-logo-img" onclick="setLogo()"></i>
+                    <input type="file" id="setLogo" accept="image/*" style="display:none">
+                </div>
+            </div>
+            <button type="button"  class="btn-register" onclick="doLogo(this);event.preventDefault()">
+                <span>המשך</span>
+                <i class="fa-solid fa-circle-notch fa-spin registerLoad" style="display: none;"></i>
+            </button>
+        </form>
+        <div class="credit">
+            נכתב ונבנה ע"י
+            <a href="#">אברהם סבן</a>
+        </div>
+    </div>
+    <div class="left" id="llevel-4">
+        <div class="head">
+            <h2>סיימת את תהליך ההרשמה!</h2>
+            <p>
+                תהליך ההרשמה הסתיים בהצלחה. המערכת מעבדת את הנתונים והחשבון יופעל תוך 30 דקות
+            </p>
+        </div>
+        <i class="icon icon-128">{% include "icon/finish-register.svg" %}</i>
+        <button class="btn-continue" onclick="redirect('auth')">
+            <span>לחשבון שלי</span>
+            <i  class="fa-solid fa-circle-notch fa-spin registerLoad" style="display: none;"></i>
+        </button>
     </div>
     <div id="toast-container"></div>
 </div>

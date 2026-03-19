@@ -1,5 +1,23 @@
 
+.list-clients{
+}
+.list-head{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    font-size: .8rem;
+    padding: 5px;
+    column-gap: 5px;
+    background: #f4f4f4;
+    /* text-align: center; */
+}
+.client-item{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    column-gap: 5px;
+    padding: 5px !important;
+    align-items: start;
 
+}
 .worker-select{
     display: block;
     position: relative;
@@ -122,4 +140,28 @@
 .details-progress{
     padding-right: 10px;
     border-right: 1px solid #dddddda5;
+}
+.count-stat{
+    position: relative;
+}
+
+
+@media (max-width: 768px) {
+    .count-stat{
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        padding: 1px 5px;
+        border-radius: 50%;
+        font-size: .8rem;
+        color: rgb(231, 231, 231) !important;
+        background: rgb(75, 75, 75);
+    }
+    .menu-actions-clients{
+        justify-content: space-between !important;
+    }
+    .no-mobile{
+        display: none !important;
+    }
+    
 }

@@ -7,7 +7,6 @@
 
 body{
     font-family:Inter,Segoe UI,Arial;
-    height:100vh;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -31,7 +30,7 @@ body{
 
 .left{
     flex:1;
-    padding:30px;
+    padding:25px;
     color:white;
     background:linear-gradient(135deg,#6366f1,#5834ac);
     display:none;
@@ -60,7 +59,7 @@ body{
     font-size: .7rem;
     margin-top: 15px;
     column-gap: 10px;
-    align-items: center;
+    flex-direction: column;
 }
 .terms-service{
     transform: skew(-12deg);
@@ -69,6 +68,12 @@ body{
     cursor: pointer;
     text-decoration: underline;
     text-decoration-style: dotted;    
+}
+
+.icons{
+    display: flex;
+    column-gap: 10px;
+    justify-content: center;
 }
 
 .right{
@@ -180,6 +185,9 @@ button{
     transform:translateY(-1px);
 }
 
+.btn-login{
+    color:black !important; 
+}
 .accept-terms{
     text-align: right !important;
 }
@@ -223,12 +231,42 @@ color:#777;
 }
 
 
+.logo-img{
+    position: relative;
+    border: 1px solid #ffffff;
+    transition: 200ms;
+    display: flex;
+    justify-content: center;
+}
+
+.edit-logo-img{
+    position: absolute;
+    inset: 0;
+    font-size: 24px;
+    display: none !important;
+    transition: 0.3s;
+    cursor: pointer;
+    top: 40%;
+    right: 40%;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+.logo-img-self{
+    width: 128px !important;
+}
+.logo-img:hover .edit-logo-img{
+    display: block !important;
+}
+
 @media(max-width:850px){
     .container{
         flex-direction:column;
     }
+    .head > h2{
+        font-size: 28px !important;
+    }
     .terms{
-        flex-direction: column;
         align-items: start;
         row-gap: 10px;
     }
