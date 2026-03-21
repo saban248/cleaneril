@@ -276,7 +276,51 @@ async function publishClient(client_id, state){
 
 }
 
+function closeSearchClients(t){
+    const input = document.getElementById("searchClient")
+    input.classList.remove("show")
+    const [ix, io] = [t.parentElement.children[0], t.parentElement.children[1]]
+    ix.style.display = "none"
+    io.style.display = "block"
+}
+function openSearchClients(t){
+    const input = document.getElementById("searchClient")
+    input.classList.add("show")
+    const [ix, io] = [t.parentElement.children[0], t.parentElement.children[1]]
+    console.log(ix, io)
+    ix.style.display = "block"
+    io.style.display = "none"
 
+}
+
+function doSearchClientsLocal(t){
+    const input = document.getElementById("searchClient")
+    const value = input.value.toLowerCase();
+    if (value == ''){
+        return;
+    };
+    const parent = document.getElementById("listClients");
+    for (child of parent.children){
+        if (child.textContent.toLowerCase().includes(value)){
+            child.classList.remove("hide")
+        }
+        else{
+            child.classList.add("hide")
+        }
+    }
+}
+function sortedClientsByState(){
+    const parent = document.getElementById("listClients")
+    for (child of parent.children){
+        if (parseInt(child.dataset.stat)&c_runtime.state_client_selected){
+            child.classList.remove("hide")
+        }
+        else{
+            child.classList.add("hide")
+        }
+    }
+    
+}
 function selectClientsState(t){
     updateMenuActionClientsSorted(t, t.dataset.s)
 }
@@ -295,7 +339,7 @@ function updateMenuActionClientsSorted(t, state, cache = true){
     if (!cache)return
 
     updateStateClientSetting(c_runtime.state_client_selected, ManagerCache.getClientsCalender())
-    setTimeout(()=>{location.reload()},  2000)
+    sortedClientsByState()
 }
 
 function updateMACSOnLoad(cache = true){
@@ -350,8 +394,65 @@ function updateCalanderClient(cc){
 }
 
 
+const menuItemsStateClients = [
+    {text:'הושלם', action:(t)=>selectClientsState(t), icon:`<i class="fa-solid fa-clipboard-check"></i>`, stat:StateClient.DONE},
+    {text:'בהמתנה',action:(t)=>selectClientsState(t), icon:'<i class="fa-solid fa-hourglass-half ac2"></i>', stat:StateClient.CLOSED},
+    {text:'לא נסגר',action:(t)=>selectClientsState(t), icon:'<i class="fa-solid fa-question ac3"></i>', stat:StateClient.WAIT},
+    {text:'בוטל',action:(t)=>selectClientsState(t),icon:'<i class="fa-solid fa-ban ac4"></i>', stat:StateClient.CANCELED},
+]
+function openMenuStateClients(t, stat){
+    const menu = document.getElementById("stateClients")
 
-const menuItems = [
+    if (menu.classList.contains("show")) {
+        menu.classList.remove("show")
+        return
+    }
+
+    const rect = t.getBoundingClientRect()
+    menu.innerHTML = ""
+
+    let index = 1
+    menuItemsStateClients.forEach(item => {
+        let cma = document.createElement("div")
+        cma.dataset.s = item.stat
+        cma.className = "cma"
+        let cma1 = document.createElement('div')
+        cma1.className = "cma1"
+        cma1.innerHTML = item.icon
+        let cma2 = document.createElement("div")
+        cma2.className = 'cma2'
+        
+        if (c_runtime.state_client_selected&item.stat){
+            cma2.classList =`cma2 ac${index} ac-selected`
+        }
+        cma2.textContent = item.text
+        cma.appendChild(cma1)
+        cma.appendChild(cma2)
+
+        cma.onclick = () => {
+            item.action(cma)
+            menu.classList.remove("show")
+        }
+        menu.appendChild(cma)
+        index += 1
+    })
+
+
+    menu.classList.add("show")
+    const menuWidth = menu.offsetWidth;
+    const windowWidth = window.innerWidth;
+
+    let left = rect.left; // relative to viewport
+    if (left + menuWidth > windowWidth) {
+        left = windowWidth - menuWidth - 5; // new position relative to viewport, with 5px padding
+    }
+
+    menu.style.top = `${rect.bottom + window.scrollY + 6}px`
+    menu.style.left = `${left + window.scrollX}px`
+
+
+}
+const menuItemsClient = [
     { text: "צפיה", action: (cid) => viewclientDetails(cid), icon:'<i class="fa-solid fa-eye"></i>'},
     { text: "שיתוף כתמונה", action: (cid) => shareOrderToClientAsPhoto(cid), icon:'<i class="fa-solid fa-share-from-square"></i>'},
     { text: "שיתוף כקישור", action: (cid) => shareOrderToClientAsLink(cid), icon:'<i class="fa-solid fa-share-from-square"></i>'},
@@ -374,7 +475,7 @@ function openMenuClient(t, cid) {
     const rect = t.getBoundingClientRect()
     menu.innerHTML = "" // ניקוי
 
-    menuItems.forEach(item => {
+    menuItemsClient.forEach(item => {
         let cma = document.createElement("div")
         cma.className = "cma"
         let cma1 = document.createElement('div')
@@ -394,10 +495,17 @@ function openMenuClient(t, cid) {
         menu.appendChild(cma)
     })
 
-    menu.style.top = `${rect.bottom + window.scrollY + 6}px`
-    menu.style.left = `${rect.left + window.scrollX}px`
-
     menu.classList.add("show")
+    const menuWidth = menu.offsetWidth;
+    const windowWidth = window.innerWidth;
+
+    let left = rect.left; // relative to viewport
+    if (left + menuWidth > windowWidth) {
+        left = windowWidth - menuWidth - 5; // new position relative to viewport, with 5px padding
+    }
+
+    menu.style.top = `${rect.bottom + window.scrollY + 6}px`
+    menu.style.left = `${left + window.scrollX}px`
 }
 
 
@@ -439,10 +547,17 @@ function openMenuCalander(t){
         menu.appendChild(cma)
     })
 
-    menu.style.top = `${rect.bottom + window.scrollY + 6}px`
-    menu.style.left = `${rect.left + window.scrollX}px`
-
     menu.classList.add("show")
+    const menuWidth = menu.offsetWidth;
+    const windowWidth = window.innerWidth;
+
+    let left = rect.left; // relative to viewport
+    if (left + menuWidth > windowWidth) {
+        left = windowWidth - menuWidth - 5; // new position relative to viewport, with 5px padding
+    }
+
+    menu.style.top = `${rect.bottom + window.scrollY + 6}px`
+    menu.style.left = `${left + window.scrollX}px`
 } 
 
 async function onLoadEditClient(){

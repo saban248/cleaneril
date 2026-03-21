@@ -2,7 +2,7 @@ from api.databases.manager import new_manager_hb
 from api.routes.r_json import *
 from api.routes.r_pages import *
 from api.databases.ptc import *
-
+from api.jfunc import *
 
 
 

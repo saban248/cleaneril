@@ -1,9 +1,12 @@
+.no-desk{
+    display: none !important;
+}
 :root {
     --shadow-color: 220 40% 20%;   /* HSL without hsl() */
 }
 
 .rubik-all, body{
-  font-family: "Rubik", sans-serif;
+  font-family: "Google Sans" !important;
   font-optical-sizing: auto;
   font-weight: normal;
   font-style: normal;
@@ -146,6 +149,9 @@ body, *{
     }
     .cookie-box {
         font-size: 0.75rem;
+    }
+    .no-desk{
+        display: block !important;
     }
 }
 

@@ -11,18 +11,24 @@
         </div>
         <div class="list-workers">
             {% for worker in workers %}
-                <div class="worker-item" data-key="{{worker.key}}" id="{{worker.employee_id}}">
-                    <div class="client-title">
-                        <div class="ctitle">{{ worker.username }}
-                            <span class="ctype-1">{{worker.permission}}</span>
-                        </div>
-                        <div class="ctype">
+                <div class="worker-item" data-key="{{worker.key}}" id="{{worker.employee_id}}" ondblclick="viewEmployeeDetails('{{worker.employee_id}}')">
+                    <div class="avatar permission-{{worker.permission}}">{{worker.username[0]}}</div>
+                    <div class="content">
+                        <div>
+                            <div class="top">
+                                <span class="name">{{worker.username}}</span>
+                            </div>
+                            <span class="phone">{{worker.phone}}</span>
+                            <div class="bottom">
+                                <span>{{worker.permission | pft}} •</span>
+                                <span>{{worker.profit_sharing}}% •</span>
+                                <span>{% if worker.pay_vat %} ללא מע"מ{%else%} כולל מע"מ{%endif%}</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="client-body"></div>
-                    <div class="client-footer">
-                        <i class="fa-solid fa-eye" onclick="viewEmployeeDetails('{{worker.employee_id}}')"></i>
-                        <i class="fa-solid fa-bars menu-client" onclick="openMenuWorker(this, '{{worker.employee_id}}')"></i>
+
+                    <div class="actions">
+                    <i class="fa-solid fa-bars menu-client" onclick="openMenuWorker(this, '{{worker.employee_id}}')"></i>
                     </div>
                 </div>
             {% endfor %}

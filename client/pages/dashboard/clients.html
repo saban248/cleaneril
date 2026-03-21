@@ -6,45 +6,56 @@
 
     <div class="page-body">
         <div id="macs", class="menu-actions-clients">
-            <div class="action-client ac1" onclick="selectClientsState(this)" data-s="8">
+            <div class="action-client no-desk" onclick="openMenuStateClients(this)">
+                <i class="fa-solid fa-filter"></i>
+                <!-- <span class="count-stat">{% if counts[1] %} {{ counts[1] }}{% endif %}</span> -->
+            </div>
+            <div class="action-client ac1 no-mobile" onclick="selectClientsState(this)" data-s="8">
                 הושלם
                 <span class="count-stat">{% if counts[1] %} {{ counts[1] }}{% endif %}</span>
             </div>
-            <div class="action-client ac2" onclick="selectClientsState(this)" data-s="2">
+            <div class="action-client ac2 no-mobile" onclick="selectClientsState(this)" data-s="2">
                 בהמתנה
                 <span class="count-stat">{% if counts[2] %} {{ counts[2] }}{% endif %}</span>
             </div>
-            <div class="action-client ac3" onclick="selectClientsState(this)" data-s="1">
+            <div class="action-client ac3 no-mobile" onclick="selectClientsState(this)" data-s="1">
                 לא נסגר
                 <span class="count-stat">{% if counts[0] %} {{ counts[0] }}{% endif %}</span>
             </div>
-            <div class="action-client ac4" onclick="selectClientsState(this)" data-s="4">
+            <div class="action-client ac4 no-mobile" onclick="selectClientsState(this)" data-s="4">
                 בוטל
                 <span class="count-stat">{% if counts[3] %} {{ counts[3] }}{% endif %}</span>
             </div>
             <div class="action-client" onclick="openMenuCalander(this)">
                 <i class="fa-solid fa-calendar-days"></i><span style="padding-right: 10px;" id="acc"></span> 
             </div>
+            <div class="action-client action-search">
+                <i class="fa-solid fa-circle-xmark" style="display: none;" onclick="closeSearchClients(this)"></i>
+                <i class="fa-solid fa-magnifying-glass" onclick="openSearchClients(this)"></i>
+                <input class="c-input-fn seacrh-input" type="text" placeholder="שם, פאלפון, תאריך" id="searchClient" oninput="doSearchClientsLocal(this)">
+            </div>
         </div>
 
-        <div class="list-clients">
-            <div class="list-head">
-                <span>שם</span>
-                <span>סטטוס</span>
-                <span>תאריך</span>
-                <span>מחיר</span>
-                <span>פעולות</span>
-                </div>
+        <div class="list-clients" id="listClients">
             {% for client in clients %}
-                <div class="client-item" data-key="{{client.key}}" id="{{client.client_id}}">
-                    <div class="client-title">
-                        <div class="ctitle">
-                            {{ client.fullname }}
+                <div class="client-item" data-stat="{{client.state}}" data-key="{{client.key}}" id="{{client.client_id}}" ondblclick="viewclientDetails('{{client.client_id}}')">
+                    <div class="avatar client-state-{{client.state}}">
+                        {{client.fullname[0]}}
+                    </div>
+                    
+                    <div class="content">
+                        <div class="in-content">
+                            <div class="top">
+                                <span class="name">{{client.fullname}}</span>
+                                <span class="phone no-mobile">{{client.phone}}</span>
+                            </div>
+                            <div class="bottom">
+                                <span>{{client.date | cda }} {{client.date | cdah }} •</span><br>
+                                <span>{{client.price-client.off_price}}₪ •</span>
+                                <span class="client-state-text-{{client.state}}">{{client.state | cft}}</span>
+                            </div>
                         </div>
                     </div>
-                    <span class="ctype-{{client.state}}">{{client.state | cft}}</span>
-                    <span class="ctype">{{client.date | cda }} {{client.date | cdah }}</span>
-                    <span class="ctype">{{client.price-client.off_price}}₪</span>
                     <div class="client-footer">
                         <i class="fa-solid fa-eye no-mobile" onclick="viewclientDetails('{{client.client_id}}')"></i>
                         <i class="fa-solid fa-share-from-square no-mobile" onclick="shareOrderToClientAsPhoto('{{client.client_id}}')"></i>
@@ -68,3 +79,4 @@
 </div>
 
 <div id="calanderClients" class="calander-clients-menu"></div>
+<div id="stateClients" class="calander-clients-menu"></div>

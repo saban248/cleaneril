@@ -185,6 +185,9 @@
     align-items: start;
     
 }
+.page-head > *{
+    flex: 1;
+}
 .create-card{
     border-radius: 50%;
     padding: 10px;
@@ -210,11 +213,10 @@
 .list-cards, .list-clients, .list-workers{
     display: grid;
     grid-template-columns: 1fr;
-    row-gap: 10px;
     border-radius: 9px;
     border: 1px solid #ddd;
 }
-.card-item, .client-item, .worker-item{
+.card-item, .worker-item{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     column-gap:  5px;
@@ -245,16 +247,16 @@
 }
 
 .ctype-1{
-    background: #a79d0a;
+    background: #638390;
 }
 .ctype-2{
-    background: #e8d400;
+    background: #a2a954;
 }
 .ctype-4{
-    background: rgb(161, 10, 10);
+    background: rgb(182, 104, 104);
 }
 .ctype-8{
-    background: #1bb15a;
+    background: #5fbb98;
 }
 .card-body, .client-body, .worker-body{
 
@@ -283,29 +285,40 @@
     cursor: pointer;
     transition: 200ms all;
     font-size: 13px;
+    max-height: 37px;
 }
 .action-client:hover,
 .action-client:active,
 .action-client:focus, .ac-selected{
     box-shadow: 0 0 11px #d5d6d8 !important;
 }
+.action-search{
+    display: flex;
+    justify-content: center;
+    column-gap: 10px;
+    align-items: center;
+    padding: 5px;
+}
+.action-search > i{
+    font-size: 1.1rem;
+}
 .ac1, .ac2, .ac3, .ac4, .sc1, .sc2, .sc4{
     word-break: keep-all;
 }
 .ac1.ac-selected,.sc1.sc-selected{
-    background:#046b09;
+    background:#5fbb98;
     color: white;
 }
 .ac2.ac-selected,.sc2.sc-selected{
-    background: #e8d400;
+    background: #a2a954;
     color: white;
 }
 .ac3.ac-selected{
-    background: #a79d0a;
+    background:  #638390;;
     color:white;
 }
 .ac4.ac-selected, .sc4.sc-selected{
-    background: rgb(129, 6, 6);
+    background: rgb(182, 104, 104);
     color:white;
 }
 .menu-client, .client-footer>i{
