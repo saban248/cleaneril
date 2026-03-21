@@ -287,7 +287,6 @@ function openSearchClients(t){
     const input = document.getElementById("searchClient")
     input.classList.add("show")
     const [ix, io] = [t.parentElement.children[0], t.parentElement.children[1]]
-    console.log(ix, io)
     ix.style.display = "block"
     io.style.display = "none"
 
@@ -305,6 +304,7 @@ function doSearchClientsLocal(t){
             child.classList.remove("hide")
         }
         else{
+            console.log(child)
             child.classList.add("hide")
         }
     }
@@ -467,7 +467,6 @@ const menuItemsClient = [
 
 function openMenuClient(t, cid) {
     const menu = document.getElementById("clientMenu")
-
     if (menu.classList.contains("show")) {
         menu.classList.remove("show")
         return
@@ -501,7 +500,7 @@ function openMenuClient(t, cid) {
 
     let left = rect.left; // relative to viewport
     if (left + menuWidth > windowWidth) {
-        left = windowWidth - menuWidth - 5; // new position relative to viewport, with 5px padding
+        left = windowWidth - menuWidth - 5; 
     }
 
     menu.style.top = `${rect.bottom + window.scrollY + 6}px`
@@ -553,7 +552,7 @@ function openMenuCalander(t){
 
     let left = rect.left; // relative to viewport
     if (left + menuWidth > windowWidth) {
-        left = windowWidth - menuWidth - 5; // new position relative to viewport, with 5px padding
+        left = windowWidth - menuWidth - 5; 
     }
 
     menu.style.top = `${rect.bottom + window.scrollY + 6}px`
@@ -690,11 +689,11 @@ async function fetchWorkers(){
 }
 
 
-// סגירה בלחיצה מחוץ
 document.addEventListener("click", e => {
     const menu = document.getElementById("clientMenu")
     if (!menu.contains(e.target) && !e.target.classList.contains("menu-client")) {
         menu.classList.remove("show")
+        menu.classList.remove("hide")
     }
 })
 

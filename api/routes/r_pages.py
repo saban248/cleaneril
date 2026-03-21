@@ -3,7 +3,6 @@ import json
 import os
 
 import markdown
-from Tools.scripts.mkreal import join
 from flask import session, request, jsonify, render_template, redirect, url_for, abort
 
 from api.databases.clients import ApiClients

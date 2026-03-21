@@ -151,7 +151,7 @@
 
 .master.open{
     width: 110px !important;
-    top: -50px;
+    top: -90px;
     transform: scale(1.0);
 }
 .menu-master{
@@ -160,7 +160,9 @@
 
 }
 .menu-master.show{
-    display: block;
+    display: flex !important;
+    row-gap: 5px;
+    flex-direction: column;
 }
 .dashboard-page{
     display: none;

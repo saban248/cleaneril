@@ -233,7 +233,8 @@ function closeMenuTabsDashboard(){
 
 
 const GeneralMenuitems = [
-    { text: "עובדים", action: (p) => switchPageManager(PageManager.WORKERS), icon:'<i class="fa-solid fa-users"></i>'}
+    { text: "עובדים", action: (p) => switchPageManager(PageManager.WORKERS), icon:'<i class="fa-solid fa-users"></i>'},
+    { text: "מודעות", action: (p) => switchPageManager(PageManager.CARDS), icon:'<i class="fa-solid fa-newspaper"></i>'}
 ]
 function showMenuGeneralItems(t){
     const menu = document.getElementById("generalMenu")
