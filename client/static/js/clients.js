@@ -295,12 +295,9 @@ function openSearchClients(t){
 function doSearchClientsLocal(t){
     const input = document.getElementById("searchClient")
     const value = input.value.toLowerCase();
-    if (value == ''){
-        return;
-    };
     const parent = document.getElementById("listClients");
     for (child of parent.children){
-        if (child.textContent.toLowerCase().includes(value)){
+        if ((value == '') || child.textContent.toLowerCase().includes(value)){
             child.classList.remove("hide")
         }
         else{
