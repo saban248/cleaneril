@@ -114,7 +114,8 @@ const PageManager = {
     FUNDS:1<<4,
     SETTINGS:1<<5,
     WORKERS:1<<6,
-    CALENDAR:1<<7
+    CALENDAR:1<<7,
+    INVOICES:1<<8
 }
 
 function getPageManager(page) {

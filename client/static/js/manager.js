@@ -31,7 +31,6 @@ function switchPageManager(page){
     const lp = document.getElementById(getPageManager(last_page));
     lp.classList.remove("show")
     var _page_ = null;
-    console.log(page)
     switch (page) {
         case PageManager.GIFTS:
         case PageManager.LINKS:
@@ -45,6 +44,8 @@ function switchPageManager(page){
         case PageManager.WORKERS:
             _page_ = document.getElementById(getPageManager(page))
         case PageManager.CALENDAR:
+            _page_ = document.getElementById(getPageManager(page))
+        case PageManager.INVOICES:
             _page_ = document.getElementById(getPageManager(page))
     
         default:
@@ -234,6 +235,7 @@ function closeMenuTabsDashboard(){
 
 const GeneralMenuitems = [
     { text: "עובדים", action: (p) => switchPageManager(PageManager.WORKERS), icon:'<i class="fa-solid fa-users"></i>'},
+    { text: "קבלות", action: (p) => switchPageManager(PageManager.INVOICES), icon:'<i class="fa-solid fa-file-invoice"></i>'},
     { text: "מודעות", action: (p) => switchPageManager(PageManager.CARDS), icon:'<i class="fa-solid fa-newspaper"></i>'}
 ]
 function showMenuGeneralItems(t){

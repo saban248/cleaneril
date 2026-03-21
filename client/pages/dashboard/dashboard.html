@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/static/css/clients.css">
     <link rel="stylesheet" href="/static/css/workers.css">
     <link rel="stylesheet" href="/static/css/calendar.css">
+    <link rel="stylesheet" href="/static/css/invoices.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -42,6 +43,7 @@
     <div class="dashbord-page">
         {% set cards = cards %}
         {% set clients = clients%}
+        {% set managerId = manager.manager_id %}
         {% include "dashboard/cards.html" %}
         {% include "dashboard/links.html" %}
         {% include "dashboard/gifts.html" %}
@@ -50,6 +52,8 @@
         {% include "dashboard/settings.html" %}
         {% include "dashboard/workers.html" %}
         {% include "dashboard/calendar.html" %}
+        {% include "dashboard/invoice/invoices.html" %}
+
     </div>
         <div class="dashboard-menu">
         <div class="menu-items">
@@ -102,5 +106,7 @@
 <script src="/static/js/settings.js"></script>
 <script src="/static/js/workers.js"></script>
 <script src="/static/js/calendar.js"></script>
+<script src="/static/js/invoices.js"></script>
+
 
 </html>
