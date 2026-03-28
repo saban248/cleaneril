@@ -2,18 +2,20 @@
 /** ON LOAD */
 
 
-function doLogin(){
+function doLogin(t){
+    onApiCall(t)
     username = document.getElementById('username');
     password = document.getElementById("password");
     if (!username.value || !password.value){
-        openPopup("error", "type user or password");
+        showToast("type user or password", ToastStat.ERROR);
     }
     data = {username:username.value, password:password.value}
     apiPost(ApiRoute.auth, data).then(
         (res) =>{
             if (!res.success){
-                openPopup(res.title, res.notice)
+                showToast(res.notice, ToastStat.ERROR)
             }
+            onApiCall(t, true)
             location.href = '/dashboard'
         }
     )
@@ -63,17 +65,18 @@ function createCard(card_id=null){
     const mainEdit = document.getElementById("card-editor")
     mainEdit.classList.remove('hide');
     mainEdit.classList.add('show');
-
+    const toast = showToast("מעבד...")
     data = {action:ApiCall.card_editor, ci:card_id}
     apiPost(ApiRoute.api, data).then(
         (res) => {
             if (!res.success){
-                openPopup(res.title, res.notice)
+                showToast(res.notice, ToastStat.ERROR, toast)
                 return
             }
 
             const editBody = document.getElementById('card-template')
             editBody.innerHTML = res.template;
+            showToast(res.notice, ToastStat.DONE, toast);
         }
     )
 
@@ -127,12 +130,14 @@ async function publishCard(state_card=ApiCall.card_save){
         imp:filename
     }
     uploadImage(file, filename, ApiUploadFile.CARD);
+    const toast = showToast("מעבד..")
     apiPost(ApiRoute.api, data).then(
         (res) =>{
             if (!res.success){
-                openPopup(res.title, res.notice)
+                showToast(res.notice, ToastStat.ERROR, toast);
             }
             closeCreateCard(true)
+            showToast(res.notice, ToastStat.DONE, toast);
         }
     )
 

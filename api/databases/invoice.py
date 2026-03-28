@@ -13,5 +13,4 @@ class Invoice(cleaneril_db.Model):
 
 class ApiInvoice:
     @staticmethod
-    def create_invoice(mid, cid):
-
+    def create_invoice(mid, cid):...

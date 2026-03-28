@@ -49,7 +49,6 @@ function redirect(path){
 
 
 function onApiCall(t, done = false){
-    console.log(t)
     const icon = t.children[1]
     if (done){
         icon.style.display = 'none'

@@ -78,7 +78,7 @@ function updateInExPrAndChartClientAndIncome(year){
     apiPost(ApiRoute.api, data).then(
         (res) =>{
             if (!res.success){
-                openPopup(res.title, res.notice);
+                showToast(res.notice, ToastStat.ERROR);
                 return;
             }
             const {monthlyIncome, monthlyCustomers, monthlyAIPCM, monthlyAEPCM} = prepareMonthlyData(res.data, year);

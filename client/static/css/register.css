@@ -5,8 +5,9 @@
     direction: rtl;
 }
 
+
 body{
-    font-family:Inter,Segoe UI,Arial;
+    font-family: "Google Sans" !important;
     display:flex;
     align-items:center;
     justify-content:center;

@@ -16,11 +16,11 @@ function editConfig(view, input){
 function saveConfig(view, input, config){
     view.style.display = 'block'
     input.type = 'hidden'
-    
+    const toast = showToast("מעבד...")
     const data = {action:ApiCall.conf_company, ...config}
     apiPost(ApiRoute.api, data).then(res =>{
         if (!res.success){
-            openPopup(res.title, res.notice);
+            showToast(res.notice, ToastStat.ERROR, toast);
             return
         }
         location.reload()

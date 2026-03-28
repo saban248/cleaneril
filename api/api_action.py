@@ -1,5 +1,6 @@
 import base64
 import os
+from time import sleep
 
 from flask import render_template_string, render_template
 from flask_wtf.csrf import validate_csrf
@@ -53,6 +54,7 @@ def get_api_action(session, request, **breq) -> dict:
             client = ResponseStruct.ClientEditor().build(**breq)
             return {"deleted":ApiClients.delete_client(client_id=client.ci)}
         case ApiCall.client_state:
+            sleep(2)
             client = ResponseStruct.ClientEditor().build(**breq)
             return {"stated":ApiClients.set_state(client_id=client.ci, state=client.s)}
         case ApiCall.funds_income:
@@ -93,6 +95,11 @@ def get_api_action(session, request, **breq) -> dict:
             calendar = ResponseStruct.Calendar().build(**breq)
             clients = ApiClients.get_clients_by_calendar_date(calendar.month, calendar.year)
             return {"data":clients}
+        case ApiCall.client_list:
+            data = ResponseStruct.ListClients().build(**breq)
+            clients = ApiClients.get_clients_list(data.fromY,data.toY)
+            return {"clients":clients}
+
 
     return {}
 

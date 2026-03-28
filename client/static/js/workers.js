@@ -6,11 +6,12 @@ function createEmployee(worker_id=null){
     mainEdit.classList.remove('hide');
     mainEdit.classList.add('show');
 
+    const toast = showToast("מעבד...")
     data = {action:ApiCall.worker_editor, wid:worker_id}
     apiPost(ApiRoute.api, data).then(
         (res) => {
             if (!res.success){
-                openPopup(res.title, res.notice)
+                showToast(res.notice, ToastStat.ERROR, toast);
                 return
             }
 
@@ -19,6 +20,7 @@ function createEmployee(worker_id=null){
             if (CONFIG.WORKER_EDIT || !worker_id){
                 onLoadEditWorker();
             }
+            showToast(res.notice, ToastStat.DONE, toast);
             
         }
     )
@@ -92,15 +94,17 @@ function viewEmployeeDetails(employeeId){
     CONFIG.WORKER_VIEW =true;
 
     data = {action:ApiCall.worker_view, wid:employeeId}
+    const toast = showToast("מעבד...");
     apiPost(ApiRoute.api, data).then(
         (res) => {
             if (!res.success){
-                openPopup(res.title, res.notice)
+                showToast(res.notice, ToastStat.ERROR, toast);
                 return
             }
 
             const editBody = document.getElementById('worker-template')
             editBody.innerHTML = res.template;
+            showToast(res.notice, ToastStat.DONE, toast);
         }
     )
 }
@@ -117,10 +121,11 @@ function publishWorker(employeeId){
     const data = {action:ApiCall.worker_save, e_name:username,e_pwd:password,e_phone:phone,e_idc:idc,permission:permission,
         wid:employeeId,ps:profitSharing,pvat:payVat
     }
+    const toast = showToast("מעבד...");
     apiPost(ApiRoute.api,data).then(
         (res)=>{
             if (!res.success){
-                openPopup(res.title, res.notice)
+                showToast(res.notice, ToastStat.ERROR, toast);
                 return
             }
             closeCreateWorker(true)

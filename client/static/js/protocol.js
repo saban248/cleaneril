@@ -169,13 +169,20 @@ const ApiCall = {
     worker_view:1<<13,
     worker_save:1<<14,
     worker_delete:1<<15,
-    calendar:1<<16
+    calendar:1<<16,
+    client_list:1<<17
 }
 
 
 const ApiUploadFile = {
     CARD:1<<0,
     LOGO:1<<1
+}
+
+const ToastStat = {
+    LOAD:1<<0,
+    DONE:1<<1,
+    ERROR:1<<2
 }
 
 

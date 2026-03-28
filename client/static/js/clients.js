@@ -3,7 +3,9 @@ const c_runtime = {
     state_client_selected:0,
     state_calendar_selected:0,
     workers:[],
-    blockPublishClient:false
+    blockPublishClient:false,
+    clients:[],
+    showClientsFrom:new Date().getFullYear()-1
 }
 
 async function viewclientDetails(client_id){
@@ -11,33 +13,33 @@ async function viewclientDetails(client_id){
     mainEdit.classList.remove('hide');
     mainEdit.classList.add('show');
     CONFIG.CLIENT_VIEW =true;
-
+    const toast = showToast("מעבד...");
     data = {action:ApiCall.client_view, ci:client_id}
     return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
         (res) => {
             if (!res.success){
-                openPopup(res.title, res.notice)
+                showToast(res.notice, ToastStat.ERROR, toast);
                 return
             }
 
             const editBody = document.getElementById('client-template')
             editBody.innerHTML = res.template;
+            closeToast(toast)
             reslove();
         }
     ))
 
 }
-function createClient(client_id=null){
+async function createClient(client_id=null){
     if (c_runtime.blockPublishClient)return;
     const mainEdit = document.getElementById("client-editor")
     mainEdit.classList.remove('hide');
     mainEdit.classList.add('show');
-
     data = {action:ApiCall.client_editor, ci:client_id}
-    apiPost(ApiRoute.api, data).then(
+    await apiPost(ApiRoute.api, data).then(
         (res) => {
             if (!res.success){
-                openPopup(res.title, res.notice)
+                showToast(res.notice, ToastStat.ERROR)
                 return
             }
 
@@ -170,11 +172,9 @@ function compareVatOfPrice(t){
 
     p_element.value = price+(price*0.18)
     p_element.placeholder = price
-
-
-
-
 }
+
+
 function onPublishClientShowProgress(fullname, stat, done = false){
     const body = document.getElementById("clientOrderBody");
     const details = document.getElementById("clientOrderDetails");
@@ -258,19 +258,20 @@ async function publishClient(client_id, state){
         lf:SocialMedia.WHATSAPP,date:timing,
         notes:notes,price:price,vat:vat,ex:expense,ps:profitSharing,worker:worker,coordinate:[lat,lng]
     }
+    const toast = showToast("מעבד...");
     apiPost(ApiRoute.api,data).then(
         (res)=>{
             if (!res.success){
-                openPopup(res.title, res.notice)
+                showToast(res.notice, ToastStat.ERROR, toast);
                 c_runtime.blockPublishClient = false;
                 onPublishClientHideProgress();
                 return
             }
-            // closeCreateClient(true)
-            // location.reload()
             onPublishClientShowProgress(fullname,state, true)
             c_runtime.blockPublishClient = false
             c_runtime.items_ordered = {}
+            showToast(res.notice, ToastStat.DONE, toast);
+            fetchClients();
         }
     )
 
@@ -282,6 +283,9 @@ function closeSearchClients(t){
     const [ix, io] = [t.parentElement.children[0], t.parentElement.children[1]]
     ix.style.display = "none"
     io.style.display = "block"
+
+    input.value = '';
+    doSearchClientsLocal()
 }
 function openSearchClients(t){
     const input = document.getElementById("searchClient")
@@ -292,17 +296,18 @@ function openSearchClients(t){
 
 }
 
-function doSearchClientsLocal(t){
+function doSearchClientsLocal(){
     const input = document.getElementById("searchClient")
     const value = input.value.toLowerCase();
-    const parent = document.getElementById("listClients");
-    for (child of parent.children){
-        if ((value == '') || child.textContent.toLowerCase().includes(value)){
-            child.classList.remove("hide")
+    for (client of c_runtime.clients){
+        const phone = cleanPhoneJustNumbers(client.phone).includes(value);
+        const name = client.fullname.toLowerCase().includes(value);
+        const date = dateFloatToYMD(client.date).includes(value);
+        if ((value == ''||phone||name||date) && c_runtime.state_client_selected&client.state){
+            document.getElementById(client.client_id).classList.remove("hide")
         }
         else{
-            console.log(child)
-            child.classList.add("hide")
+            document.getElementById(client.client_id).classList.add("hide")
         }
     }
 }
@@ -369,14 +374,17 @@ function editExistClient(client_id){
 
 function setStateClient(client_id, state){
     data = {action: ApiCall.client_state, ci:client_id, s:state}
-
+    const client = c_runtime.clients.find(c => c.client_id === client_id) || null
+    const toast = showToast("מעבד...");
     apiPost(ApiRoute.api, data).then(
         (res) =>{
             if (!res.success){
-                openPopup(res.title, res.notice)
+                showToast(res.notice)
                 return
             }
-            location.reload();
+            fetchClients();
+            showToast(`${client.fullname} ${getStateClientText(state)}`, ToastStat.DONE, toast);
+            
         }
     )
 
@@ -676,7 +684,7 @@ async function fetchWorkers(){
     const data = {action:ApiCall.client_workers}
     await apiPost(ApiRoute.api, data).then( res =>{
         if (!res.success){
-            openPopup(res.title, res.notice);
+            showToast(res.notice, ToastStat.ERROR);
             return null;
         }
         c_runtime.workers = res.workers;
@@ -784,3 +792,77 @@ async function shareOrderToClientAsPhoto(cid){
 function shareOrderToClientAsLink(cid){
     
 }
+
+function fetchClients(){
+    apiPost(ApiRoute.api, {action:ApiCall.client_list, fromY:c_runtime.showClientsFrom}).then(
+        res => {
+            if (!res.success){
+                showToast(messgae.EfetchClients)
+                return
+            }
+            c_runtime.clients = res.clients;
+            loadListClientsHtml()
+
+        }
+    )
+}
+
+function loadListClientsHtml(){
+    const parent = document.getElementById("listClients")
+    parent.replaceChildren();
+    c_runtime.clients.forEach(client => {
+        const el = createClientItem(client);
+        parent.appendChild(el);
+    });
+}
+function createClientItem(client) {
+    const div = document.createElement("div");
+    div.className = "client-item";
+    div.dataset.stat = client.state;
+    div.dataset.key = client.key;
+    div.id = client.client_id;
+
+    div.ondblclick = () => viewclientDetails(client.client_id);
+
+    div.innerHTML = `
+        <div class="avatar client-state-${client.state}">
+        ${client.fullname?.[0] || ""}
+        </div>
+        
+        <div class="content">
+        <div class="in-content">
+            <div class="top">
+            <span class="name">${client.fullname}</span>
+            <span class="phone no-mobile">${client.phone}</span>
+            </div>
+            <div class="bottom">
+            <span>${dateFloatToYMD(client.date)} ${dateFloatToHour(client.date)}</span><br>
+            <span>${client.price -client.off_price || 0}₪ •</span>
+            <span class="client-state-text-${client.state}">
+                ${getStateClientText(client.state)}
+            </span>
+            </div>
+        </div>
+        </div>
+
+        <div class="client-footer">
+        <i class="fa-solid fa-eye no-mobile"></i>
+        <i class="fa-solid fa-share-from-square no-mobile"></i>
+        <i class="fa-solid fa-bars menu-client"></i>
+        </div>
+    `;
+    const icons = div.querySelectorAll(".client-footer i");
+
+    icons[0].onclick = () => viewclientDetails(client.client_id);
+    icons[1].onclick = () => shareOrderToClientAsPhoto(client.client_id);
+    icons[2].onclick = (e) => openMenuClient(e.target, client.client_id);
+
+    return div;
+}
+
+
+
+
+document.addEventListener("DOMContentLoaded", function (){
+    fetchClients()
+})

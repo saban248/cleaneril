@@ -1,3 +1,4 @@
+import datetime
 import json
 import os.path
 import time
@@ -137,6 +138,7 @@ class ApiCall(IntFlag):
     worker_save = 1<<14
     worker_delete = 1<<15
     calendar = 1<<16
+    client_list = 1<<17
 
 
 def struct_builder(cls, **data):
@@ -203,6 +205,27 @@ class ResponseStruct:
                                                                  text=self.wt)
 
             return self
+
+    @dataclass
+    class ListClients:
+        fromY:int           = None
+        toY:int             = None
+
+        def build(self, **data):
+            struct_builder(self, **data)
+            default_year = datetime.datetime.now().year
+            if not self.fromY:
+                self.fromY = default_year-2
+            else:
+                self.fromY = int(self.fromY)
+            if not self.toY:
+                self.toY = default_year+1
+            else:
+                self.toY = int(self.toY)
+
+            return self
+
+
 
     @dataclass
     class ClientEditor:

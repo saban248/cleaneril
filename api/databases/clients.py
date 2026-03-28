@@ -143,3 +143,13 @@ class ApiClients:
 
         return collector
 
+    @staticmethod
+    def get_clients_list(from_y:int, to_y:int):
+        clients:list[Clients] = ApiClients.get_clients().all()
+        temp = []
+        for c in clients:
+            date = datetime.fromtimestamp(c.date)
+            del c.__dict__['_sa_instance_state']
+            temp.append(c.__dict__)
+
+        return temp

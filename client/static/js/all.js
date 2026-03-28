@@ -1,26 +1,58 @@
-function openPopup(title = "", message = "") {
-    document.getElementById("popupTitle").textContent = title;
-    document.getElementById("popupMessage").textContent = message;
-    document.getElementById("popupOverlay").classList.remove("hidden");
+function getIconByStatToast(stat){
+    switch (stat){
+        case ToastStat.DONE:
+            return `fa-solid fa-circle-check tc-icon tci-${stat}`
+        case ToastStat.LOAD:
+            return `fa-solid fa-circle-notch fa-spin tc-icon tci-${stat}`;
+        case ToastStat.ERROR:;
+    }
 }
 
-function closePopup() {
-    document.getElementById("popupOverlay").classList.add("hidden");
+function showToast(text, stat = ToastStat.LOAD, id=null){
+    let toast = null;
+    let icon = null;
+    let head = null;
+    let body = null;
+    const __id = id || generateHex(4);
+    if (!id){
+        toast = document.createElement("div");
+        toast.id = __id;
+        toast.onclick = ()=>{
+            toast.remove();
+        }
+        head = document.createElement("div")
+        head.id = __id+'head';
+        body = document.createElement("div")
+        body.id = __id+'body'
+        icon = document.createElement("i");
+        icon.id = __id+'icon'
+        toast.classList = "toast"
+        head.classList = 'tc-head';
+        body.classList = 'tc-body';
+
+        toast.appendChild(head);
+        toast.appendChild(body)
+        head.appendChild(icon)
+        document.getElementById("toast-container").appendChild(toast)
+
+    }else{
+        toast = document.getElementById(id)
+        if (!toast){
+            showToast(text, stat);
+            return;
+        }
+        body = document.getElementById(id+'body');
+        icon = document.getElementById(id+'icon')
+    }
+
+    icon.classList = getIconByStatToast(stat)
+    body.innerText = text
+
+    setTimeout(()=>{toast?.click()}, 6000)
+    return __id;
 }
-
-
-function showToast(text){
-
-    const toast = document.createElement("div")
-    toast.className = "toast"
-    toast.innerText = text
-
-    document.getElementById("toast-container").appendChild(toast)
-
-    setTimeout(()=>{
-        toast.remove()
-    },4000)
-
+function closeToast(id){
+    document.getElementById(id)?.remove();
 }
 
 
@@ -102,4 +134,45 @@ async function geocodeAddressOSM(address) {
         return [32.18,34.87]
     }
     return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+}
+
+
+function dateFloatToYMD(ts){
+    const date = new Date(ts * 1000); // JS עובד עם milliseconds
+    const formatted = date.toLocaleDateString('he-IL', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+    });
+
+    return formatted
+}
+
+function dateFloatToHour(ts){
+    if (ts > 1e12) {
+        ts = ts / 1000;
+    }
+
+    const date = new Date(ts * 1000);
+
+    return date.toLocaleTimeString('he-IL', {
+        timeZone: 'Asia/Jerusalem',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    });
+}
+
+function cleanPhoneJustNumbers(phone) {
+  if (!phone) return '';
+
+  phone = String(phone).replace(/[\u200E\u200F\u202A-\u202E]/g, '');
+  let digits = phone.replace(/\D/g, '');
+  if (digits.startsWith('9720')) {
+    digits = '0' + digits.slice(4);
+  } else if (digits.startsWith('972')) {
+    digits = '0' + digits.slice(3);
+  }
+
+  return digits;
 }

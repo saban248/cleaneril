@@ -37,33 +37,6 @@
         </div>
 
         <div class="list-clients" id="listClients">
-            {% for client in clients %}
-                <div class="client-item" data-stat="{{client.state}}" data-key="{{client.key}}" id="{{client.client_id}}" ondblclick="viewclientDetails('{{client.client_id}}')">
-                    <div class="avatar client-state-{{client.state}}">
-                        {{client.fullname[0]}}
-                    </div>
-                    
-                    <div class="content">
-                        <div class="in-content">
-                            <div class="top">
-                                <span class="name">{{client.fullname}}</span>
-                                <span class="phone no-mobile">{{client.phone}}</span>
-                            </div>
-                            <div class="bottom">
-                                <span>{{client.date | cda }} {{client.date | cdah }} •</span><br>
-                                <span>{{client.price-client.off_price}}₪ •</span>
-                                <span class="client-state-text-{{client.state}}">{{client.state | cft}}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="client-footer">
-                        <i class="fa-solid fa-eye no-mobile" onclick="viewclientDetails('{{client.client_id}}')"></i>
-                        <i class="fa-solid fa-share-from-square no-mobile" onclick="shareOrderToClientAsPhoto('{{client.client_id}}')"></i>
-                        <i class="fa-solid fa-bars menu-client" onclick="openMenuClient(this, '{{client.client_id}}')"></i>
-                    </div>
-
-                </div>
-            {% endfor %}
         </div>
     <div id="clientMenu" class="client-menu-action"></div>
     </div>
@@ -72,7 +45,10 @@
             <i class="fa-solid fa-circle-xmark" onclick="closeCreateClient()"></i>
         </div>
         <div class="ce-body" id="client-template">
-            <h1 >building..</h1>
+            <h1>
+                <i class="fa-solid fa-circle-notch fa-spin fa-spin"></i>
+                building..
+            </h1>
         </div>
     </div>
     
