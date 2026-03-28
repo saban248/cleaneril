@@ -47,7 +47,6 @@ def dashboard():
     workers = ApiEmployee.get_employees(manager_id=manager_id).all()
     return render_template(Pages.dashboard.html,
                            cards=list(reversed(ApiCards.get_cards(False).all())),
-                           clients=ApiClients.get_clients_lately(dash.s, dash.c),
                            counts=[ApiClients.count_client_wait(dash.c),ApiClients.count_client_done(dash.c),
                                    ApiClients.count_client_closed(dash.c), ApiClients.count_client_canceled(dash.c)],
                            company=company,manager=manager, workers=workers)

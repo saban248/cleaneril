@@ -54,7 +54,6 @@ def get_api_action(session, request, **breq) -> dict:
             client = ResponseStruct.ClientEditor().build(**breq)
             return {"deleted":ApiClients.delete_client(client_id=client.ci)}
         case ApiCall.client_state:
-            sleep(2)
             client = ResponseStruct.ClientEditor().build(**breq)
             return {"stated":ApiClients.set_state(client_id=client.ci, state=client.s)}
         case ApiCall.funds_income:

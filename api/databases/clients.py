@@ -145,7 +145,7 @@ class ApiClients:
 
     @staticmethod
     def get_clients_list(from_y:int, to_y:int):
-        clients:list[Clients] = ApiClients.get_clients().all()
+        clients:list[Clients] = sorted(ApiClients.get_clients().all(), key=lambda client: client.date, reverse=True)
         temp = []
         for c in clients:
             date = datetime.fromtimestamp(c.date)
