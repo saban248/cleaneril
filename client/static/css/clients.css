@@ -195,6 +195,71 @@
     position: relative;
 }
 
+.client-card-action{
+    display: none;
+    justify-content: left;
+    align-items: center;
+    column-gap: 10px;
+}
+.client-card-action.show{
+    display: flex !important;
+}
+.client-card-action > i{
+    padding: 10px;
+    border-radius: 50%;
+    box-shadow: 0 0 11px #ebebeb;
+    background: #ebebeb;
+    transition: 300ms;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    text-align:center;
+    
+}
+
+.client-card-action > i:hover,
+.client-card-action > i:active{
+    outline: 1px solid #adadad;
+    transform: scale(1.09);
+
+}
+.pay-group {
+  position: relative;
+  display: inline-flex;
+  justify-content: space-around;
+  background: #fefefe;
+  border-radius: 12px;
+  padding: 4px;
+  border: 1px solid #e9e9e9d5;
+}
+
+.pay-group button {
+  position: relative;
+  z-index: 1;
+  border: none !important;
+  background: transparent;
+  padding: 5px 15px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: color 0.2s;
+  color: #0e2e1b;
+}
+
+.pay-group button.active {
+    color: rgb(189, 233, 205);
+}
+
+.pay-group .indicator {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    background: rgb(29, 50, 36);
+    color: rgb(189, 233, 205);
+    width: 0;
+    border-radius: 8px;
+    transition: all 0.25s ease;
+}
+
 
 @media (max-width: 768px) {
     .count-stat{

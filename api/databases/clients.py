@@ -10,7 +10,7 @@ from sqlalchemy import JSON
 from api.ptc import generate_hex
 
 from api.databases.ptc import cleaneril_db, StateDocument, ServerConfig, StateClient
-from api.routes.ptc import ClientLeadFrom, CalenderClients, get_calender_client, is_bwt_date
+from api.routes.ptc import ClientLeadFrom, CalenderClients, get_calender_client, is_bwt_date, PaymentInvoice
 
 unknown = 'unknown'
 
@@ -35,6 +35,7 @@ class Clients(cleaneril_db.Model):
     worker = cleaneril_db.Column(cleaneril_db.String(32), nullable=False)
     profit_sharing = cleaneril_db.Column(cleaneril_db.Integer, nullable=False, default=0)
     coordinates = cleaneril_db.Column(JSON, nullable=False)
+    payment_type = cleaneril_db.Column(cleaneril_db.Integer, nullable=False)
 
 
 
@@ -61,7 +62,7 @@ class ApiClients:
                    items:dict = None, off:bool = False, off_p:int = 0, fullname:str = unknown, date:float = 0.0,
                    address:str = unknown, lead_from:int = ClientLeadFrom.WHATSAPP,
                    notes:str = unknown, price:float = 0.0, vat:bool = False, expense:float = 0.0,
-                   worker:str = unknown, ps:int = 0, coordinate:list|tuple = (0,0)):
+                   worker:str = unknown, ps:int = 0, coordinate:list|tuple = (0,0), payment_type:int = PaymentInvoice.CASH):
         if not client_id:
             client = Clients()
             client.client_id = generate_hex(7)
@@ -85,6 +86,7 @@ class ApiClients:
         client.worker = worker
         client.profit_sharing = ps
         client.coordinates = list(coordinate)
+        client.payment_type = payment_type
         if not client_id:
             cleaneril_db.session.add(client)
 

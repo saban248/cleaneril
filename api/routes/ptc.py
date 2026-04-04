@@ -28,6 +28,8 @@ class CalenderClients(IntFlag):
 class PaymentInvoice(IntFlag):
     BANK_TRANSFER = 1<<0
     CASH          = 1<<1
+    CHECK         = 1<<2
+    OTHER         = 1<<3
 
 class InvoiceStatType(IntFlag):
     DRAFT           = 1<<0
@@ -263,6 +265,7 @@ class ResponseStruct:
         worker:str      = None
         ps:int          = None
         coordinate:list      = None
+        pt:int          = None
         def build(self, **data):
             struct_builder(self, **data)
             self.o = bool(self.o)
@@ -287,6 +290,10 @@ class ResponseStruct:
                 self.ps = 0
             if not self.coordinate:
                 self.coordinate = [32.18,34.87]
+            if not self.pt:
+                self.pt = PaymentInvoice.CASH
+            else:
+                self.pt = int(self.pt)
 
             self.get_full_price()
 

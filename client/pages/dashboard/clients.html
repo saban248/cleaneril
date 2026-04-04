@@ -38,11 +38,18 @@
 
         <div class="cleaneril-list list-clients" id="listClients">
     </div>
-    <div id="clientMenu" class="client-menu-action"></div>
+    <div id="clientMenu" class="client-menu-action">
+        
+    </div>
     </div>
     <div class="main-edit-client" id="client-editor">
         <div class="ce-head">
             <i class="fa-solid fa-circle-xmark" onclick="closeCreateClient()"></i>
+            <div class="client-card-action" id="clientCardAction">
+                <i class="fa-solid fa-share-from-square" onclick="shareOrderToClientAsPhoto()"></i>
+                <i class="fa-solid fa-file-invoice" onclick="createInvoice()"></i>
+                <i class="fa-solid fa-pencil" onclick="editExistClient()"></i>
+            </div>
         </div>
         <div class="ce-body" id="client-template">
             <h1>

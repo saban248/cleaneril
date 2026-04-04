@@ -9,7 +9,7 @@
 .the-invoice {
     display: flex;
     justify-content: center;
-    width: 700px;
+    width: 30vw;
     height: auto;
     border: 1px solid #dcdcdc;
     border-radius: 7px;
@@ -20,10 +20,11 @@
 
 .img-invoice{
     width: 100%;       /* תמונה מותאמת לגודל הכרטיס */
-    height: auto;      /* שמירה על יחס גובה-רוחב */
+    height: 100%;      /* שמירה על יחס גובה-רוחב */
     display: block; 
     object-fit: cover; 
     border-radius: 7px;
+    overflow: scroll;
 }
 
 .main-invoice{

@@ -39,7 +39,7 @@ def get_api_action(session, request, **breq) -> dict:
                                            client.o,client.op,client.fn,client.date,client.address,
                                            client.lf,client.notes,client.price,client.vat, client.ex,
                                            set_employee_to_client(client.worker, manager_id), client.ps,
-                                           client.coordinate)
+                                           client.coordinate, client.pt)
             return {'client_id':client.ci}
         case ApiCall.card_draft | ApiCall.card_save:
             if ApiCall.card_draft&action:state = StateDocument.DRAFT

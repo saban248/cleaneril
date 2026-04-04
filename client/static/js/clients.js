@@ -6,11 +6,15 @@ const c_runtime = {
     blockPublishClient:false,
     clients:[],
     showClientsFrom:new Date().getFullYear()-1,
-    invoices:[]
+    invoices:[],
+    currentClientIdView:null
 }
 
-async function viewclientDetails(client_id){
+
+async function viewclientDetails(client_id = c_runtime.currentClientIdView){
     const mainEdit = document.getElementById("client-editor")
+    const action = document.getElementById("clientCardAction");
+    action.classList.add("show")
     mainEdit.classList.remove('hide');
     mainEdit.classList.add('show');
     CONFIG.CLIENT_VIEW =true;
@@ -25,6 +29,7 @@ async function viewclientDetails(client_id){
 
             const editBody = document.getElementById('client-template')
             editBody.innerHTML = res.template;
+            c_runtime.currentClientIdView = client_id;
             closeToast(toast)
             reslove();
         }
@@ -57,14 +62,16 @@ async function createClient(client_id=null){
 
 
 function closeCreateClient(no_api=false){
-    
     const mainEdit = document.getElementById("client-editor")
+    const action = document.getElementById("clientCardAction");
+    action.classList.remove("show")
     mainEdit.classList.remove("show")
     mainEdit.classList.add("hide")
     const client_id   = document.getElementById("the-client-card")?.dataset.ci;
    ( !no_api && (!CONFIG.CLIENT_EDIT && !CONFIG.CLIENT_VIEW))&& deleteClient(client_id)
    CONFIG.CLIENT_EDIT =false;
    CONFIG.CLIENT_VIEW =false;
+   c_runtime.currentClientIdView = null;
 
 }
 
@@ -257,7 +264,8 @@ async function publishClient(client_id, state){
         op:offPrice,fn:fullname,
         address:address, i:JSON.stringify(c_runtime.items_ordered),
         lf:SocialMedia.WHATSAPP,date:timing,
-        notes:notes,price:price,vat:vat,ex:expense,ps:profitSharing,worker:worker,coordinate:[lat,lng]
+        notes:notes,price:price,vat:vat,ex:expense,ps:profitSharing,worker:worker,coordinate:[lat,lng],
+        pt:0
     }
     const toast = showToast("מעבד...");
     apiPost(ApiRoute.api,data).then(
@@ -367,8 +375,10 @@ function updateStateClientSetting(state, calender){
     ManagerCache.setClientsSortedState(state)
     c_runtime.state_client_selected = state
 }
-function editExistClient(client_id){
-    CONFIG.CLIENT_EDIT = true;
+function editExistClient(client_id = c_runtime.currentClientIdView){
+    CONFIG.CLIENT_EDIT = true; 
+    c_runtime.currentClientIdView = client_id;
+    if (!client_id)return
     createClient(client_id)
 }
 
@@ -446,15 +456,29 @@ function openMenuStateClients(t, stat){
 
     menu.classList.add("show")
     const menuWidth = menu.offsetWidth;
-    const windowWidth = window.innerWidth;
+    const menuHeight = menu.offsetHeight;
 
-    let left = rect.left; // relative to viewport
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+
+    let left = rect.left;
     if (left + menuWidth > windowWidth) {
-        left = windowWidth - menuWidth - 5; // new position relative to viewport, with 5px padding
+        left = windowWidth - menuWidth - 5;
     }
 
-    menu.style.top = `${rect.bottom + window.scrollY + 6}px`
-    menu.style.left = `${left + window.scrollX}px`
+    // 👇 בדיקה לגובה
+    let top;
+
+    if (rect.bottom + menuHeight > windowHeight) {
+        // אין מקום למטה → פותחים למעלה
+        top = rect.top - menuHeight - 6;
+    } else {
+        // יש מקום → רגיל למטה
+        top = rect.bottom + 6;
+    }
+
+    menu.style.top = `${top + window.scrollY}px`;
+    menu.style.left = `${left + window.scrollX}px`;
 
 
 }
@@ -479,8 +503,11 @@ function openMenuClient(t, cid) {
         return
     }
     const rect = t.getBoundingClientRect()
-    menu.innerHTML = "" // ניקוי
-
+    menu.replaceChildren() 
+    // const client = c_runtime.clients.find(c => c.client_id == cid)
+    // const div = document.createElement("div")
+    // div.innerText = client.fullname;
+    // menu.appendChild(div)
     menuItemsClient.forEach(item => {
         let cma = document.createElement("div")
         cma.className = "cma"
@@ -495,6 +522,7 @@ function openMenuClient(t, cid) {
         cma.appendChild(cma2)
 
         cma.onclick = () => {
+            if (!item.action)return
             item.action(cid)
             menu.classList.remove("show")
         }
@@ -503,15 +531,29 @@ function openMenuClient(t, cid) {
 
     menu.classList.add("show")
     const menuWidth = menu.offsetWidth;
-    const windowWidth = window.innerWidth;
+    const menuHeight = menu.offsetHeight;
 
-    let left = rect.left; // relative to viewport
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+
+    let left = rect.left;
     if (left + menuWidth > windowWidth) {
-        left = windowWidth - menuWidth - 5; 
+        left = windowWidth - menuWidth - 5;
     }
 
-    menu.style.top = `${rect.bottom + window.scrollY + 6}px`
-    menu.style.left = `${left + window.scrollX}px`
+    // 👇 בדיקה לגובה
+    let top;
+
+    if (rect.bottom + menuHeight > windowHeight) {
+        // אין מקום למטה → פותחים למעלה
+        top = rect.top - menuHeight - 6;
+    } else {
+        // יש מקום → רגיל למטה
+        top = rect.bottom + 6;
+    }
+
+    menu.style.top = `${top + window.scrollY}px`;
+    menu.style.left = `${left + window.scrollX}px`;
 }
 
 
@@ -557,7 +599,7 @@ function openMenuCalander(t){
     const menuWidth = menu.offsetWidth;
     const windowWidth = window.innerWidth;
 
-    let left = rect.left; // relative to viewport
+    let left = rect.left;
     if (left + menuWidth > windowWidth) {
         left = windowWidth - menuWidth - 5; 
     }
@@ -580,8 +622,33 @@ async function onLoadEditClient(){
 
 
     }
-    if (!worker)return
-    selectWorkerToClient(worker);
+    if (worker){
+        selectWorkerToClient(worker);
+    }
+    let paymentState = 0;
+    const group = document.getElementById("payGroup");
+    const buttons = group.querySelectorAll("button");
+    const indicator = group.querySelector(".indicator");
+    buttons.forEach(btn => {
+    btn.addEventListener("click", () => {
+        const value = Number(btn.dataset.tp);
+        paymentState = value;
+        group.dataset.tp = value;
+        buttons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        moveIndicator(btn);
+    });
+    });
+
+    function moveIndicator(btn) {
+    const rect = btn.getBoundingClientRect();
+    const parentRect = group.getBoundingClientRect();
+
+    indicator.style.left = (rect.left - parentRect.left) + "px";
+    indicator.style.width = rect.width + "px";
+    }
+    const defaultBtn = group.querySelector('[data-tp="2"]');
+    defaultBtn.click();
 
 }
 
@@ -776,7 +843,7 @@ async function prepareOrderImage() {
 }
 
 
-async function shareOrderToClientAsPhoto(cid){
+async function shareOrderToClientAsPhoto(cid = c_runtime.currentClientIdView){
     await viewclientDetails(cid)
     await prepareOrderImage()
     const file = new File([CONFIG.IMG_ORDER], "order.png", { type: "image/png" });

@@ -41,7 +41,7 @@ function closeViewInvoice(){
 
 
 
-function createInvoice(cid){
+function createInvoice(cid = c_runtime.currentClientIdView){
     const data = {action:ApiCall.invoice_create, cid:cid}
     const toast = showToast(messgae.createInvoice)
     apiPost(ApiRoute.api, data).then(
@@ -50,7 +50,8 @@ function createInvoice(cid){
                 showToast(res.notice, ToastStat.ERROR, toast);
                 return
             }
-            showToast(res.notice,ToastStat.DONE, toast);
+            showToast('נוצר בהצלחה',ToastStat.DONE, toast);
+            fetchInvoice();
 
         }
     )
@@ -97,13 +98,13 @@ function createInvoiceItem(invoice){
         <div class="content">
         <div class="in-content">
             <div class="top">
-            <span class="name">${invoice.fullname}</span>
+            <span class="name">Invoice-${invoice.key.toString().padStart(4, '0')}</span>
             <span class="phone no-mobile">${invoice.phone}</span>
             </div>
             <div class="bottom">
             <span>${dateFloatToYMD(invoice.date)} ${dateFloatToHour(invoice.date)}</span><br>
-            <span>${invoice.price -invoice.off_price || 0}₪ •</span>
-            <span class="client-state-text-${invoice.state}">
+            <span>${invoice.total_price -invoice.off_price || 0}₪ •</span>
+            <span class="client-state-text-${invoice.stat}">
                 ${getStateClientText(1)}
             </span>
             </div>

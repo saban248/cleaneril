@@ -171,7 +171,8 @@
 }
 .dashboard-page{
     display: none;
-    padding: 1.75rem;
+    padding: 0;
+    margin: 0;
     position: relative;
     height: 100vh;
     overflow-y: auto;
@@ -349,6 +350,10 @@
 }
 .ce-head{
     padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 .ce-head > i{
     font-size: 2rem;
@@ -791,9 +796,9 @@
     border-radius: 8px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.55);
     pointer-events: none;
-    transition: 0.15s ease;
+    transition: 0.25s ease;
     z-index: 9999999;
 }
 .client-menu-action.show, .year-funds-menu.show, .calander-clients-menu.show{
@@ -869,6 +874,9 @@
 
     .chartbody{
         width: 100% !important;
+    }
+    .ce-head{
+        margin: 0 !important;
     }
 
 }

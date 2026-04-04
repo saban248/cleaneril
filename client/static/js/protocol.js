@@ -91,6 +91,21 @@ function getCalenderClientText(cc){
     }
 }
 
+
+function getPaymentStatText(pt){
+    switch (pt){
+        case pt&PaymentInvoice.BANK_TRANSFER:
+            return "העברה"
+        case pt&PaymentInvoice.CASH:
+            return "מזומן"
+        case pt&PaymentInvoice.CHECK:
+            return "צ'יק"
+        case pt&PaymentInvoice.OTHER:
+            return "אחר / לא צוין"
+    }
+}
+
+
 function getSocialMedia(social) {
     const result = [];
 
@@ -186,6 +201,19 @@ const ToastStat = {
     LOAD:1<<0,
     DONE:1<<1,
     ERROR:1<<2
+}
+
+
+const PaymentInvoice = {
+    BANK_TRANSFER:1<<0,
+    CASH:1<<1,
+    CHECK:1<<2,
+    OTHER:1<<3
+}
+
+const InvoiceStatType = {
+    DRAFT:1<<0,
+    PAID:1<<1
 }
 
 

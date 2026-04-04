@@ -401,6 +401,7 @@ body, *{
     background: rgba(255, 255, 255, 0.10);
     backdrop-filter: blur(9px);
     -webkit-backdrop-filter: blur(9px);
+    margin-bottom: 20px;
 }
 
 .card-head{

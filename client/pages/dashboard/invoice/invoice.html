@@ -1,5 +1,4 @@
 {% macro render_invoice(invoice, editor=False) %}
-{%  set invoiceName = 'קבלה' if invoice.stat&1 else 'חשבונית' %}
 <div class="main-invoice">
     <div class="head-invoice">
 
@@ -12,7 +11,7 @@
     </div>
     <div class="info-invoice">
         <div class="from-invoice">
-            <span class="tit">{{invoiceName}} מאת:</span>
+            <span class="tit">קבלה מאת:</span>
             <span class="from">{{company.company_name}}</span>
             <span class="tim">{{company.company_VAT}}</span>
             <span class="website">havraka-bdaka.com</span>
@@ -20,14 +19,14 @@
             
         </div>
         <div class="to-invoice">
-            <span class="tit">{{invoiceName}} עבור:</span>
+            <span class="tit">קבלה עבור:</span>
             <span class="to">{{client.fullname}}</span>
             <span class="tim">{{client.address}}</span>
             <span class="tip">{{client.phone}}</span>
         </div>
         <div class="matadata-invoice">
             <div class="mii">
-                <span>מספר {{invoiceName}}:</span>
+                <span>מספר קבלה:</span>
                 <span>{{invoice.key | zfill4}}</span>
             </div>
             <div class="mii">
@@ -49,7 +48,7 @@
                 <span>מחיר</span>
             </div>
         </div>
-        {% for key, item in client.items|jrt%}
+        {% for key, item in invoice.items|jrt%}
             <div class="item-table-invoice">
                 <div class="table-description">
                     <span class="tid">{{item.name}}</span>
@@ -58,7 +57,7 @@
                     <span>1</span>
                 </div>
                 <div class="table-payment">
-                    <span>{{invoice.payment_type}}</span>
+                    <span>{{invoice.payment_type | pft}}</span>
                 </div>
                 <div class="table-price">
                     <span>{{item.price}}₪</span>
@@ -69,13 +68,19 @@
     <div class="invoice-summary">
         <div class="matadata-invoice">
             <div class="mii">
+                <span>פריטים:</span>
+                <span>{{invoice.items|jrt|length}}</span>
+            </div>
+            <div class="mii">
                 <span>סה״כ:</span>
                 <span>{{invoice.total_price}}₪</span>
             </div>
+            {% if invoice.off_price %}
             <div class="mii">
                 <span>הנחה:</span>
-                <span>{{invoice.off_price}}₪</span>
+                <span>{{invoice.off_price}}₪-</span>
             </div>
+            {%endif%}
             {% if invoice.vat %}
                 <div class="mii">
                     <span>לפני מע"מ:</span>
@@ -88,7 +93,7 @@
             {% endif %}
         </div>
         <div class="balance-due">
-            <span>לתשלום</span>
+            <span>סה״כ שולם</span>
             {% if invoice.vat%}
                 <span>{{(invoice.total_price-invoice.off_price) + (invoice.total_price-invoice.off_price) | vatop}}₪</span>
             {%else%}

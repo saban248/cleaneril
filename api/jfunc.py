@@ -5,6 +5,7 @@ from zoneinfo import ZoneInfo
 
 from api.databases.employee import Employee
 from api.databases.ptc import StateClient, cleaneril, ManagerPermissions
+from api.routes.ptc import PaymentInvoice
 
 
 # jinja functions
@@ -69,6 +70,20 @@ def permission_flag_text(flag):
             return "ניהול"
 
     return "unknown"
+
+@cleaneril.template_filter("pft")
+def payment_type_text(flag):
+    match flag:
+        case PaymentInvoice.CASH:
+            return "מזומן"
+        case PaymentInvoice.BANK_TRANSFER:
+            return "העברה"
+        case PaymentInvoice.CHECK:
+            return "צ'יק"
+        case PaymentInvoice.OTHER:
+            return "אחר \ לא צוין"
+
+    return payment_type_text(PaymentInvoice.OTHER)
 
 @cleaneril.template_filter("vatop")
 def vat_of_price(price):
