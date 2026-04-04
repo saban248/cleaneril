@@ -11,10 +11,11 @@ from api.databases.company import ApiCompany
 from api.databases.crads import ApiCards, Cards
 from api.databases.employee import ApiEmployee, Employee
 from api.databases.funds import ApiFunds
+from api.databases.invoice import ApiInvoice, Invoice
 from api.databases.manager import ApiManager, on_register_create_company
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril
 from api.ptc import special_things, SJson, ShortSession
-from api.routes.ptc import Pages, ApiCall, ResponseStruct, ApiUploadFile, RegisterApi
+from api.routes.ptc import Pages, ApiCall, ResponseStruct, ApiUploadFile, RegisterApi, PaymentInvoice
 from api.validator import core_msg, company
 
 def get_api_action(session, request, **breq) -> dict:
@@ -98,7 +99,16 @@ def get_api_action(session, request, **breq) -> dict:
             data = ResponseStruct.ListClients().build(**breq)
             clients = ApiClients.get_clients_list(data.fromY,data.toY)
             return {"clients":clients}
-
+        case ApiCall.invoice_view:
+            inv = ResponseStruct.Invoice().build(**breq)
+            return {"template":get_invoice_template(manager_id, inv.iid)}
+        case ApiCall.invoice_create:
+            inv = ResponseStruct.Invoice().build(**breq)
+            invoice = ApiInvoice.create_invoice(manager_id,inv.cid, PaymentInvoice.CASH)
+            return {"success":bool(not invoice)}
+        case ApiCall.invoice_list:
+            invoices = ApiInvoice.get_invoices_list()
+            return {"invoices":invoices}
 
     return {}
 
@@ -135,6 +145,7 @@ def get_register_action(session, **breq):
                                                      register.c_desc,register.c_phone, None)
             return {"success":bool(not stat)}
 
+
     return {}
 
 
@@ -160,6 +171,11 @@ def get_worker_template(manager, worker_id:str, edit:bool = True, **_):
                            editor=edit, worker=worker, manager=manager, company=company)
 
 
+def get_invoice_template(manager_id:str, iid):
+    company = ApiCompany.get_companies(manager_id=manager_id).first()
+    invoice:Invoice = ApiInvoice.get_invoices(invoice_id=iid).first()
+    client:Clients = ApiClients.get_clients(client_id=invoice.client_id).first()
+    return render_template(Pages.invoice.f_dashboard, company=company, client=client, invoice=invoice)
 
 def api_upload_file(session, data:dict):
     flag = int(data.get("action", -1))

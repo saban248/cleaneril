@@ -9,7 +9,7 @@
                 זמינים
             </div>
         </div>
-        <div class="list-workers">
+        <div class="cleaneril-list list-workers">
             {% for worker in workers %}
                 <div class="worker-item" data-key="{{worker.key}}" id="{{worker.employee_id}}" ondblclick="viewEmployeeDetails('{{worker.employee_id}}')">
                     <div class="avatar permission-{{worker.permission}}">{{worker.username[0]}}</div>

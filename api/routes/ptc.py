@@ -24,6 +24,15 @@ class CalenderClients(IntFlag):
     MONTH           = 1<<4
     FOREVER         = 1<<5
 
+
+class PaymentInvoice(IntFlag):
+    BANK_TRANSFER = 1<<0
+    CASH          = 1<<1
+
+class InvoiceStatType(IntFlag):
+    DRAFT           = 1<<0
+    PAID            = 1<<1
+
 def get_calender_client(cc:int):
     __day__ = 3600 * 24
     match cc:
@@ -95,6 +104,8 @@ class Pages(IntFlag):
     dashboard = 1<<2
     register = 1<<3
     terms = 1<<4
+    invoice = 1<<5
+
 
     def __str__(self):
         return self.__repr__()
@@ -118,6 +129,9 @@ class Pages(IntFlag):
     def path(self):
         return self.__root__
 
+    @property
+    def f_dashboard(self):
+        return os.path.join(f'{self.dashboard.path}', self.html)
 
 
 class ApiCall(IntFlag):
@@ -139,6 +153,9 @@ class ApiCall(IntFlag):
     worker_delete = 1<<15
     calendar = 1<<16
     client_list = 1<<17
+    invoice_view = 1<<18
+    invoice_create = 1<<19
+    invoice_list = 1<<20
 
 
 def struct_builder(cls, **data):
@@ -368,3 +385,16 @@ class ResponseStruct:
             struct_builder(self, **data)
 
             return self
+
+    @dataclass
+    class Invoice:
+        iid:str             = None
+        cid:str             = None
+
+        def build(self, **data):
+            struct_builder(self, **data)
+
+            return self
+
+
+

@@ -1,3 +1,5 @@
+{% macro render_invoice(invoice, editor=False) %}
+{%  set invoiceName = 'קבלה' if invoice.stat&1 else 'חשבונית' %}
 <div class="main-invoice">
     <div class="head-invoice">
 
@@ -5,35 +7,36 @@
             קבלה
         </div>
         <div class="logo-invoice">
-            <img  class="logo-self-invoice" src="/static/images/logo/{{managerId}}.png">
+            <img  class="logo-self-invoice" src="/static/images/logo/{{company.logo_path}}">
         </div>
     </div>
     <div class="info-invoice">
         <div class="from-invoice">
-            <span class="tit">קבלה מאת:</span>
+            <span class="tit">{{invoiceName}} מאת:</span>
             <span class="from">{{company.company_name}}</span>
+            <span class="tim">{{company.company_VAT}}</span>
             <span class="website">havraka-bdaka.com</span>
             <span class="tip">{{company.company_phone}}</span>
-            <span class="tim">{{company.company_email}}</span>
+            
         </div>
         <div class="to-invoice">
-            <span class="tit">חשבונית ל:</span>
-            <span class="to">{client.fullname}</span>
-            <span class="tim">{client.address}</span>
-            <span class="tip">{client.phone}</span>
+            <span class="tit">{{invoiceName}} עבור:</span>
+            <span class="to">{{client.fullname}}</span>
+            <span class="tim">{{client.address}}</span>
+            <span class="tip">{{client.phone}}</span>
         </div>
         <div class="matadata-invoice">
             <div class="mii">
-                <span>מספר חשבונית:</span>
-                <span>{invoice.number}</span>
+                <span>מספר {{invoiceName}}:</span>
+                <span>{{invoice.key | zfill4}}</span>
             </div>
             <div class="mii">
-                <span>תאריך:</span>
-                <span>{invoice.date | cda}</span>
+                <span>תאריך הפקה:</span>
+                <span>{{invoice.date | cda}} {{invoice.date | cdah}}</span>
             </div>
             <div class="mii">
-                <span>מזהה:</span>
-                <span>{invoice.id}</span>
+                <span>תאריך עיסקה:</span>
+                <span>{{client.date | cda}} {{client.date | cdah}}</span>
             </div>
         </div>
     </div>
@@ -46,40 +49,63 @@
                 <span>מחיר</span>
             </div>
         </div>
-        <div class="item-table-invoice">
-            <div class="table-description">
-                <span class="tid">{item.name}</span>
+        {% for key, item in client.items|jrt%}
+            <div class="item-table-invoice">
+                <div class="table-description">
+                    <span class="tid">{{item.name}}</span>
+                </div>
+                <div class="table-quantity">
+                    <span>1</span>
+                </div>
+                <div class="table-payment">
+                    <span>{{invoice.payment_type}}</span>
+                </div>
+                <div class="table-price">
+                    <span>{{item.price}}₪</span>
+                </div>
             </div>
-            <div class="table-quantity">
-                <span>{item.quantity}</span>
-            </div>
-            <div class="table-payment">
-                <span>{item.payment}</span>
-            </div>
-            <div class="table-price">
-                <span>{item.price}</span>
-            </div>
-        </div>
+        {% endfor %}
     </div>
     <div class="invoice-summary">
         <div class="matadata-invoice">
             <div class="mii">
                 <span>סה״כ:</span>
-                <span>{invoice.total}</span>
+                <span>{{invoice.total_price}}₪</span>
             </div>
             <div class="mii">
-                <span>מע"מ:</span>
-                <span>{invoice.vat}</span>
+                <span>הנחה:</span>
+                <span>{{invoice.off_price}}₪</span>
             </div>
-            <div class="mii">
-                <span>סה״כ לתשלום:</span>
-                <span>{invoice.total-invoice.vat}</span>
-            </div>
+            {% if invoice.vat %}
+                <div class="mii">
+                    <span>לפני מע"מ:</span>
+                    <span>{{invoice.total_price-invoice.off_price}}₪</span>
+                </div>
+                <div class="mii">
+                    <span>מע"מ 18%:</span>
+                    <span>{{(invoice.total_price-invoice.off_price) | vatop}}₪</span>
+                </div>
+            {% endif %}
         </div>
         <div class="balance-due">
-            <span>יתרה לתשלום</span>
-            <span>{invoice.price} ₪</span>
+            <span>לתשלום</span>
+            {% if invoice.vat%}
+                <span>{{(invoice.total_price-invoice.off_price) + (invoice.total_price-invoice.off_price) | vatop}}₪</span>
+            {%else%}
+                <span>{{invoice.total_price-invoice.off_price}}₪</span>
+            {%endif%}
+
         </div>
+    </div>
+    <div class="invoice-footer">
+        <span class="about-vat">עוסק פטור – אינו גובה מע״מ</span>
+        <span class="invoice-signature">חתימה: {{invoice.invoice_id}}</span>
     </div>
 </div>
 
+
+</div>
+
+{% endmacro %}
+
+{{ render_invoice(invoice, editor) }}

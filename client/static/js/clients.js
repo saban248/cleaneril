@@ -5,7 +5,8 @@ const c_runtime = {
     workers:[],
     blockPublishClient:false,
     clients:[],
-    showClientsFrom:new Date().getFullYear()-1
+    showClientsFrom:new Date().getFullYear()-1,
+    invoices:[]
 }
 
 async function viewclientDetails(client_id){
@@ -466,7 +467,8 @@ const menuItemsClient = [
     {text:'בוטל',action:(cid)=>setStateClient(cid, StateClient.CANCELED),icon:'<i class="fa-solid fa-ban"></i>'},
     {text:'הושלם', action:(cid)=>setStateClient(cid, StateClient.DONE), icon:'<i class="fa-solid fa-clipboard-check"></i>'},
     {text:'לא נסגר',action:(cid)=>setStateClient(cid, StateClient.WAIT), icon:'<i class="fa-solid fa-question"></i>'},
-    {text:'בהמתנה',action:(cid)=>setStateClient(cid, StateClient.CLOSED), icon:'<i class="fa-solid fa-hourglass-half"></i>'}
+    {text:'בהמתנה',action:(cid)=>setStateClient(cid, StateClient.CLOSED), icon:'<i class="fa-solid fa-hourglass-half"></i>'},
+    {text:'צור קבלה',action:(cid)=>createInvoice(cid), icon:'<i class="fa-solid fa-file-invoice"></i>'},
 
 ]
 
@@ -859,7 +861,6 @@ function createClientItem(client) {
 
     return div;
 }
-
 
 
 

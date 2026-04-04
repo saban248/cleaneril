@@ -1,10 +1,28 @@
 <div class="dashboard-page" id="INVOICES">
     <div class="page-head">
         <h2>ניהול קבלות</h2>
-        <i class="fa-solid fa-circle-plus create-card" onclick="createInvoice()"></i>
+        <!-- <i class="fa-solid fa-circle-plus create-card" onclick="viewInvoice()"></i> -->
     </div>
     <div class="page-body">
-        {% include "dashboard/invoice/invoice.html" %}
+        <div class="cleaneril-list list-invoices" id="listInvoices">
+            
+        </div>
+    </div>
+    <div class="view-invoice" id="viewInvoice">
+        <div class="ce-head">
+            <i class="fa-solid fa-circle-xmark" onclick="closeViewInvoice()"></i>
+        </div>
+        <div class="ce-body">
+            <div id="invoice-template">
+                <h1>
+                    <i class="fa-solid fa-circle-notch fa-spin fa-spin"></i>
+                    building..
+                </h1>
+            </div>
+            <div class="the-invoice" id="theInvoice">
+                <img alt="invoice" class="img-invoice" id="imgInvoice">
+            </div>
+        </div>
     </div>
 </div>
 

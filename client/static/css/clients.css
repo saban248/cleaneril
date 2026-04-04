@@ -1,15 +1,4 @@
 
-.list-clients{
-    max-height: 70vh;
-    overflow-y: auto;
-    align-content: start;
-    scrollbar-width: none;       
-    -ms-overflow-style: none;    
-}
-
-.list-clients::-webkit-scrollbar {
-  display: none;
-}
 
 .list-head{
     display: grid;

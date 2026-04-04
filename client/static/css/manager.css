@@ -216,12 +216,7 @@
     margin-left: 20%;
     margin-right: 20%;
 }
-.list-cards, .list-clients, .list-workers{
-    display: grid;
-    grid-template-columns: 1fr;
-    border-radius: 9px;
-    border: 1px solid #ddd;
-}
+
 .card-item, .worker-item{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -342,7 +337,7 @@
 .card-footer>i:hover, .client-footer>i:hover{
     box-shadow: 0 0 11px #9c9c9c;
 }
-.main-edit-card, .main-edit-client, .main-edit-worker{
+.main-edit-card, .main-edit-client, .main-edit-worker, .view-invoice{
     display: none;
     position: fixed;
     z-index: 10000;

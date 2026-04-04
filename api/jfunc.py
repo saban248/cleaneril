@@ -69,3 +69,11 @@ def permission_flag_text(flag):
             return "ניהול"
 
     return "unknown"
+
+@cleaneril.template_filter("vatop")
+def vat_of_price(price):
+    return float(f'{price*0.18:.2f}')
+
+@cleaneril.template_filter("zfill4")
+def zfill_number(number):
+    return str(number).zfill(4)

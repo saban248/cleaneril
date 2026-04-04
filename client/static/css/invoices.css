@@ -1,12 +1,41 @@
 
 
+
+#invoice-template.hide{
+    display: none !important;
+}
+
+
+.the-invoice {
+    display: flex;
+    justify-content: center;
+    width: 700px;
+    height: auto;
+    border: 1px solid #dcdcdc;
+    border-radius: 7px;
+    box-shadow: 0 0 11px #dcdcdc;
+    padding: 10px;
+    overflow: hidden;
+}
+
+.img-invoice{
+    width: 100%;       /* תמונה מותאמת לגודל הכרטיס */
+    height: auto;      /* שמירה על יחס גובה-רוחב */
+    display: block; 
+    object-fit: cover; 
+    border-radius: 7px;
+}
+
 .main-invoice{
-    margin: 0 !important;
     padding: 0 !important;
     direction: rtl;
     border: 1px solid #ddd;
-    height: 100vh;
-    overflow: hidden
+    width: 794px;
+    height: 1123px;
+    background: white;
+    margin: 0 ;
+    box-shadow: 0 0 11px #dcdcdc;
+    position: relative;
 }
 
 .head-invoice{
@@ -22,8 +51,8 @@
 }
 
 .logo-invoice{
-    width: 100px;
-    height: 100px;
+    width: 140px;
+    height: 140px;
 }
 .logo-self-invoice{
     width: 100%;
@@ -61,6 +90,7 @@
 
 .matadata-invoice{
     font-size: 13px;
+    row-gap: 5px;
     display: grid;
     grid-template-columns:1fr; 
 
@@ -68,14 +98,17 @@
 
 .mii{
     display: grid;
+    gap: 10px;
     grid-template-columns: 1fr 1fr;
 }
-
+.mii > span:last-child{
+    color: #828282;
+}
 .body-invoice{
     border-bottom: 1px solid #a7a7a7;
 }
 .body-invoice > *:not(.phti){
-    padding: 2rem;
+    padding: 5px 2rem;
     
 }
 .phti{
@@ -114,4 +147,34 @@
     background: linear-gradient(to left, black,#828282);
     color: white;
     font-size: 1.2rem;
+}
+
+.invoice-footer{
+    width: 90%;
+    position: absolute;
+    bottom: 10px;
+    right: 2rem;
+    transform: skewX(-10deg);
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    column-gap: 10px;
+}
+
+.about-vat{
+
+}
+.invoice-signature{
+    color: #828282;
+}
+
+
+/* מובייל */
+@media (max-width: 768px) {
+    .the-invoice {
+        width: 95%;
+        margin-right: 2.5%;
+        margin-left: 2.5%;
+    }
+    
 }

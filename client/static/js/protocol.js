@@ -170,7 +170,10 @@ const ApiCall = {
     worker_save:1<<14,
     worker_delete:1<<15,
     calendar:1<<16,
-    client_list:1<<17
+    client_list:1<<17,
+    invoice_view:1<<18,
+    invoice_create:1<<19,
+    invoice_list:1<<20
 }
 
 
