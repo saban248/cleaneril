@@ -158,6 +158,7 @@ class ApiCall(IntFlag):
     invoice_view = 1<<18
     invoice_create = 1<<19
     invoice_list = 1<<20
+    view_order = 1<<21
 
 
 def struct_builder(cls, **data):
@@ -247,7 +248,7 @@ class ResponseStruct:
 
 
     @dataclass
-    class ClientEditor:
+    class OrderClientEditor:
         ci:str              = None
         s:StateClient       = None
         phone:str               = None

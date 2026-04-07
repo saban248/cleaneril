@@ -18,14 +18,6 @@
     overflow: hidden;
 }
 
-.img-invoice{
-    width: 100%;       /* תמונה מותאמת לגודל הכרטיס */
-    height: 100%;      /* שמירה על יחס גובה-רוחב */
-    display: block; 
-    object-fit: cover; 
-    border-radius: 7px;
-    overflow: scroll;
-}
 
 .main-invoice{
     padding: 0 !important;

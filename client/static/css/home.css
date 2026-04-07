@@ -394,7 +394,7 @@ body, *{
     border-radius: 15px;
     border: 1px solid rgba(255, 255, 255, 0.20);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
-    display: flex;
+    display: none;
     flex-direction: column;
     padding: .75rem;
     max-width: 350px;
@@ -402,6 +402,11 @@ body, *{
     backdrop-filter: blur(9px);
     -webkit-backdrop-filter: blur(9px);
     margin-bottom: 20px;
+    min-height: 80vh;
+    position: relative;
+}
+.clean-card.show, .client-card.show, .worker-card.show{
+    display: flex !important;
 }
 
 .card-head{

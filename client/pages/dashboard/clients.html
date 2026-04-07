@@ -45,10 +45,13 @@
     <div class="main-edit-client" id="client-editor">
         <div class="ce-head">
             <i class="fa-solid fa-circle-xmark" onclick="closeCreateClient()"></i>
-            <div class="client-card-action" id="clientCardAction">
-                <i class="fa-solid fa-share-from-square" onclick="shareOrderToClientAsPhoto()"></i>
-                <i class="fa-solid fa-file-invoice" onclick="createInvoice()"></i>
-                <i class="fa-solid fa-pencil" onclick="editExistClient()"></i>
+            <div class="client-card-action" id="clientCardAViews">
+                <i class="fa-solid fa-file-invoice" onclick="showClientOrders()"></i>
+                <i class="fa-solid fa-receipt" onclick="showClientReceipts()"></i>
+                <i class="fa-solid fa-chart-column"></i>
+            </div>
+            <div class="client-card-action" id="clientCardAReturn">
+                <i class="fa-solid fa-circle-chevron-right" onclick="returnFromclientCard()"></i>
             </div>
         </div>
         <div class="ce-body" id="client-template">

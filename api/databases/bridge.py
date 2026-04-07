@@ -34,7 +34,7 @@ def get_client_total_price(cid):
     if not client:
         return 0
 
-    return sum(int(item.get("price", 0)) for k, item in json.loads(client.items).items())
+    return client.price
 
 
 def get_client_off_price(cid):

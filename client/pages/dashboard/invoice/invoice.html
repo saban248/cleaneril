@@ -20,9 +20,9 @@
         </div>
         <div class="to-invoice">
             <span class="tit">קבלה עבור:</span>
-            <span class="to">{{client.fullname}}</span>
-            <span class="tim">{{client.address}}</span>
-            <span class="tip">{{client.phone}}</span>
+            <span class="to">{{invoice.order.fullname}}</span>
+            <span class="tim">{{invoice.order.address}}</span>
+            <span class="tip">{{invoice.order.phone}}</span>
         </div>
         <div class="matadata-invoice">
             <div class="mii">
@@ -35,7 +35,7 @@
             </div>
             <div class="mii">
                 <span>תאריך עיסקה:</span>
-                <span>{{client.date | cda}} {{client.date | cdah}}</span>
+                <span>{{invoice.order.date | cda}} {{invoice.order.date | cdah}}</span>
             </div>
         </div>
     </div>
@@ -48,7 +48,7 @@
                 <span>מחיר</span>
             </div>
         </div>
-        {% for key, item in invoice.items|jrt%}
+        {% for key, item in invoice.order['items']|jrt%}
             <div class="item-table-invoice">
                 <div class="table-description">
                     <span class="tid">{{item.name}}</span>
@@ -69,35 +69,35 @@
         <div class="matadata-invoice">
             <div class="mii">
                 <span>פריטים:</span>
-                <span>{{invoice.items|jrt|length}}</span>
+                <span>{{invoice.order['items']|jrt|length}}</span>
             </div>
             <div class="mii">
                 <span>סה״כ:</span>
-                <span>{{invoice.total_price}}₪</span>
+                <span>{{invoice.order.price}}₪</span>
             </div>
             {% if invoice.off_price %}
             <div class="mii">
                 <span>הנחה:</span>
-                <span>{{invoice.off_price}}₪-</span>
+                <span>{{invoice.order.off_price}}₪-</span>
             </div>
             {%endif%}
             {% if invoice.vat %}
                 <div class="mii">
                     <span>לפני מע"מ:</span>
-                    <span>{{invoice.total_price-invoice.off_price}}₪</span>
+                    <span>{{invoice.order.price-invoice.order.off_price}}₪</span>
                 </div>
                 <div class="mii">
                     <span>מע"מ 18%:</span>
-                    <span>{{(invoice.total_price-invoice.off_price) | vatop}}₪</span>
+                    <span>{{(invoice.order.price-invoice.order.off_price) | vatop}}₪</span>
                 </div>
             {% endif %}
         </div>
         <div class="balance-due">
             <span>סה״כ שולם</span>
             {% if invoice.vat%}
-                <span>{{(invoice.total_price-invoice.off_price) + (invoice.total_price-invoice.off_price) | vatop}}₪</span>
+                <span>{{(invoice.order.price-invoice.order.off_price) + (invoice.order.price-invoice.order.off_price) | vatop}}₪</span>
             {%else%}
-                <span>{{invoice.total_price-invoice.off_price}}₪</span>
+                <span>{{invoice.order.price-invoice.order.off_price}}₪</span>
             {%endif%}
 
         </div>

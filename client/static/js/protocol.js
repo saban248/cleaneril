@@ -188,7 +188,8 @@ const ApiCall = {
     client_list:1<<17,
     invoice_view:1<<18,
     invoice_create:1<<19,
-    invoice_list:1<<20
+    invoice_list:1<<20,
+    view_order:1<<21
 }
 
 
@@ -216,6 +217,11 @@ const InvoiceStatType = {
     PAID:1<<1
 }
 
+
+const clientCardsFlag = {
+    ORDER:1<<0,
+    RECEIPT:1<<1
+}
 
 window.SocialMedia = SocialMedia;
 window.PageManager = PageManager;

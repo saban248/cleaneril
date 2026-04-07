@@ -101,7 +101,7 @@
 
 
 .dashboard-menu {
-    position: fixed;
+    position: sticky;
     bottom: 0;
     left: 0;
     width: 50%;
@@ -351,9 +351,10 @@
 .ce-head{
     padding: 10px;
     display: flex;
-    justify-content: space-between;
+    justify-content: right;
     margin-left: 10%;
     margin-right: 10%;
+    column-gap: 20px;
 }
 .ce-head > i{
     font-size: 2rem;
@@ -366,8 +367,9 @@
 .ce-body{
     display: flex;
     justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    align-items: start;
+    flex-direction: row-reverse;
+    column-gap: 10px;
     row-gap: 20px;
 }
 .input-card-edit{
@@ -456,8 +458,6 @@
     border: 1px solid #ddd !important;
     min-width: 350px;
     box-sizing: content-box !important;
-    
-
 }
 .client-head, .worker-head{
     display: flex;
@@ -877,6 +877,10 @@
     }
     .ce-head{
         margin: 0 !important;
+    }
+    .ce-body{
+        flex-direction: column;
+        align-items: center;
     }
 
 }

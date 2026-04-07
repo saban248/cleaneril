@@ -1,10 +1,15 @@
+let IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
+
+
+
 function getIconByStatToast(stat){
     switch (stat){
         case ToastStat.DONE:
             return `fa-solid fa-circle-check tc-icon tci-${stat}`
         case ToastStat.LOAD:
             return `fa-solid fa-circle-notch fa-spin tc-icon tci-${stat}`;
-        case ToastStat.ERROR:;
+        case ToastStat.ERROR:
+            return `fa-solid fa-triangle-exclamation tc-icon tci-${stat}`
     }
 }
 
@@ -176,3 +181,25 @@ function cleanPhoneJustNumbers(phone) {
 
   return digits;
 }
+
+
+function matchNumsWords(nums, str1, str2) {
+  const words1 = (str1 || '').toLowerCase().split(/\s+/);
+  const words2 = (str2 || '').toLowerCase().split(/\s+/);
+
+  let count = 0;
+
+  for (const w of words1) {
+    if (words2.includes(w)) {
+      count++;
+      if (count >= nums) return true;
+    }
+  }
+
+  return false;
+}
+
+
+window.addEventListener("resize", () => {
+    IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
+});

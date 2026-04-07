@@ -1,4 +1,5 @@
 import base64
+import json
 import os
 from time import sleep
 
@@ -27,13 +28,14 @@ def get_api_action(session, request, **breq) -> dict:
             card = ResponseStruct.CardEditor().build(**breq)
             return {"template":get_card_edit_template(card.ci)}
         case ApiCall.client_editor:
-            client = ResponseStruct.ClientEditor().build(**breq)
-            return {"template":get_client_template(manager, client.ci)}
+            client = ResponseStruct.OrderClientEditor().build(**breq)
+            return {"template":get_client_order_template(manager, client.ci)}
         case ApiCall.client_view:
-            client = ResponseStruct.ClientEditor().build(**breq)
-            return {"template":get_client_template(manager, client.ci, False)}
+            client = ResponseStruct.OrderClientEditor().build(**breq)
+            return {"template":get_client_template(client.ci)}
+
         case ApiCall.client_save:
-            client = ResponseStruct.ClientEditor().build(**breq)
+            client = ResponseStruct.OrderClientEditor().build(**breq)
 
             _stat_ = ApiClients.add_client(client.ci,client.s,client.phone,client.i,
                                            client.o,client.op,client.fn,client.date,client.address,
@@ -52,10 +54,10 @@ def get_api_action(session, request, **breq) -> dict:
             card = ResponseStruct.CardEditor().build(**breq)
             return  {"deleted":ApiCards.delete_card(card_id=card.ci)}
         case ApiCall.client_delete:
-            client = ResponseStruct.ClientEditor().build(**breq)
+            client = ResponseStruct.OrderClientEditor().build(**breq)
             return {"deleted":ApiClients.delete_client(client_id=client.ci)}
         case ApiCall.client_state:
-            client = ResponseStruct.ClientEditor().build(**breq)
+            client = ResponseStruct.OrderClientEditor().build(**breq)
             return {"stated":ApiClients.set_state(client_id=client.ci, state=client.s)}
         case ApiCall.funds_income:
             funds = ResponseStruct.Funds().build(**breq)
@@ -104,11 +106,15 @@ def get_api_action(session, request, **breq) -> dict:
             return {"template":get_invoice_template(manager_id, inv.iid)}
         case ApiCall.invoice_create:
             inv = ResponseStruct.Invoice().build(**breq)
-            invoice = ApiInvoice.create_invoice(manager_id,inv.cid, PaymentInvoice.CASH)
+            client = ApiClients.get_clients(client_id=inv.cid).first()
+            invoice = ApiInvoice.create_invoice(manager_id,client, PaymentInvoice.CASH)
             return {"success":bool(not invoice)}
         case ApiCall.invoice_list:
             invoices = ApiInvoice.get_invoices_list()
             return {"invoices":invoices}
+        case ApiCall.view_order:
+            order = ResponseStruct.OrderClientEditor().build(**breq)
+            return {"template": get_client_order_template(manager, order.ci, False)}
 
     return {}
 
@@ -156,11 +162,15 @@ def get_card_edit_template(card_id:str, **_):
                            special=special_things
                        )
 
-def get_client_template(manager, client_id:str, edit:bool = True, **_):
+def get_client_order_template(manager, client_id:str, edit:bool = True, **_):
     client:Clients = ApiClients.create_client(client_id)
     company = ApiCompany.get_companies(manager_id=manager["manager_id"]).first()
-    return render_template(f'{Pages.dashboard.path}client.html',
-                           editor=edit, client=client, manager=manager, company=company)
+    return render_template(f'{Pages.dashboard.path}order.html',
+                           editor=edit, order=client, manager=manager, company=company)
+
+def get_client_template(client_id:str):
+    client: Clients = ApiClients.create_client(client_id)
+    return render_template(f'{Pages.dashboard.path}client.html', client=client)
 
 
 def get_worker_template(manager, worker_id:str, edit:bool = True, **_):
@@ -174,8 +184,8 @@ def get_worker_template(manager, worker_id:str, edit:bool = True, **_):
 def get_invoice_template(manager_id:str, iid):
     company = ApiCompany.get_companies(manager_id=manager_id).first()
     invoice:Invoice = ApiInvoice.get_invoices(invoice_id=iid).first()
-    client:Clients = ApiClients.get_clients(client_id=invoice.client_id).first()
-    return render_template(Pages.invoice.f_dashboard, company=company, client=client, invoice=invoice)
+    invoice.order = json.loads(invoice.order)
+    return render_template(Pages.invoice.f_dashboard, company=company, invoice=invoice)
 
 def api_upload_file(session, data:dict):
     flag = int(data.get("action", -1))

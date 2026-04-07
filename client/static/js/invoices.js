@@ -1,16 +1,10 @@
 
 
 
-async function viewInvoice(vid){
-    const parent = document.getElementById("viewInvoice");
-    const template = document.getElementById("invoice-template");
-    const invoiceImg = document.getElementById("imgInvoice");
-    parent.classList.remove('hide');
-    parent.classList.add('show');
-    template.classList.remove("hide")
+async function viewInvoice(template, iid){
 
     const toast = showToast("מעבד...");
-    data = {action:ApiCall.invoice_view, iid:vid}
+    data = {action:ApiCall.invoice_view, iid:iid}
     return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
         (res) => {
             if (!res.success){
@@ -18,12 +12,8 @@ async function viewInvoice(vid){
                 return
             }
             template.innerHTML = res.template;
-            html2canvas(template, { scale: 2, backgroundColor: '#fff' }).then(canvas => {
-                invoiceImg.src = canvas.toDataURL('image/png');
-                invoiceImg.classList.add("show");
-                template.classList.add("hide");
-            });
-            
+            c_runtime.currentInvoiceIdView = iid
+            c_clients.currentCard = clientCardsFlag.RECEIPT
             showToast(res.notice, ToastStat.DONE, toast)
             reslove();
         }
@@ -32,6 +22,11 @@ async function viewInvoice(vid){
 
 }
 
+async function createImgInvoice(template, img){
+    await html2canvas(template, { scale: 2, backgroundColor: '#fff'}).then(canvas => {
+        img.src = canvas.toDataURL('image/png');
+    });
+}
 
 function closeViewInvoice(){
     const parent = document.getElementById("viewInvoice");
@@ -66,6 +61,10 @@ function fetchInvoice(){
                 return
             }
             c_runtime.invoices = res.invoices;
+            for (invoice of c_runtime.invoices){
+                invoice.order = JSON.parse(invoice.order);
+                invoice.order.items = JSON.parse(invoice.order.items)
+            }
             loadListInvoicesHtml()
 
         }
@@ -81,14 +80,17 @@ function loadListInvoicesHtml(){
     });
 }
 
-function createInvoiceItem(invoice){
+function createInvoiceItem(invoice, actions = true){
     const div = document.createElement("div");
-    div.className = "cil-item";
+    div.className = "cil-item "
     // div.dataset.stat = client.state;
     div.dataset.key = invoice.key;
     div.id = invoice.invoice_id;
-
-    div.ondblclick = () => viewInvoice(invoice.invoice_id);
+    if (actions){
+        div.ondblclick = () => {}
+    }else{
+        div.onclick = ()=> showClientReceiptImg(invoice.invoice_id)
+    }
 
     div.innerHTML = `
         <div class="avatar client-state-4">
@@ -110,19 +112,23 @@ function createInvoiceItem(invoice){
             </div>
         </div>
         </div>
-
+        `
+    if (actions){
+        const clientActions = `
         <div class="client-footer">
         <i class="fa-solid fa-eye no-mobile"></i>
         <i class="fa-solid fa-share-from-square no-mobile"></i>
         <i class="fa-solid fa-bars menu-client"></i>
         </div>
-    `;
-    const icons = div.querySelectorAll(".client-footer i");
+        `;
+        div.innerHTML += clientActions;
+        
+        const icons = div.querySelectorAll(".client-footer i");
 
-    icons[0].onclick = () => viewclientDetails(client.client_id);
-    icons[1].onclick = () => shareOrderToClientAsPhoto(client.client_id);
-    icons[2].onclick = (e) => openMenuClient(e.target, client.client_id);
-
+        icons[0].onclick = () => viewClientOrder(client.client_id);
+        icons[1].onclick = () => shareOrderToClientAsPhoto(client.client_id);
+        icons[2].onclick = (e) => openMenuClient(e.target, client.client_id);
+    }
     return div;
 }
 

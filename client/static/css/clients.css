@@ -19,9 +19,10 @@
     column-gap: 5px;
 
 }
-.client-item:hover {
+.client-item:hover, .current-client-list{
   background: #f5f5f5;
 }
+
 .client-item.hide{
     display: none !important;
 }
@@ -195,11 +196,16 @@
     position: relative;
 }
 
+
 .client-card-action{
     display: none;
-    justify-content: left;
+    justify-content:right;
     align-items: center;
     column-gap: 10px;
+    flex: 1;
+    border: 1px solid #adadad52;
+    border-radius: 10px;
+    padding: 0 10px;
 }
 .client-card-action.show{
     display: flex !important;
@@ -223,6 +229,91 @@
     transform: scale(1.09);
 
 }
+#the-client-orders, #the-client-receipts{
+  position: absolute; /* או fixed אם זה menu */
+  transform: scale(0);
+  transform-origin: top right;
+  opacity: 0;
+  pointer-events: none;
+  transition: 200ms ease;
+  min-height: 80vh;
+  box-shadow: none !important;
+  border-color: #ebebeb !important;
+}
+
+#the-client-orders.show, #the-client-receipts.show{
+    position: static;
+    transform: scale(1);
+    opacity: 1;
+    pointer-events: auto;
+    display: flex;
+}
+.client-orders-head, .client-receipts-head{
+    display: flex;
+    flex-direction: column;
+}
+.client-orders-search, .client-receipts-search{
+    margin-top: 1rem;
+}
+.input-orders-search, .input-receipts-search{
+    width: 100%;
+    box-sizing: border-box;
+    outline: none !important;
+    border-radius: 10px;
+    border: 1px solid #ebebeb;
+    padding: 10px;
+    font-size: 11px;
+    transition: all 0.3s ease;
+    border: 1px solid #e5e7eb;
+}
+.input-orders-search:active,
+.input-orders-search:hover,
+.input-orders-search:focus,
+.input-receipts-search:hover,
+.input-receipts-search:active,
+.input-receipts-search:focus{
+    border-color: #d6d6d6;
+    box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.08),
+    0 0 0 3px rgba(236, 239, 244, 0.15);
+}
+
+.list-client-orders, .list-client-receipts{
+    border: none !important;
+    margin-top: 10px;
+}
+.current-client-list{
+    border: 1px solid #adadad52;
+}
+
+#receiptTemplate{
+    position: absolute;
+    top: 10px;
+    z-index: -331;
+    width: 794px;
+    height: 1123px;
+    height: auto;
+    margin-left: 20%;
+    margin-right: 20%;
+}
+.receipt-img {
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+    background: #f5f5f5; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex:1;
+}
+
+.img-invoice {
+    width: 100%;
+    height: auto;
+    display: none;
+    object-fit: contain;
+}
+
 .pay-group {
   position: relative;
   display: inline-flex;

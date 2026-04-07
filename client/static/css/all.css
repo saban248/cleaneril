@@ -10,7 +10,7 @@
     overflow-y: auto;
     align-content: start;
     scrollbar-width: none;       
-    -ms-overflow-style: none;    
+    -ms-overflow-style: none;
 }
 
 
@@ -89,3 +89,14 @@
   cursor: pointer;
   font-size: 18px;
 }
+
+
+.skew-input {
+  transform: skew(-10deg);
+  padding: 10px;
+}
+
+.skew-input::placeholder {
+  color: gray;
+}
+

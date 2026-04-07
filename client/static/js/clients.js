@@ -7,17 +7,23 @@ const c_runtime = {
     clients:[],
     showClientsFrom:new Date().getFullYear()-1,
     invoices:[],
-    currentClientIdView:null
+    currentClientIdView:null,
+    currentInvoiceIdView:null
+}
+const c_clients = {
+    ccav:true,
+    currentCard:clientCardsFlag.ORDER
 }
 
 
-async function viewclientDetails(client_id = c_runtime.currentClientIdView){
+async function openClientDashbaord(client_id = c_runtime.currentClientIdView){
+    await viewClientDashboard(client_id)
+    await viewClientOrder(client_id)
+}
+async function viewClientDashboard(client_id = c_runtime.currentClientIdView){
     const mainEdit = document.getElementById("client-editor")
-    const action = document.getElementById("clientCardAction");
-    action.classList.add("show")
     mainEdit.classList.remove('hide');
     mainEdit.classList.add('show');
-    CONFIG.CLIENT_VIEW =true;
     const toast = showToast("מעבד...");
     data = {action:ApiCall.client_view, ci:client_id}
     return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
@@ -26,16 +32,63 @@ async function viewclientDetails(client_id = c_runtime.currentClientIdView){
                 showToast(res.notice, ToastStat.ERROR, toast);
                 return
             }
-
+            CONFIG.CLIENT_VIEW = true;
+            closeToast(toast)
             const editBody = document.getElementById('client-template')
             editBody.innerHTML = res.template;
             c_runtime.currentClientIdView = client_id;
-            closeToast(toast)
             reslove();
         }
     ))
 
 }
+
+
+async function viewClientOrder(client_id = c_runtime.currentClientIdView){
+    const toast = showToast("מעבד...");
+    data = {action:ApiCall.view_order, ci:client_id}
+    
+    return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
+        (res) => {
+            if (!res.success){
+                showToast(res.notice, ToastStat.ERROR, toast);
+                return
+            }
+            closeToast(toast)
+            const card = document.getElementById("the-client-card")
+            card.innerHTML = res.template;
+            c_runtime.currentClientIdView = client_id;
+            c_clients.ccav = false;
+            c_clients.currentCard = clientCardsFlag.ORDER
+            showClientOrder()
+
+            reslove();
+        }
+    ))
+
+}
+
+function switchClientCardAction(){
+    const AView = document.getElementById("clientCardAViews");
+    const AReturn = document.getElementById("clientCardAReturn");
+    if (!c_clients.ccav && IS_MOBILE){
+        AView.classList.remove("show")
+        AReturn.classList.add("show")
+    }
+    else{
+        AReturn.classList.remove("show")
+        AView.classList.add("show")
+    }
+}
+function returnFromclientCard(){
+    switch (c_clients.currentCard){
+        case clientCardsFlag.ORDER:
+            showClientOrders()
+        case clientCardsFlag.RECEIPT:
+            showClientReceipts()
+    }
+}
+ 
 async function createClient(client_id=null){
     if (c_runtime.blockPublishClient)return;
     const mainEdit = document.getElementById("client-editor")
@@ -63,7 +116,7 @@ async function createClient(client_id=null){
 
 function closeCreateClient(no_api=false){
     const mainEdit = document.getElementById("client-editor")
-    const action = document.getElementById("clientCardAction");
+    const action = document.getElementById("clientCardAViews");
     action.classList.remove("show")
     mainEdit.classList.remove("show")
     mainEdit.classList.add("hide")
@@ -483,7 +536,7 @@ function openMenuStateClients(t, stat){
 
 }
 const menuItemsClient = [
-    { text: "צפיה", action: (cid) => viewclientDetails(cid), icon:'<i class="fa-solid fa-eye"></i>'},
+    { text: "צפיה", action: (cid) => openClientDashbaord(cid), icon:'<i class="fa-solid fa-eye"></i>'},
     { text: "שיתוף כתמונה", action: (cid) => shareOrderToClientAsPhoto(cid), icon:'<i class="fa-solid fa-share-from-square"></i>'},
     { text: "שיתוף כקישור", action: (cid) => shareOrderToClientAsLink(cid), icon:'<i class="fa-solid fa-share-from-square"></i>'},
     { text: "עריכה", action: (cid) => editExistClient(cid), icon:'<i class="fa-solid fa-pencil"></>'},
@@ -844,6 +897,7 @@ async function prepareOrderImage() {
 
 
 async function shareOrderToClientAsPhoto(cid = c_runtime.currentClientIdView){
+    return;
     await viewclientDetails(cid)
     await prepareOrderImage()
     const file = new File([CONFIG.IMG_ORDER], "order.png", { type: "image/png" });
@@ -884,18 +938,21 @@ function loadListClientsHtml(){
         parent.appendChild(el);
     });
 }
-function createClientItem(client) {
+function createClientItem(client, actions = true) {
     const div = document.createElement("div");
-    div.className = "client-item";
+    div.className = "client-item"
     div.dataset.stat = client.state;
     div.dataset.key = client.key;
     div.id = client.client_id;
-
-    div.ondblclick = () => viewclientDetails(client.client_id);
+    if (!actions){
+        div.onclick = () => viewClientOrder(client.client_id, true);
+    }else{
+        div.ondblclick = () => openClientDashbaord(client.client_id);
+    }
 
     div.innerHTML = `
         <div class="avatar client-state-${client.state}">
-        ${client.fullname?.[0] || ""}
+        ${client.fullname?.[0] || "?"}
         </div>
         
         <div class="content">
@@ -913,20 +970,141 @@ function createClientItem(client) {
             </div>
         </div>
         </div>
-
+    `;
+    if (actions){
+        const clientActions = `
         <div class="client-footer">
         <i class="fa-solid fa-eye no-mobile"></i>
         <i class="fa-solid fa-share-from-square no-mobile"></i>
         <i class="fa-solid fa-bars menu-client"></i>
         </div>
-    `;
-    const icons = div.querySelectorAll(".client-footer i");
+        `;
+        div.innerHTML += clientActions;
+        
+        const icons = div.querySelectorAll(".client-footer i");
 
-    icons[0].onclick = () => viewclientDetails(client.client_id);
-    icons[1].onclick = () => shareOrderToClientAsPhoto(client.client_id);
-    icons[2].onclick = (e) => openMenuClient(e.target, client.client_id);
+        icons[0].onclick = () => openClientDashbaord(client.client_id);
+        icons[1].onclick = () => shareOrderToClientAsPhoto(client.client_id);
+        icons[2].onclick = (e) => openMenuClient(e.target, client.client_id);
+    }
 
     return div;
+}
+
+function showClientOrder(){
+    const card = document.getElementById("the-client-card")
+    card.classList.add("show")
+    if (IS_MOBILE){
+        hideClientsOrders()
+    }
+    switchClientCardAction()
+}
+
+function hideClientOrder(){
+    const card = document.getElementById("the-client-card")
+    card.classList.remove("show")
+    if (IS_MOBILE){
+        showClientOrders()
+    }
+    
+}
+
+function showClientOrders(){
+    hideClientsReceipts();
+
+    const parent = document.getElementById("the-client-orders")
+    if (!parent){
+        showToast(messgae.EneedRefresh, ToastStat.ERROR)
+        return;
+    }
+    c_clients.ccav = true;
+    switchClientCardAction()
+    if (parent.classList.contains("show")){
+        return;
+    }
+    parent.classList.add("show")
+    createListClientOrders();
+
+    if (IS_MOBILE){
+        hideClientOrder()
+    }
+}
+function hideClientsOrders(){
+    const parent = document.getElementById("the-client-orders")
+    const order = document.getElementById("the-client-card")
+    parent.classList.remove("show")
+    if (!IS_MOBILE){
+        order.classList.remove("show")
+    }
+}
+function createListClientOrders(){
+    const parent = document.getElementById("listClientOrders");
+    const currentClient = c_runtime.clients.find(c=> c.client_id == c_runtime.currentClientIdView);
+    if (!currentClient)return
+    parent.replaceChildren();
+    for (client of c_runtime.clients){
+        const name = matchNumsWords(1, client.fullname, currentClient.fullname);
+        const phone = cleanPhoneJustNumbers(client.phone) == cleanPhoneJustNumbers(currentClient.phone);
+        const address = matchNumsWords(2,client.address, currentClient.address);
+        if (!(name && phone && address))continue;
+
+        const element = createClientItem(client, false, );
+        parent.appendChild(element);
+    }
+    
+}
+
+
+function showClientReceipts(){
+    hideClientsOrders()
+
+    const parent = document.getElementById("the-client-receipts");
+    const invoice = document.getElementById("the-client-invoice");
+    if (parent.classList.contains("show")){
+        return;
+    }
+    parent.classList.add("show")
+    invoice.classList.add("show")
+    createListClientReceipts();
+}
+
+function hideClientsReceipts(){
+    const parent = document.getElementById("the-client-receipts");
+    const invoice = document.getElementById("the-client-invoice");
+    parent?.classList.remove("show")
+    invoice?.classList.remove("show")
+
+}
+
+function createListClientReceipts(){
+    const parent = document.getElementById("listClientReceipts");
+    const currentClient = c_runtime.clients.find(c=> c.client_id == c_runtime.currentClientIdView);
+    if (!currentClient)return
+    parent.replaceChildren();
+    for (invoice of c_runtime.invoices){
+        const name = matchNumsWords(1, invoice.order.fullname, currentClient.fullname);
+        const phone = cleanPhoneJustNumbers(invoice.order.phone) == cleanPhoneJustNumbers(currentClient.phone);
+        const address = matchNumsWords(2,invoice.order.address, currentClient.address);
+        if (!(name && phone && address))continue;
+        const element = createInvoiceItem(invoice,false);
+        if (invoice.invoice_id == c_runtime.currentInvoiceIdView){
+            element.classList.add('current-client-list');
+        }
+        parent.appendChild(element);
+    }   
+}
+
+async function showClientReceiptImg(iid){
+    const img = document.getElementById("imgReceipt");
+    const icon = document.getElementById("before-load-receipt");
+    const template = document.getElementById("receiptTemplate");
+    await viewInvoice(template, iid)
+    template.style.display = 'block';
+    createImgInvoice(template, img)
+    icon.style.display = 'none';
+    img.style.display = 'block';
+    template.style.display = 'none';
+    
 }
 
 

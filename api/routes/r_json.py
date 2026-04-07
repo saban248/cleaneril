@@ -38,8 +38,8 @@ def api():
         return SJson.error()
 
     breq = get_dictionary_http(request)
-    get_ac = get_api_action(session, request, **breq)
 
+    get_ac = get_api_action(session, request, **breq)
     return SJson.success(**get_ac)
 
 

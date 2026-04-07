@@ -39,6 +39,7 @@ def client_date_arrive_hour(ts):
 def json_roundtrip(obj):
     return json.loads(obj).items()
 
+
 @cleaneril.template_filter("ctime")
 def get_ctime_from_time(ctime:float):
     return time.ctime(ctime)
