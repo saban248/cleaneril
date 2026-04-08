@@ -13,22 +13,6 @@ const c_runtime = {
 
 
 
-function deleteClient(client_id){
-    if (!confirm("continue?"))return;
-    data = {ci:client_id, action:ApiCall.client_delete}
-    apiPost(ApiRoute.api,data).then(
-        (res) =>{
-            if (!res.success || res.deleted){
-                return
-            }
-            document.getElementById(client_id)?.remove();
-
-        }
-    )
-
-}
-
-
 function editOrdersClient(){
     const parent = document.getElementById("items-ordered");
 
@@ -419,7 +403,7 @@ const menuItemsClient = [
     { text: "שיתוף כתמונה", action: (cid) => shareOrderToClientAsPhoto(cid), icon:'<i class="fa-solid fa-share-from-square"></i>'},
     { text: "שיתוף כקישור", action: (cid) => shareOrderToClientAsLink(cid), icon:'<i class="fa-solid fa-share-from-square"></i>'},
     { text: "עריכה", action: (cid) => editExistOrder(cid), icon:'<i class="fa-solid fa-pencil"></>'},
-    { text: "מחיקה", action: (cid) => deleteClient(cid), icon:'<i class="fa-solid fa-trash-can trash"></i>'},
+    { text: "מחיקה", action: (cid) => deleteOrder(cid), icon:'<i class="fa-solid fa-trash-can trash"></i>'},
     {text:'בוטל',action:(cid)=>setStateClient(cid, StateOrder.CANCELED),icon:'<i class="fa-solid fa-ban"></i>'},
     {text:'הושלם', action:(cid)=>setStateClient(cid, StateOrder.DONE), icon:'<i class="fa-solid fa-clipboard-check"></i>'},
     {text:'לא נסגר',action:(cid)=>setStateClient(cid, StateOrder.WAIT), icon:'<i class="fa-solid fa-question"></i>'},
