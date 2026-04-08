@@ -1,26 +1,7 @@
 
 
 
-async function viewInvoice(template, iid){
 
-    const toast = showToast("מעבד...");
-    data = {action:ApiCall.invoice_view, iid:iid}
-    return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
-        (res) => {
-            if (!res.success){
-                showToast(res.notice, ToastStat.ERROR, toast);
-                return
-            }
-            template.innerHTML = res.template;
-            c_runtime.currentInvoiceIdView = iid
-            c_clients.currentCard = clientCardsFlag.RECEIPT
-            showToast(res.notice, ToastStat.DONE, toast)
-            reslove();
-        }
-    ))
-
-
-}
 
 async function createImgInvoice(template, img){
     await html2canvas(template, { scale: 2, backgroundColor: '#fff'}).then(canvas => {
@@ -80,7 +61,7 @@ function loadListInvoicesHtml(){
     });
 }
 
-function createInvoiceItem(invoice, actions = true){
+function createInvoiceItem(invoice, actions = true, callback){
     const div = document.createElement("div");
     div.className = "cil-item "
     // div.dataset.stat = client.state;
@@ -89,7 +70,7 @@ function createInvoiceItem(invoice, actions = true){
     if (actions){
         div.ondblclick = () => {}
     }else{
-        div.onclick = ()=> showClientReceiptImg(invoice.invoice_id)
+        div.onclick = ()=> callback()
     }
 
     div.innerHTML = `

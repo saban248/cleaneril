@@ -289,7 +289,7 @@
 #receiptTemplate{
     position: absolute;
     top: 10px;
-    z-index: -331;
+    z-index: -331 !important;
     width: 794px;
     height: 1123px;
     height: auto;

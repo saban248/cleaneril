@@ -47,11 +47,11 @@ function getCurrentMonthRange(){
 
 function getColorByStat(stat){
     switch (stat){
-        case StateClient.DONE:
+        case StateOrder.DONE:
             return "#046b09"
-        case StateClient.CLOSED:
+        case StateOrder.CLOSED:
             return "#e8d400"
-        case StateClient.CANCELED:
+        case StateOrder.CANCELED:
             return "#b7b7b7"
     }
 
@@ -238,7 +238,7 @@ async function fetchClientsCalendar(){
 
 
 document.addEventListener("DOMContentLoaded", function (){
-    c_runtime.state_calendar_selected = StateClient.DONE|StateClient.CLOSED|StateClient.CANCELED
+    c_runtime.state_calendar_selected = StateOrder.DONE|StateOrder.CLOSED|StateOrder.CANCELED
     initialMapClients()
     initialCalendarClients()
     fetchClientsCalendar()

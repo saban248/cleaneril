@@ -10,85 +10,8 @@ const c_runtime = {
     currentClientIdView:null,
     currentInvoiceIdView:null
 }
-const c_clients = {
-    ccav:true,
-    currentCard:clientCardsFlag.ORDER
-}
 
 
-async function openClientDashbaord(client_id = c_runtime.currentClientIdView){
-    await viewClientDashboard(client_id)
-    await viewClientOrder(client_id)
-}
-async function viewClientDashboard(client_id = c_runtime.currentClientIdView){
-    const mainEdit = document.getElementById("client-editor")
-    mainEdit.classList.remove('hide');
-    mainEdit.classList.add('show');
-    const toast = showToast("מעבד...");
-    data = {action:ApiCall.client_view, ci:client_id}
-    return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
-        (res) => {
-            if (!res.success){
-                showToast(res.notice, ToastStat.ERROR, toast);
-                return
-            }
-            CONFIG.CLIENT_VIEW = true;
-            closeToast(toast)
-            const editBody = document.getElementById('client-template')
-            editBody.innerHTML = res.template;
-            c_runtime.currentClientIdView = client_id;
-            reslove();
-        }
-    ))
-
-}
-
-
-async function viewClientOrder(client_id = c_runtime.currentClientIdView){
-    const toast = showToast("מעבד...");
-    data = {action:ApiCall.view_order, ci:client_id}
-    
-    return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
-        (res) => {
-            if (!res.success){
-                showToast(res.notice, ToastStat.ERROR, toast);
-                return
-            }
-            closeToast(toast)
-            const card = document.getElementById("the-client-card")
-            card.innerHTML = res.template;
-            c_runtime.currentClientIdView = client_id;
-            c_clients.ccav = false;
-            c_clients.currentCard = clientCardsFlag.ORDER
-            showClientOrder()
-
-            reslove();
-        }
-    ))
-
-}
-
-function switchClientCardAction(){
-    const AView = document.getElementById("clientCardAViews");
-    const AReturn = document.getElementById("clientCardAReturn");
-    if (!c_clients.ccav && IS_MOBILE){
-        AView.classList.remove("show")
-        AReturn.classList.add("show")
-    }
-    else{
-        AReturn.classList.remove("show")
-        AView.classList.add("show")
-    }
-}
-function returnFromclientCard(){
-    switch (c_clients.currentCard){
-        case clientCardsFlag.ORDER:
-            showClientOrders()
-        case clientCardsFlag.RECEIPT:
-            showClientReceipts()
-    }
-}
- 
 async function createClient(client_id=null){
     if (c_runtime.blockPublishClient)return;
     const mainEdit = document.getElementById("client-editor")
@@ -102,8 +25,8 @@ async function createClient(client_id=null){
                 return
             }
 
-            const editBody = document.getElementById('client-template')
-            editBody.innerHTML = res.template;
+            const template = document.getElementById('the-client-card')
+            template.innerHTML = res.template;
             if (CONFIG.CLIENT_EDIT || !client_id){
                 onLoadEditClient()
             }
@@ -116,8 +39,6 @@ async function createClient(client_id=null){
 
 function closeCreateClient(no_api=false){
     const mainEdit = document.getElementById("client-editor")
-    const action = document.getElementById("clientCardAViews");
-    action.classList.remove("show")
     mainEdit.classList.remove("show")
     mainEdit.classList.add("hide")
     const client_id   = document.getElementById("the-client-card")?.dataset.ci;
@@ -464,10 +385,10 @@ function updateCalanderClient(cc){
 
 
 const menuItemsStateClients = [
-    {text:'הושלם', action:(t)=>selectClientsState(t), icon:`<i class="fa-solid fa-clipboard-check"></i>`, stat:StateClient.DONE},
-    {text:'בהמתנה',action:(t)=>selectClientsState(t), icon:'<i class="fa-solid fa-hourglass-half ac2"></i>', stat:StateClient.CLOSED},
-    {text:'לא נסגר',action:(t)=>selectClientsState(t), icon:'<i class="fa-solid fa-question ac3"></i>', stat:StateClient.WAIT},
-    {text:'בוטל',action:(t)=>selectClientsState(t),icon:'<i class="fa-solid fa-ban ac4"></i>', stat:StateClient.CANCELED},
+    {text:'הושלם', action:(t)=>selectClientsState(t), icon:`<i class="fa-solid fa-clipboard-check"></i>`, stat:StateOrder.DONE},
+    {text:'בהמתנה',action:(t)=>selectClientsState(t), icon:'<i class="fa-solid fa-hourglass-half ac2"></i>', stat:StateOrder.CLOSED},
+    {text:'לא נסגר',action:(t)=>selectClientsState(t), icon:'<i class="fa-solid fa-question ac3"></i>', stat:StateOrder.WAIT},
+    {text:'בוטל',action:(t)=>selectClientsState(t),icon:'<i class="fa-solid fa-ban ac4"></i>', stat:StateOrder.CANCELED},
 ]
 function openMenuStateClients(t, stat){
     const menu = document.getElementById("stateClients")
@@ -541,10 +462,10 @@ const menuItemsClient = [
     { text: "שיתוף כקישור", action: (cid) => shareOrderToClientAsLink(cid), icon:'<i class="fa-solid fa-share-from-square"></i>'},
     { text: "עריכה", action: (cid) => editExistClient(cid), icon:'<i class="fa-solid fa-pencil"></>'},
     { text: "מחיקה", action: (cid) => deleteClient(cid), icon:'<i class="fa-solid fa-trash-can trash"></i>'},
-    {text:'בוטל',action:(cid)=>setStateClient(cid, StateClient.CANCELED),icon:'<i class="fa-solid fa-ban"></i>'},
-    {text:'הושלם', action:(cid)=>setStateClient(cid, StateClient.DONE), icon:'<i class="fa-solid fa-clipboard-check"></i>'},
-    {text:'לא נסגר',action:(cid)=>setStateClient(cid, StateClient.WAIT), icon:'<i class="fa-solid fa-question"></i>'},
-    {text:'בהמתנה',action:(cid)=>setStateClient(cid, StateClient.CLOSED), icon:'<i class="fa-solid fa-hourglass-half"></i>'},
+    {text:'בוטל',action:(cid)=>setStateClient(cid, StateOrder.CANCELED),icon:'<i class="fa-solid fa-ban"></i>'},
+    {text:'הושלם', action:(cid)=>setStateClient(cid, StateOrder.DONE), icon:'<i class="fa-solid fa-clipboard-check"></i>'},
+    {text:'לא נסגר',action:(cid)=>setStateClient(cid, StateOrder.WAIT), icon:'<i class="fa-solid fa-question"></i>'},
+    {text:'בהמתנה',action:(cid)=>setStateClient(cid, StateOrder.CLOSED), icon:'<i class="fa-solid fa-hourglass-half"></i>'},
     {text:'צור קבלה',action:(cid)=>createInvoice(cid), icon:'<i class="fa-solid fa-file-invoice"></i>'},
 
 ]
@@ -938,14 +859,14 @@ function loadListClientsHtml(){
         parent.appendChild(el);
     });
 }
-function createClientItem(client, actions = true) {
+function createClientItem(client, actions = true, callback) {
     const div = document.createElement("div");
     div.className = "client-item"
     div.dataset.stat = client.state;
     div.dataset.key = client.key;
     div.id = client.client_id;
     if (!actions){
-        div.onclick = () => viewClientOrder(client.client_id, true);
+        div.onclick = () => callback()
     }else{
         div.ondblclick = () => openClientDashbaord(client.client_id);
     }
@@ -989,122 +910,6 @@ function createClientItem(client, actions = true) {
     }
 
     return div;
-}
-
-function showClientOrder(){
-    const card = document.getElementById("the-client-card")
-    card.classList.add("show")
-    if (IS_MOBILE){
-        hideClientsOrders()
-    }
-    switchClientCardAction()
-}
-
-function hideClientOrder(){
-    const card = document.getElementById("the-client-card")
-    card.classList.remove("show")
-    if (IS_MOBILE){
-        showClientOrders()
-    }
-    
-}
-
-function showClientOrders(){
-    hideClientsReceipts();
-
-    const parent = document.getElementById("the-client-orders")
-    if (!parent){
-        showToast(messgae.EneedRefresh, ToastStat.ERROR)
-        return;
-    }
-    c_clients.ccav = true;
-    switchClientCardAction()
-    if (parent.classList.contains("show")){
-        return;
-    }
-    parent.classList.add("show")
-    createListClientOrders();
-
-    if (IS_MOBILE){
-        hideClientOrder()
-    }
-}
-function hideClientsOrders(){
-    const parent = document.getElementById("the-client-orders")
-    const order = document.getElementById("the-client-card")
-    parent.classList.remove("show")
-    if (!IS_MOBILE){
-        order.classList.remove("show")
-    }
-}
-function createListClientOrders(){
-    const parent = document.getElementById("listClientOrders");
-    const currentClient = c_runtime.clients.find(c=> c.client_id == c_runtime.currentClientIdView);
-    if (!currentClient)return
-    parent.replaceChildren();
-    for (client of c_runtime.clients){
-        const name = matchNumsWords(1, client.fullname, currentClient.fullname);
-        const phone = cleanPhoneJustNumbers(client.phone) == cleanPhoneJustNumbers(currentClient.phone);
-        const address = matchNumsWords(2,client.address, currentClient.address);
-        if (!(name && phone && address))continue;
-
-        const element = createClientItem(client, false, );
-        parent.appendChild(element);
-    }
-    
-}
-
-
-function showClientReceipts(){
-    hideClientsOrders()
-
-    const parent = document.getElementById("the-client-receipts");
-    const invoice = document.getElementById("the-client-invoice");
-    if (parent.classList.contains("show")){
-        return;
-    }
-    parent.classList.add("show")
-    invoice.classList.add("show")
-    createListClientReceipts();
-}
-
-function hideClientsReceipts(){
-    const parent = document.getElementById("the-client-receipts");
-    const invoice = document.getElementById("the-client-invoice");
-    parent?.classList.remove("show")
-    invoice?.classList.remove("show")
-
-}
-
-function createListClientReceipts(){
-    const parent = document.getElementById("listClientReceipts");
-    const currentClient = c_runtime.clients.find(c=> c.client_id == c_runtime.currentClientIdView);
-    if (!currentClient)return
-    parent.replaceChildren();
-    for (invoice of c_runtime.invoices){
-        const name = matchNumsWords(1, invoice.order.fullname, currentClient.fullname);
-        const phone = cleanPhoneJustNumbers(invoice.order.phone) == cleanPhoneJustNumbers(currentClient.phone);
-        const address = matchNumsWords(2,invoice.order.address, currentClient.address);
-        if (!(name && phone && address))continue;
-        const element = createInvoiceItem(invoice,false);
-        if (invoice.invoice_id == c_runtime.currentInvoiceIdView){
-            element.classList.add('current-client-list');
-        }
-        parent.appendChild(element);
-    }   
-}
-
-async function showClientReceiptImg(iid){
-    const img = document.getElementById("imgReceipt");
-    const icon = document.getElementById("before-load-receipt");
-    const template = document.getElementById("receiptTemplate");
-    await viewInvoice(template, iid)
-    template.style.display = 'block';
-    createImgInvoice(template, img)
-    icon.style.display = 'none';
-    img.style.display = 'block';
-    template.style.display = 'none';
-    
 }
 
 

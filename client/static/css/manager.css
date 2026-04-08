@@ -348,6 +348,9 @@
     overflow-y: auto;
     background: white;
 }
+.main-edit-client.show{
+    display: block !important;
+}
 .ce-head{
     padding: 10px;
     display: flex;
@@ -371,6 +374,7 @@
     flex-direction: row-reverse;
     column-gap: 10px;
     row-gap: 20px;
+    background:white;
 }
 .input-card-edit{
     font-size: inherit;

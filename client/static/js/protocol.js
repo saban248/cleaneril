@@ -15,7 +15,7 @@ const CONFIG = {
     WHATSAPP:1<<4
 
 }
-const StateClient = {
+const StateOrder = {
     WAIT            :1<<0,
     CLOSED          :1<<1,
     CANCELED        :1<<2,
@@ -36,13 +36,13 @@ function getStateClient(state) {
 }
 function getStateClientText(s){
     switch (s){
-        case s&StateClient.WAIT:
+        case s&StateOrder.WAIT:
             return "לא נסגר"
-        case s&StateClient.CLOSED:
+        case s&StateOrder.CLOSED:
             return "בהמתנה"
-        case s&StateClient.CANCELED:
+        case s&StateOrder.CANCELED:
             return "בוטל"
-        case s&StateClient.DONE:
+        case s&StateOrder.DONE:
             return "הושלם!"
     }
 }
@@ -218,11 +218,11 @@ const InvoiceStatType = {
 }
 
 
-const clientCardsFlag = {
+const clientCardsView = {
     ORDER:1<<0,
     RECEIPT:1<<1
 }
 
 window.SocialMedia = SocialMedia;
 window.PageManager = PageManager;
-window.StateClient = StateClient
+window.StateOrder = StateOrder
