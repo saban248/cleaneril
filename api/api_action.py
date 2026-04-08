@@ -27,7 +27,7 @@ def get_api_action(session, request, **breq) -> dict:
         case ApiCall.card_editor:
             card = ResponseStruct.CardEditor().build(**breq)
             return {"template":get_card_edit_template(card.ci)}
-        case ApiCall.client_editor:
+        case ApiCall.order_edit:
             client = ResponseStruct.OrderClientEditor().build(**breq)
             return {"template":get_client_order_template(manager, client.ci)}
         case ApiCall.client_view:

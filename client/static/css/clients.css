@@ -197,15 +197,22 @@
 }
 
 
-.client-card-action{
-    display: none;
-    justify-content:right;
+.main-client-dashbaord-card-action{
+    display: flex;
+    justify-content:space-between;
     align-items: center;
     column-gap: 10px;
     flex: 1;
     border: 1px solid #adadad52;
     border-radius: 10px;
     padding: 0 10px;
+}
+.client-card-action{
+    display: none;
+    justify-content:right;
+    align-items: center;
+    column-gap: 10px;
+    flex: 1;
 }
 .client-card-action.show{
     display: flex !important;
@@ -221,6 +228,12 @@
     cursor: pointer;
     text-align:center;
     
+}
+.fa-circle-chevron-right{
+    display: none !important;
+}
+.fa-circle-chevron-right.show{
+    display: block !important;
 }
 
 .client-card-action > i:hover,
@@ -289,7 +302,7 @@
 #receiptTemplate{
     position: absolute;
     top: 10px;
-    z-index: -331 !important;
+    z-index: -10 !important;
     width: 794px;
     height: 1123px;
     height: auto;

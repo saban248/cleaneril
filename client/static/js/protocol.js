@@ -1,6 +1,5 @@
 const CONFIG = {
     CARD_EDIT:false,
-    CLIENT_EDIT:false,
     CLIENT_VIEW:false,
     WORKER_EDIT:false,
     WORKER_VIEW:false,
@@ -172,7 +171,7 @@ const ApiCall = {
     card_draft:1<<1,
     card_delete:1<<2,
     card_save:1<<3,
-    client_editor:1<<4,
+    order_edit:1<<4,
     client_delete:1<<5,
     client_save:1<<6,
     client_view:1<<7,

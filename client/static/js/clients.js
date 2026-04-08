@@ -12,43 +12,6 @@ const c_runtime = {
 }
 
 
-async function createClient(client_id=null){
-    if (c_runtime.blockPublishClient)return;
-    const mainEdit = document.getElementById("client-editor")
-    mainEdit.classList.remove('hide');
-    mainEdit.classList.add('show');
-    data = {action:ApiCall.client_editor, ci:client_id}
-    await apiPost(ApiRoute.api, data).then(
-        (res) => {
-            if (!res.success){
-                showToast(res.notice, ToastStat.ERROR)
-                return
-            }
-
-            const template = document.getElementById('the-client-card')
-            template.innerHTML = res.template;
-            if (CONFIG.CLIENT_EDIT || !client_id){
-                onLoadEditClient()
-            }
-            
-        }
-    )
-}
-
-
-
-function closeCreateClient(no_api=false){
-    const mainEdit = document.getElementById("client-editor")
-    mainEdit.classList.remove("show")
-    mainEdit.classList.add("hide")
-    const client_id   = document.getElementById("the-client-card")?.dataset.ci;
-   ( !no_api && (!CONFIG.CLIENT_EDIT && !CONFIG.CLIENT_VIEW))&& deleteClient(client_id)
-   CONFIG.CLIENT_EDIT =false;
-   CONFIG.CLIENT_VIEW =false;
-   c_runtime.currentClientIdView = null;
-
-}
-
 
 function deleteClient(client_id){
     if (!confirm("continue?"))return;
@@ -243,18 +206,19 @@ async function publishClient(client_id, state){
     }
     const toast = showToast("מעבד...");
     apiPost(ApiRoute.api,data).then(
-        (res)=>{
+        async (res)=>{
             if (!res.success){
                 showToast(res.notice, ToastStat.ERROR, toast);
-                c_runtime.blockPublishClient = false;
                 onPublishClientHideProgress();
-                return
+            }else{
+                onPublishClientShowProgress(fullname,state, true)
+                c_runtime.items_ordered = {}
+                showToast(res.notice, ToastStat.DONE, toast);
+                await fetchClients();
+                createListClientOrders()
             }
-            onPublishClientShowProgress(fullname,state, true)
             c_runtime.blockPublishClient = false
-            c_runtime.items_ordered = {}
-            showToast(res.notice, ToastStat.DONE, toast);
-            fetchClients();
+            c_clients.order_edit = false;
         }
     )
 
@@ -348,12 +312,6 @@ function updateStateClientSetting(state, calender){
     window.history.replaceState({}, "", window.location.pathname + "?" + params.toString());
     ManagerCache.setClientsSortedState(state)
     c_runtime.state_client_selected = state
-}
-function editExistClient(client_id = c_runtime.currentClientIdView){
-    CONFIG.CLIENT_EDIT = true; 
-    c_runtime.currentClientIdView = client_id;
-    if (!client_id)return
-    createClient(client_id)
 }
 
 
@@ -460,7 +418,7 @@ const menuItemsClient = [
     { text: "צפיה", action: (cid) => openClientDashbaord(cid), icon:'<i class="fa-solid fa-eye"></i>'},
     { text: "שיתוף כתמונה", action: (cid) => shareOrderToClientAsPhoto(cid), icon:'<i class="fa-solid fa-share-from-square"></i>'},
     { text: "שיתוף כקישור", action: (cid) => shareOrderToClientAsLink(cid), icon:'<i class="fa-solid fa-share-from-square"></i>'},
-    { text: "עריכה", action: (cid) => editExistClient(cid), icon:'<i class="fa-solid fa-pencil"></>'},
+    { text: "עריכה", action: (cid) => editExistOrder(cid), icon:'<i class="fa-solid fa-pencil"></>'},
     { text: "מחיקה", action: (cid) => deleteClient(cid), icon:'<i class="fa-solid fa-trash-can trash"></i>'},
     {text:'בוטל',action:(cid)=>setStateClient(cid, StateOrder.CANCELED),icon:'<i class="fa-solid fa-ban"></i>'},
     {text:'הושלם', action:(cid)=>setStateClient(cid, StateOrder.DONE), icon:'<i class="fa-solid fa-clipboard-check"></i>'},
@@ -817,38 +775,24 @@ async function prepareOrderImage() {
 }
 
 
-async function shareOrderToClientAsPhoto(cid = c_runtime.currentClientIdView){
-    return;
-    await viewclientDetails(cid)
-    await prepareOrderImage()
-    const file = new File([CONFIG.IMG_ORDER], "order.png", { type: "image/png" });
-
-    if (navigator.share) {
-        await navigator.share({
-            title: "הזמנה",
-            text: "הזמנה חדשה",
-            files: [file]
-        });
-    }
-    closeCreateClient()
-}
 
 function shareOrderToClientAsLink(cid){
     
 }
 
-function fetchClients(){
-    apiPost(ApiRoute.api, {action:ApiCall.client_list, fromY:c_runtime.showClientsFrom}).then(
-        res => {
+async function fetchClients(){
+    return await new Promise((reslove) => apiPost(ApiRoute.api,{action:ApiCall.client_list, fromY:c_runtime.showClientsFrom}).then(
+        res =>{
             if (!res.success){
                 showToast(messgae.EfetchClients)
                 return
             }
             c_runtime.clients = res.clients;
             loadListClientsHtml()
-
+            reslove();
         }
-    )
+        
+    ))
 }
 
 function loadListClientsHtml(){
@@ -871,7 +815,7 @@ function createClientItem(client, actions = true, callback) {
         div.ondblclick = () => openClientDashbaord(client.client_id);
     }
 
-    div.innerHTML = `
+    var html = `
         <div class="avatar client-state-${client.state}">
         ${client.fullname?.[0] || "?"}
         </div>
@@ -895,20 +839,21 @@ function createClientItem(client, actions = true, callback) {
     if (actions){
         const clientActions = `
         <div class="client-footer">
-        <i class="fa-solid fa-eye no-mobile"></i>
-        <i class="fa-solid fa-share-from-square no-mobile"></i>
-        <i class="fa-solid fa-bars menu-client"></i>
+            <i class="fa-solid fa-eye no-mobile"></i>
+            <i class="fa-solid fa-share-from-square no-mobile"></i>
+            <i class="fa-solid fa-bars menu-client"></i>
         </div>
         `;
-        div.innerHTML += clientActions;
-        
+        html += clientActions;
+        div.innerHTML = html
         const icons = div.querySelectorAll(".client-footer i");
-
+        icons[2].onclick = (e) => openMenuClient(e.target, client.client_id);
         icons[0].onclick = () => openClientDashbaord(client.client_id);
         icons[1].onclick = () => shareOrderToClientAsPhoto(client.client_id);
-        icons[2].onclick = (e) => openMenuClient(e.target, client.client_id);
     }
-
+    else{
+        div.innerHTML = html
+    }
     return div;
 }
 
