@@ -712,48 +712,54 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 async function prepareOrderImage() {
-
-    const element = document.getElementById("client-template");
-
-    const scale = 3;
-    const targetWidth = 410;
-    const realHeight = element.offsetHeight;
-    element.style.height = `${realHeight+30}px`;
-
-    // Render element to canvas
-    const canvas = await html2canvas(element, {
-    scale: scale,
-    backgroundColor: "#ffffff",
-    useCORS: true
-    });
-
-
-        // Prepare crop canvas
     const cropCanvas = document.createElement("canvas");
     const ctx = cropCanvas.getContext("2d");
 
-    cropCanvas.width = targetWidth * scale;
-    cropCanvas.height = canvas.height;
+    if (IS_MOBILE){
+        const element = document.getElementById("client-template");
+        const scale = 3;
+        const targetWidth = 410;
+        const realHeight = element.offsetHeight;
+        element.style.height = `${realHeight+30}px`;
+        const canvas = await html2canvas(element, {
+        scale: scale,
+        backgroundColor: "#ffffff",
+        useCORS: true
+        });
+        cropCanvas.width = targetWidth * scale;
+        cropCanvas.height = canvas.height;
 
-    const cropX = Math.max(0, (canvas.width - cropCanvas.width) / 2);
+        const cropX = Math.max(0, (canvas.width - cropCanvas.width) / 2);
 
-    ctx.drawImage(
-    canvas,
-    cropX,
-    0,
-    cropCanvas.width,
-    canvas.height,
-    0,
-    0,
-    cropCanvas.width,
-    canvas.height
-    );
+        ctx.drawImage(
+        canvas,
+        cropX,
+        0,
+        cropCanvas.width,
+        canvas.height,
+        0,
+        0,
+        cropCanvas.width,
+        canvas.height
+        );
 
-    const image = await new Promise(resolve =>
-        cropCanvas.toBlob(resolve, "image/png")
-    );
-    CONFIG.IMG_ORDER = image;
-    element.style.height = `${realHeight}px`;
+        const image = await new Promise(resolve =>
+            cropCanvas.toBlob(resolve, "image/png")
+        );
+        CONFIG.IMG_ORDER = image;
+        element.style.height = `${realHeight}px`;
+    }else{
+        const element = document.getElementById("the-client-card");
+        const canvas = await html2canvas(element, {
+            scale: 2,
+            backgroundColor: '#fff'
+        });
+        const blob = await new Promise(resolve => {
+            canvas.toBlob(resolve, 'image/png');
+        });
+        
+        CONFIG.IMG_ORDER = blob;
+    }
 
 
 }

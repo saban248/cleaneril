@@ -54,9 +54,13 @@
                 <div class="client-card-action show">
                     <i class="fa-solid fa-circle-chevron-right " onclick="switchViewClientDashboard(null, true)" id="clientCardAReturn"></i>
                     <span class="border-left"></span>
-                    <i class="fa-solid fa-share-from-square" onclick="shareOrderToClientAsPhoto()"></i>
-                    <i class="fa-solid fa-pencil" onclick="editExistOrder()"></i>
-                    <i class="fa-solid fa-file-circle-plus"></i>
+                    <i class="fa-solid fa-share-from-square" id="asrp" onclick="shareReceiptToClientAsPhoto()" id="asop"></i>
+                    <i class="fa-solid fa-share-from-square" onclick="shareOrderToClientAsPhoto()" id="asop"></i>
+                    <i class="fa-solid fa-pencil" onclick="editExistOrder()" id="aeeo"></i>
+                    <i class="fa-solid fa-pencil" onclick="editReceiptOrder()" id="aero"></i>
+                    <i class="fa-solid fa-file-circle-plus" id="acoi" onclick="createInvoice()"></i>
+                    <i class="fa-solid fa-trash-can" id="adoc" onclick="deleteOrder()"></i>
+                    <i class="fa-solid fa-trash-can" id="adro"></i>
                 </div>
             </div>
         </div>
