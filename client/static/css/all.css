@@ -17,7 +17,12 @@
 .cleaneril-list::-webkit-scrollbar {
   display: none;
 }
+.icon-empty-list{
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
+}
 .cil-item{
   max-height: 60px;
   cursor: pointer;
@@ -114,4 +119,22 @@
   height: 100%;
   width: 1px;
   background: #d1d1d1;
+}
+
+
+
+
+@keyframes slide {
+    from   { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes cyrcle {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }

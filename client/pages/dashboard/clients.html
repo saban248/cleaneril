@@ -1,7 +1,7 @@
 <div class="dashboard-page" id="CLIENTS">
     <div class="page-head">
-        <h2>לקוחות - ניהול  סגירות</h2>
-        <i class="fa-solid fa-circle-plus create-card" onclick="createClient()"></i>
+        <h2>הזמנות - ניהול  סגירות</h2>
+        <i class="fa-solid fa-circle-plus create-card" onclick="createOrder()"></i>
     </div>
 
     <div class="page-body">
@@ -51,8 +51,8 @@
                     <i class="fa-solid fa-receipt" onclick="switchViewClientDashboard(clientCardsView.RECEIPT)"></i>
                     <i class="fa-solid fa-chart-column"></i>
                 </div>
-                <div class="client-card-action show">
-                    <i class="fa-solid fa-circle-chevron-right " onclick="switchViewClientDashboard(null, true)" id="clientCardAReturn"></i>
+                <div class="client-card-action show" id="actionIntoCard">
+                    <i class="fa-solid fa-circle-chevron-right" onclick="switchViewClientDashboard(null, true)" id="arfc"></i>
                     <span class="border-left"></span>
                     <i class="fa-solid fa-share-from-square" id="asrp" onclick="shareReceiptToClientAsPhoto()" id="asop"></i>
                     <i class="fa-solid fa-share-from-square" onclick="shareOrderToClientAsPhoto()" id="asop"></i>
@@ -64,7 +64,7 @@
                 </div>
             </div>
         </div>
-        <div class="ce-body" id="client-template">
+        <div class="ce-body" id="client-template-dashboard">
             <h1>
                 <i class="fa-solid fa-circle-notch fa-spin fa-spin"></i>
                 building..

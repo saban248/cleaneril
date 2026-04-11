@@ -1,6 +1,5 @@
 const CONFIG = {
     CARD_EDIT:false,
-    CLIENT_VIEW:false,
     WORKER_EDIT:false,
     WORKER_VIEW:false,
     CURRENT_PAGE:-1,

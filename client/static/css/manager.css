@@ -339,7 +339,6 @@
     box-shadow: 0 0 11px #9c9c9c;
 }
 .main-edit-card, .main-edit-client, .main-edit-worker, .view-invoice{
-    display: none;
     position: fixed;
     z-index: 10000;
     top: 0;
@@ -347,9 +346,15 @@
     height: 100%;  
     overflow-y: auto;
     background: white;
+    opacity: 0;
+    transform: scale(0.5);
+    pointer-events: none;
+    transition: all 0.3s ease;
 }
 .main-edit-client.show{
-    display: block !important;
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
 }
 .ce-head{
     padding: 10px;

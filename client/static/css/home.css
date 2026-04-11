@@ -394,7 +394,11 @@ body, *{
     border-radius: 15px;
     border: 1px solid rgba(255, 255, 255, 0.20);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+
+    transform: translateX(-100%);
+    transition: transform 0.3s ease, opacity 0.3s ease;
     display: none;
+
     flex-direction: column;
     padding: .75rem;
     max-width: 350px;
@@ -404,9 +408,11 @@ body, *{
     margin-bottom: 20px;
     min-height: 80vh;
     position: relative;
+    transform-origin: center;
 }
 .clean-card.show, .client-card.show, .worker-card.show{
     display: flex !important;
+    animation: slide 0.5s forwards;
 }
 
 .card-head{

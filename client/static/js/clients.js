@@ -13,66 +13,6 @@ const c_runtime = {
 
 
 
-function editOrdersClient(){
-    const parent = document.getElementById("items-ordered");
-
-    const length = parent.childElementCount;
-    const temp = []
-    for (let index=1;index<length;index++){
-        const name = document.getElementById(index+"-name").textContent
-        const price = ft(document.getElementById(index+"-price").textContent)
-        document.getElementById(index).remove();
-        temp.push([name, price])
-    }
-    for (edit of temp){
-        addItemOrder(edit[0], edit[1]);
-    }
-
-}
-
-function addItemOrder(name, price) {
-    const items = document.getElementById("items-ordered");
-
-    const div = document.createElement("div");
-    div.className = "ordered";
-    div.id = items.childElementCount;
-
-    const inputName = document.createElement("input");
-    inputName.classList.add('c-input-item-name')
-    inputName.id = `${div.id}-name`
-    if (name){
-        inputName.value = name;
-    }
-
-
-    const inputPrice = document.createElement("input");
-    inputPrice.oninput = (e)=>{mainSyncTotalPrice(e.target)}
-    inputPrice.classList.add('c-input-fn')
-    inputPrice.type = 'tel'
-    inputPrice.id = `${div.id}-price`
-    if (price){
-        inputPrice.value = price;
-    }
-
-    const trash = document.createElement('i')
-    trash.classList = "fa-solid fa-trash-can trash-order"
-    trash.onclick = ()=>{deleteItemOrder(div.id)}
-
-    div.append(inputName, inputPrice, trash);
-    items.appendChild(div);
-    c_runtime.items_ordered[div.id] = {}
-}
-
-function deleteItemOrder(id_order){
-    const parent = document.getElementById(id_order) 
-    const element = document.getElementById(id_order+"-price")
-    element.value = -parseInt(element.innerText)
-    mainSyncTotalPrice(element)
-    delete c_runtime.items_ordered[id_order]
-    parent.remove()
-}
-
-
 function mainSyncTotalPrice(element){
     var currentValue = element.value;
     if (!currentValue == '' && !/^\d+$/.test(currentValue))return
@@ -202,7 +142,7 @@ async function publishClient(client_id, state){
                 createListClientOrders()
             }
             c_runtime.blockPublishClient = false
-            c_clients.order_edit = false;
+            c_clients.order_edit = c_clients.new_order = false;
         }
     )
 
@@ -400,8 +340,6 @@ function openMenuStateClients(t, stat){
 }
 const menuItemsClient = [
     { text: "צפיה", action: (cid) => openClientDashbaord(cid), icon:'<i class="fa-solid fa-eye"></i>'},
-    { text: "שיתוף כתמונה", action: (cid) => shareOrderToClientAsPhoto(cid), icon:'<i class="fa-solid fa-share-from-square"></i>'},
-    { text: "שיתוף כקישור", action: (cid) => shareOrderToClientAsLink(cid), icon:'<i class="fa-solid fa-share-from-square"></i>'},
     { text: "עריכה", action: (cid) => editExistOrder(cid), icon:'<i class="fa-solid fa-pencil"></>'},
     { text: "מחיקה", action: (cid) => deleteOrder(cid), icon:'<i class="fa-solid fa-trash-can trash"></i>'},
     {text:'בוטל',action:(cid)=>setStateClient(cid, StateOrder.CANCELED),icon:'<i class="fa-solid fa-ban"></i>'},
@@ -543,6 +481,7 @@ async function onLoadEditClient(){
     }
     let paymentState = 0;
     const group = document.getElementById("payGroup");
+    console.log(group)
     const buttons = group.querySelectorAll("button");
     const indicator = group.querySelector(".indicator");
     buttons.forEach(btn => {
@@ -716,7 +655,7 @@ async function prepareOrderImage() {
     const ctx = cropCanvas.getContext("2d");
 
     if (IS_MOBILE){
-        const element = document.getElementById("client-template");
+        const element = document.getElementById("client-template-dashboard");
         const scale = 3;
         const targetWidth = 410;
         const realHeight = element.offsetHeight;
@@ -830,16 +769,14 @@ function createClientItem(client, actions = true, callback) {
         const clientActions = `
         <div class="client-footer">
             <i class="fa-solid fa-eye no-mobile"></i>
-            <i class="fa-solid fa-share-from-square no-mobile"></i>
             <i class="fa-solid fa-bars menu-client"></i>
         </div>
         `;
         html += clientActions;
         div.innerHTML = html
         const icons = div.querySelectorAll(".client-footer i");
-        icons[2].onclick = (e) => openMenuClient(e.target, client.client_id);
+        icons[1].onclick = (e) => openMenuClient(e.target, client.client_id);
         icons[0].onclick = () => openClientDashbaord(client.client_id);
-        icons[1].onclick = () => shareOrderToClientAsPhoto(client.client_id);
     }
     else{
         div.innerHTML = html

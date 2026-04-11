@@ -18,6 +18,10 @@ function closeViewInvoice(){
 
 
 function createInvoice(cid = c_runtime.currentClientIdView){
+    if (isCantExitEditOrder()){
+        if (!askAboutExitEditOrder()){return}
+
+    }
     const data = {action:ApiCall.invoice_create, cid:cid}
     const toast = showToast(messgae.createInvoice)
     apiPost(ApiRoute.api, data).then(

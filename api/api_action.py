@@ -28,8 +28,9 @@ def get_api_action(session, request, **breq) -> dict:
             card = ResponseStruct.CardEditor().build(**breq)
             return {"template":get_card_edit_template(card.ci)}
         case ApiCall.order_edit:
-            client = ResponseStruct.OrderClientEditor().build(**breq)
-            return {"template":get_client_order_template(manager, client.ci)}
+            od = ResponseStruct.OrderClientEditor().build(**breq)
+            order: Clients = ApiClients.create_client(od.ci)
+            return {"template":get_client_order_template(manager, order), "client_id":order.client_id}
         case ApiCall.client_view:
             client = ResponseStruct.OrderClientEditor().build(**breq)
             return {"template":get_client_template(client.ci)}
@@ -113,8 +114,9 @@ def get_api_action(session, request, **breq) -> dict:
             invoices = ApiInvoice.get_invoices_list()
             return {"invoices":invoices}
         case ApiCall.view_order:
-            order = ResponseStruct.OrderClientEditor().build(**breq)
-            return {"template": get_client_order_template(manager, order.ci, False)}
+            od = ResponseStruct.OrderClientEditor().build(**breq)
+            order:Clients = ApiClients.get_clients(client_id=od.ci).first()
+            return {"template": get_client_order_template(manager, order, False), "client_id":order.client_id}
 
     return {}
 
@@ -162,14 +164,13 @@ def get_card_edit_template(card_id:str, **_):
                            special=special_things
                        )
 
-def get_client_order_template(manager, client_id:str, edit:bool = True, **_):
-    client:Clients = ApiClients.create_client(client_id)
+def get_client_order_template(manager, order:Clients, edit:bool = True, **_):
     company = ApiCompany.get_companies(manager_id=manager["manager_id"]).first()
     return render_template(f'{Pages.dashboard.path}order.html',
-                           editor=edit, order=client, manager=manager, company=company)
+                           editor=edit, order=order, manager=manager, company=company)
 
 def get_client_template(client_id:str):
-    client: Clients = ApiClients.create_client(client_id)
+    client: Clients = ApiClients.get_clients(client_id=client_id).first()
     return render_template(f'{Pages.dashboard.path}client.html', client=client)
 
 
