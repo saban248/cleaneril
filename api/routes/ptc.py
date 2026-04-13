@@ -5,7 +5,7 @@ import time
 from dataclasses import dataclass
 from enum import Enum, IntFlag
 
-from api.databases.ptc import ServerConfig, StateClient
+from api.databases.ptc import ServerConfig, StateOrder
 
 
 class ClientLeadFrom(IntFlag):
@@ -14,6 +14,15 @@ class ClientLeadFrom(IntFlag):
     FACEBOOK        = 1<<2
     GOOGLE          = 1<<3
     WHATSAPP        = 1<<4
+    FRIENDS         = 1<<5
+
+
+class OrderType(IntFlag):
+    UPHOLSTERY      = 1<<0
+    AIR_CONDITIONER = 1<<1
+
+    # mask
+    GENERAL         = UPHOLSTERY|AIR_CONDITIONER
 
 
 class CalenderClients(IntFlag):
@@ -142,23 +151,23 @@ class ApiCall(IntFlag):
     card_delete = 1<<2
     card_save = 1<<3
     order_edit = 1 << 4
-    client_delete = 1<<5
-    client_save = 1<<6
+    order_delete = 1 << 5
+    order_save = 1 << 6
     client_view = 1<<7
-    client_state = 1<<8
+    order_stat = 1 << 8
     funds_income = 1<<9
     conf_company = 1<<10
-    client_workers = 1<<11
+    order_workers = 1 << 11
     worker_editor = 1<<12
     worker_view = 1<<13
     worker_save = 1<<14
     worker_delete = 1<<15
     calendar = 1<<16
-    client_list = 1<<17
+    orders_list = 1 << 17
     invoice_view = 1<<18
     invoice_create = 1<<19
     invoice_list = 1<<20
-    view_order = 1<<21
+    order_view = 1 << 21
 
 
 def struct_builder(cls, **data):
@@ -186,11 +195,11 @@ class ResponseStruct:
             state:str = data.get("s", 0)
             calender:str = data.get("c", 0)
 
-            if not state or not state.isdigit():self.s = StateClient.ALL
+            if not state or not state.isdigit():self.s = StateOrder.ALL
             else:self.s = int(state)
             if not calender or not calender.isdigit():self.c = CalenderClients.FOREVER
             else:self.c = int(calender)
-            if not self.s:self.s = StateClient.ALL
+            if not self.s:self.s = StateOrder.ALL
             return self
 
 
@@ -245,12 +254,19 @@ class ResponseStruct:
 
             return self
 
+    @dataclass
+    class Client:
+        cid:str       = None
+
+        def build(self, **data):
+            struct_builder(self, **data)
+            return self
 
 
     @dataclass
-    class OrderClientEditor:
-        ci:str              = None
-        s:StateClient       = None
+    class CleanOrder:
+        oi:str              = None
+        s:StateOrder       = None
         phone:str               = None
         o:bool              = None
         op:int              = None
@@ -263,10 +279,12 @@ class ResponseStruct:
         price:int           = None
         vat:bool            = None
         ex:float       = None
-        worker:str      = None
+        workers:list      = None
         ps:int          = None
         coordinate:list      = None
         pt:int          = None
+        pn:str          = None
+        ot:int          = None
         def build(self, **data):
             struct_builder(self, **data)
             self.o = bool(self.o)
@@ -295,6 +313,12 @@ class ResponseStruct:
                 self.pt = PaymentInvoice.CASH
             else:
                 self.pt = int(self.pt)
+            if not self.pn:
+                self.pn = str()
+            if self.ot:
+                self.ot = int(self.ot)
+            else:
+                self.ot = OrderType.GENERAL
 
             self.get_full_price()
 
@@ -305,7 +329,7 @@ class ResponseStruct:
             if not self.price or not self.i:return
             price = 0
             for key, value in self.i.items():
-                price += value['price']
+                price += int(value['price'])
 
             self.price = price
 

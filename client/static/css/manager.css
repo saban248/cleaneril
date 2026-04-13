@@ -604,8 +604,7 @@
 .ci-body{
 
 }
-.items-ordered{
-    padding: 10px;
+.items-ordered,#items-ordered{
     display: flex;
     flex-direction: column;
     row-gap: 5px;
@@ -618,7 +617,7 @@
 }
 .ordered, .header{
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 3fr 1fr;
 }
 .ordered{
     position: relative;

@@ -1,9 +1,9 @@
 import json
 
+
 from api.databases.clients import ApiClients, Clients
 from api.databases.employee import ApiEmployee
 from api.databases.funds import ApiFunds
-
 
 def set_employee_to_client(wid:str, mid:str):
     employee = ApiEmployee.get_employees(employee_id=wid).first()

@@ -206,7 +206,15 @@
     border: 1px solid #adadad52;
     border-radius: 10px;
     padding: 0 10px;
+    scrollbar-width: none;       
+    -ms-overflow-style: none;
+    overflow-x: scroll;
+    overflow-y: none;
 }
+.main-client-dashbaord-card-action::-webkit-scrollbar {
+  display: none;
+}
+
 .client-card-action{
     display: none;
     justify-content:right;
@@ -229,6 +237,7 @@
     text-align:center;
     
 }
+
 .fa-circle-chevron-right{
     display: none !important;
 }
@@ -242,6 +251,28 @@
     transform: scale(1.09);
 
 }
+#arfc{}
+#asop, #asrp{
+    color: #adadad;
+    background: #4c4c4c;
+}
+#aeeo, #aero{
+    color: #5fbb98;
+    background: #355347;
+}
+#acoi{
+    color: #aeb65a;
+    background: #393b23;
+}
+#adco{
+    color: rgb(104, 137, 196);
+    background: rgb(48, 59, 78);
+}
+#adoc, #adro{
+    color: rgb(224, 115, 137);
+    background: rgb(67, 27, 35);
+}
+
 #the-client-orders, #the-client-receipts{
   position: absolute; /* או fixed אם זה menu */
   transform: scale(0);

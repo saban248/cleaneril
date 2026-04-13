@@ -44,7 +44,7 @@ class StateDocument(IntFlag):
     SAVED           = 1<<1
 
 
-class StateClient(IntFlag):
+class StateOrder(IntFlag):
     WAIT            = 1<<0
     CLOSED          = 1<<1
     CANCELED        = 1<<2

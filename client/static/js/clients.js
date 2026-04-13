@@ -168,17 +168,19 @@ function openSearchClients(t){
 }
 
 function doSearchClientsLocal(){
+    
     const input = document.getElementById("searchClient")
     const value = input.value.toLowerCase();
     for (client of c_runtime.clients){
+        const client_id = client.client_id+'main'
         const phone = cleanPhoneJustNumbers(client.phone).includes(value);
         const name = client.fullname.toLowerCase().includes(value);
         const date = dateFloatToYMD(client.date).includes(value);
         if ((value == ''||phone||name||date) && c_runtime.state_client_selected&client.state){
-            document.getElementById(client.client_id).classList.remove("hide")
+            document.getElementById(client_id).classList.remove("hide")
         }
         else{
-            document.getElementById(client.client_id).classList.add("hide")
+            document.getElementById(client_id).classList.add("hide")
         }
     }
 }
@@ -481,7 +483,6 @@ async function onLoadEditClient(){
     }
     let paymentState = 0;
     const group = document.getElementById("payGroup");
-    console.log(group)
     const buttons = group.querySelectorAll("button");
     const indicator = group.querySelector(".indicator");
     buttons.forEach(btn => {
@@ -737,12 +738,14 @@ function createClientItem(client, actions = true, callback) {
     div.className = "client-item"
     div.dataset.stat = client.state;
     div.dataset.key = client.key;
-    div.id = client.client_id;
     if (!actions){
+        div.id = client.client_id+"dashbaord";
         div.onclick = () => callback()
     }else{
+        div.id = client.client_id+'main'
         div.ondblclick = () => openClientDashbaord(client.client_id);
     }
+
 
     var html = `
         <div class="avatar client-state-${client.state}">

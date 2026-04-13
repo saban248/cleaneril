@@ -4,7 +4,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 from api.databases.employee import Employee
-from api.databases.ptc import StateClient, cleaneril, ManagerPermissions
+from api.databases.ptc import StateOrder, cleaneril, ManagerPermissions
 from api.routes.ptc import PaymentInvoice
 
 
@@ -47,13 +47,13 @@ def get_ctime_from_time(ctime:float):
 @cleaneril.template_filter("cft")
 def client_flag_text(flag):
     match flag:
-        case StateClient.WAIT:
+        case StateOrder.WAIT:
             return "לא נסגר"
-        case StateClient.CANCELED:
+        case StateOrder.CANCELED:
             return "בוטל"
-        case StateClient.CLOSED:
+        case StateOrder.CLOSED:
             return "בהמתנה"
-        case StateClient.DONE:
+        case StateOrder.DONE:
             return "הושלם"
 
 @cleaneril.template_filter("eper")

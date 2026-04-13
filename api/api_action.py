@@ -6,6 +6,7 @@ from time import sleep
 from flask import render_template_string, render_template
 from flask_wtf.csrf import validate_csrf
 
+from api.databases import orders
 from api.databases.bridge import set_employee_to_client
 from api.databases.clients import Clients, ApiClients
 from api.databases.company import ApiCompany
@@ -14,6 +15,7 @@ from api.databases.employee import ApiEmployee, Employee
 from api.databases.funds import ApiFunds
 from api.databases.invoice import ApiInvoice, Invoice
 from api.databases.manager import ApiManager, on_register_create_company
+from api.databases.orders import CleanOrder
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril
 from api.ptc import special_things, SJson, ShortSession
 from api.routes.ptc import Pages, ApiCall, ResponseStruct, ApiUploadFile, RegisterApi, PaymentInvoice
@@ -28,22 +30,22 @@ def get_api_action(session, request, **breq) -> dict:
             card = ResponseStruct.CardEditor().build(**breq)
             return {"template":get_card_edit_template(card.ci)}
         case ApiCall.order_edit:
-            od = ResponseStruct.OrderClientEditor().build(**breq)
-            order: Clients = ApiClients.create_client(od.ci)
+            od = ResponseStruct.CleanOrder().build(**breq)
+            order: CleanOrder = orders.create_clean_order(od.oi)
             return {"template":get_client_order_template(manager, order), "client_id":order.client_id}
         case ApiCall.client_view:
-            client = ResponseStruct.OrderClientEditor().build(**breq)
-            return {"template":get_client_template(client.ci)}
+            client = ResponseStruct.Client().build(**breq)
+            return {"template":get_client_template(client.cid)}
 
-        case ApiCall.client_save:
-            client = ResponseStruct.OrderClientEditor().build(**breq)
+        case ApiCall.order_save:
+            client = ResponseStruct.CleanOrder().build(**breq)
 
-            _stat_ = ApiClients.add_client(client.ci,client.s,client.phone,client.i,
-                                           client.o,client.op,client.fn,client.date,client.address,
-                                           client.lf,client.notes,client.price,client.vat, client.ex,
+            _stat_ = ApiClients.add_client(client.oi, client.s, client.phone, client.i,
+                                           client.o, client.op, client.fn, client.date, client.address,
+                                           client.lf, client.notes, client.price, client.vat, client.ex,
                                            set_employee_to_client(client.worker, manager_id), client.ps,
                                            client.coordinate, client.pt)
-            return {'client_id':client.ci}
+            return {'client_id':client.oi}
         case ApiCall.card_draft | ApiCall.card_save:
             if ApiCall.card_draft&action:state = StateDocument.DRAFT
             else: state = StateDocument.SAVED
@@ -54,12 +56,12 @@ def get_api_action(session, request, **breq) -> dict:
         case ApiCall.card_delete:
             card = ResponseStruct.CardEditor().build(**breq)
             return  {"deleted":ApiCards.delete_card(card_id=card.ci)}
-        case ApiCall.client_delete:
-            client = ResponseStruct.OrderClientEditor().build(**breq)
-            return {"deleted":ApiClients.delete_client(client_id=client.ci)}
-        case ApiCall.client_state:
-            client = ResponseStruct.OrderClientEditor().build(**breq)
-            return {"stated":ApiClients.set_state(client_id=client.ci, state=client.s)}
+        case ApiCall.order_delete:
+            client = ResponseStruct.CleanOrder().build(**breq)
+            return {"deleted":ApiClients.delete_client(client_id=client.oi)}
+        case ApiCall.order_stat:
+            client = ResponseStruct.CleanOrder().build(**breq)
+            return {"stated":ApiClients.set_state(client_id=client.oi, state=client.s)}
         case ApiCall.funds_income:
             funds = ResponseStruct.Funds().build(**breq)
             data = {"data":ApiFunds.get_client_profit_years(funds.year),
@@ -76,7 +78,7 @@ def get_api_action(session, request, **breq) -> dict:
                                               config.c_desc,config.c_phone, config.c_email, config.c_vat_code,
                                                       config.c_gpse)
             return {"success":bool(not state)}
-        case ApiCall.client_workers:
+        case ApiCall.order_workers:
             workers = list(ApiEmployee.get_employees_search(manager_id=manager_id))
             return {"workers":workers}
         case ApiCall.worker_editor:
@@ -98,7 +100,7 @@ def get_api_action(session, request, **breq) -> dict:
             calendar = ResponseStruct.Calendar().build(**breq)
             clients = ApiClients.get_clients_by_calendar_date(calendar.month, calendar.year)
             return {"data":clients}
-        case ApiCall.client_list:
+        case ApiCall.orders_list:
             data = ResponseStruct.ListClients().build(**breq)
             clients = ApiClients.get_clients_list(data.fromY,data.toY)
             return {"clients":clients}
@@ -113,10 +115,12 @@ def get_api_action(session, request, **breq) -> dict:
         case ApiCall.invoice_list:
             invoices = ApiInvoice.get_invoices_list()
             return {"invoices":invoices}
-        case ApiCall.view_order:
-            od = ResponseStruct.OrderClientEditor().build(**breq)
-            order:Clients = ApiClients.get_clients(client_id=od.ci).first()
-            return {"template": get_client_order_template(manager, order, False), "client_id":order.client_id}
+        case ApiCall.order_view:
+            od = ResponseStruct.CleanOrder().build(**breq)
+            order:Clients = ApiClients.get_clients(client_id=od.oi).first()
+            if order:
+                return {"template": get_client_order_template(manager, order, False), "client_id":order.client_id}
+            return {"success":False, "notice":"שגיאה בהצגת לקוח"}
 
     return {}
 

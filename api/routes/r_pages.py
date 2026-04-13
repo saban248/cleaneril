@@ -9,6 +9,7 @@ from api.databases.clients import ApiClients
 from api.databases.crads import ApiCards
 from api.databases.employee import ApiEmployee
 from api.databases.manager import ApiManager
+from api.databases.orders import CountOfOrderByStat
 from api.databases.ptc import cleaneril, ServerConfig
 from api.databases.company import ApiCompany
 from api.ptc import special_things, SJson, ShortSession, get_dictionary_http
@@ -45,10 +46,11 @@ def dashboard():
     manager_id = manager["manager_id"]
     company = ApiCompany.get_companies(manager_id=manager_id).first()
     workers = ApiEmployee.get_employees(manager_id=manager_id).all()
+    # count_stat_orders
+    cso = CountOfOrderByStat()
     return render_template(Pages.dashboard.html,
                            cards=list(reversed(ApiCards.get_cards(False).all())),
-                           counts=[ApiClients.count_client_wait(dash.c),ApiClients.count_client_done(dash.c),
-                                   ApiClients.count_client_closed(dash.c), ApiClients.count_client_canceled(dash.c)],
+                           counts=[cso.wait,cso.done,cso.closed, cso.canceled],
                            company=company,manager=manager, workers=workers)
 
 

@@ -2,14 +2,14 @@ from datetime import datetime
 from typing import Generator
 
 from api.databases.clients import Clients
-from api.databases.ptc import StateClient
+from api.databases.ptc import StateOrder
 
 
 class ApiFunds:
 
     @staticmethod
     def get_done_client():
-        clients = Clients.query.filter_by(state=StateClient.DONE).all()
+        clients = Clients.query.filter_by(state=StateOrder.DONE).all()
         return clients
 
     @staticmethod
