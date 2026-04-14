@@ -171,8 +171,8 @@ const ApiCall = {
     card_delete:1<<2,
     card_save:1<<3,
     order_edit:1<<4,
-    client_delete:1<<5,
-    client_save:1<<6,
+    order_delete:1<<5,
+    order_save:1<<6,
     client_view:1<<7,
     client_state:1<<8,
     funds_income:1<<9,
@@ -183,11 +183,12 @@ const ApiCall = {
     worker_save:1<<14,
     worker_delete:1<<15,
     calendar:1<<16,
-    client_list:1<<17,
+    orders_list:1<<17,
     invoice_view:1<<18,
     invoice_create:1<<19,
     invoice_list:1<<20,
-    view_order:1<<21
+    order_view:1<<21,
+    order_new:1<<22
 }
 
 

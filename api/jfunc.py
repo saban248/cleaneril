@@ -28,7 +28,7 @@ def client_date_arrive(ts):
     return datetime.fromtimestamp(ts).strftime("%Y-%m-%d")
 
 @cleaneril.template_filter("cdah")
-def client_date_arrive_hour(ts):
+def order_date_arrive_hour(ts):
     ts = float(ts)
     if ts > 1e12:
         ts /= 1000

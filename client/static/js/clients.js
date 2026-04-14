@@ -4,7 +4,7 @@ const c_runtime = {
     state_calendar_selected:0,
     workers:[],
     blockPublishClient:false,
-    clients:[],
+    orders:[],
     showClientsFrom:new Date().getFullYear()-1,
     invoices:[],
     currentClientIdView:null,
@@ -87,7 +87,7 @@ function onPublishClientHideProgress(){
 }
 
 
-async function publishClient(client_id, state){
+async function publishClient(order_id, state){
     if (c_runtime.blockPublishClient)return;
     c_runtime.blockPublishClient =true;
     const fullname = document.getElementById('fullname').value;
@@ -113,20 +113,23 @@ async function publishClient(client_id, state){
     const expense = document.getElementById("client-expense").value;
     const profitSharing = ft(document.getElementById("profitSharing").value);
     const w = document.getElementById('esm')?.children[0]
-    const worker = w?w.id.substring(1,32):''
+    const workers = [w?w.id.substring(1,32):'']
+    const pay_type = 0
+    const pay_notes = ''
+    const order_type = 1
 
     onPublishClientShowProgress(fullname, state);
 
     /** coordinate */
     const [lat, lng] = await geocodeAddressOSM(address)
-    const data = {action:ApiCall.client_save,
-        ci:client_id, s:state,
+    const data = {action:ApiCall.order_save,
+        oi:order_id, s:state,
         phone:phone,o:Boolean(parseInt(offPrice)),
         op:offPrice,fn:fullname,
         address:address, i:JSON.stringify(c_runtime.items_ordered),
         lf:SocialMedia.WHATSAPP,date:timing,
-        notes:notes,price:price,vat:vat,ex:expense,ps:profitSharing,worker:worker,coordinate:[lat,lng],
-        pt:0
+        notes:notes,price:price,vat:vat,ex:expense,ps:profitSharing,workers:workers,coordinate:[lat,lng],
+        pt:pay_type,pn:pay_notes,ot:order_type
     }
     const toast = showToast("מעבד...");
     apiPost(ApiRoute.api,data).then(
@@ -138,7 +141,7 @@ async function publishClient(client_id, state){
                 onPublishClientShowProgress(fullname,state, true)
                 c_runtime.items_ordered = {}
                 showToast(res.notice, ToastStat.DONE, toast);
-                await fetchClients();
+                await fetchOrders();
                 createListClientOrders()
             }
             c_runtime.blockPublishClient = false
@@ -171,16 +174,16 @@ function doSearchClientsLocal(){
     
     const input = document.getElementById("searchClient")
     const value = input.value.toLowerCase();
-    for (client of c_runtime.clients){
-        const client_id = client.client_id+'main'
-        const phone = cleanPhoneJustNumbers(client.phone).includes(value);
-        const name = client.fullname.toLowerCase().includes(value);
-        const date = dateFloatToYMD(client.date).includes(value);
-        if ((value == ''||phone||name||date) && c_runtime.state_client_selected&client.state){
-            document.getElementById(client_id).classList.remove("hide")
+    for (order of c_runtime.orders){
+        const order_id = order.order_id+'main'
+        const phone = cleanPhoneJustNumbers(order.phone).includes(value);
+        const name = order.fullname.toLowerCase().includes(value);
+        const date = dateFloatToYMD(order.date).includes(value);
+        if ((value == ''||phone||name||date) && c_runtime.state_client_selected&order.stat){
+            document.getElementById(order_id).classList.remove("hide")
         }
         else{
-            document.getElementById(client_id).classList.add("hide")
+            document.getElementById(order_id).classList.add("hide")
         }
     }
 }
@@ -241,9 +244,9 @@ function updateStateClientSetting(state, calender){
 }
 
 
-function setStateClient(client_id, state){
-    data = {action: ApiCall.client_state, ci:client_id, s:state}
-    const client = c_runtime.clients.find(c => c.client_id === client_id) || null
+function setStateClient(order_id, state){
+    data = {action: ApiCall.client_state, oi:order_id, s:state}
+    const client = c_runtime.orders.find(c => c.client_id === client_id) || null
     const toast = showToast("מעבד...");
     apiPost(ApiRoute.api, data).then(
         (res) =>{
@@ -251,7 +254,7 @@ function setStateClient(client_id, state){
                 showToast(res.notice)
                 return
             }
-            fetchClients();
+            fetchOrders();
             showToast(`${client.fullname} ${getStateClientText(state)}`, ToastStat.DONE, toast);
             
         }
@@ -360,7 +363,7 @@ function openMenuClient(t, cid) {
     }
     const rect = t.getBoundingClientRect()
     menu.replaceChildren() 
-    // const client = c_runtime.clients.find(c => c.client_id == cid)
+    // const client = c_runtime.orders.find(c => c.client_id == cid)
     // const div = document.createElement("div")
     // div.innerText = client.fullname;
     // menu.appendChild(div)
@@ -710,14 +713,14 @@ function shareOrderToClientAsLink(cid){
     
 }
 
-async function fetchClients(){
-    return await new Promise((reslove) => apiPost(ApiRoute.api,{action:ApiCall.client_list, fromY:c_runtime.showClientsFrom}).then(
+async function fetchOrders(){
+    return await new Promise((reslove) => apiPost(ApiRoute.api,{action:ApiCall.orders_list, fromY:c_runtime.showClientsFrom}).then(
         res =>{
             if (!res.success){
                 showToast(messgae.EfetchClients)
                 return
             }
-            c_runtime.clients = res.clients;
+            c_runtime.orders = res.orders;
             loadListClientsHtml()
             reslove();
         }
@@ -728,58 +731,58 @@ async function fetchClients(){
 function loadListClientsHtml(){
     const parent = document.getElementById("listClients")
     parent.replaceChildren();
-    c_runtime.clients.forEach(client => {
-        const el = createClientItem(client);
+    c_runtime.orders.forEach(client => {
+        const el = createOrderItem(client);
         parent.appendChild(el);
     });
 }
-function createClientItem(client, actions = true, callback) {
+function createOrderItem(order, actions = true, callback) {
     const div = document.createElement("div");
     div.className = "client-item"
-    div.dataset.stat = client.state;
-    div.dataset.key = client.key;
+    div.dataset.stat = order.state;
+    div.dataset.key = order.key;
     if (!actions){
-        div.id = client.client_id+"dashbaord";
+        div.id = order.order_id+"dashbaord";
         div.onclick = () => callback()
     }else{
-        div.id = client.client_id+'main'
-        div.ondblclick = () => openClientDashbaord(client.client_id);
+        div.id = order.order_id+'main'
+        div.ondblclick = () => openClientDashbaord(order.order_id);
     }
 
 
     var html = `
-        <div class="avatar client-state-${client.state}">
-        ${client.fullname?.[0] || "?"}
+        <div class="avatar client-state-${order.stat}">
+        ${order.fullname?.[0] || "?"}
         </div>
         
         <div class="content">
         <div class="in-content">
             <div class="top">
-            <span class="name">${client.fullname}</span>
-            <span class="phone no-mobile">${client.phone}</span>
+            <span class="name">${order.fullname}</span>
+            <span class="phone no-mobile">${order.phone}</span>
             </div>
             <div class="bottom">
-            <span>${dateFloatToYMD(client.date)} ${dateFloatToHour(client.date)}</span><br>
-            <span>${client.price -client.off_price || 0}₪ •</span>
-            <span class="client-state-text-${client.state}">
-                ${getStateClientText(client.state)}
+            <span>${dateFloatToYMD(order.date)} ${dateFloatToHour(order.date)}</span><br>
+            <span>${order.price -order.off_price || 0}₪ •</span>
+            <span class="client-state-text-${order.stat}">
+                ${getStateClientText(order.stat)}
             </span>
             </div>
         </div>
         </div>
     `;
     if (actions){
-        const clientActions = `
+        const orderActions = `
         <div class="client-footer">
             <i class="fa-solid fa-eye no-mobile"></i>
             <i class="fa-solid fa-bars menu-client"></i>
         </div>
         `;
-        html += clientActions;
+        html += orderActions;
         div.innerHTML = html
         const icons = div.querySelectorAll(".client-footer i");
-        icons[1].onclick = (e) => openMenuClient(e.target, client.client_id);
-        icons[0].onclick = () => openClientDashbaord(client.client_id);
+        icons[1].onclick = (e) => openMenuClient(e.target, order.order_id);
+        icons[0].onclick = () => openClientDashbaord(order.order_id);
     }
     else{
         div.innerHTML = html
@@ -790,5 +793,5 @@ function createClientItem(client, actions = true, callback) {
 
 
 document.addEventListener("DOMContentLoaded", function (){
-    fetchClients()
+    fetchOrders()
 })

@@ -9,21 +9,23 @@ const c_clients = {
 function isCantExitEditOrder(){
     return c_clients.order_edit
 }
+
 function askAboutExitEditOrder(){
     if (!c_clients.order_edit)return false
 
     const answer = confirm(messgae.IunsaveOrder)
     if (answer){
-        if (c_clients.new_order){
-            deleteOrder(c_runtime.currentClientIdView)
-        }
         c_clients.order_edit = c_clients.new_order = false;
     } 
     return answer
 
 }
 
-function closeClientDashboard(no_api=false){
+function closeClientDashboard(){
+    if (c_clients.new_order){
+        deleteOrder(c_runtime.currentClientIdView)
+        
+    }
     if (isCantExitEditOrder()){
         if (!askAboutExitEditOrder()){ return}
 
@@ -45,18 +47,18 @@ function hideClientDashboard(){
 
 }
 
-async function openClientDashbaord(client_id = c_runtime.currentClientIdView){
+async function openClientDashbaord(client_id = c_runtime.currentClientIdView, fetch = true){
     showClientDashboard()
     await fetchClientDashboard(client_id)
     c_clients.enterCard = true;
 
-    switchViewClientDashboard(clientCardsView.ORDER)
+    switchViewClientDashboard(clientCardsView.ORDER, fetch)
 }
 
 
 async function fetchClientDashboard(client_id = c_runtime.currentClientIdView){
     const toast = showToast("מעבד...");
-    data = {action:ApiCall.client_view, ci:client_id}
+    data = {action:ApiCall.client_view, cid:client_id}
     return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
         (res) => {
             if (!res.success){
@@ -75,10 +77,10 @@ async function fetchClientDashboard(client_id = c_runtime.currentClientIdView){
 
 }
 
-async function fetchClientOrder(client_id = c_runtime.currentClientIdView, api_action = ApiCall.view_order){
-    if (!client_id && !c_clients.new_order)return
+async function fetchClientOrder(order_id = c_runtime.currentClientIdView, api_action = ApiCall.order_view){
+    if (!order_id && !c_clients.new_order)return
     const toast = showToast("מעבד...");
-    data = {action:api_action, ci:client_id}
+    data = {action:api_action, oi:order_id}
     return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
         (res) => {
             if (!res.success){
@@ -88,7 +90,7 @@ async function fetchClientOrder(client_id = c_runtime.currentClientIdView, api_a
             closeToast(toast)
             const card = document.getElementById("the-client-card")
             card.innerHTML = res.template;
-            c_runtime.currentClientIdView = card.dataset.ci = res.client_id
+            c_runtime.currentClientIdView = card.dataset.ci = res.order_id
             c_clients.currentCard = clientCardsView.ORDER
             c_clients.enterCard = true;
             if (c_clients.order_edit || c_clients.new_order){
@@ -107,9 +109,9 @@ function createListClientOrders(){
         });
     }
     const parent = document.getElementById("listClientOrders");
-    const currentClient = c_runtime.clients.find(c=> c.client_id == c_runtime.currentClientIdView);
+    const currentOrder = c_runtime.orders.find(c=> c.order_id == c_runtime.currentClientIdView);
     const icon = document.getElementById('iel-orders');
-    if (!c_runtime.clients || !currentClient){
+    if (!c_runtime.orders || !currentOrder){
         if (!icon)return
         icon.style.display = 'block'
         parent.classList.add("icon-empty-list")
@@ -121,17 +123,17 @@ function createListClientOrders(){
         icon.style.display = 'none';
     }
     deleteChildren()
-    for (let client of c_runtime.clients){
-        const name = matchNumsWords(1, client.fullname, currentClient.fullname);
-        const phone = cleanPhoneJustNumbers(client.phone) == cleanPhoneJustNumbers(currentClient.phone);
-        const address = matchNumsWords(2,client.address, currentClient.address);
+    for (let order of c_runtime.orders){
+        const name = matchNumsWords(1, order.fullname, currentOrder.fullname);
+        const phone = cleanPhoneJustNumbers(order.phone) == cleanPhoneJustNumbers(currentOrder.phone);
+        const address = matchNumsWords(2,order.address, currentOrder.address);
         if (!(name && phone && address))continue;
 
-        const element = createClientItem(client, false, async ()=>{
-            await showClientOrder(client.client_id)
+        const element = createOrderItem(order, false, async ()=>{
+            await showClientOrder(order.order_id)
             createListClientOrders()
         });
-        if (client.client_id == c_runtime.currentClientIdView){
+        if (order.order_id == c_runtime.currentClientIdView){
             element.classList.add('current-client-list');
         }
         parent.appendChild(element);
@@ -195,7 +197,8 @@ function switchClientCardAction(){
         arfc.classList.remove("show")
     }
 }
-function switchViewClientDashboard(v = c_clients.currentCard, back = false){
+function switchViewClientDashboard(v = c_clients.currentCard, fetch = true, back = false){
+    // BACK DELETED
     if (isCantExitEditOrder()){
         if (!askAboutExitEditOrder()){return}
     }
@@ -207,7 +210,7 @@ function switchViewClientDashboard(v = c_clients.currentCard, back = false){
                 showClientOrders()
             }
             if (!back && c_clients.enterCard){
-                showClientOrder()
+                showClientOrder(c_runtime.currentClientIdView, fetch)
             }
             hideClientReceipts()
             hideClientReceipt()
@@ -277,7 +280,7 @@ function switchMenuActionClientCard(){
  
 function createListClientReceipts(){
     const parent = document.getElementById("listClientReceipts");
-    const currentClient = c_runtime.clients.find(c=> c.client_id == c_runtime.currentClientIdView);
+    const currentClient = c_runtime.orders.find(c=> c.client_id == c_runtime.currentClientIdView);
     if (!c_runtime.invoices || !currentClient){
         const icon = document.getElementById('iel-receipts');
         icon.style.display = 'block'
@@ -308,12 +311,14 @@ function createListClientReceipts(){
 
 
 
-async function showClientOrder(cid = c_runtime.currentClientIdView){
+async function showClientOrder(oid = c_runtime.currentClientIdView, fetch = true){
     if (isCantExitEditOrder()){
         if (!askAboutExitEditOrder()){return}
 
     }
-    await fetchClientOrder(cid, (c_clients.new_order||c_clients.order_edit)?ApiCall.order_edit:ApiCall.view_order)
+    if (fetch){
+        await fetchClientOrder(oid)
+    }
     const card = document.getElementById("the-client-card")
     card.classList.add("show")
     if (IS_MOBILE){
@@ -388,14 +393,14 @@ function hideClientReceipts(){
 
 /** ACTIONS */
 
-async function editExistOrder(client_id = c_runtime.currentClientIdView){
+async function editExistOrder(order_id = c_runtime.currentClientIdView){
     if (!c_clients.client_view){
-        showClientDashboard()
+        await openClientDashbaord(order_id, false)
     }
     c_clients.order_edit = true; 
-    c_runtime.currentClientIdView = client_id;
-    if (!client_id)return
-    fetchClientOrder(client_id, ApiCall.order_edit)
+    c_runtime.currentClientIdView = order_id;
+    if (!order_id)return
+    await fetchClientOrder(order_id, ApiCall.order_edit)
 }
 
 async function shareOrderToClientAsPhoto(cid = c_runtime.currentClientIdView){
@@ -420,20 +425,20 @@ function shareReceiptToClientAsPhoto(iid = c_runtime.currentInvoiceIdView){
 
 }
 
-function deleteOrder(client_id = c_runtime.currentClientIdView){
+function deleteOrder(order_id = c_runtime.currentClientIdView){
     if (!confirm(messgae.WdeleteOrder)){return}
-    if (!client_id){
+    if (!order_id){
         showToast("בחר הזמנה כדי למחוק", ToastStat.ERROR)
         return
     }
-    data = {ci:client_id, action:ApiCall.client_delete}
+    data = {oi:order_id, action:ApiCall.order_delete}
     apiPost(ApiRoute.api,data).then(
         async (res) =>{
             if (!res.success || res.deleted){
-                showToast(res.success, ToastStat.DONE);
+                showToast(res.notice, ToastStat.DONE);
                 return
             }
-                await fetchClients()
+                await fetchOrders()
                 createListClientOrders()
 
         }
@@ -442,8 +447,10 @@ function deleteOrder(client_id = c_runtime.currentClientIdView){
 
 async function createOrder(){
     c_clients.new_order = true;
-    await openClientDashbaord()
-    c_clients.order_edit = true;
+    await openClientDashbaord(c_runtime.currentClientIdView, false)
+    await fetchClientOrder(c_runtime.currentClientIdView, ApiCall.order_new)
+    showClientOrder(c_runtime.currentClientIdView, false)
+    
 
 }
 
@@ -459,7 +466,7 @@ function searchClientNewOrder(e){
     
     const value = name.value.toLowerCase();
     if (value == '')return
-    const match = c_runtime.clients.find(c => c.fullname.toLowerCase().startsWith(value));
+    const match = c_runtime.orders.find(c => c.fullname.toLowerCase().startsWith(value));
     if (!match){return}
     name.value  = match.fullname
     address.value = match.address;
@@ -470,7 +477,7 @@ function searchClientNewOrder(e){
         name.setSelectionRange(value.length, match.fullname.length);
     });
     parent.replaceChildren()
-    for (let [k,v] of Object.entries(JSON.parse(match.items))){
+    for (let [k,v] of Object.entries(match.items)){
         addItemClientOrder(v.name,v.price)
     }
 

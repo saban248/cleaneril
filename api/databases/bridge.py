@@ -1,9 +1,10 @@
 import json
 
-
-from api.databases.clients import ApiClients, Clients
+from api.databases import orders
 from api.databases.employee import ApiEmployee
 from api.databases.funds import ApiFunds
+from api.databases.orders import CleanOrder
+
 
 def set_employee_to_client(wid:str, mid:str):
     employee = ApiEmployee.get_employees(employee_id=wid).first()
@@ -13,33 +14,33 @@ def set_employee_to_client(wid:str, mid:str):
     return wid
 
 
-def get_client_date_arrive(cid):
-    client:Clients = ApiClients.get_clients(client_id=cid).first()
-    if not client:
+def get_order_date_arrive(cid):
+    order = orders.get_clean_orders(client_id=cid).first()
+    if not order:
         return 0
 
-    return client.date
+    return order.date
 
 
-def get_client_items_ordered(cid):
-    client:Clients = ApiClients.get_clients(client_id=cid).first()
-    if not client:
+def get_order_items(cid):
+    order:CleanOrder = orders.get_clean_orders(client_id=cid).first()
+    if not order:
         return str()
 
-    return client.items
+    return order.items
 
 
 def get_client_total_price(cid):
-    client: Clients = ApiClients.get_clients(client_id=cid).first()
-    if not client:
+    order: CleanOrder = orders.get_clean_orders(client_id=cid).first()
+    if not order:
         return 0
 
-    return client.price
+    return order.price
 
 
 def get_client_off_price(cid):
-    client: Clients = ApiClients.get_clients(client_id=cid).first()
-    if not client:
+    order: CleanOrder = orders.get_clean_orders(client_id=cid).first()
+    if not order:
         return 0
 
-    return client.off_price
+    return order.off_price

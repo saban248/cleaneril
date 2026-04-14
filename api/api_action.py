@@ -6,9 +6,9 @@ from time import sleep
 from flask import render_template_string, render_template
 from flask_wtf.csrf import validate_csrf
 
-from api.databases import orders
+from api.databases import orders, clients
 from api.databases.bridge import set_employee_to_client
-from api.databases.clients import Clients, ApiClients
+from api.databases.clients import ClientProfile
 from api.databases.company import ApiCompany
 from api.databases.crads import ApiCards, Cards
 from api.databases.employee import ApiEmployee, Employee
@@ -30,22 +30,27 @@ def get_api_action(session, request, **breq) -> dict:
             card = ResponseStruct.CardEditor().build(**breq)
             return {"template":get_card_edit_template(card.ci)}
         case ApiCall.order_edit:
-            od = ResponseStruct.CleanOrder().build(**breq)
-            order: CleanOrder = orders.create_clean_order(od.oi)
-            return {"template":get_client_order_template(manager, order), "client_id":order.client_id}
+            r_order = ResponseStruct.CleanOrder().build(**breq)
+            order: CleanOrder = orders.get_clean_orders(manager_id=manager_id, order_id=r_order.oi).first()
+            return {"template":get_client_order_template(manager, order), "order_id":order.order_id}
         case ApiCall.client_view:
             client = ResponseStruct.Client().build(**breq)
-            return {"template":get_client_template(client.cid)}
-
+            print(client)
+            return {"template":get_client_template(manager_id, client.cid)}
         case ApiCall.order_save:
-            client = ResponseStruct.CleanOrder().build(**breq)
-
-            _stat_ = ApiClients.add_client(client.oi, client.s, client.phone, client.i,
-                                           client.o, client.op, client.fn, client.date, client.address,
-                                           client.lf, client.notes, client.price, client.vat, client.ex,
-                                           set_employee_to_client(client.worker, manager_id), client.ps,
-                                           client.coordinate, client.pt)
-            return {'client_id':client.oi}
+            r_order = ResponseStruct.CleanOrder().build(**breq)
+            order = orders.update_clean_order(manager_id, r_order.client_id,r_order)
+            return {}
+        case ApiCall.order_new:
+            r_order = ResponseStruct.CleanOrder().build(**breq)
+            order = orders.create_clean_order(manager_id,r_order.client_id, r_order)
+            return {"template":get_client_order_template(manager, order,True), "order_id":order.order_id}
+        case ApiCall.order_view:
+            od = ResponseStruct.CleanOrder().build(**breq)
+            order:CleanOrder = orders.get_clean_orders(manager_id=manager_id, order_id=od.oi).first()
+            if order:
+                return {"template": get_client_order_template(manager, order, False), "order_id":order.order_id}
+            return {"success":False, "notice":"שגיאה בהצגת לקוח"}
         case ApiCall.card_draft | ApiCall.card_save:
             if ApiCall.card_draft&action:state = StateDocument.DRAFT
             else: state = StateDocument.SAVED
@@ -57,20 +62,21 @@ def get_api_action(session, request, **breq) -> dict:
             card = ResponseStruct.CardEditor().build(**breq)
             return  {"deleted":ApiCards.delete_card(card_id=card.ci)}
         case ApiCall.order_delete:
-            client = ResponseStruct.CleanOrder().build(**breq)
-            return {"deleted":ApiClients.delete_client(client_id=client.oi)}
+            rroder = ResponseStruct.CleanOrder().build(**breq)
+            return {"success":bool(not orders.delete_clean_order(manager_id, rroder.oi))}
         case ApiCall.order_stat:
-            client = ResponseStruct.CleanOrder().build(**breq)
-            return {"stated":ApiClients.set_state(client_id=client.oi, state=client.s)}
+            r_order = ResponseStruct.CleanOrder().build(**breq)
+            return {"stated":orders.set_clean_order_stat(manager_id, order_id=r_order.oi, stat=r_order.s)}
         case ApiCall.funds_income:
             funds = ResponseStruct.Funds().build(**breq)
-            data = {"data":ApiFunds.get_client_profit_years(funds.year),
-                    "in":ApiFunds.get_income_funds(),
-                    "ex":ApiFunds.get_expense_funds(),
-                    "pr":ApiFunds.get_profit_funds(),
-                    "ave_ipc_ever":ApiFunds.get_average_income_per_client_ever(),
-                    "ave_epc_ever":ApiFunds.get_average_expense_per_client_ever(),
-                    "total_client":len(ApiFunds.get_done_client())}
+            api_f = ApiFunds(manager_id)
+            data = {"data": api_f.get_order_profit_years(funds.year),
+                    "in":api_f.fi,
+                    "ex":api_f.fe,
+                    "pr":api_f.pf,
+                    "ave_ipc_ever":api_f.get_average_income_per_client_ever(),
+                    "ave_epc_ever":api_f.get_average_expense_per_client_ever(),
+                    "total_client":len(api_f.od)}
             return data
         case ApiCall.conf_company:
             config = ResponseStruct.Company().build(**breq)
@@ -98,29 +104,23 @@ def get_api_action(session, request, **breq) -> dict:
             return {"success":bool(not _state_)}
         case ApiCall.calendar:
             calendar = ResponseStruct.Calendar().build(**breq)
-            clients = ApiClients.get_clients_by_calendar_date(calendar.month, calendar.year)
-            return {"data":clients}
+            # clients = ApiClients.get_clients_by_calendar_date(calendar.month, calendar.year)
+            return {"data":[]}
         case ApiCall.orders_list:
-            data = ResponseStruct.ListClients().build(**breq)
-            clients = ApiClients.get_clients_list(data.fromY,data.toY)
-            return {"clients":clients}
+            data = ResponseStruct.ListOrders().build(**breq)
+            _orders = orders.get_clean_order_latest(False, manager_id=manager_id)
+            return {"orders":_orders}
         case ApiCall.invoice_view:
             inv = ResponseStruct.Invoice().build(**breq)
             return {"template":get_invoice_template(manager_id, inv.iid)}
         case ApiCall.invoice_create:
             inv = ResponseStruct.Invoice().build(**breq)
-            client = ApiClients.get_clients(client_id=inv.cid).first()
-            invoice = ApiInvoice.create_invoice(manager_id,client, PaymentInvoice.CASH)
-            return {"success":bool(not invoice)}
+            # client = ApiClients.get_clients(client_id=inv.cid).first()
+            # invoice = ApiInvoice.create_invoice(manager_id,client, PaymentInvoice.CASH)
+            return {"success":bool(not inv)}
         case ApiCall.invoice_list:
             invoices = ApiInvoice.get_invoices_list()
             return {"invoices":invoices}
-        case ApiCall.order_view:
-            od = ResponseStruct.CleanOrder().build(**breq)
-            order:Clients = ApiClients.get_clients(client_id=od.oi).first()
-            if order:
-                return {"template": get_client_order_template(manager, order, False), "client_id":order.client_id}
-            return {"success":False, "notice":"שגיאה בהצגת לקוח"}
 
     return {}
 
@@ -168,13 +168,13 @@ def get_card_edit_template(card_id:str, **_):
                            special=special_things
                        )
 
-def get_client_order_template(manager, order:Clients, edit:bool = True, **_):
+def get_client_order_template(manager, order:CleanOrder, edit:bool = True, **_):
     company = ApiCompany.get_companies(manager_id=manager["manager_id"]).first()
     return render_template(f'{Pages.dashboard.path}order.html',
                            editor=edit, order=order, manager=manager, company=company)
 
-def get_client_template(client_id:str):
-    client: Clients = ApiClients.get_clients(client_id=client_id).first()
+def get_client_template(manager_id:str, client_id:str):
+    client: ClientProfile = clients.get_clients(manager_id=manager_id, client_id=client_id).first()
     return render_template(f'{Pages.dashboard.path}client.html', client=client)
 
 

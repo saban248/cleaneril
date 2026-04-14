@@ -5,7 +5,6 @@ import os
 import markdown
 from flask import session, request, jsonify, render_template, redirect, url_for, abort
 
-from api.databases.clients import ApiClients
 from api.databases.crads import ApiCards
 from api.databases.employee import ApiEmployee
 from api.databases.manager import ApiManager

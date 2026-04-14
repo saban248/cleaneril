@@ -17,6 +17,11 @@ def get_columns(table:cleaneril_db.Model, source:bool = True, **kwargs):
     return get_columns_as_dict(columns)
 
 
-def get_latest_columns(table:cleaneril_db.Model, key:Callable, **kwargs):
-    columns = get_columns(table, True, **kwargs)
+def get_latest_columns(table:cleaneril_db.Model, source, key:Callable, **kwargs):
+    columns = get_columns(table, source, **kwargs)
     return sorted(columns, key=lambda column: key(column), reverse=True)
+
+def delete_column(table:cleaneril_db.Model, column):
+    if not column:return
+    cleaneril_db.session.delete(column)
+    cleaneril_db.session.commit()

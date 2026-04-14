@@ -48,7 +48,7 @@
                 <span>מחיר</span>
             </div>
         </div>
-        {% for key, item in invoice.order['items']|jrt%}
+        {% for key, item in invoice.order['items']%}
             <div class="item-table-invoice">
                 <div class="table-description">
                     <span class="tid">{{item.name}}</span>

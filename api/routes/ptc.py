@@ -5,6 +5,7 @@ import time
 from dataclasses import dataclass
 from enum import Enum, IntFlag
 
+from api.databases.general import unknown
 from api.databases.ptc import ServerConfig, StateOrder
 
 
@@ -168,6 +169,7 @@ class ApiCall(IntFlag):
     invoice_create = 1<<19
     invoice_list = 1<<20
     order_view = 1 << 21
+    order_new  = 1<< 22
 
 
 def struct_builder(cls, **data):
@@ -236,7 +238,7 @@ class ResponseStruct:
             return self
 
     @dataclass
-    class ListClients:
+    class ListOrders:
         fromY:int           = None
         toY:int             = None
 
@@ -265,6 +267,7 @@ class ResponseStruct:
 
     @dataclass
     class CleanOrder:
+        client_id           = None
         oi:str              = None
         s:StateOrder       = None
         phone:str               = None
@@ -272,7 +275,7 @@ class ResponseStruct:
         op:int              = None
         fn:str              = None
         address:str          = None
-        i:str               = None
+        i:list               = None
         lf:int              = None
         date:float          = None
         notes:str           = None
@@ -289,20 +292,36 @@ class ResponseStruct:
             struct_builder(self, **data)
             self.o = bool(self.o)
             self.vat = bool(self.vat)
+            if not self.client_id:
+                self.client_id = 0
             if self.s:
                 self.s = int(self.s)
+            else:
+                self.s = StateOrder.WAIT
             if self.op:
                 self.op = int(self.op)
+            else:
+                self.op = 0
             if self.price:
                 self.price = int(self.price)
+            else:
+                self.price = 0
             if self.lf:
                 self.lf = int(self.lf)
+            else:
+                self.lf = ClientLeadFrom.WHATSAPP
             if self.date:
                 self.date = float(self.date)
+            else:
+                self.date = time.time()
             if self.i:
                 self.i = json.loads(self.i)
+            else:
+                self.i = {}
             if self.ex:
                 self.ex = float(self.ex)
+            else:
+                self.ex = 0
             if self.ps:
                 self.ps = int(self.ps)
             else:
@@ -319,7 +338,16 @@ class ResponseStruct:
                 self.ot = int(self.ot)
             else:
                 self.ot = OrderType.GENERAL
-
+            if not self.address:
+                self.address = unknown
+            if not self.notes:
+                self.notes = unknown
+            if not self.fn:
+                self.fn = unknown
+            if not self.phone:
+                self.phone = unknown
+            if not self.workers:
+                self.workers = []
             self.get_full_price()
 
 

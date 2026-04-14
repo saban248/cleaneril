@@ -1,110 +1,110 @@
 from datetime import datetime
 from typing import Generator
 
-from api.databases.clients import Clients
+from api.databases import orders
+from api.databases.clients import ClientProfile
+from api.databases.orders import CleanOrder
 from api.databases.ptc import StateOrder
 
 
 class ApiFunds:
+    def __init__(self, manager_id:str):
+        self.__mid = manager_id
+        self.od = self.get_done_orders
+        self.fi = self.get_income_funds
+        self.fe = self.get_expense_funds
+        self.pf = self.get_profit_funds
 
-    @staticmethod
-    def get_done_client():
-        clients = Clients.query.filter_by(state=StateOrder.DONE).all()
-        return clients
+    @property
+    def get_done_orders(self):
+        _orders = orders.get_clean_orders(manager_id=self.__mid, stat=StateOrder.DONE).all()
+        return _orders
 
-    @staticmethod
-    def get_year_client(year:int) :
-        clients:list[Clients] = ApiFunds.get_done_client()
-        for client in clients:
-            if not datetime.fromtimestamp(float(client.date)).year == year:
+    def get_orders_by_year(self, year:int):
+        ords:list[CleanOrder] = self.od
+        for order in ords:
+            if not datetime.fromtimestamp(float(order.date)).year == year:
                 continue
-            yield client
+            yield order
 
-    @staticmethod
-    def get_income_funds():
+    @property
+    def get_income_funds(self):
         income = 0
-        clients:list[Clients] = ApiFunds.get_done_client()
-        for client in clients:
-            income += (client.price-client.off_price)
+        _orders:list[CleanOrder] = self.od
+        for order in _orders:
+            income += (order.price - order.off_price)
 
         return income
 
-    @staticmethod
-    def get_expense_funds():
-        clients = ApiFunds.get_done_client()
+    @property
+    def get_expense_funds(self):
+        _orders:list[CleanOrder] = self.od
         expense = 0
-        for client in clients:
-            expense += client.expense
+        for order in _orders:
+            expense += order.expense
 
         return expense
 
-    @staticmethod
-    def get_profit_funds():
-        return ApiFunds.get_income_funds()-ApiFunds.get_expense_funds()
+    @property
+    def get_profit_funds(self):
+        return self.fi-self.fe
 
-    @staticmethod
-    def get_total_off_price():
+    @property
+    def get_total_off_price(self):
         off_price = 0
-        clients:list[Clients] = ApiFunds.get_done_client()
-        for client in clients:
-            off_price += client.off_price
+        _orders:list[CleanOrder] = self.od
+        for order in _orders:
+            off_price += order.off_price
 
         return off_price
 
-    @staticmethod
-    def get_client_profit_years(year:int):
+    def get_order_profit_years(self, year:int):
         data = []
-        clients = ApiFunds.get_year_client(year)
-        for client in clients:
-            date = datetime.fromtimestamp(float(client.date))
+        _orders = self.get_orders_by_year(year)
+        for order in _orders:
+            date = datetime.fromtimestamp(float(order.date))
             cd = {"date": date.strftime("%Y.%m.%d"),
-                  "amount": client.price - client.off_price,
-                  "ave_ipcm":ApiFunds.get_average_income_per_client_month(date.year, date.month),
-                  "ave_epcm":ApiFunds.get_average_expense_per_client_month(date.year, date.month)
+                  "amount": order.price - order.off_price,
+                  "ave_ipcm":self.get_average_income_per_client_month(date.year, date.month),
+                  "ave_epcm":self.get_average_expense_per_client_month(date.year, date.month)
                   }
             data.append(cd)
 
         return data
 
-    @staticmethod
-    def get_average_income_per_client_ever() -> float:
-        clients = ApiFunds.get_done_client()
-        total_income = ApiFunds.get_income_funds()
-        return float(f"{total_income/(len(clients) or 1):.1f}")
+    def get_average_income_per_client_ever(self) -> float:
+        _orders = self.od
+        total_income = self.fi
+        return float(f"{total_income/(len(_orders) or 1):.1f}")
 
-    @staticmethod
-    def get_average_income_per_client_month(year:int, month:int):
-        clients = ApiFunds.get_done_client()
+    def get_average_income_per_client_month(self, year:int, month:int):
+        _orders = self.od
         income = 0
-        length_clients = 0
-        for client in clients:
-            date = datetime.fromtimestamp(float(client.date))
+        length_orders = 0
+        for order in _orders:
+            date = datetime.fromtimestamp(float(order.date))
             if date.year == year and month == date.month:
-                income += (client.price - client.off_price)
-                length_clients+=1
+                income += (order.price - order.off_price)
+                length_orders+=1
 
-        if not length_clients:return 0
-        return float(f"{income / length_clients:.1f}")
+        if not length_orders:return 0
+        return float(f"{income / length_orders:.1f}")
 
-    @staticmethod
-    def get_average_expense_per_client_month(year:int, month:int):
-        clients = ApiFunds.get_done_client()
+    def get_average_expense_per_client_month(self, year:int, month:int):
+        _orders = self.od
         expense = 0
-        length_clients = 0
-        for client in clients:
-            date = datetime.fromtimestamp(float(client.date))
+        length_orders = 0
+        for order in _orders:
+            date = datetime.fromtimestamp(float(order.date))
             if date.year == year and month == date.month:
-                expense += client.expense
-                length_clients+=1
+                expense += order.expense
+                length_orders+=1
 
-        if not length_clients:return 0
-        return float(f"{expense/length_clients:.1f}")
+        if not length_orders:return 0
+        return float(f"{expense / length_orders:.1f}")
 
-
-    @staticmethod
-    def get_average_expense_per_client_ever() -> float:
-        clients = ApiFunds.get_done_client()
-        if not clients:return 0
-        total_expense = ApiFunds.get_expense_funds()
-        return  float(f"{total_expense/len(clients):.1f}")
-
+    def get_average_expense_per_client_ever(self) -> float:
+        _orders = self.od
+        if not _orders:return 0
+        total_expense = self.fe
+        return  float(f"{total_expense/len(_orders):.1f}")
