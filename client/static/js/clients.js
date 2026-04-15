@@ -1,15 +1,4 @@
-const c_runtime = {
-    items_ordered:{},
-    state_client_selected:0,
-    state_calendar_selected:0,
-    workers:[],
-    blockPublishClient:false,
-    orders:[],
-    showClientsFrom:new Date().getFullYear()-1,
-    invoices:[],
-    currentClientIdView:null,
-    currentInvoiceIdView:null
-}
+
 
 
 
@@ -100,12 +89,14 @@ async function publishClient(order_id, state){
     const address = document.getElementById('client-location').value;
     const phone = document.getElementById('client-phone').value;
     const __items_ordered = document.getElementById('items-ordered').children.length;
-    for (let i=1;i<=__items_ordered;i++){
+    for (let i=0;i<=__items_ordered;i++){
         var n = document.getElementById(i+'-name');
         var p = document.getElementById(i+'-price'); 
         if (n==null||p==null)continue
         c_runtime.items_ordered[i] = {name:n.value||n.textContent, price:parseInt((p.value||p.textContent).replace(/\D+/g, ''),10)}
+
     }
+
     const notes = document.getElementById('client-notes').value;
     const price = document.getElementById('client-price').value;
     const vat = Boolean(document.getElementById('client-vat').checked)
@@ -344,7 +335,7 @@ function openMenuStateClients(t, stat){
 
 }
 const menuItemsClient = [
-    { text: "צפיה", action: (cid) => openClientDashbaord(cid), icon:'<i class="fa-solid fa-eye"></i>'},
+    { text: "צפיה", action: (oid) => {openClientDashbaord(c_runtime.currentClientIdView, oid)}, icon:'<i class="fa-solid fa-eye"></i>'},
     { text: "עריכה", action: (cid) => editExistOrder(cid), icon:'<i class="fa-solid fa-pencil"></>'},
     { text: "מחיקה", action: (cid) => deleteOrder(cid), icon:'<i class="fa-solid fa-trash-can trash"></i>'},
     {text:'בוטל',action:(cid)=>setStateClient(cid, StateOrder.CANCELED),icon:'<i class="fa-solid fa-ban"></i>'},
@@ -713,11 +704,23 @@ function shareOrderToClientAsLink(cid){
     
 }
 
+async function fetchClients() {
+    return await new Promise((reslove) => apiPost(ApiRoute.api, {action:ApiCall.list_clients}).then(
+        (res) => {
+            if (!res.success){
+                showToast(messgae.EfetchClients)
+                return;
+            }
+            c_runtime.clients = res.clients;
+            reslove();
+        }
+    ))
+}
 async function fetchOrders(){
     return await new Promise((reslove) => apiPost(ApiRoute.api,{action:ApiCall.orders_list, fromY:c_runtime.showClientsFrom}).then(
         res =>{
             if (!res.success){
-                showToast(messgae.EfetchClients)
+                showToast(messgae.EfetchOrders)
                 return
             }
             c_runtime.orders = res.orders;
@@ -730,7 +733,26 @@ async function fetchOrders(){
 
 function loadListClientsHtml(){
     const parent = document.getElementById("listClients")
-    parent.replaceChildren();
+    const iid = "iel-orders-main"
+    const iel = "icon-empty-list"
+    const icon = document.getElementById(iid);
+    const deleteChildren = ()=>{
+        [...parent.children].forEach(child => {
+            if (child.id !== iid) {
+                child.remove();
+            }
+        });
+    }
+    deleteChildren();
+    
+    if (!c_runtime.orders.length){
+        icon.style.display = 'block'
+        parent.classList.add(iel)
+        return
+    }
+    icon.style.display = 'none';
+    parent.classList.remove(iel)
+
     c_runtime.orders.forEach(client => {
         const el = createOrderItem(client);
         parent.appendChild(el);
@@ -739,7 +761,7 @@ function loadListClientsHtml(){
 function createOrderItem(order, actions = true, callback) {
     const div = document.createElement("div");
     div.className = "client-item"
-    div.dataset.stat = order.state;
+    div.dataset.stat = order.stat;
     div.dataset.key = order.key;
     if (!actions){
         div.id = order.order_id+"dashbaord";
@@ -782,7 +804,7 @@ function createOrderItem(order, actions = true, callback) {
         div.innerHTML = html
         const icons = div.querySelectorAll(".client-footer i");
         icons[1].onclick = (e) => openMenuClient(e.target, order.order_id);
-        icons[0].onclick = () => openClientDashbaord(order.order_id);
+        icons[0].onclick = () => openClientDashbaord(c_runtime.currentClientIdView, order.order_id);
     }
     else{
         div.innerHTML = html
@@ -792,6 +814,7 @@ function createOrderItem(order, actions = true, callback) {
 
 
 
-document.addEventListener("DOMContentLoaded", function (){
-    fetchOrders()
+document.addEventListener("DOMContentLoaded", async function (){
+    await fetchOrders()
+    await fetchClients()
 })

@@ -1,6 +1,28 @@
 
-/** ON LOAD */
+const c_runtime = {
+    items_ordered:{},
+    state_client_selected:0,
+    state_calendar_selected:0,
+    workers:[],
+    blockPublishClient:false,
+    orders:[],
+    showClientsFrom:new Date().getFullYear()-1,
+    invoices:[],
+    clients:[],
+    currentClientIdView:null,
+    currentOrderIdView:null,
+    currentInvoiceIdView:null
+}
 
+function get_client_by_order_id(order_id){
+    const order = c_runtime.orders.find(o => o.order_id == order_id)
+    if (!order){return}
+    const client =  c_runtime.clients.find(c => order.client_id == c.client_id)
+    return client
+    
+
+
+}
 
 function doLogin(t){
     onApiCall(t)

@@ -7,7 +7,7 @@ from flask import render_template_string, render_template
 from flask_wtf.csrf import validate_csrf
 
 from api.databases import orders, clients
-from api.databases.bridge import set_employee_to_client
+from api.databases.bridge import set_employee_to_client, on_create_order_create_client
 from api.databases.clients import ClientProfile
 from api.databases.company import ApiCompany
 from api.databases.crads import ApiCards, Cards
@@ -18,8 +18,9 @@ from api.databases.manager import ApiManager, on_register_create_company
 from api.databases.orders import CleanOrder
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril
 from api.ptc import special_things, SJson, ShortSession
-from api.routes.ptc import Pages, ApiCall, ResponseStruct, ApiUploadFile, RegisterApi, PaymentInvoice
+from api.routes.ptc import Pages, ApiCall, ApiUploadFile, RegisterApi, PaymentInvoice
 from api.validator import core_msg, company
+from api.routes import cil_struct
 
 def get_api_action(session, request, **breq) -> dict:
     action = int(breq.get("action", -1))
@@ -27,26 +28,26 @@ def get_api_action(session, request, **breq) -> dict:
     manager_id = manager["manager_id"]
     match action:
         case ApiCall.card_editor:
-            card = ResponseStruct.CardEditor().build(**breq)
+            card = cil_struct.CardEditor().build(**breq)
             return {"template":get_card_edit_template(card.ci)}
         case ApiCall.order_edit:
-            r_order = ResponseStruct.CleanOrder().build(**breq)
+            r_order = cil_struct.CleanOrder().build(**breq)
             order: CleanOrder = orders.get_clean_orders(manager_id=manager_id, order_id=r_order.oi).first()
             return {"template":get_client_order_template(manager, order), "order_id":order.order_id}
         case ApiCall.client_view:
-            client = ResponseStruct.Client().build(**breq)
-            print(client)
+            client = cil_struct.Client().build(**breq)
             return {"template":get_client_template(manager_id, client.cid)}
         case ApiCall.order_save:
-            r_order = ResponseStruct.CleanOrder().build(**breq)
+            r_order = cil_struct.CleanOrder().build(**breq)
             order = orders.update_clean_order(manager_id, r_order.client_id,r_order)
+            on_create_order_create_client(order)
             return {}
         case ApiCall.order_new:
-            r_order = ResponseStruct.CleanOrder().build(**breq)
+            r_order = cil_struct.CleanOrder().build(**breq)
             order = orders.create_clean_order(manager_id,r_order.client_id, r_order)
             return {"template":get_client_order_template(manager, order,True), "order_id":order.order_id}
         case ApiCall.order_view:
-            od = ResponseStruct.CleanOrder().build(**breq)
+            od = cil_struct.CleanOrder().build(**breq)
             order:CleanOrder = orders.get_clean_orders(manager_id=manager_id, order_id=od.oi).first()
             if order:
                 return {"template": get_client_order_template(manager, order, False), "order_id":order.order_id}
@@ -54,21 +55,21 @@ def get_api_action(session, request, **breq) -> dict:
         case ApiCall.card_draft | ApiCall.card_save:
             if ApiCall.card_draft&action:state = StateDocument.DRAFT
             else: state = StateDocument.SAVED
-            card = ResponseStruct.CardEditor().build(**breq)
+            card = cil_struct.CardEditor().build(**breq)
             _stat_ = ApiCards.add_card(card.ci,state,card.ct,card.o,
                               card.op,card.imp,card.desc,card.wt, card.wtl,card.phone)
             return {"card_id":card.ci}
         case ApiCall.card_delete:
-            card = ResponseStruct.CardEditor().build(**breq)
+            card = cil_struct.CardEditor().build(**breq)
             return  {"deleted":ApiCards.delete_card(card_id=card.ci)}
         case ApiCall.order_delete:
-            rroder = ResponseStruct.CleanOrder().build(**breq)
+            rroder = cil_struct.CleanOrder().build(**breq)
             return {"success":bool(not orders.delete_clean_order(manager_id, rroder.oi))}
         case ApiCall.order_stat:
-            r_order = ResponseStruct.CleanOrder().build(**breq)
+            r_order = cil_struct.CleanOrder().build(**breq)
             return {"stated":orders.set_clean_order_stat(manager_id, order_id=r_order.oi, stat=r_order.s)}
         case ApiCall.funds_income:
-            funds = ResponseStruct.Funds().build(**breq)
+            funds = cil_struct.Funds().build(**breq)
             api_f = ApiFunds(manager_id)
             data = {"data": api_f.get_order_profit_years(funds.year),
                     "in":api_f.fi,
@@ -79,7 +80,7 @@ def get_api_action(session, request, **breq) -> dict:
                     "total_client":len(api_f.od)}
             return data
         case ApiCall.conf_company:
-            config = ResponseStruct.Company().build(**breq)
+            config = cil_struct.Company().build(**breq)
             state = ApiCompany.update_company_details(manager_id, config.c_name,config.c_owner, config.c_vat,
                                               config.c_desc,config.c_phone, config.c_email, config.c_vat_code,
                                                       config.c_gpse)
@@ -88,46 +89,49 @@ def get_api_action(session, request, **breq) -> dict:
             workers = list(ApiEmployee.get_employees_search(manager_id=manager_id))
             return {"workers":workers}
         case ApiCall.worker_editor:
-            worker = ResponseStruct.Employee().build(**breq)
+            worker = cil_struct.Employee().build(**breq)
             return {"template": get_worker_template(manager, worker.wid)}
         case ApiCall.worker_view:
-            worker = ResponseStruct.Employee().build(**breq)
+            worker = cil_struct.Employee().build(**breq)
             return {"template": get_worker_template(manager, worker.wid, False)}
         case ApiCall.worker_save:
-            worker = ResponseStruct.Employee().build(**breq)
+            worker = cil_struct.Employee().build(**breq)
             empl = ApiEmployee.add_employee(worker.e_name, worker.e_pwd, manager_id, worker.wid,
                                                worker.permission,worker.e_phone,worker.e_idc, worker.ps, worker.pvat)
             return {"success":bool(empl)}
         case ApiCall.worker_delete:
-            worker = ResponseStruct.Employee().build(**breq)
+            worker = cil_struct.Employee().build(**breq)
             _state_ = ApiEmployee.delete_employee(manager_id, worker.wid)
             return {"success":bool(not _state_)}
         case ApiCall.calendar:
-            calendar = ResponseStruct.Calendar().build(**breq)
+            calendar = cil_struct.Calendar().build(**breq)
             # clients = ApiClients.get_clients_by_calendar_date(calendar.month, calendar.year)
             return {"data":[]}
         case ApiCall.orders_list:
-            data = ResponseStruct.ListOrders().build(**breq)
+            data = cil_struct.ListOrders().build(**breq)
             _orders = orders.get_clean_order_latest(False, manager_id=manager_id)
             return {"orders":_orders}
         case ApiCall.invoice_view:
-            inv = ResponseStruct.Invoice().build(**breq)
+            inv = cil_struct.Invoice().build(**breq)
             return {"template":get_invoice_template(manager_id, inv.iid)}
         case ApiCall.invoice_create:
-            inv = ResponseStruct.Invoice().build(**breq)
+            inv = cil_struct.Invoice().build(**breq)
             # client = ApiClients.get_clients(client_id=inv.cid).first()
             # invoice = ApiInvoice.create_invoice(manager_id,client, PaymentInvoice.CASH)
             return {"success":bool(not inv)}
         case ApiCall.invoice_list:
             invoices = ApiInvoice.get_invoices_list()
             return {"invoices":invoices}
+        case ApiCall.list_clients:
+            _clients = clients.get_clients(False, manager_id=manager_id)
+            return {"clients":_clients}
 
     return {}
 
 
 def get_register_action(session, **breq):
     action = int(breq.get("action", -1))
-    register = ResponseStruct.Register().build(**breq)
+    register = cil_struct.Register().build(**breq)
     match action:
         case RegisterApi.level1:
             user = company.username(register.username)
@@ -170,6 +174,7 @@ def get_card_edit_template(card_id:str, **_):
 
 def get_client_order_template(manager, order:CleanOrder, edit:bool = True, **_):
     company = ApiCompany.get_companies(manager_id=manager["manager_id"]).first()
+    print(order.items)
     return render_template(f'{Pages.dashboard.path}order.html',
                            editor=edit, order=order, manager=manager, company=company)
 

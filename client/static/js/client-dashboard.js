@@ -47,11 +47,15 @@ function hideClientDashboard(){
 
 }
 
-async function openClientDashbaord(client_id = c_runtime.currentClientIdView, fetch = true){
+async function openClientDashbaord(client_id = c_runtime.currentClientIdView, order_id = c_runtime.currentOrderIdView, fetch = true){
+    if (!client_id){
+        client_id = get_client_by_order_id(order_id)?.client_id
+    }
+    c_runtime.currentClientIdView = client_id;
+    c_runtime.currentOrderIdView = order_id;
     showClientDashboard()
     await fetchClientDashboard(client_id)
     c_clients.enterCard = true;
-
     switchViewClientDashboard(clientCardsView.ORDER, fetch)
 }
 
@@ -90,7 +94,8 @@ async function fetchClientOrder(order_id = c_runtime.currentClientIdView, api_ac
             closeToast(toast)
             const card = document.getElementById("the-client-card")
             card.innerHTML = res.template;
-            c_runtime.currentClientIdView = card.dataset.ci = res.order_id
+            c_runtime.currentClientIdView = card.dataset.ci 
+            c_runtime.currentOrderIdView = res.order_id;
             c_clients.currentCard = clientCardsView.ORDER
             c_clients.enterCard = true;
             if (c_clients.order_edit || c_clients.new_order){
@@ -109,7 +114,7 @@ function createListClientOrders(){
         });
     }
     const parent = document.getElementById("listClientOrders");
-    const currentOrder = c_runtime.orders.find(c=> c.order_id == c_runtime.currentClientIdView);
+    const currentOrder = c_runtime.orders.find(c=> c.order_id == c_runtime.currentOrderIdView);
     const icon = document.getElementById('iel-orders');
     if (!c_runtime.orders || !currentOrder){
         if (!icon)return
@@ -122,18 +127,18 @@ function createListClientOrders(){
         parent.classList.remove("icon-empty-list")
         icon.style.display = 'none';
     }
+
     deleteChildren()
     for (let order of c_runtime.orders){
-        const name = matchNumsWords(1, order.fullname, currentOrder.fullname);
-        const phone = cleanPhoneJustNumbers(order.phone) == cleanPhoneJustNumbers(currentOrder.phone);
-        const address = matchNumsWords(2,order.address, currentOrder.address);
-        if (!(name && phone && address))continue;
+        if (order.client_id != c_runtime.currentClientIdView){
+            continue;
+        }
 
         const element = createOrderItem(order, false, async ()=>{
             await showClientOrder(order.order_id)
             createListClientOrders()
         });
-        if (order.order_id == c_runtime.currentClientIdView){
+        if (order.order_id == c_runtime.currentOrderIdView){
             element.classList.add('current-client-list');
         }
         parent.appendChild(element);
@@ -210,7 +215,7 @@ function switchViewClientDashboard(v = c_clients.currentCard, fetch = true, back
                 showClientOrders()
             }
             if (!back && c_clients.enterCard){
-                showClientOrder(c_runtime.currentClientIdView, fetch)
+                showClientOrder(c_runtime.currentOrderIdView, fetch)
             }
             hideClientReceipts()
             hideClientReceipt()
@@ -311,7 +316,7 @@ function createListClientReceipts(){
 
 
 
-async function showClientOrder(oid = c_runtime.currentClientIdView, fetch = true){
+async function showClientOrder(oid = c_runtime.currentOrderIdView, fetch = true){
     if (isCantExitEditOrder()){
         if (!askAboutExitEditOrder()){return}
 
@@ -393,9 +398,14 @@ function hideClientReceipts(){
 
 /** ACTIONS */
 
-async function editExistOrder(order_id = c_runtime.currentClientIdView){
+async function editExistOrder(order_id = c_runtime.currentOrderIdView){
     if (!c_clients.client_view){
-        await openClientDashbaord(order_id, false)
+            if (!c-c_runtime.currentClientIdView){
+                const client = get_client_by_order_id(order_id)
+                c_runtime.currentClientIdView = client.client_id;
+                
+            }
+        await openClientDashbaord(c_runtime.currentClientIdView, order_id, false)
     }
     c_clients.order_edit = true; 
     c_runtime.currentClientIdView = order_id;
@@ -462,11 +472,11 @@ function searchClientNewOrder(e){
     const name = document.getElementById("fullname");
     const address = document.getElementById("client-location")
     const phone = document.getElementById("client-phone");
-    const parent = document.getElementById("items-ordered");
+    // const parent = document.getElementById("items-ordered");
     
     const value = name.value.toLowerCase();
     if (value == '')return
-    const match = c_runtime.orders.find(c => c.fullname.toLowerCase().startsWith(value));
+    const match = c_runtime.orders.find(o => o.fullname.toLowerCase().startsWith(value));
     if (!match){return}
     name.value  = match.fullname
     address.value = match.address;
@@ -476,10 +486,9 @@ function searchClientNewOrder(e){
         name.focus();
         name.setSelectionRange(value.length, match.fullname.length);
     });
-    parent.replaceChildren()
-    for (let [k,v] of Object.entries(match.items)){
-        addItemClientOrder(v.name,v.price)
-    }
+    // for (let [k,v] of Object.entries(match.items)){
+    //     addItemClientOrder(v.name,v.price)
+    // }
 
 }
 
@@ -530,7 +539,7 @@ function addItemClientOrder(name, price) {
 
     div.append(inputName, inputPrice, trash);
     items.appendChild(div);
-    c_runtime.items_ordered[div.id] = {name:name,price:price}
+    c_runtime.items_ordered[div.id] = {name:name||'unknown',price:price||0}
 }
 
 function deleteItemClientOrder(id_order){

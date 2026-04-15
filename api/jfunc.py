@@ -1,4 +1,5 @@
 import json
+import re
 import time
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -93,3 +94,34 @@ def vat_of_price(price):
 @cleaneril.template_filter("zfill4")
 def zfill_number(number):
     return str(number).zfill(4)
+
+
+
+def clean_phone_just_numbers(phone):
+    if not phone:
+        return ''
+
+    phone = str(phone)
+    phone = re.sub(r'[\u200E\u200F\u202A-\u202E]', '', phone)
+    digits = re.sub(r'\D', '', phone)
+    if digits.startswith('9720'):
+        digits = '0' + digits[4:]
+    elif digits.startswith('972'):
+        digits = '0' + digits[3:]
+
+    return digits
+
+
+def match_nums_words(nums, str1, str2):
+    words1 = (str1 or '').lower().split()
+    words2 = (str2 or '').lower().split()
+
+    count = 0
+
+    for w in words1:
+        if w in words2:
+            count += 1
+            if count >= nums:
+                return True
+
+    return False

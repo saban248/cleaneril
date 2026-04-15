@@ -8,7 +8,9 @@ from sqlalchemy import JSON
 from api.databases.general import get_columns_as_dict, unknown, get_columns, get_latest_columns, delete_column
 from api.databases.ptc import cleaneril_db, StateOrder
 from api.ptc import generate_hex
-from api.routes.ptc import ClientLeadFrom, PaymentInvoice, OrderType, ResponseStruct
+from api.routes import cil_struct
+from api.routes.ptc import ClientLeadFrom, PaymentInvoice, OrderType
+
 
 
 class CleanOrder(cleaneril_db.Model):
@@ -49,7 +51,7 @@ def get_clean_order_latest(source = True, **kwargs):
 
     return get_latest_columns(CleanOrder, source, lambda o:o["date"], **kwargs)
 
-def create_clean_order(manager_id:str, client_id:str, response:ResponseStruct.CleanOrder, update:bool = False) -> CleanOrder:
+def create_clean_order(manager_id:str, client_id:str, response:cil_struct.CleanOrder, update:bool = False) -> CleanOrder:
     if update:
         order = get_clean_orders(manager_id=manager_id, order_id=response.oi).first()
         assert order
@@ -84,7 +86,7 @@ def create_clean_order(manager_id:str, client_id:str, response:ResponseStruct.Cl
     cleaneril_db.session.commit()
     return order
 
-def update_clean_order(manager_id:str, client_id:str, response:ResponseStruct.CleanOrder):
+def update_clean_order(manager_id:str, client_id:str, response:cil_struct.CleanOrder):
     return create_clean_order(manager_id, client_id, response, True)
 
 

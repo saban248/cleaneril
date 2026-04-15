@@ -188,7 +188,8 @@ const ApiCall = {
     invoice_create:1<<19,
     invoice_list:1<<20,
     order_view:1<<21,
-    order_new:1<<22
+    order_new:1<<22,
+    list_clients:1<<23
 }
 
 

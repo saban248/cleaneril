@@ -85,7 +85,7 @@
                     <span>מחיר</span>
                 </div>
                 <div id="items-ordered">
-                    {% for k,v in order.items %}
+                    {% for k,v in order.items.items() %}
                         <div class="ordered" id="{{k}}">
                             <span class="s-item-name" id="{{k}}-name">{{v.name}}</span>
                             <span class="s-item-price" id="{{k}}-price">{{v.price}}₪</span>

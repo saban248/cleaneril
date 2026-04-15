@@ -11,7 +11,8 @@ from api.databases.employee import Employee
 from api.databases.manager import ApiManager
 from api.databases.ptc import cleaneril, ServerConfig, StateOrder
 from api.ptc import ShortSession, SJson, get_dictionary_http, generate_hex
-from api.routes.ptc import RouteApi, ResponseStruct
+from api.routes.ptc import RouteApi
+from api.routes import cil_struct
 
 
 @cleaneril.route(RouteApi.do_auth.path, methods=["POST"])
@@ -20,7 +21,7 @@ def authorize():
         return SJson.success()
 
     breq = get_dictionary_http(request)
-    auth = ResponseStruct.Auth().build(**breq).__dict__
+    auth = cil_struct.Auth().build(**breq).__dict__
     stat = ApiManager.auth(**auth)
     if stat:
         return SJson.error()

@@ -12,7 +12,8 @@ from api.databases.orders import CountOfOrderByStat
 from api.databases.ptc import cleaneril, ServerConfig
 from api.databases.company import ApiCompany
 from api.ptc import special_things, SJson, ShortSession, get_dictionary_http
-from api.routes.ptc import RoutePages, Pages, ResponseStruct
+from api.routes.ptc import RoutePages, Pages
+from api.routes import cil_struct
 
 
 @cleaneril.route(RoutePages.home.path, methods=['GET'])
@@ -40,7 +41,7 @@ def dashboard():
         return redirect(url_for("auth"))
 
     breq = get_dictionary_http(request)
-    dash = ResponseStruct.Dashboard().build(**breq)
+    dash = cil_struct.Dashboard().build(**breq)
     manager = ShortSession.get_admin_details(session)
     manager_id = manager["manager_id"]
     company = ApiCompany.get_companies(manager_id=manager_id).first()

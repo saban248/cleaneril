@@ -16,8 +16,10 @@
 
 .cleaneril-list::-webkit-scrollbar {
   display: none;
-}
+} 
 .icon-empty-list{
+  padding-top: 20px;
+  border-bottom: none !important;
   display: flex;
   align-items: center;
   justify-content: center;
