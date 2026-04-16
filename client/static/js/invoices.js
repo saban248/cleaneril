@@ -17,15 +17,14 @@ function closeViewInvoice(){
 
 
 
-async function createInvoice(order_id = c_runtime.currentOrderIdView){
+async function createInvoice(client_id = c_runtime.currentClientIdView, order_id = c_runtime.currentOrderIdView){
     if (isCantExitEditOrder()){
         if (!askAboutExitEditOrder()){return}
 
     }
-    const data = {action:ApiCall.invoice_create, oid:order_id, cid:c_runtime.currentClientIdView, 
-        stat:InvoiceStatType.PAID,pt:PaymentInvoice.BANK_TRANSFER
+    const data = {action:ApiCall.invoice_create, cid:client_id, oid:order_id, stat:InvoiceStatType.PAID,pt:PaymentInvoice.BANK_TRANSFER
     }
-    const toast = showToast(messgae.createInvoice)
+    const toast = showToast(message.createInvoice)
     return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
         async res =>{
             if (!res.success){
@@ -42,11 +41,14 @@ async function createInvoice(order_id = c_runtime.currentOrderIdView){
 }
 
 async function deleteReceipt(receipt_id = c_runtime.currentInvoiceIdView, callback){
+    const ok = await showAsk({msg:message.WdeleteReceipt})
+    if (!ok)return
+    
     if (!receipt_id){
-        showToast(messgae.EselectReceipt, ToastStat.ERROR)
+        showToast(message.EselectReceipt, ToastStat.ERROR)
         return
     }
-    const toast = showToast(messgae.loading)
+    const toast = showToast(message.loading)
     const data = {action:ApiCall.invoice_delete, iid:receipt_id}
     return await new Promise((resolve) => apiPost(ApiRoute.api, data).then(
         async (res) => {
@@ -54,7 +56,7 @@ async function deleteReceipt(receipt_id = c_runtime.currentInvoiceIdView, callba
                 showToast(res.notice,ToastStat.ERROR, toast);
                 return
             }
-            showToast(res.success, ToastStat.DONE, toast)
+            showToast(res.notice, ToastStat.DONE, toast)
             c_runtime.currentInvoiceIdView = null;
             await fetchInvoice()
             callback?callback():null
@@ -68,7 +70,7 @@ async function fetchInvoice(){
     return await new Promise((reslove) => apiPost(ApiRoute.api, {action:ApiCall.invoice_list}).then(
         res => {
             if (!res.success){
-                showToast(messgae.notice, ToastStat.ERROR)
+                showToast(message.notice, ToastStat.ERROR)
                 return
             }
             c_runtime.invoices = res.invoices;
@@ -81,17 +83,21 @@ async function fetchInvoice(){
 function loadListInvoicesHtml(){
     const parent = document.getElementById("listInvoices")
     parent.replaceChildren();
-    c_runtime.invoices.forEach(invoice => {
-        const el = createInvoiceItem(invoice);
+    c_runtime.invoices.forEach(receipt => {
+        const el = createInvoiceItem(receipt);
+        if (el==null)return
         parent.appendChild(el);
     });
 }
 
 function createInvoiceItem(invoice, actions = true, callback){
     const order = get_order_by_receipt_id(invoice.receipt_id)
+    if (!order){
+        return
+    }
     const div = document.createElement("div");
     div.className = "cil-item "
-    // div.dataset.stat = client.state;
+    div.dataset.stat = invoice.stat;
     div.dataset.key = invoice.key;
     div.id = invoice.receipt_id;
 
@@ -102,7 +108,7 @@ function createInvoiceItem(invoice, actions = true, callback){
     }
 
     div.innerHTML = `
-        <div class="avatar client-state-4">
+        <div class="avatar client-state-${invoice.stat}">
         ${invoice.key}
         </div>
         
@@ -134,8 +140,8 @@ function createInvoiceItem(invoice, actions = true, callback){
         
         const icons = div.querySelectorAll(".client-footer i");
 
-        icons[0].onclick = () => viewClientOrder(client.client_id);
-        icons[1].onclick = () => shareOrderToClientAsPhoto(client.client_id);
+        // icons[0].onclick = () => viewClientOrder(client.client_id);
+        // icons[1].onclick = () => shareOrderToClientAsPhoto(client.client_id);
         icons[2].onclick = (e) => openMenuClient(e.target, client.client_id);
     }
     return div;

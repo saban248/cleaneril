@@ -29,6 +29,8 @@ def get_receipts(source:bool = True, **kwargs):
 
 def create_receipt(manager_id:str, client_id:str, order_id:str, stat:int,pt:int, force:bool = False):
     # check
+    if not client_id or not order_id:
+        return core_msg.ServerCode.Receipt.receipt_create_problem
     receipt = get_receipts(manager_id=manager_id, client_id=client_id, order_id=order_id).first()
     if receipt:
         if not force:

@@ -5,6 +5,7 @@ const c_runtime = {
     state_calendar_selected:0,
     workers:[],
     blockPublishClient:false,
+    blockRenderReceiptImg:false,
     orders:[],
     showClientsFrom:new Date().getFullYear()-1,
     invoices:[],
@@ -21,7 +22,7 @@ function get_client_by_order_id(order_id){
     return client
 }
 function get_order_by_receipt_id(receipt_id){
-    const receipt = c_runtime.invoices.find(r => r.receipt_id)
+    const receipt = c_runtime.invoices.find(r => r.receipt_id == receipt_id)
     if (!receipt){
         return null
     }
@@ -194,8 +195,10 @@ function draftCard(){
     publishCard(ApiCall.card_draft)
 }
 
-function deleteCard(card_id){
-    if (!confirm("continue?"))return;
+async function deleteCard(card_id){
+    const ok = await showAsk({msg:message.WdeleteCard})
+    if (!ok)return;
+    
     data = {ci:card_id, action:ApiCall.card_delete}
     apiPost(ApiRoute.api,data).then(
         (res) =>{

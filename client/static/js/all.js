@@ -199,7 +199,48 @@ function matchNumsWords(nums, str1, str2) {
   return false;
 }
 
+/** model */
+const modal = document.getElementById("confirmModal");
+const titleEl = document.getElementById("modalTitle");
+const messageEl = document.getElementById("modalMessage");
+const btnConfirm = document.getElementById("btnConfirm");
+const btnCancel = document.getElementById("btnCancel");
 
-window.addEventListener("resize", () => {
-    IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
-});
+let resolver = null;
+
+function showAsk({ title, msg }) {
+    titleEl.textContent = title || message.notice;
+    messageEl.textContent = msg
+
+    modal.classList.remove("hide");
+    return new Promise((resolve) => {
+        resolver = resolve;
+    });
+}
+
+function closeAsk(code = false) {
+    modal.classList.add("hide");
+    if (resolver) {
+        resolver(code);
+        resolver = null;
+    }
+}
+
+document.addEventListener("DOMContentLoaded", async function (){
+    btnCancel.onclick = () => closeAsk(false);
+    btnConfirm.onclick = () => closeAsk(true);
+
+    // ESC + click outside
+    window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeAsk(false);
+    });
+
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) closeAsk(false);
+    });
+
+    window.addEventListener("resize", () => {
+        IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
+    });
+
+})

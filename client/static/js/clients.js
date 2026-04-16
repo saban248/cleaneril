@@ -76,7 +76,7 @@ function onPublishClientHideProgress(){
 }
 
 
-async function publishClient(order_id, state){
+async function publishCleanOrder(order_id, state){
     if (c_runtime.blockPublishClient)return;
     c_runtime.blockPublishClient =true;
     const fullname = document.getElementById('fullname').value;
@@ -133,6 +133,7 @@ async function publishClient(order_id, state){
                 c_runtime.items_ordered = {}
                 showToast(res.notice, ToastStat.DONE, toast);
                 await fetchOrders();
+                await fetchClients()
                 createListClientOrders()
             }
             c_runtime.blockPublishClient = false
@@ -235,24 +236,6 @@ function updateStateClientSetting(state, calender){
 }
 
 
-function setStateClient(order_id, state){
-    data = {action: ApiCall.client_state, oi:order_id, s:state}
-    const client = c_runtime.orders.find(c => c.client_id === client_id) || null
-    const toast = showToast("מעבד...");
-    apiPost(ApiRoute.api, data).then(
-        (res) =>{
-            if (!res.success){
-                showToast(res.notice)
-                return
-            }
-            fetchOrders();
-            showToast(`${client.fullname} ${getStateClientText(state)}`, ToastStat.DONE, toast);
-            
-        }
-    )
-
-}
-
 function updateCalanderClient(cc){
     const params = new URLSearchParams(window.location.search);
     params.set("c", cc)
@@ -335,18 +318,18 @@ function openMenuStateClients(t, stat){
 
 }
 const menuItemsClient = [
-    { text: "צפיה", action: (oid) => {openClientDashbaord(c_runtime.currentClientIdView, oid)}, icon:'<i class="fa-solid fa-eye"></i>'},
-    { text: "עריכה", action: (cid) => editExistOrder(cid), icon:'<i class="fa-solid fa-pencil"></>'},
-    { text: "מחיקה", action: (cid) => deleteOrder(cid), icon:'<i class="fa-solid fa-trash-can trash"></i>'},
-    {text:'בוטל',action:(cid)=>setStateClient(cid, StateOrder.CANCELED),icon:'<i class="fa-solid fa-ban"></i>'},
-    {text:'הושלם', action:(cid)=>setStateClient(cid, StateOrder.DONE), icon:'<i class="fa-solid fa-clipboard-check"></i>'},
-    {text:'לא נסגר',action:(cid)=>setStateClient(cid, StateOrder.WAIT), icon:'<i class="fa-solid fa-question"></i>'},
-    {text:'בהמתנה',action:(cid)=>setStateClient(cid, StateOrder.CLOSED), icon:'<i class="fa-solid fa-hourglass-half"></i>'},
-    {text:'צור קבלה',action:(cid)=>createInvoice(cid), icon:'<i class="fa-solid fa-file-invoice"></i>'},
+    { text: "צפיה", action: (cid, oid) => openClientDashbaord(cid, oid), icon:'<i class="fa-solid fa-eye"></i>'},
+    { text: "עריכה", action: (cid, oid) => editExistOrder(oid), icon:'<i class="fa-solid fa-pencil"></>'},
+    { text: "מחיקה", action: (cid, oid) => deleteOrder(oid), icon:'<i class="fa-solid fa-trash-can trash"></i>'},
+    {text:'בוטל',action:(cid, oid)=>setStateCleanOrder(oid, StateOrder.CANCELED),icon:'<i class="fa-solid fa-ban"></i>'},
+    {text:'הושלם', action:(cid, oid)=>setStateCleanOrder(oid, StateOrder.DONE), icon:'<i class="fa-solid fa-clipboard-check"></i>'},
+    {text:'לא נסגר',action:(cid, oid)=>setStateCleanOrder(oid, StateOrder.WAIT), icon:'<i class="fa-solid fa-question"></i>'},
+    {text:'בהמתנה',action:(cid, oid)=>setStateCleanOrder(oid, StateOrder.CLOSED), icon:'<i class="fa-solid fa-hourglass-half"></i>'},
+    {text:'צור קבלה',action:(cid, oid)=>createInvoice(cid, oid), icon:'<i class="fa-solid fa-file-invoice"></i>'},
 
 ]
 
-function openMenuClient(t, cid) {
+function openMenuClient(t, cid, oid) {
     const menu = document.getElementById("clientMenu")
     if (menu.classList.contains("show")) {
         menu.classList.remove("show")
@@ -373,7 +356,7 @@ function openMenuClient(t, cid) {
 
         cma.onclick = () => {
             if (!item.action)return
-            item.action(cid)
+            item.action(cid,oid)
             menu.classList.remove("show")
         }
         menu.appendChild(cma)
@@ -708,7 +691,7 @@ async function fetchClients() {
     return await new Promise((reslove) => apiPost(ApiRoute.api, {action:ApiCall.list_clients}).then(
         (res) => {
             if (!res.success){
-                showToast(messgae.EfetchClients)
+                showToast(message.EfetchClients)
                 return;
             }
             c_runtime.clients = res.clients;
@@ -720,7 +703,7 @@ async function fetchOrders(){
     return await new Promise((reslove) => apiPost(ApiRoute.api,{action:ApiCall.orders_list, fromY:c_runtime.showClientsFrom}).then(
         res =>{
             if (!res.success){
-                showToast(messgae.EfetchOrders)
+                showToast(message.EfetchOrders)
                 return
             }
             c_runtime.orders = res.orders;
@@ -803,7 +786,7 @@ function createOrderItem(client_id, order, actions = true, callback) {
         html += orderActions;
         div.innerHTML = html
         const icons = div.querySelectorAll(".client-footer i");
-        icons[1].onclick = (e) => openMenuClient(e.target, order.order_id);
+        icons[1].onclick = (e) => openMenuClient(e.target, client_id, order.order_id);
         icons[0].onclick = () => openClientDashbaord(c_runtime.currentClientIdView, order.order_id);
     }
     else{

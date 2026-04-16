@@ -40,10 +40,11 @@ function closeCreateWorker(no_api=false){
 
 
 
-function deleteWorker(worker_id){
-    if (!confirm("continue?"))return;
+async function deleteWorker(worker_id){
+    const ok = await showAsk({msg:message.WdeleteWorker})
+    if (!ok)return;
+
     data = {wid:worker_id, action:ApiCall.worker_delete}
-    console.log(data)
     apiPost(ApiRoute.api,data).then(
         (res) =>{
             if (!res.success || res.deleted){

@@ -10,24 +10,28 @@ function isCantExitEditOrder(){
     return c_clients.order_edit
 }
 
-function askAboutExitEditOrder(){
+async function askAboutExitEditOrder(){
     if (!c_clients.order_edit)return false
 
-    const answer = confirm(messgae.IunsaveOrder)
+    const answer = await showAsk({msg:message.IunsaveOrder});
     if (answer){
-        c_clients.order_edit = c_clients.new_order = false;
-    } 
+            c_clients.order_edit = c_clients.new_order = false;
+         
+    }
     return answer
 
 }
 
-function closeClientDashboard(){
+async function closeClientDashboard(){
     if (c_clients.new_order){
-        deleteOrder(c_runtime.currentClientIdView)
+        deleteOrder(c_runtime.currentOrderIdView)
         
     }
     if (isCantExitEditOrder()){
-        if (!askAboutExitEditOrder()){ return}
+        const a = await askAboutExitEditOrder()
+        if (!a){ 
+            return
+        }
 
     }
     hideClientDashboard()
@@ -87,7 +91,6 @@ async function fetchClientOrder(order_id = c_runtime.currentOrderIdView, api_act
     data = {action:api_action, oi:order_id}
     return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
         (res) => {
-            console.log(order_id, res, api_action)
             if (!res.success){
                 showToast(res.notice, ToastStat.ERROR, toast);
                 return
@@ -150,7 +153,7 @@ function createListClientOrders(){
 
 async function fetchClientOrderInvoice(iid){
     if (!iid){
-        showToast(messgae.EselectReceipt);
+        showToast(message.EselectReceipt);
         return
     }
     const toast = showToast("מעבד...");
@@ -173,7 +176,8 @@ async function fetchClientOrderInvoice(iid){
 }
 
 async function createClientOrderInvoiceImg(iid){
-    if (iid == undefined)return
+    if (iid == undefined || c_runtime.blockRenderReceiptImg)return
+    c_runtime.blockRenderReceiptImg = true;
     await fetchClientOrderInvoice(iid)
     const template = document.getElementById("receiptTemplate");
     const img = document.getElementById("imgReceipt");
@@ -183,6 +187,7 @@ async function createClientOrderInvoiceImg(iid){
     await createImgInvoice(template, img)
     img.style.display = 'block'
     template.style.display = 'none'
+    c_runtime.blockRenderReceiptImg = false;
 }
 function removeOrderReceiptImg(){
     const img = document.getElementById("imgReceipt");
@@ -230,10 +235,14 @@ function switchClientCardAction(){
         hide(arfc)
     }
 }
-function switchViewClientDashboard(v = c_clients.currentCard, fetch = true, back = false){
+async function switchViewClientDashboard(v = c_clients.currentCard, fetch = true, back = false){
     // BACK DELETED
     if (isCantExitEditOrder()){
-        if (!askAboutExitEditOrder()){return}
+        if (await !askAboutExitEditOrder()){return}
+    }
+    if (c_clients.currentOrderIdView && c_clients.new_order){
+        showToast("סיים יצירת הזמנה חדשה לפני", ToastStat.ERROR)
+        return
     }
 
     if (!v){v = c_clients.currentCard}
@@ -331,6 +340,7 @@ function createListClientReceipts(){
             createListClientReceipts()
         }
         )
+        if (!element){continue}
         if (receipt.receipt_id == c_runtime.currentInvoiceIdView){
             element.classList.add('current-client-list');
         }
@@ -342,7 +352,7 @@ function createListClientReceipts(){
 
 async function showClientOrder(oid = c_runtime.currentOrderIdView, fetch = true){
     if (isCantExitEditOrder()){
-        if (!askAboutExitEditOrder()){return}
+        if (await !askAboutExitEditOrder()){return}
 
     }
     if (fetch){
@@ -367,7 +377,7 @@ function hideClientOrder(){
 function showClientOrders(){
     const parent = document.getElementById("the-client-orders")
     if (!parent){
-        showToast(messgae.EneedRefresh, ToastStat.ERROR)
+        showToast(message.EneedRefresh, ToastStat.ERROR)
         return;
     }
     if (IS_MOBILE){
@@ -444,7 +454,7 @@ async function editExistOrder(order_id = c_runtime.currentOrderIdView){
 
 async function shareOrderToClientAsPhoto(cid = c_runtime.currentClientIdView){
     if (isCantExitEditOrder()){
-        if (!askAboutExitEditOrder()){return}
+        if (await !askAboutExitEditOrder()){return}
 
     }
     await showClientOrder(cid)
@@ -465,7 +475,8 @@ function shareReceiptToClientAsPhoto(iid = c_runtime.currentInvoiceIdView){
 }
 
 async function deleteOrder(order_id = c_runtime.currentOrderIdView, callback){
-    if (!confirm(messgae.WdeleteOrder)){return}
+    const ok = await showAsk({msg:message.WdeleteOrder})
+    if (!ok){return}
     if (!order_id){
         showToast("בחר הזמנה כדי למחוק", ToastStat.ERROR)
         return
@@ -479,7 +490,8 @@ async function deleteOrder(order_id = c_runtime.currentOrderIdView, callback){
             }
             await fetchOrders()
             createListClientOrders()
-            callback()
+            callback?callback():null
+            c_runtime.currentOrderIdView = null
             reslove()
         }
     ))
@@ -599,5 +611,25 @@ async function deleteOrderFromDashhbaord(order_id = c_runtime.currentOrderIdView
     await deleteOrder(order_id, success)
 }
 
+
+
+async function setStateCleanOrder(order_id = c_runtime.currentOrderIdView, state){
+    data = {action: ApiCall.client_state, oi:order_id, s:state}
+    const client = get_client_by_order_id(order_id)
+    const toast = showToast("מעבד...");
+    return await new Promise ((resolve) => apiPost(ApiRoute.api, data).then(
+        async (res) =>{
+            if (!res.success){
+                showToast(res.notice)
+                return
+            }
+            await fetchOrders();
+            
+            showToast(`${client.fullname} ${getStateClientText(state)}`, ToastStat.DONE, toast);
+            
+        }
+    ))
+
+}
 
 

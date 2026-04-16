@@ -37,7 +37,7 @@ class BaseServerMsg:
 
 
 class ServerCode:
-    # 12
+    # 13
     success = 0
     class Company:
         short_company_name          = 2
@@ -54,6 +54,7 @@ class ServerCode:
         e_account_exist             = 7
     class Receipt:
         receipt_exist               = 9
+        receipt_create_problem      = 12
 
 
 

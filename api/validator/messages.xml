@@ -35,5 +35,8 @@
     <msg code="11" lang="en"></msg>
     <msg code="11" lang="he">אין הרשאות מתאימות לפעולה זו</msg>
 
+    <msg code="12" lang="en"></msg>
+    <msg code="12" lang="he">בעיה ביצירת הקבלה</msg>
+
 
 </messages>

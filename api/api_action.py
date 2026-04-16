@@ -74,7 +74,7 @@ def get_api_action(session, request, **breq) -> dict:
             return SJson.auto_code(code)
         case ApiCall.order_stat:
             r_order = cil_struct.CleanOrder().build(**breq)
-            code =orders.set_clean_order_stat(manager_id, order_id=r_order.oi, stat=r_order.s)
+            code = orders.set_clean_order_stat(manager_id, order_id=r_order.oi, stat=r_order.s)
             return SJson.auto_code(code)
         case ApiCall.funds_income:
             funds = cil_struct.Funds().build(**breq)
