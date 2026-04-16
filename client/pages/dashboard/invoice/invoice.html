@@ -20,9 +20,9 @@
         </div>
         <div class="to-invoice">
             <span class="tit">קבלה עבור:</span>
-            <span class="to">{{invoice.order.fullname}}</span>
-            <span class="tim">{{invoice.order.address}}</span>
-            <span class="tip">{{invoice.order.phone}}</span>
+            <span class="to">{{order.fullname}}</span>
+            <span class="tim">{{order.address}}</span>
+            <span class="tip">{{order.phone}}</span>
         </div>
         <div class="matadata-invoice">
             <div class="mii">
@@ -35,7 +35,7 @@
             </div>
             <div class="mii">
                 <span>תאריך עיסקה:</span>
-                <span>{{invoice.order.date | cda}} {{invoice.order.date | cdah}}</span>
+                <span>{{order.date | cda}} {{order.date | cdah}}</span>
             </div>
         </div>
     </div>
@@ -48,7 +48,7 @@
                 <span>מחיר</span>
             </div>
         </div>
-        {% for key, item in invoice.order['items']%}
+        {% for key, item in order.items.items()%}
             <div class="item-table-invoice">
                 <div class="table-description">
                     <span class="tid">{{item.name}}</span>
@@ -69,42 +69,42 @@
         <div class="matadata-invoice">
             <div class="mii">
                 <span>פריטים:</span>
-                <span>{{invoice.order['items']|jrt|length}}</span>
+                <span>{{order.items|length}}</span>
             </div>
             <div class="mii">
                 <span>סה״כ:</span>
-                <span>{{invoice.order.price}}₪</span>
+                <span>{{order.price}}₪</span>
             </div>
-            {% if invoice.off_price %}
+            {% if order.off_price %}
             <div class="mii">
                 <span>הנחה:</span>
-                <span>{{invoice.order.off_price}}₪-</span>
+                <span>{{order.off_price}}₪-</span>
             </div>
             {%endif%}
-            {% if invoice.vat %}
+            {% if invoice.is_vat %}
                 <div class="mii">
                     <span>לפני מע"מ:</span>
-                    <span>{{invoice.order.price-invoice.order.off_price}}₪</span>
+                    <span>{{order.price-order.off_price}}₪</span>
                 </div>
                 <div class="mii">
                     <span>מע"מ 18%:</span>
-                    <span>{{(invoice.order.price-invoice.order.off_price) | vatop}}₪</span>
+                    <span>{{(order.price-order.off_price) | vatop}}₪</span>
                 </div>
             {% endif %}
         </div>
         <div class="balance-due">
             <span>סה״כ שולם</span>
             {% if invoice.vat%}
-                <span>{{(invoice.order.price-invoice.order.off_price) + (invoice.order.price-invoice.order.off_price) | vatop}}₪</span>
+                <span>{{(order.price-order.off_price) + (order.price-order.off_price) | vatop}}₪</span>
             {%else%}
-                <span>{{invoice.order.price-invoice.order.off_price}}₪</span>
+                <span>{{order.price-order.off_price}}₪</span>
             {%endif%}
 
         </div>
     </div>
     <div class="invoice-footer">
         <span class="about-vat">עוסק פטור – אינו גובה מע״מ</span>
-        <span class="invoice-signature">חתימה: {{invoice.invoice_id}}</span>
+        <span class="invoice-signature">חתימה: {{invoice.receipt_id}}</span>
     </div>
 </div>
 

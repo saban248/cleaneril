@@ -6,6 +6,7 @@ const messgae = {
     createInvoice:'יוצר קבלה חדשה',
     EneedRefresh: "תקלה בהצגת הנתונים, רענן את העמוד",
     IunsaveOrder: " הפרטים לא נשמרו, להמשיך?",
-    WdeleteOrder: "ההזמנה תמחק לצמיתות, להמשיך?"
+    WdeleteOrder: "ההזמנה תמחק לצמיתות, להמשיך?",
+    EselectReceipt:"שגיאה בבחירת הקבלה הנוכחית"
     
 }

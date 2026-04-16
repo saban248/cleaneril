@@ -81,12 +81,13 @@ async function fetchClientDashboard(client_id = c_runtime.currentClientIdView){
 
 }
 
-async function fetchClientOrder(order_id = c_runtime.currentClientIdView, api_action = ApiCall.order_view){
-    if (!order_id && !c_clients.new_order)return
+async function fetchClientOrder(order_id = c_runtime.currentOrderIdView, api_action = ApiCall.order_view){
+    if (!order_id && !c_clients.new_order){return}
     const toast = showToast("מעבד...");
     data = {action:api_action, oi:order_id}
     return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
         (res) => {
+            console.log(order_id, res, api_action)
             if (!res.success){
                 showToast(res.notice, ToastStat.ERROR, toast);
                 return
@@ -134,7 +135,7 @@ function createListClientOrders(){
             continue;
         }
 
-        const element = createOrderItem(order, false, async ()=>{
+        const element = createOrderItem(order.client_id, order, false, async ()=>{
             await showClientOrder(order.order_id)
             createListClientOrders()
         });
@@ -148,6 +149,10 @@ function createListClientOrders(){
 
 
 async function fetchClientOrderInvoice(iid){
+    if (!iid){
+        showToast(messgae.EselectReceipt);
+        return
+    }
     const toast = showToast("מעבד...");
     data = {action:ApiCall.invoice_view, iid:iid}
     return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
@@ -179,27 +184,50 @@ async function createClientOrderInvoiceImg(iid){
     img.style.display = 'block'
     template.style.display = 'none'
 }
+function removeOrderReceiptImg(){
+    const img = document.getElementById("imgReceipt");
+    const icon = document.getElementById("before-load-receipt");
+    icon.style.display = 'block'
+    img.style.display = 'none'
+    img.src =''
+
+}
 
 
 function switchClientCardAction(){
+    const run = (element, display) => element.classList.add(display)
+    const show = (element) => element.classList.add('show')||element.classList.remove('hide')
+    const hide = (element) => element.classList.remove('show')||element.classList.add('hide')
+
     const AView = document.getElementById("clientCardAViews");
-    const AReturn = document.getElementById("actionIntoCard");
+    const ainto = document.getElementById("actionIntoCard");
     // return from card
     const arfc = document.getElementById("arfc")
+    const SpecificId = (c_clients.currentCard == clientCardsView.ORDER && c_runtime.currentOrderIdView !=null)
+            || (c_clients.currentCard == clientCardsView.RECEIPT && c_runtime.currentInvoiceIdView !=null)
+
     if (c_clients.enterCard && IS_MOBILE && !c_clients.new_order){
-        AView.classList.remove("show")
-        AReturn.classList.add("show")
-        arfc.classList.add("show")
+        if (SpecificId){
+            show(ainto)
+        }else{
+            hide(ainto)
+        }
+        show(arfc)
+        hide(AView)
     }
     else if (!IS_MOBILE){
-        AReturn.classList.add("show")
-        AView.classList.add("show")
-        arfc.classList.remove("show")
+        if (SpecificId){
+            show(ainto)
+        }else{
+            hide(ainto)
+        }      
+        show(AView)
+        hide(arfc)
     }
     else{
-        AReturn.classList.remove("show")
-        AView.classList.add("show")
-        arfc.classList.remove("show")
+        hide(ainto)
+        show(AView)
+        hide(arfc)
     }
 }
 function switchViewClientDashboard(v = c_clients.currentCard, fetch = true, back = false){
@@ -223,7 +251,7 @@ function switchViewClientDashboard(v = c_clients.currentCard, fetch = true, back
         case clientCardsView.RECEIPT:
             showClientReceipts()
             if (!back && c_clients.enterCard){
-                showClientReceipt()
+                showClientReceipt(c_runtime.currentInvoiceIdView, fetch)
             }
             hideClientOrder()
             hideClientOrders()
@@ -297,17 +325,13 @@ function createListClientReceipts(){
     }
 
     parent.replaceChildren();
-    for (let invoice of c_runtime.invoices){
-        const name = matchNumsWords(1, invoice.order.fullname, currentClient.fullname);
-        const phone = cleanPhoneJustNumbers(invoice.order.phone) == cleanPhoneJustNumbers(currentClient.phone);
-        const address = matchNumsWords(2,invoice.order.address, currentClient.address);
-        if (!(name && phone && address))continue;
-        const element = createInvoiceItem(invoice,false, async ()=>{
-            await showClientReceipt(invoice.invoice_id)
+    for (let receipt of c_runtime.invoices.filter(r => r.client_id == c_runtime.currentClientIdView)){
+        const element = createInvoiceItem(receipt,false, async ()=>{
+            await showClientReceipt(receipt.receipt_id)
             createListClientReceipts()
         }
         )
-        if (invoice.invoice_id == c_runtime.currentInvoiceIdView){
+        if (receipt.receipt_id == c_runtime.currentInvoiceIdView){
             element.classList.add('current-client-list');
         }
         parent.appendChild(element);
@@ -363,8 +387,10 @@ function hideClientOrders(){
 
 }
 
-async function showClientReceipt(iid){
-    await createClientOrderInvoiceImg(iid)
+async function showClientReceipt(iid = c_runtime.currentInvoiceIdView, fetch = true){
+    if (fetch){
+        await createClientOrderInvoiceImg(iid)
+    }
     const invoice = document.getElementById("the-client-invoice");
     invoice.classList.add("show")
     if (IS_MOBILE){
@@ -387,6 +413,9 @@ function showClientReceipts(){
         return;
     }
     parent.classList.add("show")
+    if (!c_runtime.currentInvoiceIdView){
+        set_current_receipt_id_default()
+    }
     createListClientReceipts();
 }
 
@@ -400,7 +429,7 @@ function hideClientReceipts(){
 
 async function editExistOrder(order_id = c_runtime.currentOrderIdView){
     if (!c_clients.client_view){
-            if (!c-c_runtime.currentClientIdView){
+            if (!c_runtime.currentClientIdView){
                 const client = get_client_by_order_id(order_id)
                 c_runtime.currentClientIdView = client.client_id;
                 
@@ -435,31 +464,32 @@ function shareReceiptToClientAsPhoto(iid = c_runtime.currentInvoiceIdView){
 
 }
 
-function deleteOrder(order_id = c_runtime.currentClientIdView){
+async function deleteOrder(order_id = c_runtime.currentOrderIdView, callback){
     if (!confirm(messgae.WdeleteOrder)){return}
     if (!order_id){
         showToast("בחר הזמנה כדי למחוק", ToastStat.ERROR)
         return
     }
     data = {oi:order_id, action:ApiCall.order_delete}
-    apiPost(ApiRoute.api,data).then(
+    return await new Promise((reslove) => apiPost(ApiRoute.api,data).then(
         async (res) =>{
             if (!res.success || res.deleted){
                 showToast(res.notice, ToastStat.DONE);
                 return
             }
-                await fetchOrders()
-                createListClientOrders()
-
+            await fetchOrders()
+            createListClientOrders()
+            callback()
+            reslove()
         }
-    )
+    ))
 }
 
 async function createOrder(){
     c_clients.new_order = true;
-    await openClientDashbaord(c_runtime.currentClientIdView, false)
-    await fetchClientOrder(c_runtime.currentClientIdView, ApiCall.order_new)
-    showClientOrder(c_runtime.currentClientIdView, false)
+    await openClientDashbaord(c_runtime.currentClientIdView, null, false)
+    await fetchClientOrder(null, ApiCall.order_new)
+    showClientOrder(c_runtime.currentOrderIdView, false)
     
 
 }
@@ -552,6 +582,22 @@ function deleteItemClientOrder(id_order){
     parent.remove()
 }
 
+async function deleteReceiptFromDashbaord(receipt_id = c_runtime.currentInvoiceIdView){
+    const success = () =>{
+        switchViewClientDashboard(c_clients.currentCard,false, true)
+        createListClientReceipts()
+        removeOrderReceiptImg();
+    }
+    await deleteReceipt(receipt_id, success)
+}
+
+async function deleteOrderFromDashhbaord(order_id = c_runtime.currentOrderIdView) {
+    const success = ()=>{
+        switchClientCardAction(c_clients.currentCard, false, true)
+        createListClientOrders()
+    }
+    await deleteOrder(order_id, success)
+}
 
 
 

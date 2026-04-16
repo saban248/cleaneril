@@ -2,6 +2,7 @@ from typing import Union
 
 from api.databases.ptc import cleaneril_db, ServerConfig
 from api.ptc import generate_hex
+from api.validator import core_msg
 
 unknown = 'unknown'
 
@@ -60,7 +61,7 @@ class ApiCompany:
                                c_desc:str = None, c_phone:str = None, c_email:str = None, c_vat_code:str = None,
                                c_gpse:int = None):
         company:Company = ApiCompany.get_companies(manager_id=manager_id).first()
-        if not company:return 1
+        if not company:return core_msg.ServerCode.General.something_wrong
         if c_name:
             company.company_name = c_name
         if o_name:
@@ -80,7 +81,7 @@ class ApiCompany:
 
         cleaneril_db.session.commit()
 
-        return 0
+        return core_msg.ServerCode.success
 
     @staticmethod
     def change_logo(manager_id:str, logo_filename:str):

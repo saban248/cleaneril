@@ -10,7 +10,7 @@ from api.databases.ptc import cleaneril_db, StateOrder
 from api.ptc import generate_hex
 from api.routes import cil_struct
 from api.routes.ptc import ClientLeadFrom, PaymentInvoice, OrderType
-
+from api.validator import core_msg
 
 
 class CleanOrder(cleaneril_db.Model):
@@ -92,17 +92,17 @@ def update_clean_order(manager_id:str, client_id:str, response:cil_struct.CleanO
 
 def delete_clean_order(mid:str, order_id:str):
     order = get_clean_orders(manager_id=mid, order_id=order_id).first()
-    if not order:return 1
+    if not order:return core_msg.ServerCode.General.something_wrong
     delete_column(CleanOrder, order)
-    return 0
+    return core_msg.ServerCode.success
 
 
 def set_clean_order_stat(mid:str, order_id:str, stat:StateOrder):
     order:CleanOrder = get_clean_orders(manager_id=mid, order_id=order_id).first()
-    if not order:return 1
+    if not order:return core_msg.ServerCode.General.something_wrong
     order.stat = stat
     cleaneril_db.session.commit()
-    return 0
+    return core_msg.ServerCode.success
 
 
 class CountOfOrderByStat:

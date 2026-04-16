@@ -3,6 +3,7 @@ from typing import Union
 from api.databases.company import ApiCompany
 from api.databases.ptc import cleaneril_db, ManagerPermissions, ServerConfig
 from api.ptc import generate_hex
+from api.validator import core_msg
 
 unknown = 'unknown'
 
@@ -80,8 +81,8 @@ class ApiEmployee:
     def delete_employee(mid:str, wid:str):
         employee = ApiEmployee.get_employees(manager_id=mid, employee_id=wid).first()
         if not employee:
-            return 1
+            return core_msg.ServerCode.General.something_wrong
 
         cleaneril_db.session.delete(employee)
         cleaneril_db.session.commit()
-        return 0
+        return core_msg.ServerCode.success

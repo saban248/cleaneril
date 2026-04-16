@@ -753,12 +753,12 @@ function loadListClientsHtml(){
     icon.style.display = 'none';
     parent.classList.remove(iel)
 
-    c_runtime.orders.forEach(client => {
-        const el = createOrderItem(client);
+    c_runtime.orders.forEach(order => {
+        const el = createOrderItem(order.client_id, order);
         parent.appendChild(el);
     });
 }
-function createOrderItem(order, actions = true, callback) {
+function createOrderItem(client_id, order, actions = true, callback) {
     const div = document.createElement("div");
     div.className = "client-item"
     div.dataset.stat = order.stat;
@@ -768,7 +768,7 @@ function createOrderItem(order, actions = true, callback) {
         div.onclick = () => callback()
     }else{
         div.id = order.order_id+'main'
-        div.ondblclick = () => openClientDashbaord(order.order_id);
+        div.ondblclick = () => openClientDashbaord(client_id, order.order_id);
     }
 
 

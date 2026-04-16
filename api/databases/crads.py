@@ -1,8 +1,12 @@
 import os
 from typing import Union
+
+from PIL.ImageCms import core
+
 from api.ptc import generate_hex
 
 from api.databases.ptc import cleaneril_db, StateDocument, ServerConfig
+from api.validator import core_msg
 
 unknown = 'unknown'
 
@@ -82,7 +86,7 @@ class ApiCards:
     @staticmethod
     def delete_card(card_id:str):
         card:Cards = ApiCards.get_cards(card_id=card_id).first()
-        if not card:return 1
+        if not card:return core_msg.ServerCode.General.something_wrong
         image_path = card.img_path
         cleaneril_db.session.delete(card)
         cleaneril_db.session.commit()
@@ -93,5 +97,5 @@ class ApiCards:
         if not os.path.exists(fip):return 0
         os.remove(fip)
 
-        return 0
+        return core_msg.ServerCode.success
 

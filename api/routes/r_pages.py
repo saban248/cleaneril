@@ -27,7 +27,6 @@ def home():
 
 @cleaneril.route(RoutePages.auth.path, methods=['GET'])
 def auth():
-    e_invalid = SJson.error()
     if ShortSession.is_admin(session):
         return redirect(url_for('dashboard'))
 
@@ -36,7 +35,6 @@ def auth():
 
 @cleaneril.route(RoutePages.dashboard.path, methods=["GET"])
 def dashboard():
-    e_invalid = SJson.error()
     if not ShortSession.is_admin(session):
         return redirect(url_for("auth"))
 

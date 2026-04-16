@@ -289,8 +289,12 @@ class Register:
 class Invoice:
     iid:str             = None
     cid:str             = None
+    oid:str             = None
+    pt:int              = None
+    stat:int            = None
+    force:bool          = None
 
     def build(self, **data):
         struct_builder(self, **data)
-
+        if self.pt:self.pt = int(self.pt)
         return self

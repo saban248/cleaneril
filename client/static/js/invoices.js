@@ -17,43 +17,65 @@ function closeViewInvoice(){
 
 
 
-function createInvoice(cid = c_runtime.currentClientIdView){
+async function createInvoice(order_id = c_runtime.currentOrderIdView){
     if (isCantExitEditOrder()){
         if (!askAboutExitEditOrder()){return}
 
     }
-    const data = {action:ApiCall.invoice_create, cid:cid}
+    const data = {action:ApiCall.invoice_create, oid:order_id, cid:c_runtime.currentClientIdView, 
+        stat:InvoiceStatType.PAID,pt:PaymentInvoice.BANK_TRANSFER
+    }
     const toast = showToast(messgae.createInvoice)
-    apiPost(ApiRoute.api, data).then(
-        res =>{
+    return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
+        async res =>{
             if (!res.success){
                 showToast(res.notice, ToastStat.ERROR, toast);
                 return
             }
+            await fetchInvoice();
             showToast('נוצר בהצלחה',ToastStat.DONE, toast);
-            fetchInvoice();
+            reslove();
+
 
         }
-    )
+    ))
 }
 
+async function deleteReceipt(receipt_id = c_runtime.currentInvoiceIdView, callback){
+    if (!receipt_id){
+        showToast(messgae.EselectReceipt, ToastStat.ERROR)
+        return
+    }
+    const toast = showToast(messgae.loading)
+    const data = {action:ApiCall.invoice_delete, iid:receipt_id}
+    return await new Promise((resolve) => apiPost(ApiRoute.api, data).then(
+        async (res) => {
+            if (!res.success){
+                showToast(res.notice,ToastStat.ERROR, toast);
+                return
+            }
+            showToast(res.success, ToastStat.DONE, toast)
+            c_runtime.currentInvoiceIdView = null;
+            await fetchInvoice()
+            callback?callback():null
+            resolve()
+        }
+    ))
 
-function fetchInvoice(){
-    apiPost(ApiRoute.api, {action:ApiCall.invoice_list}).then(
+}
+
+async function fetchInvoice(){
+    return await new Promise((reslove) => apiPost(ApiRoute.api, {action:ApiCall.invoice_list}).then(
         res => {
             if (!res.success){
                 showToast(messgae.notice, ToastStat.ERROR)
                 return
             }
             c_runtime.invoices = res.invoices;
-            for (invoice of c_runtime.invoices){
-                invoice.order = JSON.parse(invoice.order);
-                invoice.order.items = JSON.parse(invoice.order.items)
-            }
             loadListInvoicesHtml()
-
+            reslove()
         }
-    )
+    ))
 }
 
 function loadListInvoicesHtml(){
@@ -66,11 +88,13 @@ function loadListInvoicesHtml(){
 }
 
 function createInvoiceItem(invoice, actions = true, callback){
+    const order = get_order_by_receipt_id(invoice.receipt_id)
     const div = document.createElement("div");
     div.className = "cil-item "
     // div.dataset.stat = client.state;
     div.dataset.key = invoice.key;
-    div.id = invoice.invoice_id;
+    div.id = invoice.receipt_id;
+
     if (actions){
         div.ondblclick = () => {}
     }else{
@@ -86,7 +110,7 @@ function createInvoiceItem(invoice, actions = true, callback){
         <div class="in-content">
             <div class="top">
             <span class="name">Invoice-${invoice.key.toString().padStart(4, '0')}</span>
-            <span class="phone no-mobile">${invoice.phone}</span>
+            <span class="phone no-mobile">${order.phone}</span>
             </div>
             <div class="bottom">
             <span>${dateFloatToYMD(invoice.date)} ${dateFloatToHour(invoice.date)}</span><br>

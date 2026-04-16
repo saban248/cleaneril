@@ -11,7 +11,7 @@ const c_runtime = {
     clients:[],
     currentClientIdView:null,
     currentOrderIdView:null,
-    currentInvoiceIdView:null
+    currentInvoiceIdView:null,
 }
 
 function get_client_by_order_id(order_id){
@@ -19,9 +19,33 @@ function get_client_by_order_id(order_id){
     if (!order){return}
     const client =  c_runtime.clients.find(c => order.client_id == c.client_id)
     return client
-    
+}
+function get_order_by_receipt_id(receipt_id){
+    const receipt = c_runtime.invoices.find(r => r.receipt_id)
+    if (!receipt){
+        return null
+    }
+    const order = c_runtime.orders.find(o => o.order_id == receipt.order_id)
+    return order
+}
 
 
+function get_total_price_by_order_id(order_id){
+    const order = c_runtime.orders.find(o => o.order_id == order_id)
+    if (!order){
+        return 0
+    }
+
+    var total = 0
+    for ([k, item] of Object.entries(order.items)){
+        total += parseInt(item.price);
+    }
+    return total-order.off_price
+}
+
+function set_current_receipt_id_default(){
+    const receipt = c_runtime.invoices.find(r => r.order_id == c_runtime.currentOrderIdView)
+    c_runtime.currentInvoiceIdView = receipt?.receipt_id
 }
 
 function doLogin(t){

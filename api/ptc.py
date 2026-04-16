@@ -6,6 +6,8 @@ from typing import Union
 from flask import Request
 from flask.sessions import SessionMixin
 
+from api.validator import core_msg
+
 CONTENT_TYPE_DATA = "multipart/form-data"
 CONTENT_TYPE_FORM = "application/x-www-form-urlencoded"
 CONTENT_TYPE_JSON = "application/json"
@@ -55,31 +57,30 @@ class SJson:
     msg_json = {"success":None, "title":None, "notice":None, "code":0}
 
     @staticmethod
-    def error(error_content:Union[str, int] = 'error', **errors):
+    def error(code:int = core_msg.ServerCode.General.access_denied, **errors):
         msg = dict(SJson.msg_json, **errors)
+        text = core_msg.ServerMsg[code]
         msg["success"] = False
-        msg["title"] = "התרחשה שגיאה"
-        SJson.__set_notice(msg, error_content)
-        return msg
+        msg["title"] =  "שגיאה"
+        msg['code'] = code
+        msg["notice"] = text
+        return msg | errors
 
     @staticmethod
-    def success(success_content:Union[str, int] = 'success', **success):
+    def success(code:int = core_msg.ServerCode.success, **success):
         msg = dict(SJson.msg_json, **success)
+        text = core_msg.ServerMsg[code]
         msg["success"] = True
         msg["title"] = "הושלם"
-        SJson.__set_notice(msg, success_content)
+        msg['code'] = code
+        msg["notice"] = text
         return msg | success
 
     @staticmethod
-    def __set_notice(msg:dict, notice:Union[str, int]):
-        if isinstance(notice, str):
-            msg["notice"] = notice
-            msg["code"] = -1
-        elif isinstance(notice, int):
-            msg["notice"] = 'unknown'
-            msg["code"] = notice
-
-
+    def auto_code(code:int, **dany):
+        if code:
+            return SJson.error(code, **dany)
+        return SJson.success(code, **dany)
 
 def get_dictionary_http(req:Request, content_type:str = str()) -> dict:
     _ctype = req.content_type or str()

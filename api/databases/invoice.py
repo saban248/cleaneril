@@ -4,15 +4,17 @@ from datetime import datetime
 
 from api.databases.bridge import get_order_items, get_client_total_price, \
     get_client_off_price
+from api.databases.general import get_columns
 from api.databases.ptc import cleaneril_db
 from api.ptc import generate_hex
 from api.routes.ptc import PaymentInvoice, InvoiceStatType
+from api.validator import core_msg
 
 
-class Invoice(cleaneril_db.Model):
-    __tablename__ = "invoice"
+class Receipt(cleaneril_db.Model):
+    __tablename__ = "receipts"
     key = cleaneril_db.Column(cleaneril_db.Integer, nullable=False, primary_key=True)
-    invoice_id = cleaneril_db.Column(cleaneril_db.String(32), nullable=False)
+    receipt_id = cleaneril_db.Column(cleaneril_db.String(32), nullable=False)
     manager_id = cleaneril_db.Column(cleaneril_db.String(32), nullable=False)
     client_id   = cleaneril_db.Column(cleaneril_db.String(32), nullable=False)
     order_id = cleaneril_db.Column(cleaneril_db.String(16), nullable=False)
@@ -20,43 +22,38 @@ class Invoice(cleaneril_db.Model):
     payment_type = cleaneril_db.Column(cleaneril_db.Integer, nullable=False)
     is_vat = cleaneril_db.Column(cleaneril_db.Boolean, nullable=False, default=False)
     stat = cleaneril_db.Column(cleaneril_db.Integer, nullable=False)
-    order = cleaneril_db.Column(cleaneril_db.String, nullable=False)
 
 
-class ApiInvoice:
-    @staticmethod
-    def get_invoices(source:bool = True, **kwargs):
-        invoice = Invoice.query.filter_by(**kwargs)
-        if source:
-            return invoice
+def get_receipts(source:bool = True, **kwargs):
+    return get_columns(Receipt, source, **kwargs)
 
-        return [{c.name: getattr(e, c.name) for c in e.__table__.columns} for e in invoice]
+def create_receipt(manager_id:str, client_id:str, order_id:str, stat:int,pt:int, force:bool = False):
+    # check
+    receipt = get_receipts(manager_id=manager_id, client_id=client_id, order_id=order_id).first()
+    if receipt:
+        if not force:
+            return core_msg.ServerCode.Receipt.receipt_exist
+        cleaneril_db.session.delete(receipt)
+        cleaneril_db.session.commit()
 
-    # @staticmethod
-    # def create_invoice(mid, client:Clients, payment_type:PaymentInvoice, stat:int = InvoiceStatType.PAID):
-    #     if not client:return 1
-    #     invoice = Invoice()
-    #     invoice.invoice_id = generate_hex(15)
-    #     invoice.manager_id = mid
-    #     invoice.client_id = client.client_id
-    #     invoice.date = time.time()
-    #     invoice.payment_type = payment_type
-    #     invoice.stat = stat
-    #
-    #     order_data = client.__dict__
-    #     del order_data['_sa_instance_state']
-    #     invoice.order = json.dumps(order_data)
-    #     cleaneril_db.session.add(invoice)
-    #     cleaneril_db.session.commit()
-    #     return 0
+    receipt = Receipt()
+    receipt.manager_id = manager_id
+    receipt.client_id = client_id
+    receipt.order_id = order_id
+    receipt.receipt_id = generate_hex(15)
+    receipt.date = time.time()
+    receipt.stat = stat
+    receipt.is_vat = False
+    receipt.payment_type = pt
+    cleaneril_db.session.add(receipt)
+    cleaneril_db.session.commit()
+    return core_msg.ServerCode.success
 
-    @staticmethod
-    def get_invoices_list():
-        invoices:list[Invoice] = sorted(ApiInvoice.get_invoices().all(), key=lambda invoice: invoice.date, reverse=True)
-        temp = []
-        for i in invoices:
-            date = datetime.fromtimestamp(i.date)
-            del i.__dict__['_sa_instance_state']
-            temp.append(i.__dict__)
 
-        return temp
+def delete_receipt(manager_id:str, receipt_id:str):
+    receipt = get_receipts(manager_id=manager_id, receipt_id=receipt_id).first()
+    if not receipt:
+        return core_msg.ServerCode.General.something_wrong
+    cleaneril_db.session.delete(receipt)
+    cleaneril_db.session.commit()
+    return core_msg.ServerCode.success

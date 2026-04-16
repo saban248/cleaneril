@@ -171,6 +171,7 @@ class ApiCall(IntFlag):
     order_view = 1 << 21
     order_new  = 1<< 22
     list_clients = 1<<23
+    invoice_delete = 1<<24
 
 
 

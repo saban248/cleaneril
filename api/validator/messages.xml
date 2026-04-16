@@ -1,0 +1,39 @@
+<messages>
+    <msg code="0" lang="en"></msg>
+    <msg code="0" lang="he">הושלם בהצלחה</msg>
+
+    <msg code="1" lang="en"></msg>
+    <msg code="1" lang="he">שם המשתמש להתחברות לא תקין</msg>
+
+    <msg code="2" lang="en"></msg>
+    <msg code="2" lang="he">שם העסק חייב להיות 2 מילים</msg>
+
+    <msg code="3" lang="en"></msg>
+    <msg code="3" lang="he">שם העסק קיים, צור אחר</msg>
+
+    <msg code="4" lang="en"></msg>
+    <msg code="4" lang="he">מספר הפלאפון לא תקין</msg>
+
+    <msg code="5" lang="en"></msg>
+    <msg code="5" lang="he">תיאור העסק לא תקין</msg>
+
+    <msg code="6" lang="en"></msg>
+    <msg code="6" lang="he">הסיסמה לא תקינה, באורך ובתווים</msg>
+
+    <msg code="7" lang="en"></msg>
+    <msg code="7" lang="he">לא ניתן כרגע להמשיך</msg>
+
+    <msg code="8" lang="en"></msg>
+    <msg code="8" lang="he">שם בעל העסק לא תקין</msg>
+
+    <msg code="9" lang="en"></msg>
+    <msg code="9" lang="he">קיימת קבלה עבור הזמנה זו</msg>
+
+    <msg code="10" lang="en"></msg>
+    <msg code="10" lang="he">הפעולה נכשלה</msg>
+
+    <msg code="11" lang="en"></msg>
+    <msg code="11" lang="he">אין הרשאות מתאימות לפעולה זו</msg>
+
+
+</messages>

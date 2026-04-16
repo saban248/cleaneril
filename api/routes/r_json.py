@@ -13,35 +13,36 @@ from api.databases.ptc import cleaneril, ServerConfig, StateOrder
 from api.ptc import ShortSession, SJson, get_dictionary_http, generate_hex
 from api.routes.ptc import RouteApi
 from api.routes import cil_struct
+from api.validator import core_msg
 
 
 @cleaneril.route(RouteApi.do_auth.path, methods=["POST"])
 def authorize():
+    __success__ = core_msg.ServerCode.success
     if ShortSession.is_admin(session):
-        return SJson.success()
+        return SJson.auto_code(__success__)
 
     breq = get_dictionary_http(request)
     auth = cil_struct.Auth().build(**breq).__dict__
-    stat = ApiManager.auth(**auth)
-    if stat:
-        return SJson.error()
+    code = ApiManager.auth(**auth)
+    if code:
+        return SJson.auto_code(code)
 
     ShortSession.set_admin(session)
     details = ApiManager.get_managers(False, **breq).first().__dict__
     del details["_sa_instance_state"]
     ShortSession.set_admin_details(session, details)
-    return SJson.success()
+    return SJson.auto_code(__success__)
 
 
 @cleaneril.route(RouteApi.api.path, methods=["POST"])
 def api():
     if not ShortSession.is_admin(session):
-        return SJson.error()
+        return SJson.auto_code(core_msg.ServerCode.General.access_denied)
 
     breq = get_dictionary_http(request)
-
-    get_ac = get_api_action(session, request, **breq)
-    return SJson.success(**get_ac)
+    sjson = get_api_action(session, request, **breq)
+    return sjson
 
 
 

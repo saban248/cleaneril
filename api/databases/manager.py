@@ -46,17 +46,17 @@ class ApiManager:
     def auth(**kwargs):
         manager = ApiManager.get_managers(**kwargs)
         if not manager.first():
-            return 1
+            return core_msg.ServerCode.General.access_denied
 
-        return 0
+        return core_msg.ServerCode.success
 
 
-def on_register_create_company(user:str, pwd:str) -> str:
+def on_register_create_company(user:str, pwd:str) -> int:
     null = 'unknown'
     new = ApiManager.register(user, ManagerPermissions.ADMIN, pwd)
-    if not new:return core_msg.Company.account_exist
+    if not new:return core_msg.ServerCode.Register.e_account_exist
     ApiCompany.create_company(null,null,new.manager_id,False)
-    return str()
+    return core_msg.ServerCode.success
 
 def new_manager_hb():
     manager = dict(username = "avraham",
