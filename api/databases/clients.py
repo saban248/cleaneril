@@ -37,6 +37,8 @@ def get_clients_latest(**kwargs):
 
 
 def create_client_profile(manager_id:str, fullname:str, address:str, phone:str, notes:str, coordinates:list):
+    exist = get_clients(manager_id=manager_id,fullname=fullname, phone=phone).first()
+    if exist:return exist
     client = ClientProfile()
     client.client_id = generate_hex(15)
     client.fullname = fullname

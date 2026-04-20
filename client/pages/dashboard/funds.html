@@ -2,9 +2,73 @@
     <div class="page-head">
         <h2>הכנסות / הוצאות</h2>
     </div>
-    <div class="page-body">
-        <div class="main-cards">
-            <!-- כרטיסי סכומים -->
+    <div class="page-body page-body-reports">
+        <div class="reports">
+            <div class="reports-header">
+                <div class="reports-total-funds">
+                    <div>
+                        <span class="rtf-number">13,334</span>
+                        <span class="rtf-title">₪</span>
+                    </div>
+                    <span class="rtf-title">סה״כ הכנסות</span>    
+                </div>
+                <div class="reports-menu"></div>
+            </div>
+            <div class="reports-body">
+                <!-- funds -->
+                 <div class="reports-funds">
+                    <div class="reports-general-card">
+                        <div class="rgc-head">
+                            <div class="rgc-title">הכנסות</div>
+                            <i class="icon icon-24 rgc-icon rgci-income">
+                                {% include "icon/grown.svg" %}
+                            </i>
+                        </div>
+                        <div class="rgc-body">
+                            <span class="rgc-number rgcn-income">26,889</span>
+                        </div>
+                        <div class="rgc-footer"></div>
+                    </div>
+                    <div class="reports-general-card">
+                        <div class="rgc-head">
+                            <div class="rgc-title">הוצאות</div>
+                            <i class="icon icon-24 rgc-icon rgci-expense">
+                                {% include "icon/ungrown.svg" %}
+                            </i>
+                        </div>
+                        <div class="rgc-body">
+                            <span class="rgc-number rgcn-expense">1,889</span>
+                        </div>
+                        <div class="rgc-footer"></div>
+                    </div>
+                    <div class="reports-general-card">
+                        <div class="rgc-head">
+                            <div class="rgc-title">ממוצא רווח ללקוח</div>
+                            <i class="icon icon-24 rgc-icon rgci-average">
+                                {% include "icon/average.svg" %}
+                            </i>
+                        </div>
+                        <div class="rgc-body">
+                            <span class="rgc-number rgcn-ppc">0 ₪</span>
+                        </div>
+                        <div class="rgc-footer"></div>
+                    </div>
+                    <div class="reports-general-card">
+                        <div class="rgc-head">
+                            <div class="rgc-title">ממוצא הוצאה ללקוח</div>
+                            <i class="icon icon-24 rgc-icon rgci-average">
+                                {% include "icon/average.svg" %}
+                            </i>
+                        </div>
+                        <div class="rgc-body">
+                            <span class="rgc-number rgcn-epc">0 ₪</span>
+                        </div>
+                        <div class="rgc-footer"></div>
+                    </div>
+                 </div>
+            </div>
+        </div>
+        <!-- <div class="main-cards">
             <div class="main-cards-in-ex-pr">
                 <div class="card-in-ex-pr card-shadow">
                     <p class="card-inexpr-title">סה״כ הכנסות</p>
@@ -33,7 +97,6 @@
                 </div>
             </div>
 
-            <!-- גרפים -->
             <div class="chart-wrapper">
                     <div class="chart-header">
                         <h2>ביצועי השנה</h2>
@@ -59,4 +122,4 @@
         
 </div>
 
-<div id="yearFundsMenu" class="year-funds-menu"></div>
+<div id="yearFundsMenu" class="year-funds-menu"></div> -->

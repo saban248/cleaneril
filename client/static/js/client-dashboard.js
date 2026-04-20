@@ -27,7 +27,7 @@ async function closeClientDashboard(){
         deleteOrder(c_runtime.currentOrderIdView)
         
     }
-    if (isCantExitEditOrder()){
+    if (isCantExitEditOrder() || c_clients.new_order){
         const a = await askAboutExitEditOrder()
         if (!a){ 
             return
@@ -38,6 +38,8 @@ async function closeClientDashboard(){
    c_clients.order_edit =  c_clients.new_order =false;
    c_clients.client_view =false;
    c_runtime.currentClientIdView = null;
+   c_runtime.currentInvoiceIdView = null;
+   c_runtime.currentOrderIdView = null;
 
 }
 

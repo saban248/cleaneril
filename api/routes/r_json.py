@@ -7,6 +7,7 @@ from zoneinfo import ZoneInfo
 from flask import session, request
 
 from api.api_action import get_api_action, api_upload_file, get_register_action
+from api.databases.bridge import upgrade_from_clients_to_clean_order
 from api.databases.employee import Employee
 from api.databases.manager import ApiManager
 from api.databases.ptc import cleaneril, ServerConfig, StateOrder
@@ -29,9 +30,11 @@ def authorize():
         return SJson.auto_code(code)
 
     ShortSession.set_admin(session)
-    details = ApiManager.get_managers(False, **breq).first().__dict__
-    del details["_sa_instance_state"]
-    ShortSession.set_admin_details(session, details)
+    manager = ApiManager.get_managers(False, **breq).first()
+    as_dict = manager.__dict__
+    del as_dict["_sa_instance_state"]
+    ShortSession.set_admin_details(session, as_dict)
+    upgrade_from_clients_to_clean_order(manager.manager_id)
     return SJson.auto_code(__success__)
 
 

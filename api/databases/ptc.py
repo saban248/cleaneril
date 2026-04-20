@@ -18,6 +18,8 @@ class ServerConfig:
     COMPANY_NAME        = 'הברקה בדקה'
     API_PATH = os.path.join(os.path.curdir, 'api')
     API_VALIDATOR_PATH = os.path.join(API_PATH, 'validator')
+    DB_FOLDER = os.path.join(os.getcwd(), "instance")
+    DB_PATH = os.path.join(DB_FOLDER, FILE_NAME_DB)+'.db'
     SERVER_MSG_PATH = os.path.join(API_VALIDATOR_PATH, 'messages.xml')
     PAGES_FOLDER = os.path.join(os.path.dirname(cleaneril.static_folder), "pages")
     FOLDER_IMAGE_PATH   = os.path.join(os.path.basename(cleaneril.static_folder), "images")

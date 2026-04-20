@@ -150,6 +150,7 @@ def get_api_action(session, request, **breq) -> dict:
             inv = cil_struct.Invoice().build(**breq)
             code = invoice.delete_receipt(manager_id, inv.iid)
             return SJson.auto_code(code)
+
         case ApiCall.list_clients:
             _clients = clients.get_clients(False, manager_id=manager_id)
             lclients =  {"clients":_clients}

@@ -58,7 +58,7 @@ def create_clean_order(manager_id:str, client_id:str, response:cil_struct.CleanO
     else:
         order = CleanOrder()
         order.client_id = client_id
-        order.order_id = generate_hex(15)
+        order.order_id = generate_hex(10)
         order.manager_id = manager_id
 
     order.stat = response.s
