@@ -237,13 +237,13 @@ function selectYearCharts(y){
 
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    initCharts()
-  updateInExPrAndChartClientAndIncome(ManagerCache.getFundsChartsYear())
-});
-document.addEventListener("click", e => {
-    const menu = document.getElementById("yearFundsMenu")
-    if (!menu.contains(e.target) && !e.target.classList.contains("year-select")) {
-        menu.classList.remove("show")
-    }
-})
+// document.addEventListener("DOMContentLoaded", function () {
+//     initCharts()
+//   updateInExPrAndChartClientAndIncome(ManagerCache.getFundsChartsYear())
+// });
+// document.addEventListener("click", e => {
+//     const menu = document.getElementById("yearFundsMenu")
+//     if (!menu.contains(e.target) && !e.target.classList.contains("year-select")) {
+//         menu.classList.remove("show")
+//     }
+// })

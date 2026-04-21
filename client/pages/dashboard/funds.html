@@ -1,21 +1,60 @@
 <div class="dashboard-page" id="FUNDS">
     <div class="page-head">
-        <h2>הכנסות / הוצאות</h2>
+        <h2>דוחות</h2>
     </div>
     <div class="page-body page-body-reports">
         <div class="reports">
             <div class="reports-header">
                 <div class="reports-total-funds">
+                    <span class="rtf-title">סה״כ הכנסות</span>   
                     <div>
-                        <span class="rtf-number">13,334</span>
-                        <span class="rtf-title">₪</span>
-                    </div>
-                    <span class="rtf-title">סה״כ הכנסות</span>    
+                        <span class="rtf-number" id="fundsTotalIncome">13,334</span>
+                        <span class="rtf-shekel-ion">₪</span>
+                    </div> 
                 </div>
-                <div class="reports-menu"></div>
+                <div class="reports-menu">
+                    <div class="reports-calendar">
+                        <div class="calendar-actions">
+                            <i class="fa-solid fa-calendar btn-r-show-calendar" onclick="showCalendarReports()"></i>
+                            <span id="calendarDateview">סינון תאריכים</span>
+                        </div>
+                         <div class="calendar-container" id="reportsCalendar">
+                            <div class="date-display">
+                                <div class="date-box">
+                                    <div class="date-label">מתאריך</div>
+                                    <div class="date-value" id="fromDate">Select start date</div>
+                                </div>
+                                <div class="date-box">
+                                    <div class="date-label">לתאריך</div>
+                                    <div class="date-value" id="toDate">Select end date</div>
+                                </div>
+                            </div>
+
+                            <div class="calendar-nav">
+                                <button class="c-nav" onclick="changeMonth(-1)">‹</button>
+                                <div class="month-year" id="monthYear"></div>
+                                <button class="c-nav" onclick="changeMonth(1)">›</button>
+                            </div>
+
+                            <div class="reports-calendar-grid" id="reports-calendar"></div>
+
+                            <div class="calendar-footer-actions">
+                                <button class="cfa cfa-clear" onclick="goToMaximum()">תמיד</button>
+                                <button class="cfa cfa-year" onclick="goToYear()">השנה</button>
+                                <button class="cfa cfa-apply" onclick="applyDates()">המשך</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
             <div class="reports-body">
                 <!-- funds -->
+                 <div class="reports-tabs">
+                    <div class="reports-tab-indicator" id="rt-indicator"></div>
+                    <span class="reports-tab selected" onclick="switchReportsTab">כספים</span>
+                    <span class="reports-tab">לקוחות</span>
+                 </div>
                  <div class="reports-funds">
                     <div class="reports-general-card">
                         <div class="rgc-head">
@@ -25,7 +64,7 @@
                             </i>
                         </div>
                         <div class="rgc-body">
-                            <span class="rgc-number rgcn-income">26,889</span>
+                            <span class="rgc-number rgcn-income" id="fundsIncome">26,889</span>
                         </div>
                         <div class="rgc-footer"></div>
                     </div>
@@ -37,7 +76,7 @@
                             </i>
                         </div>
                         <div class="rgc-body">
-                            <span class="rgc-number rgcn-expense">1,889</span>
+                            <span class="rgc-number rgcn-expense" id="fundsExpense">1,889</span>
                         </div>
                         <div class="rgc-footer"></div>
                     </div>
@@ -49,7 +88,7 @@
                             </i>
                         </div>
                         <div class="rgc-body">
-                            <span class="rgc-number rgcn-ppc">0 ₪</span>
+                            <span class="rgc-number rgcn-ppc" id="fundsPPC">0 ₪</span>
                         </div>
                         <div class="rgc-footer"></div>
                     </div>
@@ -61,13 +100,16 @@
                             </i>
                         </div>
                         <div class="rgc-body">
-                            <span class="rgc-number rgcn-epc">0 ₪</span>
+                            <span class="rgc-number rgcn-epc" id="fundsEPC">0 ₪</span>
                         </div>
                         <div class="rgc-footer"></div>
                     </div>
                  </div>
             </div>
         </div>
+    </div>
+</div>
+        
         <!-- <div class="main-cards">
             <div class="main-cards-in-ex-pr">
                 <div class="card-in-ex-pr card-shadow">
@@ -123,3 +165,4 @@
 </div>
 
 <div id="yearFundsMenu" class="year-funds-menu"></div> -->
+
