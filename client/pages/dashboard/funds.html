@@ -53,7 +53,7 @@
                  <div class="reports-tabs">
                     <div class="reports-tab-indicator" id="rt-indicator"></div>
                     <span class="reports-tab selected" onclick="switchReportsTab">כספים</span>
-                    <span class="reports-tab">לקוחות</span>
+                    <span class="reports-tab">הזמנות</span>
                  </div>
                  <div class="reports-funds">
                     <div class="reports-general-card">
@@ -101,6 +101,56 @@
                         </div>
                         <div class="rgc-body">
                             <span class="rgc-number rgcn-epc" id="fundsEPC">0 ₪</span>
+                        </div>
+                        <div class="rgc-footer"></div>
+                    </div>
+                 </div>
+                 <div class="reports-orders">
+                    <div class="reports-general-card">
+                        <div class="rgc-head">
+                            <div class="rgc-title">פריטים להזמנה</div>
+                            <i class="icon icon-24 rgc-icon rgci-average">
+                                {% include "icon/items.svg" %}
+                            </i>
+                        </div>
+                        <div class="rgc-body">
+                            <span class="rgc-number rgcn-income" id="ordersRepeat">1</span>
+                        </div>
+                        <div class="rgc-footer"></div>
+                    </div>
+                    <div class="reports-general-card">
+                        <div class="rgc-head">
+                            <div class="rgc-title">הזמנות</div>
+                            <i class="icon icon-24 rgc-icon rgci-average">
+                                {% include "icon/box3.svg" %}
+                            </i>
+                        </div>
+                        <div class="rgc-body">
+                            <span class="rgc-number rgcn-income" id="ordersNumber">26,889</span>
+                        </div>
+                        <div class="rgc-footer"></div>
+                    </div>
+                    <div class="reports-general-card">
+                        <div class="rgc-head">
+                            <div class="rgc-title">לקוחות חוזרים</div>
+                            <i class="icon icon-24 rgc-icon rgci-average">
+                                {% include "icon/repeat.svg" %}
+                            </i>
+                        </div>
+                        <div class="rgc-body">
+                            <span class="rgc-number rgcn-income" id="ordersRepeat">1</span>
+                        </div>
+                        <div class="rgc-footer"></div>
+                    </div>
+                    <div class="reports-general-card">
+                        <div class="rgc-head">
+                            <div class="rgc-title">ביטולים</div>
+                            <i class="icon icon-24 rgc-icon rgci-expense">
+                                {% include "icon/cancel.svg" %}
+                            </i>
+                        </div>
+                        <div class="rgc-body">
+                            <span class="rgc-number rgcn-income" id="ordersRepeat">1</span>
                         </div>
                         <div class="rgc-footer"></div>
                     </div>

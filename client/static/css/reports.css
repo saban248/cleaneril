@@ -408,7 +408,7 @@
 }
 
 
-.reports-funds{
+.reports-funds, .reports-orders{
     display: flex;
     flex-direction: row;
     column-gap: 15px;
@@ -421,7 +421,7 @@
     padding: 10px 0;
     scroll-behavior: smooth;
 }
-.reports-funds::-webkit-scrollbar {
+.reports-funds::-webkit-scrollbar, .reports-orders::-webkit-scrollbar{
   display: none;
   background: transparent;
 } 
