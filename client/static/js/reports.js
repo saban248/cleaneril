@@ -6,6 +6,10 @@ let selectingMode = 'from'; // 'from' or 'to'
 let dateMaximum = false;
 let dateYear = false;
 
+const reportsTabs  = {
+    FUNDS:1<<0,
+    ORDERS:1<<1
+}
 const monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
@@ -193,8 +197,13 @@ async function animateCounter(el, target, icon, duration = 1000) {
 }
 
 
+async function reloadReports(){
+    await fetchFunds()
+    showToast("עודכן", ToastStat.DONE)
 
-function fetchFunds(){
+}
+
+async function fetchFunds(){
     function updateUI(id, value, icon = '₪') {
         const el = document.getElementById(id);
         el.innerText = formatNumber(value) + ` ${icon}`;
@@ -205,26 +214,29 @@ function fetchFunds(){
     const fe = "fundsExpense";
     const fppc = "fundsPPC";
     const fepc = "fundsEPC";
-    
+    const toast = showToast("מעבד..")
     data = {action:ApiCall.funds_income, year:2026}
-    apiPost(ApiRoute.api, data).then(
+    return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
         (res) =>{
             if (!res.success){
-                showToast(res.notice, ToastStat.ERROR);
+                showToast(res.notice, ToastStat.ERROR,toast);
                 return;
             }
             // const {monthlyIncome, monthlyCustomers, monthlyAIPCM, monthlyAEPCM} = prepareMonthlyData(res.data, year);
             
             // updateChartClientIncome(monthlyIncome, monthlyCustomers, monthlyAIPCM, monthlyAEPCM)
-
+            const {monthlyIncome, monthlyCustomers, monthlyAIPCM, monthlyAEPCM} = prepareMonthlyData(res.data, 2026);
+            updateChartClientIncome(monthlyIncome, monthlyCustomers, monthlyAIPCM, monthlyAEPCM)
             updateUI(fti, res.in, '')
             updateUI(fe, res.ex)
             updateUI(fi, res.pr)
             updateUI(fppc, res.ave_ipc_ever)
             updateUI(fepc, res.ave_epc_ever)
             // setTotalDoneClient(res.total_client)
+            closeToast(toast)
+            reslove();
 
-    })
+    }))
 }
 
 function moveIndicatorReportsTabs(el){
@@ -238,7 +250,19 @@ function moveIndicatorReportsTabs(el){
     indicator.style.transform = `translateX(${left-7}px)`;
     indicator.style.width = `${width}px`;
 }
-function switchReportsTab(){
+function switchReportsTab(tab){
+    const funds = document.getElementById("reportsFunds");
+    const orders = document.getElementById("reportsOrders")
+    switch (tab){
+        case reportsTabs.FUNDS:
+            funds.classList.add("show")
+            orders.classList.remove("show")
+            break
+        case reportsTabs.ORDERS:
+            orders.classList.add("show")
+            funds.classList.remove("show")
+            break
+    }
 }
 
 
@@ -247,6 +271,7 @@ document.addEventListener("DOMContentLoaded", function () {
     renderCalendar();
     updateDateDisplay();
     fetchFunds()
+    switchReportsTab(reportsTabs.FUNDS)
 
     document.addEventListener("click", e => {
     const calendar = document.getElementById("reportsCalendar")
@@ -255,7 +280,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }})
 
     const tabs = document.querySelectorAll(".reports-tab");
-
     tabs.forEach(tab => {
     tab.addEventListener("click", () => {
         document.querySelector(".reports-tab.selected")?.classList.remove("selected");
@@ -263,17 +287,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         moveIndicatorReportsTabs(tab);
     })});
-    // init on load
-    window.addEventListener("load", () => {
-        const selected = document.querySelector(".reports-tab.selected") || tabs[0];
-        moveIndicatorReportsTabs(selected);
-    });
 
-    // optional: fix on resize
-    window.addEventListener("resize", () => {
-        const selected = document.querySelector(".reports-tab.selected");
-        if (selected) moveIndicatorReportsTabs(selected);
-    });
 
 }
 )

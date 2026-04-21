@@ -70,35 +70,6 @@ function setTotalDoneClient(amount){
   updateUI("totalDoneclient", amount, "")
 }
 
-function updateInExPrAndChartClientAndIncome(year){
-    if (!year){
-        year = ManagerCache.getFundsChartsYear()
-    }
-    data = {action:ApiCall.funds_income, year:year}
-    apiPost(ApiRoute.api, data).then(
-        (res) =>{
-            if (!res.success){
-                showToast(res.notice, ToastStat.ERROR);
-                return;
-            }
-            const {monthlyIncome, monthlyCustomers, monthlyAIPCM, monthlyAEPCM} = prepareMonthlyData(res.data, year);
-            
-            updateChartClientIncome(monthlyIncome, monthlyCustomers, monthlyAIPCM, monthlyAEPCM)
-
-            setIncome(res.in)
-            setExpense(res.ex)
-            setProfit(res.pr)
-            setAveragePPC(res.ave_ipc_ever)
-            setAverageEPC(res.ave_epc_ever)
-            setTotalDoneClient(res.total_client)
-            document.getElementById("selectedYear").innerText = year;
-            ManagerCache.setFundsChartsYear(year)
-
-
-        }
-    )
-}
-
 
 
 
@@ -237,13 +208,12 @@ function selectYearCharts(y){
 
 }
 
-// document.addEventListener("DOMContentLoaded", function () {
-//     initCharts()
-//   updateInExPrAndChartClientAndIncome(ManagerCache.getFundsChartsYear())
-// });
-// document.addEventListener("click", e => {
-//     const menu = document.getElementById("yearFundsMenu")
-//     if (!menu.contains(e.target) && !e.target.classList.contains("year-select")) {
-//         menu.classList.remove("show")
-//     }
-// })
+document.addEventListener("DOMContentLoaded", function () {
+    initCharts()
+});
+document.addEventListener("click", e => {
+    const menu = document.getElementById("yearFundsMenu")
+    if (!menu.contains(e.target) && !e.target.classList.contains("year-select")) {
+        menu.classList.remove("show")
+    }
+})

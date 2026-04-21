@@ -81,7 +81,12 @@
 .reports-calendar{
     position: relative;
 }
-.calendar-actions > span{
+.calendar-actions{
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+.rca-item > span{
     font-size: 13px;
     color: #7d7d7d;
 }
@@ -392,12 +397,10 @@
 .reports-tab{
     position: relative;
     z-index: 1; /* 👈 keep above indicator */
-
     padding: 6px 18px;
     border-radius: 999px;
     cursor: pointer;
-
-    transition: color 0.25s ease;
+    transition: 0.25s ease;
 }
 .reports-tab:hover {
     background-position: right bottom;
@@ -408,8 +411,8 @@
 }
 
 
-.reports-funds, .reports-orders{
-    display: flex;
+.reports-content{
+    display: none;
     flex-direction: row;
     column-gap: 15px;
     overflow-x: auto;
@@ -421,10 +424,14 @@
     padding: 10px 0;
     scroll-behavior: smooth;
 }
-.reports-funds::-webkit-scrollbar, .reports-orders::-webkit-scrollbar{
+
+.reports-content::-webkit-scrollbar{
   display: none;
   background: transparent;
 } 
+.reports-content.show{
+    display: flex !important;
+}
 
 .reports-general-card{
     scroll-snap-align: start; 
@@ -504,7 +511,7 @@
     .reports-header{
         justify-content: right;
     }
-    .reports-funds{
+    .reports-content{
         flex-direction: column;
         row-gap: 10px;
         align-items: center;

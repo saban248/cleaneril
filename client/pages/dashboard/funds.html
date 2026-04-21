@@ -15,8 +15,14 @@
                 <div class="reports-menu">
                     <div class="reports-calendar">
                         <div class="calendar-actions">
-                            <i class="fa-solid fa-calendar btn-r-show-calendar" onclick="showCalendarReports()"></i>
-                            <span id="calendarDateview">סינון תאריכים</span>
+                            <div class="rca-item">
+                                <i class="fa-solid fa-calendar btn-r-show-calendar" onclick="showCalendarReports()"></i>
+                                <span id="calendarDateview">סינון תאריכים</span>
+                            </div>
+                            <div class="rca-item">
+                                <i class="fa-solid fa-arrows-rotate btn-r-show-calendar" onclick="reloadReports()"></i>
+                            </div>
+
                         </div>
                          <div class="calendar-container" id="reportsCalendar">
                             <div class="date-display">
@@ -52,10 +58,10 @@
                 <!-- funds -->
                  <div class="reports-tabs">
                     <div class="reports-tab-indicator" id="rt-indicator"></div>
-                    <span class="reports-tab selected" onclick="switchReportsTab">כספים</span>
-                    <span class="reports-tab">הזמנות</span>
+                    <span class="reports-tab" onclick="switchReportsTab(reportsTabs.FUNDS)">כספים</span>
+                    <span class="reports-tab" onclick="switchReportsTab(reportsTabs.ORDERS)">הזמנות</span>
                  </div>
-                 <div class="reports-funds">
+                 <div class="reports-content" id="reportsFunds">
                     <div class="reports-general-card">
                         <div class="rgc-head">
                             <div class="rgc-title">הכנסות</div>
@@ -105,10 +111,10 @@
                         <div class="rgc-footer"></div>
                     </div>
                  </div>
-                 <div class="reports-orders">
+                 <div class="reports-content" id="reportsOrders">
                     <div class="reports-general-card">
                         <div class="rgc-head">
-                            <div class="rgc-title">פריטים להזמנה</div>
+                            <div class="rgc-title">פריטים שהוזמנו</div>
                             <i class="icon icon-24 rgc-icon rgci-average">
                                 {% include "icon/items.svg" %}
                             </i>
@@ -155,64 +161,17 @@
                         <div class="rgc-footer"></div>
                     </div>
                  </div>
-            </div>
-        </div>
-    </div>
-</div>
-        
-        <!-- <div class="main-cards">
-            <div class="main-cards-in-ex-pr">
-                <div class="card-in-ex-pr card-shadow">
-                    <p class="card-inexpr-title">סה״כ הכנסות</p>
-                    <p id="incomeTotal" class="card-inexpr-text color-in">0 ₪</p>
-                </div>
-                <div class="card-in-ex-pr card-shadow">
-                <p class="card-inexpr-title">רווח נקי</p>
-                <p id="profitTotal" class="card-inexpr-text color-pr">0 ₪</p>
-                </div>
-
-                <div class="card-in-ex-pr card-shadow">
-                <p class="card-inexpr-title">סה״כ הוצאות</p>
-                <p id="expenseTotal" class="card-inexpr-text color-ex">0 ₪</p>
-                </div>
-                <div class="card-in-ex-pr card-shadow">
-                <p class="card-inexpr-title">ממוצע ה.פ.ל</p>
-                <p id="averageExpensePerClient" class="card-inexpr-text color-epc">0 ₪</p>
-                </div>
-                <div class="card-in-ex-pr card-shadow">
-                <p class="card-inexpr-title">ממוצע ר.פ.ל</p>
-                <p id="averageProfitPerClient" class="card-inexpr-text color-ppc">0 ₪</p>
-                </div>
-                <div class="card-in-ex-pr card-shadow">
-                <p class="card-inexpr-title">לקוחות השולמו</p>
-                <p id="totalDoneclient" class="card-inexpr-text color-tc">0 ₪</p>
-                </div>
-            </div>
-
-            <div class="chart-wrapper">
-                    <div class="chart-header">
-                        <h2>ביצועי השנה</h2>
-                        <div class="chart-header-action">
-                            <i class="fa-solid fa-arrows-rotate" onclick="updateInExPrAndChartClientAndIncome()"></i>
-                            <div class="year-select" id="selectedYear" onclick="openMenuSelectYear(this)">2026
-                            </div>
-                        </div>
-                        
-                    </div>
+                <div class="chart-wrapper">
                     <div class="chartbody">
                         <div id="chartClientIncome" class="chart-card"></div>
                     </div>
+                </div>
+                <div>
+                    <canvas id="expenseChart"></canvas>
+                </div>
+            <div id="yearFundsMenu" class="year-funds-menu"></div> 
             </div>
-
-            <div>
-                <canvas id="expenseChart"></canvas>
-            </div>
-            
         </div>
-
     </div>
-        
 </div>
-
-<div id="yearFundsMenu" class="year-funds-menu"></div> -->
 
