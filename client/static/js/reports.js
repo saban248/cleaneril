@@ -239,17 +239,7 @@ async function fetchFunds(){
     }))
 }
 
-function moveIndicatorReportsTabs(el){
-    const indicator = document.getElementById("rt-indicator");
-    const parent = el.parentElement;
-    const elRect = el.getBoundingClientRect();
-    const parentRect = parent.getBoundingClientRect();
-    const left = elRect.left - parentRect.left;
-    const width = elRect.width;
 
-    indicator.style.transform = `translateX(${left-7}px)`;
-    indicator.style.width = `${width}px`;
-}
 function switchReportsTab(tab){
     const funds = document.getElementById("reportsFunds");
     const orders = document.getElementById("reportsOrders")
@@ -285,7 +275,6 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelector(".reports-tab.selected")?.classList.remove("selected");
         tab.classList.add("selected");
 
-        moveIndicatorReportsTabs(tab);
     })});
 
 

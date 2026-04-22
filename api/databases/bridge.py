@@ -5,7 +5,6 @@ import sqlite3
 from api.databases import orders, clients
 from api.databases.clients import ClientProfile
 from api.databases.employee import ApiEmployee, unknown
-from api.databases.funds import ApiFunds
 from api.databases.orders import CleanOrder
 from api.databases.ptc import cleaneril_db, ServerConfig
 from api.jfunc import clean_phone_just_numbers, match_nums_words

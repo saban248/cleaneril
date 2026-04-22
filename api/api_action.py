@@ -4,6 +4,8 @@ import os
 from time import sleep
 
 from flask import render_template_string, render_template
+
+from api.data.ptc import AnalyticsData
 from api.databases import invoice
 from api.databases import orders, clients
 from api.databases.bridge import set_employee_to_client, on_create_order_create_client
@@ -11,7 +13,6 @@ from api.databases.clients import ClientProfile
 from api.databases.company import ApiCompany
 from api.databases.crads import ApiCards, Cards
 from api.databases.employee import ApiEmployee, Employee
-from api.databases.funds import ApiFunds
 from api.databases.manager import ApiManager, on_register_create_company
 from api.databases.orders import CleanOrder
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril
@@ -78,14 +79,14 @@ def get_api_action(session, request, **breq) -> dict:
             return SJson.auto_code(code)
         case ApiCall.funds_income:
             funds = cil_struct.Funds().build(**breq)
-            api_f = ApiFunds(manager_id)
-            data = {"data": api_f.get_order_profit_years(funds.year),
-                    "in":api_f.fi,
-                    "ex":api_f.fe,
-                    "pr":api_f.pf,
-                    "ave_ipc_ever":api_f.get_average_income_per_client_ever(),
-                    "ave_epc_ever":api_f.get_average_expense_per_client_ever(),
-                    "total_client":len(api_f.od)}
+            analyze = AnalyticsData(manager_id)
+            data = {"data": analyze.get_graph_funds(funds.year),
+                    "in": analyze.income(),
+                    "ex":analyze.expenses(),
+                    "pr":analyze.expenses(),
+                    "ave_ipc_ever":analyze.get_average_income_orders(),
+                    "ave_epc_ever":analyze.get_average_expense_orders(),
+                    "total_client":len(analyze.orders_done())}
             return SJson.auto_code(__success__, **data)
 
         case ApiCall.conf_company:

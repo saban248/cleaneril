@@ -102,7 +102,7 @@ const options = (monthlyIncome, monthlyCustomers, monthlyAIPCM)=> {return{
     height: 350,
     stacked: false,
     toolbar: { show: false },
-    zoom: { enabled: true },
+    zoom: { enabled: false },
   },
   stroke: {
     width: [0, 4]

@@ -45,11 +45,45 @@ class CleanOrder(cleaneril_db.Model):
 def get_clean_orders(source:bool = True, **kwargs):
     return get_columns(CleanOrder, source, **kwargs)
 
+
 def get_clean_order_latest(source = True, **kwargs):
     if source:
         return get_latest_columns(CleanOrder, source, lambda o:o.date, **kwargs)
 
     return get_latest_columns(CleanOrder, source, lambda o:o["date"], **kwargs)
+
+
+def get_clean_order_by_date(manager_id:str, df:float, dt:float, dti:bool =True,  **kwargs):
+    """
+
+    :param dti: date to include
+    :param manager_id:
+    :param df: date from
+    :param dt: date to
+    :param kwargs:
+    :return:
+    """
+    _orders =  (
+        CleanOrder.query
+        .filter(
+            CleanOrder.manager_id == manager_id,
+            CleanOrder.date >= df,
+            CleanOrder.date <= dt if dti else CleanOrder.date < dt
+        ))
+    if kwargs:
+        _orders = _orders.filter_by(**kwargs)
+
+    return _orders
+
+
+def get_clean_order_by_stat(manager_id:str, stat:StateOrder):
+    return get_clean_orders(manager_id=manager_id, stat=stat)
+
+
+def get_clean_order_done(manager_id:str):return get_clean_order_by_stat(manager_id, StateOrder.DONE)
+def get_clean_order_canceled(manager_id:str):return get_clean_order_by_stat(manager_id, StateOrder.CANCELED)
+def get_clean_order_wait(manager_id:str):return get_clean_order_by_stat(manager_id, StateOrder.WAIT)
+def get_clean_order_closed(manager_id:str):return get_clean_order_by_stat(manager_id, StateOrder.CLOSED)
 
 def create_clean_order(manager_id:str, client_id:str, response:cil_struct.CleanOrder, update:bool = False) -> CleanOrder:
     if update:

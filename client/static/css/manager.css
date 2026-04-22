@@ -878,7 +878,12 @@
     .card-inexpr-text{
         font-size: 1.5rem !important;
     }
-
+    .chart-wrapper{
+          display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+    }
     .chartbody{
         width: 95% !important;
     }
@@ -899,8 +904,6 @@
 }
 .chart-wrapper {
   padding: 5px;
-  display: flex;
-  justify-content: center;
 }
 
 
@@ -909,6 +912,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
+  width: 100%;
 }
 
 

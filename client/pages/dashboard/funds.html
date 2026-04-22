@@ -57,8 +57,7 @@
             <div class="reports-body">
                 <!-- funds -->
                  <div class="reports-tabs">
-                    <div class="reports-tab-indicator" id="rt-indicator"></div>
-                    <span class="reports-tab" onclick="switchReportsTab(reportsTabs.FUNDS)">כספים</span>
+                    <span class="reports-tab selected" onclick="switchReportsTab(reportsTabs.FUNDS)">כספים</span>
                     <span class="reports-tab" onclick="switchReportsTab(reportsTabs.ORDERS)">הזמנות</span>
                  </div>
                  <div class="reports-content" id="reportsFunds">
@@ -162,6 +161,13 @@
                     </div>
                  </div>
                 <div class="chart-wrapper">
+                    <div class="chart-header">
+                        <h4>ביצועים לאורך השנה</h4>
+                        <div class="chart-header-action">
+                            <div class="year-select" id="selectedYear" onclick="openMenuSelectYear(this)">2026
+                            </div>
+                        </div>
+                    </div>
                     <div class="chartbody">
                         <div id="chartClientIncome" class="chart-card"></div>
                     </div>
