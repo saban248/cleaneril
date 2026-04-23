@@ -2,7 +2,7 @@ import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
 
-from api.databases import orders
+from api.databases import orders, clients
 from api.databases.orders import get_clean_order_done
 from api.databases.ptc import StateOrder
 
@@ -35,7 +35,7 @@ class AnalyticsData:
         return self.__od
 
     def orders_done_count_ever(self):
-        return len(orders.get_clean_order_by_date(self.__mid, 0, time.time()).all())
+        return len(orders.get_clean_order_by_date(self.__mid, 0, time.time(),stat=StateOrder.DONE).all())
 
     def orders_wait(self):
         return self.__get_clean_orders_by_stat(StateOrder.WAIT)
@@ -47,7 +47,7 @@ class AnalyticsData:
         return len(self.orders_canceled())
 
     def orders_canceled_count_ever(self):
-        return len(orders.get_clean_order_by_date(self.__mid, 0, time.time()).all())
+        return len(orders.get_clean_order_by_date(self.__mid, 0, time.time(), stat=StateOrder.CANCELED).all())
 
     def orders_closed(self):
         return self.__get_clean_orders_by_stat(StateOrder.CLOSED)
@@ -55,7 +55,7 @@ class AnalyticsData:
     def get_orders_done_by_year(self, year:int):
         start = datetime(year, 1, 1, tzinfo=timezone.utc).timestamp()
         end = datetime(year + 1, 1, 1, tzinfo=timezone.utc).timestamp()
-        return orders.get_clean_order_by_date(self.__mid, start, end, False)
+        return orders.get_clean_order_by_date(self.__mid, start, end, False, stat=StateOrder.DONE)
 
     def income(self):
         income = 0
@@ -66,7 +66,7 @@ class AnalyticsData:
 
     def income_ever(self):
         income = 0
-        _orders = orders.get_clean_order_by_date(self.__mid, 0, time.time()).all()
+        _orders = orders.get_clean_order_by_date(self.__mid, 0, time.time(), stat=StateOrder.DONE).all()
         for order in _orders:
             income += (order.price - order.off_price)
         return income
@@ -87,7 +87,7 @@ class AnalyticsData:
 
     def expenses_ever(self):
         expenses = 0
-        _orders = orders.get_clean_order_by_date(self.__mid, 0, time.time()).all()
+        _orders = orders.get_clean_order_by_date(self.__mid, 0, time.time(), stat=StateOrder.DONE).all()
         for order in _orders:
             expenses += order.expense
 
@@ -151,3 +151,49 @@ class AnalyticsData:
             data.append(item.__dict__)
 
         return data
+
+    def count_items_clean_orders_ever(self):
+        _orders = orders.get_clean_order_by_date(self.__mid, 0, time.time(), stat=StateOrder.DONE).all()
+        items = 0
+        for order in _orders:
+            items += len(order.items)
+
+        return items
+
+    def count_items_clean_orders(self):
+        _orders = self.orders_done()
+        items = 0
+        for order in _orders:
+            items += len(order.items)
+
+        return items
+
+    def count_orders_done(self):
+        return len(self.orders_done())
+
+    def count_orders_done_ever(self):
+        _orders = orders.get_clean_order_by_date(self.__mid, 0 , time.time(),stat=StateOrder.DONE).all()
+        return len(_orders)
+
+    def count_client_repeated_ever(self):
+        _clients = clients.get_clients(manager_id=self.__mid).all()
+        repeat = 0
+        for client in _clients:
+            repeat += len(orders.get_clean_order_by_date(self.__mid, 0, time.time(),
+                                                      stat=StateOrder.DONE, client_id=client.client_id).all())
+
+        return repeat
+
+    def count_client_repeated(self):
+        _clients = clients.get_clients(manager_id=self.__mid).all()
+        repeat = 0
+        for client in _clients:
+            __repeat__ = len(orders.get_clean_order_by_date(self.__mid, self.__df, self.__dt,
+                                                         stat=StateOrder.DONE,client_id=client.client_id).all())
+            print(__repeat__)
+            if __repeat__ >= 2:
+                repeat+=1
+
+        return repeat
+
+

@@ -328,5 +328,16 @@ class ReportsDataAnalyze:
     aeoe:float  = None
     # average_expense_orders
     aeo:float       = None
-
+    # count_items_clean_orders_ever
+    cicoe:int       = None
+    # count_items_clean_orders
+    cico:int       = None
+    # count_orders_done_ever
+    code:int        = None
+    # count_orders_done
+    cod:int         = None
+    # count client repeated ever
+    ccre:int        = None
+    # count client repeated
+    ccr:int         = None
     graph_funds:list =  None

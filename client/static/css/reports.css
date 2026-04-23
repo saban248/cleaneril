@@ -149,7 +149,6 @@
     display: flex;
     gap: 5px;
     justify-content: right;
-    flex-wrap: wrap;
 }
 
 .date-box {
@@ -348,6 +347,9 @@
 
     .day {
         font-size: 14px;
+    }
+    .date-display{
+        flex-direction: row !important;
     }
 }
 

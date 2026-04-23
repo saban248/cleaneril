@@ -30,7 +30,7 @@ def get_api_action(session, request, **breq) -> dict:
     match action:
         case ApiCall.card_editor:
             card = cil_struct.CardEditor().build(**breq)
-            return SJson.auto_code(__success__,**{"template":get_card_edit_template(card.ci)})
+            return SJson.auto_code(__success__, **{"template": get_card_edit_template(card.ci)})
         case ApiCall.order_edit:
             r_order = cil_struct.CleanOrder().build(**breq)
             order: CleanOrder = orders.get_clean_orders(manager_id=manager_id, order_id=r_order.oi).first()
@@ -56,7 +56,7 @@ def get_api_action(session, request, **breq) -> dict:
             if not order:
                 return SJson.auto_code(core_msg.ServerCode.General.something_wrong)
             template = {"template": get_client_order_template(manager, order, False), "order_id":order.order_id}
-            return SJson.auto_code(__success__,**template)
+            return SJson.auto_code(__success__, **template)
 
         case ApiCall.card_draft | ApiCall.card_save:
             if ApiCall.card_draft&action:state = StateDocument.DRAFT
@@ -64,12 +64,12 @@ def get_api_action(session, request, **breq) -> dict:
             card = cil_struct.CardEditor().build(**breq)
             ApiCards.add_card(card.ci,state,card.ct,card.o,
                               card.op,card.imp,card.desc,card.wt, card.wtl,card.phone)
-            return SJson.auto_code(__success__, **{"card_id":card.ci})
+            return SJson.auto_code(__success__, **{"card_id": card.ci})
 
         case ApiCall.card_delete:
             card = cil_struct.CardEditor().build(**breq)
             code = ApiCards.delete_card(card_id=card.ci)
-            return  SJson.auto_code(code)
+            return SJson.auto_code(code)
         case ApiCall.order_delete:
             rroder = cil_struct.CleanOrder().build(**breq)
             code = orders.delete_clean_order(manager_id, rroder.oi)
@@ -97,6 +97,12 @@ def get_api_action(session, request, **breq) -> dict:
             struct.aeo = analyze.get_average_expense_orders()
             struct.occe = analyze.orders_canceled_count_ever()
             struct.occ = analyze.orders_canceled_count()
+            struct.cicoe = analyze.count_items_clean_orders_ever()
+            struct.cico = analyze.count_items_clean_orders()
+            struct.code = analyze.count_orders_done_ever()
+            struct.cod = analyze.count_orders_done()
+            struct.ccre = analyze.count_client_repeated()
+            struct.ccr = analyze.count_client_repeated()
             return SJson.auto_code(__success__, **struct.__dict__)
 
         case ApiCall.conf_company:
@@ -108,7 +114,7 @@ def get_api_action(session, request, **breq) -> dict:
 
         case ApiCall.order_workers:
             workers = list(ApiEmployee.get_employees_search(manager_id=manager_id))
-            return SJson.auto_code(__success__, **{"workers":workers})
+            return SJson.auto_code(__success__, **{"workers": workers})
         case ApiCall.worker_editor:
             worker = cil_struct.Employee().build(**breq)
             template =  {"template": get_worker_template(manager, worker.wid)}
@@ -165,7 +171,7 @@ def get_api_action(session, request, **breq) -> dict:
         case ApiCall.list_clients:
             _clients = clients.get_clients(False, manager_id=manager_id)
             lclients =  {"clients":_clients}
-            return SJson.auto_code(__success__,**lclients)
+            return SJson.auto_code(__success__, **lclients)
 
     return SJson.auto_code(__success__)
 

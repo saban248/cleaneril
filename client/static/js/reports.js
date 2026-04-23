@@ -117,7 +117,7 @@ function updateDateDisplay() {
     }
     
     if (reportsCalendar.sTo) {
-        toElement.textContent = formatDate(reportsTabs.sTo);
+        toElement.textContent = formatDate(reportsCalendar.sTo);
     } else {
         toElement.textContent = 'לא הוגדר';
     }
@@ -148,6 +148,8 @@ function goToMonth(year, month) {
 
     reportsCalendar.sFrom = new Date(y, m, 1);
     reportsCalendar.sTo   = new Date(y, m + 1, 0, 23, 59, 59, 999);
+    updateDateDisplay()
+    renderCalendar()
 }
 
 function goToYear(year) {
@@ -165,6 +167,11 @@ function goToYear(year) {
 function goToMaximum(){
     reportsCalendar.dateMaximum = true;
     reportsCalendar.dateYear = false
+    reportsCalendar.sFrom = new Date(0)
+    reportsCalendar.sTo = new Date()
+    updateDateDisplay()
+    renderCalendar()
+
 }
 
 
@@ -217,6 +224,9 @@ async function fetchFunds(){
     const fe = "fundsExpense";
     const fppc = "fundsPPC";
     const fepc = "fundsEPC";
+    const oc = "ordersItemsCount";
+    const on = 'ordersNumber';
+    const or = 'ordersRepeat';
     const toast = showToast("מעבד..")
     data = {action:ApiCall.funds_income, year:2026, df:reportsCalendar.sFrom.getTime()/1000, dt:reportsCalendar.sTo.getTime()/1000}
     return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
@@ -235,6 +245,9 @@ async function fetchFunds(){
             updateUI(fi, res.i)
             updateUI(fppc, res.aioe)
             updateUI(fepc, res.aeoe)
+            updateUI(oc, res.cico, '')
+            updateUI(on, res.cod, '')
+            updateUI(or, res.ccr, '')
             // setTotalDoneClient(res.total_client)
             closeToast(toast)
             reslove();

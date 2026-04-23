@@ -57,30 +57,30 @@ class SJson:
     msg_json = {"success":None, "title":None, "notice":None, "code":0}
 
     @staticmethod
-    def error(code:int = core_msg.ServerCode.General.access_denied, **errors):
+    def error(__code:int = core_msg.ServerCode.General.access_denied, **errors):
         msg = dict(SJson.msg_json, **errors)
-        text = core_msg.ServerMsg[code]
+        text = core_msg.ServerMsg[__code]
         msg["success"] = False
         msg["title"] =  "שגיאה"
-        msg['code'] = code
+        msg['code'] = __code
         msg["notice"] = text
         return msg | errors
 
     @staticmethod
-    def success(code:int = core_msg.ServerCode.success, **success):
+    def success(__code:int = core_msg.ServerCode.success, **success):
         msg = dict(SJson.msg_json, **success)
-        text = core_msg.ServerMsg[code]
+        text = core_msg.ServerMsg[__code]
         msg["success"] = True
         msg["title"] = "הושלם"
-        msg['code'] = code
+        msg['code'] = __code
         msg["notice"] = text
         return msg | success
 
     @staticmethod
-    def auto_code(code:int, **dany):
-        if code:
-            return SJson.error(code, **dany)
-        return SJson.success(code, **dany)
+    def auto_code(__code:int, **dany):
+        if __code:
+            return SJson.error(__code, **dany)
+        return SJson.success(__code, **dany)
 
 def get_dictionary_http(req:Request, content_type:str = str()) -> dict:
     _ctype = req.content_type or str()
