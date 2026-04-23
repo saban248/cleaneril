@@ -199,6 +199,8 @@ class CleanOrder:
 @dataclass
 class Funds:
     year:int        = None
+    df:float        = None
+    dt:float        = None
 
     def build(self, **data):
         struct_builder(self, **data)
@@ -298,3 +300,33 @@ class Invoice:
         struct_builder(self, **data)
         if self.pt:self.pt = int(self.pt)
         return self
+
+
+@dataclass
+class ReportsDataAnalyze:
+    # income_ever
+    ie:int             = None
+    # expense_ever
+    ee:int            = None
+    # income
+    i:int                  = None
+    # expense
+    e:int                 = None
+    # orders_done_count_ever
+    odce:int       = None
+    # orders_done_count
+    odc:int            = None
+    # orders_canceled_count_ever
+    occe:int   = None
+    # orders_canceled_count
+    occ:int        = None
+    # average_income_orders_ever
+    aioe:float   = None
+    # average_income_orders
+    aio:float        = None
+    # average_expense_orders_ever
+    aeoe:float  = None
+    # average_expense_orders
+    aeo:float       = None
+
+    graph_funds:list =  None

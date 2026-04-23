@@ -17,6 +17,7 @@ from api.databases.manager import ApiManager, on_register_create_company
 from api.databases.orders import CleanOrder
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril
 from api.ptc import special_things, SJson, ShortSession
+from api.routes.cil_struct import ReportsDataAnalyze
 from api.routes.ptc import Pages, ApiCall, ApiUploadFile, RegisterApi, PaymentInvoice
 from api.validator import core_msg, company
 from api.routes import cil_struct
@@ -79,15 +80,24 @@ def get_api_action(session, request, **breq) -> dict:
             return SJson.auto_code(code)
         case ApiCall.funds_income:
             funds = cil_struct.Funds().build(**breq)
-            analyze = AnalyticsData(manager_id)
-            data = {"data": analyze.get_graph_funds(funds.year),
-                    "in": analyze.income(),
-                    "ex":analyze.expenses(),
-                    "pr":analyze.expenses(),
-                    "ave_ipc_ever":analyze.get_average_income_orders(),
-                    "ave_epc_ever":analyze.get_average_expense_orders(),
-                    "total_client":len(analyze.orders_done())}
-            return SJson.auto_code(__success__, **data)
+            analyze = AnalyticsData(manager_id,funds.df, funds.dt)
+            struct = ReportsDataAnalyze()
+            struct.ie = analyze.income_ever()
+            struct.i = analyze.income()
+            struct.ee = analyze.expenses_ever()
+            struct.e = analyze.expenses()
+            struct.odce = analyze.orders_done_count_ever()
+            struct.odc = len(analyze.orders_done())
+            struct.occe = analyze.orders_canceled_count_ever()
+            struct.occ = analyze.orders_canceled()
+            struct.graph_funds = analyze.get_graph_funds(funds.year)
+            struct.aioe = analyze.get_average_income_orders_ever()
+            struct.aio = analyze.get_average_income_orders()
+            struct.aeoe = analyze.get_average_expense_orders_ever()
+            struct.aeo = analyze.get_average_expense_orders()
+            struct.occe = analyze.orders_canceled_count_ever()
+            struct.occ = analyze.orders_canceled_count()
+            return SJson.auto_code(__success__, **struct.__dict__)
 
         case ApiCall.conf_company:
             config = cil_struct.Company().build(**breq)

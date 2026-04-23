@@ -170,11 +170,10 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-bottom: 4px;
 }
 
 .date-value {
-    font-size: 15px;
+    font-size: 14px;
     color: #959596;
 }
 
@@ -491,7 +490,7 @@
     font-size: 1.5rem;
     font-weight: lighter;
 }
-.rgcn-income, .rgnc-ppc{
+.rgcn-income, .rgcn-ppc{
     color: #c2dacb;
 }
 .rgcn-expense, .rgcn-epc{

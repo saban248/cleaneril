@@ -1,11 +1,12 @@
 
-let currentDate = new Date();
-let selectedFrom = null;
-let selectedTo = null;
-let selectingMode = 'from'; // 'from' or 'to'
-let dateMaximum = false;
-let dateYear = false;
-
+const reportsCalendar = {
+    sFrom:null,
+    sTo:null,
+    sMode:0,
+    dateMaximum:false,
+    dateYear:false,
+    dateCurrent:new Date()
+}
 const reportsTabs  = {
     FUNDS:1<<0,
     ORDERS:1<<1
@@ -29,8 +30,8 @@ function hideCalendarReports(){
     calendar.classList.remove("show")
 }
 function renderCalendar() {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
+    const year = reportsCalendar.dateCurrent.getFullYear();
+    const month = reportsCalendar.dateCurrent.getMonth();
     
     document.getElementById('monthYear').textContent = `${monthNames[month]} ${year}`;
     
@@ -49,21 +50,21 @@ function renderCalendar() {
         calendarHTML += `<div class="day-header">${day}</div>`;
     });
     
-    // Previous month days
+    //  month days
     for (let i = firstDayWeek - 1; i >= 0; i--) {
         calendarHTML += `<div class="day other-month">${prevLastDate - i}</div>`;
     }
     
-    // Current month days
+    //  c.month days
     const today = new Date();
     for (let day = 1; day <= lastDate; day++) {
         const date = new Date(year, month, day);
         const isToday = date.toDateString() === today.toDateString();
-        const isSelected = (selectedFrom && date.toDateString() === selectedFrom.toDateString()) ||
-                            (selectedTo && date.toDateString() === selectedTo.toDateString());
-        const isInRange = selectedFrom && selectedTo && date > selectedFrom && date < selectedTo;
-        const isRangeStart = selectedFrom && date.toDateString() === selectedFrom.toDateString();
-        const isRangeEnd = selectedTo && date.toDateString() === selectedTo.toDateString();
+        const isSelected = (reportsCalendar.sFrom && date.toDateString() === reportsCalendar.sFrom.toDateString()) ||
+                            (reportsCalendar.sTo && date.toDateString() === reportsCalendar.sTo.toDateString());
+        const isInRange = reportsCalendar.sFrom && reportsCalendar.sTo && date > reportsCalendar.sFrom && date < reportsCalendar.sTo;
+        const isRangeStart = reportsCalendar.sFrom && date.toDateString() === reportsCalendar.sFrom.toDateString();
+        const isRangeEnd = reportsCalendar.sTo && date.toDateString() === reportsCalendar.sTo.toDateString();
         
         let classes = 'day';
         if (isToday) classes += ' today';
@@ -86,18 +87,18 @@ function renderCalendar() {
 
 function selectDate(year, month, day) {
     const date = new Date(year, month, day);    
-    if (selectingMode === 'from' || !selectedFrom) {
-        selectedFrom = date;
-        selectedTo = null;
-        selectingMode = 'to';
-    } else if (selectingMode === 'to') {
-        if (date < selectedFrom) {
-            selectedTo = selectedFrom;
-            selectedFrom = date;
+    if (reportsCalendar.sMode === 0 || !reportsCalendar.sFrom) {
+        reportsCalendar.sFrom = date;
+        reportsCalendar.sTo = null;
+        reportsCalendar.sMode = 1;
+    } else if (reportsCalendar.sMode === 1) {
+        if (date < reportsCalendar.sFrom) {
+            reportsCalendar.sTo = reportsCalendar.sFrom;
+            reportsCalendar.sFrom = date;
         } else {
-            selectedTo = date;
+            reportsCalendar.sTo = date;
         }
-        selectingMode = 'from';
+        reportsCalendar.sMode = 0;
     }
     
     updateDateDisplay();
@@ -109,19 +110,19 @@ function updateDateDisplay() {
     const toElement = document.getElementById('toDate');
     const viewCalendarDate = document.getElementById("calendarDateview")
     
-    if (selectedFrom) {
-        fromElement.textContent = formatDate(selectedFrom);
+    if (reportsCalendar.sFrom) {
+        fromElement.textContent = formatDate(reportsCalendar.sFrom);
     } else {
         fromElement.textContent = 'לא הוגדר';
     }
     
-    if (selectedTo) {
-        toElement.textContent = formatDate(selectedTo);
+    if (reportsCalendar.sTo) {
+        toElement.textContent = formatDate(reportsTabs.sTo);
     } else {
         toElement.textContent = 'לא הוגדר';
     }
-    if (!dateMaximum){
-        viewCalendarDate.textContent = formatDate(selectedTo) + ' ל '+formatDate(selectedFrom)
+    if (!reportsCalendar.dateMaximum){
+        viewCalendarDate.textContent = formatDate(reportsCalendar.sTo) + ' ל '+formatDate(reportsCalendar.sFrom)
     }
     else{
         viewCalendarDate.textContent = 'תמיד'
@@ -135,7 +136,7 @@ function formatDate(date) {
 }
 
 function changeMonth(delta) {
-    currentDate.setMonth(currentDate.getMonth() + delta);
+    reportsCalendar.dateCurrent.setMonth(reportsCalendar.dateCurrent.getMonth() + delta);
     renderCalendar();
 }
 
@@ -145,35 +146,38 @@ function goToMonth(year, month) {
     const y = year ?? now.getFullYear();
     const m = month ?? now.getMonth(); // 0–11
 
-    selectedFrom = new Date(y, m, 1);
-    selectedTo   = new Date(y, m + 1, 0, 23, 59, 59, 999);
+    reportsCalendar.sFrom = new Date(y, m, 1);
+    reportsCalendar.sTo   = new Date(y, m + 1, 0, 23, 59, 59, 999);
 }
 
 function goToYear(year) {
-    dateMaximum = false
-    dateYear = true
+    reportsCalendar.dateMaximum = false
+    reportsCalendar.dateYear = true
     const now = new Date();
     const y = year || now.getFullYear();
-    selectedFrom = new Date(y, 0, 1);
-    selectedTo   = new Date(y, 11, 31, 23, 59, 59, 999);
+    reportsCalendar.sFrom = new Date(y, 0, 1);
+    reportsCalendar.sTo   = new Date(y, 11, 31, 23, 59, 59, 999);
     updateDateDisplay()
     renderCalendar()
 
 }
 
 function goToMaximum(){
-    dateMaximum = true;
-    dateYear = false
+    reportsCalendar.dateMaximum = true;
+    reportsCalendar.dateYear = false
 }
 
 
-function applyDates() {
-    if (selectedFrom && selectedTo) {
-        const days = Math.ceil((selectedTo - selectedFrom) / (1000 * 60 * 60 * 24));
+async function applyDates() {
+    if (reportsCalendar.sFrom && reportsCalendar.sTo) {
+        const days = Math.ceil((reportsCalendar.sTo - reportsCalendar.sFrom) / (1000 * 60 * 60 * 24));
         hideCalendarReports()
     } else {
         showToast("בחר התחלה וסיום", ToastStat.ERROR)
+        return
     }
+    await reloadReports()
+
 }
 
 async function animateCounter(el, target, icon, duration = 1000) {
@@ -199,7 +203,6 @@ async function animateCounter(el, target, icon, duration = 1000) {
 
 async function reloadReports(){
     await fetchFunds()
-    showToast("עודכן", ToastStat.DONE)
 
 }
 
@@ -215,23 +218,23 @@ async function fetchFunds(){
     const fppc = "fundsPPC";
     const fepc = "fundsEPC";
     const toast = showToast("מעבד..")
-    data = {action:ApiCall.funds_income, year:2026}
+    data = {action:ApiCall.funds_income, year:2026, df:reportsCalendar.sFrom.getTime()/1000, dt:reportsCalendar.sTo.getTime()/1000}
     return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
         (res) =>{
             if (!res.success){
                 showToast(res.notice, ToastStat.ERROR,toast);
                 return;
             }
-            // const {monthlyIncome, monthlyCustomers, monthlyAIPCM, monthlyAEPCM} = prepareMonthlyData(res.data, year);
+            console.log(res)
             
+            // const {monthlyIncome, monthlyCustomers, monthlyAIPCM, monthlyAEPCM} = prepareMonthlyData(res.data, 2026);
             // updateChartClientIncome(monthlyIncome, monthlyCustomers, monthlyAIPCM, monthlyAEPCM)
-            const {monthlyIncome, monthlyCustomers, monthlyAIPCM, monthlyAEPCM} = prepareMonthlyData(res.data, 2026);
-            updateChartClientIncome(monthlyIncome, monthlyCustomers, monthlyAIPCM, monthlyAEPCM)
-            updateUI(fti, res.in, '')
-            updateUI(fe, res.ex)
-            updateUI(fi, res.pr)
-            updateUI(fppc, res.ave_ipc_ever)
-            updateUI(fepc, res.ave_epc_ever)
+
+            updateUI(fti, res.ie, '')
+            updateUI(fe, res.e)
+            updateUI(fi, res.i)
+            updateUI(fppc, res.aioe)
+            updateUI(fepc, res.aeoe)
             // setTotalDoneClient(res.total_client)
             closeToast(toast)
             reslove();
