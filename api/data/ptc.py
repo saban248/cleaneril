@@ -190,7 +190,6 @@ class AnalyticsData:
         for client in _clients:
             __repeat__ = len(orders.get_clean_order_by_date(self.__mid, self.__df, self.__dt,
                                                          stat=StateOrder.DONE,client_id=client.client_id).all())
-            print(__repeat__)
             if __repeat__ >= 2:
                 repeat+=1
 
