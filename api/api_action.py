@@ -18,7 +18,7 @@ from api.databases.orders import CleanOrder
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril
 from api.ptc import special_things, SJson, ShortSession
 from api.routes.cil_struct import ReportsDataAnalyze
-from api.routes.ptc import Pages, ApiCall, ApiUploadFile, RegisterApi, PaymentInvoice
+from api.routes.ptc import Pages, ApiCall, ApiUploadFile, RegisterApi, PaymentInvoice, ReportsApi
 from api.validator import core_msg, company
 from api.routes import cil_struct
 
@@ -78,32 +78,8 @@ def get_api_action(session, request, **breq) -> dict:
             r_order = cil_struct.CleanOrder().build(**breq)
             code = orders.set_clean_order_stat(manager_id, order_id=r_order.oi, stat=r_order.s)
             return SJson.auto_code(code)
-        case ApiCall.funds_income:
-            funds = cil_struct.Funds().build(**breq)
-            analyze = AnalyticsData(manager_id,funds.df, funds.dt)
-            struct = ReportsDataAnalyze()
-            struct.ie = analyze.income_ever()
-            struct.i = analyze.income()
-            struct.ee = analyze.expenses_ever()
-            struct.e = analyze.expenses()
-            struct.odce = analyze.orders_done_count_ever()
-            struct.odc = len(analyze.orders_done())
-            struct.occe = analyze.orders_canceled_count_ever()
-            struct.occ = analyze.orders_canceled()
-            struct.graph_funds = analyze.get_graph_funds(funds.year)
-            struct.aioe = analyze.get_average_income_orders_ever()
-            struct.aio = analyze.get_average_income_orders()
-            struct.aeoe = analyze.get_average_expense_orders_ever()
-            struct.aeo = analyze.get_average_expense_orders()
-            struct.occe = analyze.orders_canceled_count_ever()
-            struct.occ = analyze.orders_canceled_count()
-            struct.cicoe = analyze.count_items_clean_orders_ever()
-            struct.cico = analyze.count_items_clean_orders()
-            struct.code = analyze.count_orders_done_ever()
-            struct.cod = analyze.count_orders_done()
-            struct.ccre = analyze.count_client_repeated()
-            struct.ccr = analyze.count_client_repeated()
-            return SJson.auto_code(__success__, **struct.__dict__)
+        case ApiCall.api_reports:
+            return get_app_reports_api(session,request,**breq)
 
         case ApiCall.conf_company:
             config = cil_struct.Company().build(**breq)
@@ -174,6 +150,47 @@ def get_api_action(session, request, **breq) -> dict:
             return SJson.auto_code(__success__, **lclients)
 
     return SJson.auto_code(__success__)
+
+
+
+def get_app_reports_api(session, request, **breq) -> dict:
+    manager = ShortSession.get_admin_details(session)
+    manager_id = manager["manager_id"]
+    __success__ = core_msg.ServerCode.success
+    reports = cil_struct.Reports().build(**breq)
+    action = reports.rAction or -1
+    analyze = AnalyticsData(manager_id, reports.df, reports.dt)
+    struct = ReportsDataAnalyze()
+    match action:
+        case ReportsApi.funds:
+            struct.ie = analyze.income_ever()
+            struct.i = analyze.income()
+            struct.ee = analyze.expenses_ever()
+            struct.e = analyze.expenses()
+            struct.graph_funds = analyze.get_graph_funds(reports.year)
+            struct.aio = analyze.get_average_income_orders()
+            struct.aeoe = analyze.get_average_expense_orders_ever()
+            struct.aeo = analyze.get_average_expense_orders()
+            struct.occe = analyze.orders_canceled_count_ever()
+            struct.occ = analyze.orders_canceled_count()
+            struct.cicoe = analyze.count_items_clean_orders_ever()
+            struct.cico = analyze.count_items_clean_orders()
+            struct.code = analyze.count_orders_done_ever()
+            struct.cod = analyze.count_orders_done()
+            struct.ccre = analyze.count_client_repeated()
+            struct.ccr = analyze.count_client_repeated()
+            return SJson.auto_code(__success__, **struct.__dict__)
+        case ReportsApi.orders:
+            struct.odce = analyze.orders_done_count_ever()
+            struct.odc = len(analyze.orders_done())
+            struct.occe = analyze.orders_canceled_count_ever()
+            struct.occ = analyze.orders_canceled()
+            jstruct.aioe = analyze.get_average_income_orders_ever()
+
+
+
+    return SJson.auto_code(__success__)
+
 
 
 def get_register_action(session, **breq):

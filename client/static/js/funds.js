@@ -1,39 +1,4 @@
-let chartClientIncome;
 
-function initCharts(monthlyIncome, monthlyCustomers) {
-  chartClientIncome = new ApexCharts(
-    document.querySelector("#chartClientIncome"),
-    options(monthlyIncome, monthlyCustomers)
-  );
-  chartClientIncome.render()
-}
-
-function updateChartClientIncome(monthlyIncome, monthlyCustomers, monthlyAIPCM, monthlyAEPCM) {
-  chartClientIncome.updateSeries([
-    {
-      name: 'הכנסות',
-      type: 'column',
-      data: monthlyIncome,
-    },
-    {
-      name: 'לקוחות',
-      type: 'line',
-      data: monthlyCustomers,
-    },
-    {
-      name: 'ממוצע ר.פ.ל',
-      type: 'line',
-      data: monthlyAIPCM,
-      visible: false
-    },
-    {
-      name: 'ממוצע ה.פ.ל',
-      type: 'line',
-      data: monthlyAEPCM,
-      visible: false
-    }
-  ]);
-}
 
 
 
@@ -71,93 +36,6 @@ function setTotalDoneClient(amount){
 }
 
 
-
-
-function prepareMonthlyData(transactions, year){
-  const monthlyIncome = Array(12).fill(0);
-  const monthlyCustomers = Array(12).fill(0);
-  const monthlyAIPCM = Array(12).fill(0)
-  const monthlyAEPCM = Array(12).fill(0)
-
-  transactions.forEach(t => {
-    const [y, m] = t.date.split("."); 
-
-    if(Number(y) === Number(year)){
-      const monthIndex = Number(m) - 1;
-
-      monthlyIncome[monthIndex] += Number(t.amount);
-      monthlyCustomers[monthIndex] += 1;
-      monthlyAIPCM[monthIndex] = Number(t.ave_ipcm)
-      monthlyAEPCM[monthIndex] = Number(t.ave_epcm)
-    }
-  });
-
-  return { monthlyIncome, monthlyCustomers, monthlyAIPCM, monthlyAEPCM};
-}
-
-
-const options = (monthlyIncome, monthlyCustomers, monthlyAIPCM)=> {return{
-    chart: {
-    type: 'line',
-    height: 350,
-    stacked: false,
-    toolbar: { show: false },
-    zoom: { enabled: false },
-  },
-  stroke: {
-    width: [0, 4]
-  },
-  plotOptions: {
-    bar: { borderRadius: 8 }
-  },
-  legend: { position: 'top',horizontalAlign: 'right'},
-  series: [
-    {
-      name: 'הכנסות',
-      type: 'column',
-      data: monthlyIncome
-    },
-    {
-      name: 'לקוחות',
-      type: 'line',
-      data: monthlyCustomers
-    },
-    {
-      name: 'ממוצע ר.פ.ל',
-      type: 'line',
-      data: monthlyAIPCM,
-      visible:false
-    },
-    {
-      name: 'ממוצע ה.פ.ל',
-      type: 'line',
-      data: [],
-      visible:false
-    }
-  ],
-  dataLabels: { enabled: false, formatter: val => val.toLocaleString('he-IL')},
-  labels: ["ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"],
-  yaxis: [
-    { forceNiceScale: true, labels: { formatter: val => val?.toLocaleString('he-IL') }, show:true},
-    { opposite: true, min: 0, forceNiceScale: true, show:false},
-    { opposite: true, min: 0, forceNiceScale: true, show:false, labels: { formatter: val => val?.toLocaleString('he-IL') +"₪" }},
-    { opposite: true, min: 0, forceNiceScale: true, show:false, labels: { formatter: val => val?.toLocaleString('he-IL') +"₪" }}
-  ],
-  tooltip: {
-    shared: true,
-    intersect: false
-  },
-  colors: ['#1c9548', '#3b82f6','#9508ad', '#c7c41d'],
-  responsive: [
-    {
-      breakpoint: 600,
-      options: {
-        chart: { height: 300 },
-        legend: { position: 'top' }
-      }
-    }
-  ]
-}};
 
 
 
@@ -209,7 +87,7 @@ function selectYearCharts(y){
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    initCharts()
+    initChartsFunds()
 });
 document.addEventListener("click", e => {
     const menu = document.getElementById("yearFundsMenu")

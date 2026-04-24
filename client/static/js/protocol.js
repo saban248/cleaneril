@@ -175,7 +175,7 @@ const ApiCall = {
     order_save:1<<6,
     client_view:1<<7,
     client_state:1<<8,
-    funds_income:1<<9,
+    api_reports:1<<9,
     conf_company:1<<10,
     client_workers:1<<11,
     worker_editor:1<<12,
@@ -193,6 +193,9 @@ const ApiCall = {
     invoice_delete:1<<24
 }
 
+const ReportsApi = {
+    funds:1<<0
+}
 
 const ApiUploadFile = {
     CARD:1<<0,

@@ -6,12 +6,24 @@ from api.databases import orders, clients
 from api.databases.orders import get_clean_order_done
 from api.databases.ptc import StateOrder
 
+
+def get_month_range_by_ym(year:int, month:int):
+    start = datetime(year, month, 1, tzinfo=timezone.utc).timestamp()
+    if month == 12:
+        end = datetime(year + 1, 1, 1, tzinfo=timezone.utc).timestamp()
+    else:
+        end = datetime(year, month + 1, 1, tzinfo=timezone.utc).timestamp()
+
+    return start, end
+
+
 @dataclass
 class GraphFunds:
     date:str            = None
     amount:int          = None
     average_income:int = None
     average_expense:int= None
+    expense:int         = None
 
 
 
@@ -113,27 +125,25 @@ class AnalyticsData:
         return float(f"{expense_ever/(orders_count or 1):.1f}")
 
     def get_average_income_orders_month(self, year:int, month:int):
-        _orders = self.orders_done()
+        df, dt = get_month_range_by_ym(year, month)
+        _orders = orders.get_clean_order_by_date(self.__mid, df, dt, False, stat=StateOrder.DONE).all()
         income = 0
         length_orders = 0
         for order in _orders:
-            date = datetime.fromtimestamp(float(order.date))
-            if date.year == year and month == date.month:
-                income += (order.price - order.off_price)
-                length_orders+=1
+            income += (order.price - order.off_price)
+            length_orders+=1
 
         if not length_orders:return 0
         return float(f"{income / length_orders:.1f}")
 
     def get_average_expense_orders_month(self, year:int, month:int):
-        _orders = self.orders_done()
+        df, dt = get_month_range_by_ym(year, month)
+        _orders = orders.get_clean_order_by_date(self.__mid, df, dt, False, stat=StateOrder.DONE).all()
         expense = 0
         length_orders = 0
         for order in _orders:
-            date = datetime.fromtimestamp(float(order.date))
-            if date.year == year and month == date.month:
-                expense += order.expense
-                length_orders+=1
+            expense += order.expense
+            length_orders+=1
 
         if not length_orders:return 0
         return float(f"{expense / length_orders:.1f}")
@@ -146,6 +156,7 @@ class AnalyticsData:
             item = GraphFunds()
             item.date = date.strftime("%Y.%m.%d")
             item.amount = order.price - order.off_price
+            item.expense = order.expense
             item.average_income = self.get_average_income_orders_month(date.year, date.month)
             item.average_expense = self.get_average_expense_orders_month(date.year, date.month)
             data.append(item.__dict__)
@@ -191,7 +202,7 @@ class AnalyticsData:
             __repeat__ = len(orders.get_clean_order_by_date(self.__mid, self.__df, self.__dt,
                                                          stat=StateOrder.DONE,client_id=client.client_id).all())
             if __repeat__ >= 2:
-                repeat+=1
+                repeat+=(__repeat__-1)
 
         return repeat
 

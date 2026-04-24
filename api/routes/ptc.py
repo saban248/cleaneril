@@ -147,6 +147,7 @@ class Pages(IntFlag):
 
 
 class ApiCall(IntFlag):
+
     card_editor = 1<<0
     card_draft = 1<<1
     card_delete = 1<<2
@@ -156,7 +157,7 @@ class ApiCall(IntFlag):
     order_save = 1 << 6
     client_view = 1<<7
     order_stat = 1 << 8
-    funds_income = 1<<9
+    api_reports = 1<<9
     conf_company = 1<<10
     order_workers = 1 << 11
     worker_editor = 1<<12
@@ -172,6 +173,12 @@ class ApiCall(IntFlag):
     order_new  = 1<< 22
     list_clients = 1<<23
     invoice_delete = 1<<24
+
+
+class ReportsApi(IntFlag):
+    funds = 1<<0
+    orders = 1<<1
+
 
 
 

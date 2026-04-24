@@ -208,50 +208,52 @@ async function animateCounter(el, target, icon, duration = 1000) {
 }
 
 
+function updateUI(id, value, icon = '₪') {
+    const el = document.getElementById(id);
+    el.innerText = formatNumber(value) + ` ${icon}`;
+    animateCounter(el, value, icon)
+}
+
 async function reloadReports(){
     await fetchFunds()
 
 }
 
 async function fetchFunds(){
-    function updateUI(id, value, icon = '₪') {
-        const el = document.getElementById(id);
-        el.innerText = formatNumber(value) + ` ${icon}`;
-        animateCounter(el, value, icon)
-    }
     const fti = "fundsTotalIncome";
     const fi = "fundsIncome";
     const fe = "fundsExpense";
     const fppc = "fundsPPC";
     const fepc = "fundsEPC";
-    const oc = "ordersItemsCount";
+    const oic = "ordersItemsCount";
     const on = 'ordersNumber';
     const or = 'ordersRepeat';
+    const oc = 'ordersCanceled';
     const toast = showToast("מעבד..")
-    data = {action:ApiCall.funds_income, year:2026, df:reportsCalendar.sFrom.getTime()/1000, dt:reportsCalendar.sTo.getTime()/1000}
+    data = {action:ApiCall.api_reports,rAction:ReportsApi.funds,
+        year:2026, df:reportsCalendar.sFrom.getTime()/1000,
+        dt:reportsCalendar.sTo.getTime()/1000
+    }
     return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
         (res) =>{
             if (!res.success){
                 showToast(res.notice, ToastStat.ERROR,toast);
                 return;
-            }
-            console.log(res)
-            
-            // const {monthlyIncome, monthlyCustomers, monthlyAIPCM, monthlyAEPCM} = prepareMonthlyData(res.data, 2026);
-            // updateChartClientIncome(monthlyIncome, monthlyCustomers, monthlyAIPCM, monthlyAEPCM)
+            }            
+            const {monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM} = prepareMonthlyDataGraphFunds(res.graph_funds, 2026);
+            chartFundsUpdateSeries(monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM)
 
             updateUI(fti, res.ie, '')
             updateUI(fe, res.e)
             updateUI(fi, res.i)
-            updateUI(fppc, res.aioe)
-            updateUI(fepc, res.aeoe)
-            updateUI(oc, res.cico, '')
+            updateUI(fppc, res.aio)
+            updateUI(fepc, res.aeo)
+            updateUI(oic, res.cico, '')
             updateUI(on, res.cod, '')
             updateUI(or, res.ccr, '')
-            // setTotalDoneClient(res.total_client)
+            updateUI(oc, res.occ, '')
             closeToast(toast)
             reslove();
-
     }))
 }
 

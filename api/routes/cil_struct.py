@@ -197,15 +197,16 @@ class CleanOrder:
 
 
 @dataclass
-class Funds:
+class Reports:
+    rAction:int = None
     year:int        = None
     df:float        = None
     dt:float        = None
 
     def build(self, **data):
         struct_builder(self, **data)
-
         self.year = int(self.year)
+
 
         return self
 
