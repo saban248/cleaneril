@@ -11,51 +11,34 @@ function updateUI(selector, value, icon = '₪') {
   document.getElementById(selector).innerText = formatNumber(value) + ` ${icon}`;
 }
 
-function setIncome(amount) {
-  updateUI("incomeTotal", amount);
+
+
+function getYearsItems({ past = 20, future = 3 } = {}) {
+    const currentYear = new Date().getFullYear();
+    const items = [];
+
+    for (let y = currentYear - past; y <= currentYear + future; y++) {
+        items.push({
+            text: String(y),
+            value: y,
+            action: () => selectYearReportsChart(y),
+            icon: '<i class="fa-solid fa-calendar-days"></i>'
+        });
+    }
+
+    return items;
 }
-
-function setExpense(amount) {
-  updateUI("expenseTotal", amount);
-}
-
-function setProfit(amount) {
-  updateUI("profitTotal", amount);
-}
-
-function setAveragePPC(amount){
-  updateUI("averageProfitPerClient", amount)
-}
-
-function setAverageEPC(amount){
-  updateUI("averageExpensePerClient", amount)
-}
-
-function setTotalDoneClient(amount){
-  updateUI("totalDoneclient", amount, "")
-}
-
-
-
-
-
-const yearsItems = [
-    { text: "2024", action: (y) => selectYearCharts(y), icon:'<i class="fa-solid fa-calendar-days"></i>'},
-    { text: "2025", action: (y) => selectYearCharts(y), icon:'<i class="fa-solid fa-calendar-days"></i>'},
-    { text: "2026", action: (y) => selectYearCharts(y), icon:'<i class="fa-solid fa-calendar-days"></i>'},
-    { text: "2027", action: (y) => selectYearCharts(y), icon:'<i class="fa-solid fa-calendar-days"></i>'},
-]
-function openMenuSelectYear(t){
+function openMenuSelectYear(){
+    items = getYearsItems()
     const menu = document.getElementById("yearFundsMenu")
 
     if (menu.classList.contains("show")) {
         menu.classList.remove("show")
         return
     }
-    const rect = t.getBoundingClientRect()
-    menu.innerHTML = "" // ניקוי
+    menu.replaceChildren() // ניקוי
 
-    yearsItems.forEach(item => {
+    items.forEach(item => {
         let cma = document.createElement("div")
         cma.className = "cma"
         let cma1 = document.createElement('div')
@@ -75,19 +58,19 @@ function openMenuSelectYear(t){
         menu.appendChild(cma)
     })
 
-    menu.style.top = `${rect.bottom + window.scrollY + 6}px`
-    menu.style.left = `${rect.left + window.scrollX}px`
-
     menu.classList.add("show")
 }
 
-function selectYearCharts(y){
-    updateInExPrAndChartClientAndIncome(y)
+async function selectYearReportsChart(y){
+  const element = document.getElementById("selectedYearReportsGraph");
+  await fetchGraphFunds(y)
+  element.textContent = y
 
 }
 
 document.addEventListener("DOMContentLoaded", function () {
     initChartsFunds()
+
 });
 document.addEventListener("click", e => {
     const menu = document.getElementById("yearFundsMenu")
@@ -95,3 +78,4 @@ document.addEventListener("click", e => {
         menu.classList.remove("show")
     }
 })
+

@@ -215,11 +215,31 @@ function updateUI(id, value, icon = '₪') {
 }
 
 async function reloadReports(){
-    await fetchFunds()
+    await fetchFundsAndOrdersReports()
+    await fetchGraphFunds(2026)
 
 }
 
-async function fetchFunds(){
+async function fetchGraphFunds(y) {
+    const data = {
+        action:ApiCall.api_reports,
+        rAction:ReportsApi.graph_funds,
+        year:y
+    }
+    return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
+        (res) => {
+            if (!res.success){
+                showToast(res.notice, ToastStat.ERROR);
+                return
+            }
+            const {monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM} = prepareMonthlyDataGraphFunds(res.graph_funds, y);
+            chartFundsUpdateSeries(monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM)
+            reslove();
+        }
+    ))
+}
+
+async function fetchFundsAndOrdersReports(){
     const fti = "fundsTotalIncome";
     const fi = "fundsIncome";
     const fe = "fundsExpense";
@@ -240,8 +260,6 @@ async function fetchFunds(){
                 showToast(res.notice, ToastStat.ERROR,toast);
                 return;
             }            
-            const {monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM} = prepareMonthlyDataGraphFunds(res.graph_funds, 2026);
-            chartFundsUpdateSeries(monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM)
 
             updateUI(fti, res.ie, '')
             updateUI(fe, res.e)
@@ -278,7 +296,7 @@ document.addEventListener("DOMContentLoaded", function () {
     goToMonth()
     renderCalendar();
     updateDateDisplay();
-    fetchFunds()
+    reloadReports()
     switchReportsTab(reportsTabs.FUNDS)
 
     document.addEventListener("click", e => {

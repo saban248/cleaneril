@@ -178,6 +178,8 @@ class ApiCall(IntFlag):
 class ReportsApi(IntFlag):
     funds = 1<<0
     orders = 1<<1
+    graph_funds = 1<<2
+    graph_orders = 1<<3
 
 
 

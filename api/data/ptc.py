@@ -163,6 +163,8 @@ class AnalyticsData:
 
         return data
 
+    def get_graph_orders(self, year:int):
+        return  []
     def count_items_clean_orders_ever(self):
         _orders = orders.get_clean_order_by_date(self.__mid, 0, time.time(), stat=StateOrder.DONE).all()
         items = 0

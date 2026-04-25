@@ -167,27 +167,28 @@ def get_app_reports_api(session, request, **breq) -> dict:
             struct.i = analyze.income()
             struct.ee = analyze.expenses_ever()
             struct.e = analyze.expenses()
-            struct.graph_funds = analyze.get_graph_funds(reports.year)
+            struct.aioe = analyze.get_average_income_orders_ever()
             struct.aio = analyze.get_average_income_orders()
             struct.aeoe = analyze.get_average_expense_orders_ever()
             struct.aeo = analyze.get_average_expense_orders()
-            struct.occe = analyze.orders_canceled_count_ever()
-            struct.occ = analyze.orders_canceled_count()
-            struct.cicoe = analyze.count_items_clean_orders_ever()
-            struct.cico = analyze.count_items_clean_orders()
-            struct.code = analyze.count_orders_done_ever()
-            struct.cod = analyze.count_orders_done()
-            struct.ccre = analyze.count_client_repeated()
-            struct.ccr = analyze.count_client_repeated()
-            return SJson.auto_code(__success__, **struct.__dict__)
-        case ReportsApi.orders:
             struct.odce = analyze.orders_done_count_ever()
             struct.odc = len(analyze.orders_done())
             struct.occe = analyze.orders_canceled_count_ever()
-            struct.occ = analyze.orders_canceled()
-            jstruct.aioe = analyze.get_average_income_orders_ever()
-
-
+            struct.occ = analyze.orders_canceled_count()
+            struct.cico = analyze.count_items_clean_orders()
+            struct.cicoe = analyze.count_items_clean_orders_ever()
+            struct.code = analyze.count_orders_done_ever()
+            struct.cod = analyze.count_orders_done()
+            struct.ccre = analyze.count_client_repeated_ever()
+            struct.ccr = analyze.count_client_repeated()
+            return SJson.auto_code(__success__, **struct.__dict__)
+        case ReportsApi.orders:...
+        case ReportsApi.graph_funds:
+            struct.graph_funds = analyze.get_graph_funds(reports.year)
+            return SJson.auto_code(__success__, **struct.__dict__)
+        case ReportsApi.graph_orders:
+            struct.graph_orders = analyze.get_graph_orders(reports.year)
+            return SJson.auto_code(__success__, **struct.__dict__)
 
     return SJson.auto_code(__success__)
 

@@ -194,7 +194,10 @@ const ApiCall = {
 }
 
 const ReportsApi = {
-    funds:1<<0
+    funds:1<<0,
+    orders:1<<1,
+    graph_funds:1<<2,
+    graph_orders:1<<3
 }
 
 const ApiUploadFile = {

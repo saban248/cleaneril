@@ -205,7 +205,10 @@ class Reports:
 
     def build(self, **data):
         struct_builder(self, **data)
-        self.year = int(self.year)
+        if self.year:
+            self.year = int(self.year)
+        else:
+            self.year = datetime.datetime.now().year
 
 
         return self
@@ -342,3 +345,4 @@ class ReportsDataAnalyze:
     # count client repeated
     ccr:int         = None
     graph_funds:list =  None
+    graph_orders:list = None
