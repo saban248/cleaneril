@@ -1,9 +1,9 @@
 let chartReportsFunds;
-
+let chartReportsOrders;
 
 function initChartsFunds(monthlyIncome, monthlyCustomers) {
   chartReportsFunds = new ApexCharts(
-    document.querySelector("#chartReportsFunds"),
+    document.getElementById("chartReportsFunds"),
     chartFundsConfiguration()
   );
   chartReportsFunds.render()
@@ -170,4 +170,43 @@ function prepareMonthlyDataGraphFunds(transactions, year){
   });
 
   return { monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM};
+}
+
+
+
+function initChartsOrders(){
+  chartReportsOrders = new ApexCharts(
+    document.getElementById("chartReportsOrders"),
+    chartFundsConfiguration()
+  );
+  chartReportsOrders.render()
+}
+
+
+
+function chartOrdersUpdateSeries(monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM) {
+  chartReportsOrders.updateSeries([
+    {
+      name: 'הכנסות',
+      type: 'column',
+      data: monthlyIncome,
+    },
+    {
+      name: 'הוצאות',
+      type: 'line',
+      data: monthlyExpenses,
+    },
+    {
+      name: 'ממוצע ר.פ.ל',
+      type: 'line',
+      data: monthlyAIPCM,
+      visible: false
+    },
+    {
+      name: 'ממוצע ה.פ.ל',
+      type: 'line',
+      data: monthlyAEPCM,
+      visible: false
+    }
+  ]);
 }

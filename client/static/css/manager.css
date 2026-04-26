@@ -921,6 +921,10 @@
   background: #fff;
   border-radius: 7px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  display: none;
+}
+.chart-card.show{
+    display: block;
 }
 
 .chart-header-action{

@@ -7,13 +7,13 @@ function formatNumber(num) {
   return num.toLocaleString('he-IL'); // 6,500
 }
 
-function updateUI(selector, value, icon = '₪') {
+function updateUIreports(selector, value, icon = '₪') {
   document.getElementById(selector).innerText = formatNumber(value) + ` ${icon}`;
 }
 
 
 
-function getYearsItems({ past = 20, future = 3 } = {}) {
+function getYearsItems({ past = 20, future = 0} = {}) {
     const currentYear = new Date().getFullYear();
     const items = [];
 
@@ -70,12 +70,13 @@ async function selectYearReportsChart(y){
 
 document.addEventListener("DOMContentLoaded", function () {
     initChartsFunds()
+    initChartsOrders()
+    document.addEventListener("click", e => {
+      const menu = document.getElementById("yearFundsMenu")
+        if (!menu.contains(e.target) && !e.target.classList.contains("year-select")) {
+            menu.classList.remove("show")
+        }
+    })
 
 });
-document.addEventListener("click", e => {
-    const menu = document.getElementById("yearFundsMenu")
-    if (!menu.contains(e.target) && !e.target.classList.contains("year-select")) {
-        menu.classList.remove("show")
-    }
-})
 

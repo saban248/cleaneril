@@ -217,27 +217,46 @@ function updateUI(id, value, icon = '₪') {
 async function reloadReports(){
     await fetchFundsAndOrdersReports()
     await fetchGraphFunds(2026)
+    await fetchGraphOrders(2026)
 
 }
 
-async function fetchGraphFunds(y) {
+async function fetchGraphReports(rAction, year, callback){
     const data = {
         action:ApiCall.api_reports,
-        rAction:ReportsApi.graph_funds,
-        year:y
+        rAction:rAction,
+        year:year
     }
     return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
         (res) => {
             if (!res.success){
                 showToast(res.notice, ToastStat.ERROR);
-                return
-            }
-            const {monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM} = prepareMonthlyDataGraphFunds(res.graph_funds, y);
-            chartFundsUpdateSeries(monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM)
-            reslove();
+                
+            }else{
+                callback(res)
         }
-    ))
+        reslove()
+    })
+)}
+
+
+async function fetchGraphOrders(y){
+    const callback_success = (res) =>{
+        const {monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM} = prepareMonthlyDataGraphFunds(res.graph_funds, y);
+        chartFundsUpdateSeries(monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM)
+    }
+    await fetchGraphReports(ReportsApi.graph_funds, y, callback_success)
 }
+async function fetchGraphFunds(y) {
+    const callback_success = (res) =>{
+        const {monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM} = prepareMonthlyDataGraphFunds(res.graph_funds, y);
+        chartOrdersUpdateSeries(monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM)
+    }
+    await fetchGraphReports(ReportsApi.graph_funds, y, callback_success)
+}
+
+
+
 
 async function fetchFundsAndOrdersReports(){
     const fti = "fundsTotalIncome";
@@ -279,14 +298,20 @@ async function fetchFundsAndOrdersReports(){
 function switchReportsTab(tab){
     const funds = document.getElementById("reportsFunds");
     const orders = document.getElementById("reportsOrders")
+    const chartFunds = document.getElementById("chartReportsFunds")
+    const chartOrders = document.getElementById("chartReportsOrders");
     switch (tab){
         case reportsTabs.FUNDS:
             funds.classList.add("show")
             orders.classList.remove("show")
+            chartFunds.classList.add("show");
+            chartOrders.classList.remove("show")
             break
         case reportsTabs.ORDERS:
             orders.classList.add("show")
             funds.classList.remove("show")
+            chartFunds.classList.remove("show");
+            chartOrders.classList.add("show")
             break
     }
 }
