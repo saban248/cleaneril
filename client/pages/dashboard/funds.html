@@ -38,7 +38,10 @@
 
                             <div class="calendar-nav">
                                 <button class="c-nav" onclick="changeMonth(-1)">‹</button>
-                                <div class="month-year" id="monthYear"></div>
+                                <div class="month-year">
+                                    <input class="number-years" type="number" id="calendarYearTitle" min="2000" max="2035" step="1" value="2026" />
+                                    <div id="calendaerMonthTitle"></div>
+                                </div>
                                 <button class="c-nav" onclick="changeMonth(1)">›</button>
                             </div>
 
@@ -180,4 +183,5 @@
         </div>
     </div>
 </div>
+
 

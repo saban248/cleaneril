@@ -33,7 +33,7 @@ function renderCalendar() {
     const year = reportsCalendar.dateCurrent.getFullYear();
     const month = reportsCalendar.dateCurrent.getMonth();
     
-    document.getElementById('monthYear').textContent = `${monthNames[month]} ${year}`;
+    document.getElementById('calendaerMonthTitle').textContent = monthNames[month];
     
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);

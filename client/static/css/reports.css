@@ -208,6 +208,11 @@
 .month-year {
     font-size: 14px;
     color: #2d3748;
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+    scrollbar-width: 0;
+    
 }
 
 .reports-calendar-grid {
