@@ -108,10 +108,11 @@
 
 .calendar-container {
     z-index: 10000;
-    position: absolute;
+    position: fixed;
     background: white;
     border-radius: 24px;
-    padding: 10px;
+    padding: 5px;
+    right: 0;
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
     animation: slideUp 0.5s ease-out;
     max-width:400px;
@@ -335,7 +336,7 @@
 
 @media (max-width: 768px) {
     .calendar-container {
-        padding: 20px;
+        padding: 5px;
     }
 
     .header h1 {

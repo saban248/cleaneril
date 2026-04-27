@@ -243,14 +243,14 @@ async function fetchGraphReports(rAction, year, callback){
 async function fetchGraphOrders(y){
     const callback_success = (res) =>{
         const {monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM} = prepareMonthlyDataGraphFunds(res.graph_funds, y);
-        chartFundsUpdateSeries(monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM)
+        chartOrdersUpdateSeries(monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM)
     }
     await fetchGraphReports(ReportsApi.graph_funds, y, callback_success)
 }
 async function fetchGraphFunds(y) {
     const callback_success = (res) =>{
         const {monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM} = prepareMonthlyDataGraphFunds(res.graph_funds, y);
-        chartOrdersUpdateSeries(monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM)
+        chartFundsUpdateSeries(monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM)
     }
     await fetchGraphReports(ReportsApi.graph_funds, y, callback_success)
 }
@@ -314,6 +314,7 @@ function switchReportsTab(tab){
             chartOrders.classList.add("show")
             break
     }
+    window.dispatchEvent(new Event('resize'));
 }
 
 

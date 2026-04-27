@@ -1,15 +1,7 @@
 let chartReportsFunds;
 let chartReportsOrders;
 
-function initChartsFunds(monthlyIncome, monthlyCustomers) {
-  chartReportsFunds = new ApexCharts(
-    document.getElementById("chartReportsFunds"),
-    chartFundsConfiguration()
-  );
-  chartReportsFunds.render()
-}
-
-const chartFundsConfiguration = () => {
+const chartConfiguration = (series) => {
   return {
     chart: {
       type: 'line',
@@ -63,12 +55,7 @@ const chartFundsConfiguration = () => {
       markers: { radius: 12 },
       itemMargin: { horizontal: 10, vertical: 5 }
     },
-    series: [
-      { name: 'הכנסות', type: 'column', data: [] },
-      { name: 'הוצאות', type: 'line', data: [] },
-      { name: 'ממוצע ר.פ.ל', type: 'line', data: [], visible: false },
-      { name: 'ממוצע ה.פ.ל', type: 'line', data: [], visible: false }
-    ],
+    series:series,
     dataLabels: { 
       enabled: false, 
       formatter: val => val?.toLocaleString('he-IL')
@@ -120,34 +107,33 @@ const chartFundsConfiguration = () => {
       }
     ]
   };
-};
+}
+
+const chartFundsSeries = (x1, x2, x3, x4) => {
+  return [
+      { name: 'הכנסות', type: 'column', data: x1||[] },
+      { name: 'הוצאות', type: 'line', data: x2||[] },
+      { name: 'ממוצע ר.פ.ל', type: 'line', data:x3||[], visible: false },
+      { name: 'ממוצע ה.פ.ל', type: 'line', data: x4||[], visible: false }
+    ]
+}
+
+const chartFundsConfiguration = () => {
+  return  chartConfiguration(chartFundsSeries())
+}
+
+function initChartsFunds(monthlyIncome, monthlyCustomers) {
+  chartReportsFunds = new ApexCharts(
+    document.getElementById("chartReportsFunds"),
+    chartFundsConfiguration()
+  );
+  chartReportsFunds.render()
+}
+
 
 
 function chartFundsUpdateSeries(monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM) {
-  chartReportsFunds.updateSeries([
-    {
-      name: 'הכנסות',
-      type: 'column',
-      data: monthlyIncome,
-    },
-    {
-      name: 'הוצאות',
-      type: 'line',
-      data: monthlyExpenses,
-    },
-    {
-      name: 'ממוצע ר.פ.ל',
-      type: 'line',
-      data: monthlyAIPCM,
-      visible: false
-    },
-    {
-      name: 'ממוצע ה.פ.ל',
-      type: 'line',
-      data: monthlyAEPCM,
-      visible: false
-    }
-  ]);
+  chartReportsFunds.updateSeries(chartFundsSeries(monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM));
 }
 
 function prepareMonthlyDataGraphFunds(transactions, year){
@@ -177,36 +163,24 @@ function prepareMonthlyDataGraphFunds(transactions, year){
 function initChartsOrders(){
   chartReportsOrders = new ApexCharts(
     document.getElementById("chartReportsOrders"),
-    chartFundsConfiguration()
+    chartOrdersConfiguration()
   );
   chartReportsOrders.render()
 }
 
+const chartOrdersSeries = (x1, x2, x3, x4) => {
+  return [
+      { name: 'פריטים', type: 'column', data: x1||[] },
+      { name: 'ביטולים', type: 'line', data: x2||[] },
+      { name: 'הזמנות', type: 'line', data: x3||[], visible: false },
+      { name: 'ממוצע ל.ח', type: 'line', data: x4||[], visible: false }
+    ]
+}
 
+const chartOrdersConfiguration = () => {
+  return chartConfiguration(chartOrdersSeries())
+}
 
-function chartOrdersUpdateSeries(monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM) {
-  chartReportsOrders.updateSeries([
-    {
-      name: 'הכנסות',
-      type: 'column',
-      data: monthlyIncome,
-    },
-    {
-      name: 'הוצאות',
-      type: 'line',
-      data: monthlyExpenses,
-    },
-    {
-      name: 'ממוצע ר.פ.ל',
-      type: 'line',
-      data: monthlyAIPCM,
-      visible: false
-    },
-    {
-      name: 'ממוצע ה.פ.ל',
-      type: 'line',
-      data: monthlyAEPCM,
-      visible: false
-    }
-  ]);
+function chartOrdersUpdateSeries(monthlyItems, monthlyCanceled, monthlyOrders, monthlyACR) {
+  chartReportsOrders.updateSeries(chartOrdersSeries(monthlyItems, monthlyCanceled, monthlyOrders, monthlyACR));
 }
