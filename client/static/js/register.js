@@ -69,7 +69,7 @@ function doRegister(t){
     const pwd2 = document.getElementById("pwd2").value;
     const csrf = document.getElementById("cXsXrF");
     if (pwd1!==pwd2){
-        showToast("הסיסמאות לא תואמות");
+        showToast("הסיסמאות לא תואמות", ToastStat.ERROR);
         return;
     }
     onApiCall(t)
@@ -97,18 +97,18 @@ function doCompany(t){
     const csrf = document.getElementById("cXsXrF").value;
 
     if (!/^(05\d{8}|0[2-9]\d{7})$/ .test(phone)){
-        showToast("מספר הפלאפון לא תקין")
+        showToast("מספר הפלאפון לא תקין", ToastStat.ERROR)
         return;
     }
 
     if (name.split(/\s+/).length < 2){
-        showToast("העסק חייב להכיל 2 מילים")
+        showToast("העסק חייב להכיל 2 מילים", ToastStat.ERROR)
         return;
     }
 
     const descWords = desc.split(/\s+/)
     if (descWords.length < 3 || descWords.length > 4){
-        showToast("תיאור העסק לא תקין")
+        showToast("תיאור העסק לא תקין", ToastStat.ERROR)
         return;
     }
 
@@ -118,7 +118,7 @@ function doCompany(t){
         res =>{
             onApiCall(t, true)
             if (!res.success){
-                showToast(res.notice);
+                showToast(res.notice, ToastStat.ERROR);
                 return
             }
             completeRegsiterLevel(LEVELS.COMPANY)

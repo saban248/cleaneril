@@ -64,6 +64,7 @@ function openMenuSelectYear(){
 async function selectYearReportsChart(y){
   const element = document.getElementById("selectedYearReportsGraph");
   await fetchGraphFunds(y)
+  await fetchGraphOrders(y)
   element.textContent = y
 
 }

@@ -156,6 +156,9 @@
   background: rgba(0,0,0,0.4);
   z-index: 100001;
 }
+.modal.hide{
+  display: none !important;
+}
 
 .hidden {
   display: none;

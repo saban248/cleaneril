@@ -4,6 +4,7 @@ import os
 import time
 from dataclasses import dataclass
 
+from api.data.ptc import get_month_range_by_ym
 from api.databases.general import unknown
 from api.databases.ptc import StateOrder, ServerConfig
 from api.routes.ptc import CalenderClients, ClientLeadFrom, OrderType, PaymentInvoice
@@ -262,14 +263,17 @@ class Employee:
 
 @dataclass
 class Calendar:
-    month:int          = None
-    year:int          = None
+    df:float          = None
+    dt:float          = None
 
     def build(self, **date):
         struct_builder(self, **date)
-        if self.month:self.month = int(self.month)
-        if self.year:self.year = int(self.year)
-
+        now = datetime.datetime.now(datetime.timezone.utc)
+        s,e = get_month_range_by_ym(now.year, now.month)
+        if not self.df:
+            self.df =s
+        if not self.dt:
+            self.dt = e
         return self
 
 

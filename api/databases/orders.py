@@ -1,15 +1,10 @@
-import json
 import time
-from datetime import datetime
-from zoneinfo import ZoneInfo
 
 from sqlalchemy import JSON
 
-from api.databases.general import get_columns_as_dict, unknown, get_columns, get_latest_columns, delete_column
+from api.databases.general import get_columns, get_latest_columns, delete_column
 from api.databases.ptc import cleaneril_db, StateOrder
 from api.ptc import generate_hex
-from api.routes import cil_struct
-from api.routes.ptc import ClientLeadFrom, PaymentInvoice, OrderType
 from api.validator import core_msg
 
 
@@ -73,11 +68,21 @@ def get_clean_order_by_date(manager_id:str, df:float, dt:float, dti:bool =True, 
     if kwargs:
         _orders = _orders.filter_by(**kwargs)
 
-    return _orders
+    return _orders.all()
 
 
-def get_clean_order_by_stat(manager_id:str, stat:StateOrder):
-    return get_clean_orders(manager_id=manager_id, stat=stat)
+
+def get_clean_order_by_stat(manager_id:str, *stat:StateOrder, **kwargs):
+    _orders = (
+        CleanOrder.query
+        .filter(
+            CleanOrder.manager_id == manager_id,
+            CleanOrder.stat.in_([*stat])
+        ))
+    if kwargs:
+        _orders = _orders.filter_by(**kwargs)
+
+    return _orders.all()
 
 
 def get_clean_order_done(manager_id:str):return get_clean_order_by_stat(manager_id, StateOrder.DONE)
@@ -85,7 +90,7 @@ def get_clean_order_canceled(manager_id:str):return get_clean_order_by_stat(mana
 def get_clean_order_wait(manager_id:str):return get_clean_order_by_stat(manager_id, StateOrder.WAIT)
 def get_clean_order_closed(manager_id:str):return get_clean_order_by_stat(manager_id, StateOrder.CLOSED)
 
-def create_clean_order(manager_id:str, client_id:str, response:cil_struct.CleanOrder, update:bool = False) -> CleanOrder:
+def create_clean_order(manager_id:str, client_id:str, response, update:bool = False) -> CleanOrder:
     if update:
         order = get_clean_orders(manager_id=manager_id, order_id=response.oi).first()
         assert order
@@ -120,7 +125,7 @@ def create_clean_order(manager_id:str, client_id:str, response:cil_struct.CleanO
     cleaneril_db.session.commit()
     return order
 
-def update_clean_order(manager_id:str, client_id:str, response:cil_struct.CleanOrder):
+def update_clean_order(manager_id:str, client_id:str, response):
     return create_clean_order(manager_id, client_id, response, True)
 
 

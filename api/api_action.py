@@ -13,6 +13,7 @@ from api.databases.clients import ClientProfile
 from api.databases.company import ApiCompany
 from api.databases.crads import ApiCards, Cards
 from api.databases.employee import ApiEmployee, Employee
+from api.databases.general import get_columns_no_instance
 from api.databases.manager import ApiManager, on_register_create_company
 from api.databases.orders import CleanOrder
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril
@@ -112,8 +113,8 @@ def get_api_action(session, request, **breq) -> dict:
 
         case ApiCall.calendar:
             calendar = cil_struct.Calendar().build(**breq)
-            # clients = ApiClients.get_clients_by_calendar_date(calendar.month, calendar.year)
-            data = {"data": []}
+            _orders = get_columns_no_instance(orders.get_clean_order_by_date(manager_id,calendar.df, calendar.dt))
+            data = {"data": _orders}
             return SJson.auto_code(__success__, **data)
 
         case ApiCall.orders_list:

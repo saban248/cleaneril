@@ -1,6 +1,6 @@
 
 /** @type {{id:string, name:string,date:string,lat:number,lng:number,stat:number, address:string},{[]}} */
-var calendarClients = {}
+var calendarCacheOrders = {}
 var mapClients = null;
 /** @type {object[]} */
 var markersClients = {}
@@ -15,22 +15,25 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function getClientCalendar(){
+function getOrdersCalendar(){
     var s = document.getElementById("calendar-from").dataset.s;
     var e = document.getElementById("calendar-to").dataset.e;
     if (!s||!e){
         var [s, e] = getCurrentMonthRange()
     }
-    const [start, end] = [new Date(s), new Date(e)];
-    return calendarClients[lastDateFetched]
+    else{
+        [s,e] = [new Date(s), new Date(e)]
+    }
+    return calendarCacheOrders[lastDateFetched]
         ?.filter(c => {
-            const d = new Date(c.date)
-            return (c.stat&c_runtime.state_calendar_selected) && (d >= start && d <= end)
+            const d = new Date(c.date*1000)
+            return (c.stat&c_runtime.state_calendar_selected) && (d >= s && d <= e)
         })||[]
+        
 }
 
 
-function formatDate(d){
+function formatDateCalendar(d){
     const y = d.getFullYear()
     const m = String(d.getMonth()+1).padStart(2,'0')
     const day = String(d.getDate()).padStart(2,'0')
@@ -39,9 +42,18 @@ function formatDate(d){
 
 function getCurrentMonthRange(){
     const now = new Date()
-    const start = new Date(now.getFullYear(), now.getMonth(), 1)
-    const end = new Date(now.getFullYear(), now.getMonth()+1, 1)
-    return [formatDate(start),formatDate(end)]
+    return getMonthRange(now)
+}
+
+function getMonthRange(date) {
+
+    const year = date.getFullYear();
+    const month = date.getMonth();
+
+    const start = new Date(year, month, 1);
+    const end = new Date(year, month + 1, 1);
+
+    return [start, end ];
 }
 
 
@@ -76,13 +88,15 @@ function initialMapClients(){
 function resetMarkersClients(){
     markerLayer.clearLayers()
 
-    getClientCalendar().forEach(c=>{
-        marker = L.marker([c.lat,c.lng])
+    getOrdersCalendar().forEach(c=>{
+        const coordinates = Array.isArray(c.coordinates) ? c.coordinates : JSON.parse(c.coordinates);
+        if (!coordinates){return}
+        marker = L.marker(coordinates)
         .bindPopup(`
             <div class="client-popup">
                 <div class="popup-header">
                     <div class="popup-title">
-                        <div class="client-name">${c.name}</div>
+                        <div class="client-name">${c.fullname}</div>
                         <div class="client-date">${c.date}</div>
                     </div>
                 </div>
@@ -100,16 +114,18 @@ function resetMarkersClients(){
                 className:"cool-popup",
                 maxWidth:260
             }).addTo(markerLayer)
+            
 
     markersClients[c.id] = marker
     })
+    
     
 }
 
 function resetCalendarEvents(){
     calendar.removeAllEvents()
-    calendar.addEventSource(getClientCalendar().map(c=>({
-            title:c.name,
+    calendar.addEventSource(getOrdersCalendar().map(c=>({
+            title:c.fullname,
             start:c.date,
             id:c.id,
             backgroundColor:getColorByStat(c.stat),
@@ -129,7 +145,7 @@ function initialCalendarClients(initial = false){
         selectLongPressDelay: 100,
         select: function(info){
             fetchClientsCalendar()
-            updateFromTo(info.startStr, info.endStr)
+            updateFromTo(new Date(info.startStr), new Date(info.endStr))
             onSelectRangeCalendar()
             calendar.getEventById("selected-range")?.remove();
             calendar.addEvent({
@@ -153,10 +169,11 @@ function initialCalendarClients(initial = false){
             week: 'השבוע',
         },
         datesSet: function(info){
+            updateFromTo(...getMonthRange(info.start))
             fetchClientsCalendar();
         },
         dayMaxEvents: 2,
-        events: getClientCalendar().map(c=>({
+        events: getOrdersCalendar().map(c=>({
             title:c.name,
             start:c.date,
             id:c.id,
@@ -180,10 +197,12 @@ function initialCalendarClients(initial = false){
 function updateFromTo(s, e){
     const dateFrom = document.getElementById("calendar-from")
     const dateTo = document.getElementById("calendar-to")
-    dateFrom.dataset.s = s
-    dateTo.dataset.e = e
-    dateFrom.textContent = s.replace("-", ".").replace("-", ".")
-    dateTo.textContent = e.replace("-", ".").replace("-", ".")
+    fs =formatDateCalendar(s)
+    fe = formatDateCalendar(e)
+    dateFrom.dataset.s = fs
+    dateTo.dataset.e = fe
+    dateFrom.textContent = fs.replace("-", ".").replace("-", ".")
+    dateTo.textContent = fe.replace("-", ".").replace("-", ".")
     selectS = s
     selectE = e
 }
@@ -216,11 +235,11 @@ function updateMenuActionCalendarSorted(t, state, cache = true){
 async function fetchClientsCalendar(){
     const data = {
         action:ApiCall.calendar,
-        month:calendar.getDate().getMonth()+1,
-        year:calendar.getDate().getFullYear()
+        df:selectS.getTime()/1000,
+        dt:selectE.getTime()/1000
     }
-    const newDateToFetch = data.year+data.month
-    if (lastDateFetched in calendarClients){
+    const newDateToFetch = data.df
+    if (lastDateFetched in calendarCacheOrders){
         lastDateFetched = newDateToFetch;
         return
     }
@@ -229,7 +248,7 @@ async function fetchClientsCalendar(){
             return;
         }
         lastDateFetched = newDateToFetch
-        calendarClients[lastDateFetched] = res.data;
+        calendarCacheOrders[lastDateFetched] = res.data;
     })
     onSelectRangeCalendar();
 }
@@ -239,11 +258,13 @@ async function fetchClientsCalendar(){
 
 document.addEventListener("DOMContentLoaded", function (){
     c_runtime.state_calendar_selected = StateOrder.DONE|StateOrder.CLOSED|StateOrder.CANCELED
+    const [s,e] = getCurrentMonthRange()
+    updateFromTo(s, e)
     initialMapClients()
     initialCalendarClients()
-    fetchClientsCalendar()
-    const [s,e] = getCurrentMonthRange()
     calendar.select(s,e)
+    fetchClientsCalendar()
+
     const observer = new ResizeObserver(()=>{
 
         mapClients?.invalidateSize()

@@ -6,6 +6,14 @@ from api.databases.ptc import cleaneril_db
 
 unknown = 'unknown'
 
+def get_columns_no_instance(columns:list):
+    temp = []
+    for column in columns:
+        copy =  column.__dict__
+        del copy['_sa_instance_state']
+        temp.append(copy)
+    return temp
+
 def get_columns_as_dict(query:Query) :
     return [{c.name: getattr(e, c.name) for c in e.__table__.columns} for e in query]
 

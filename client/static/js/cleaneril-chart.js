@@ -1,7 +1,7 @@
 let chartReportsFunds;
 let chartReportsOrders;
 
-const chartConfiguration = (series) => {
+const chartConfiguration = (series, icon = '₪') => {
   return {
     chart: {
       type: 'line',
@@ -72,7 +72,7 @@ const chartConfiguration = (series) => {
       { 
         forceNiceScale: true, 
         labels: { 
-          formatter: val => val?.toLocaleString('he-IL') + ' ₪',
+          formatter: val => val?.toLocaleString('he-IL') + ' '+icon,
           style: { colors: '#64748b' }
         }, 
         show: true 
@@ -93,7 +93,7 @@ const chartConfiguration = (series) => {
       intersect: false,
       theme: 'light',
       y: {
-        formatter: val => val !== undefined ? val.toLocaleString('he-IL') + ' ₪' : val
+        formatter: val => val !== undefined ? val.toLocaleString('he-IL') + ' '+icon : val
       }
     },
     colors: ['#1c9548', '#3b82f6', '#9508ad', '#c7c41d'],
@@ -178,9 +178,31 @@ const chartOrdersSeries = (x1, x2, x3, x4) => {
 }
 
 const chartOrdersConfiguration = () => {
-  return chartConfiguration(chartOrdersSeries())
+  return chartConfiguration(chartOrdersSeries(), '')
 }
 
 function chartOrdersUpdateSeries(monthlyItems, monthlyCanceled, monthlyOrders, monthlyACR) {
   chartReportsOrders.updateSeries(chartOrdersSeries(monthlyItems, monthlyCanceled, monthlyOrders, monthlyACR));
+}
+
+function prepareMonthlyDataGraphOrders(transactions, year){
+  const monthlyItems = Array(12).fill(0);
+  const monthlyCanceled = Array(12).fill(0);
+  const monthlyOrders = Array(12).fill(0)
+  const monthlyACR = Array(12).fill(0)
+
+  transactions.forEach(t => {
+    const [y, m] = t.date.split("."); 
+
+    if(Number(y) === Number(year)){
+      const monthIndex = Number(m) - 1;
+
+      monthlyItems[monthIndex] += Number(t.items);
+      monthlyCanceled[monthIndex]+= Number(t.canceled)
+      monthlyOrders[monthIndex] += 1
+      monthlyACR[monthIndex] = Number(t.average_client_repeat_percent)
+    }
+  });
+
+  return { monthlyItems, monthlyCanceled, monthlyOrders, monthlyACR};
 }

@@ -242,10 +242,10 @@ async function fetchGraphReports(rAction, year, callback){
 
 async function fetchGraphOrders(y){
     const callback_success = (res) =>{
-        const {monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM} = prepareMonthlyDataGraphFunds(res.graph_funds, y);
-        chartOrdersUpdateSeries(monthlyIncome, monthlyExpenses, monthlyAIPCM, monthlyAEPCM)
+        const {monthlyItems, monthlyCanceled, monthlyOrders, monthlyACR} = prepareMonthlyDataGraphOrders(res.graph_orders, y);
+        chartOrdersUpdateSeries(monthlyItems, monthlyCanceled, monthlyOrders, monthlyACR)
     }
-    await fetchGraphReports(ReportsApi.graph_funds, y, callback_success)
+    await fetchGraphReports(ReportsApi.graph_orders, y, callback_success)
 }
 async function fetchGraphFunds(y) {
     const callback_success = (res) =>{

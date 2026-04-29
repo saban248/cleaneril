@@ -171,7 +171,6 @@
     padding: 0;
     margin: 0;
     position: relative;
-    height: 150vh;
 }
 .show{
     display: block !important;

@@ -24,10 +24,13 @@ async function askAboutExitEditOrder(){
 
 async function closeClientDashboard(){
     if (c_clients.new_order){
-        deleteOrder(c_runtime.currentOrderIdView)
+        const deleted = await deleteOrder(c_runtime.currentOrderIdView)
+        console.log(deleted)
+        if (!deleted)return
+        c_clients.new_order = false;
         
     }
-    if (isCantExitEditOrder() || c_clients.new_order){
+    else if (isCantExitEditOrder()){
         const a = await askAboutExitEditOrder()
         if (!a){ 
             return
@@ -238,7 +241,6 @@ function switchClientCardAction(){
     }
 }
 async function switchViewClientDashboard(v = c_clients.currentCard, fetch = true, back = false){
-    // BACK DELETED
     if (isCantExitEditOrder()){
         if (await !askAboutExitEditOrder()){return}
     }
@@ -478,23 +480,23 @@ function shareReceiptToClientAsPhoto(iid = c_runtime.currentInvoiceIdView){
 
 async function deleteOrder(order_id = c_runtime.currentOrderIdView, callback){
     const ok = await showAsk({msg:message.WdeleteOrder})
-    if (!ok){return}
+    if (!ok){return false}
     if (!order_id){
         showToast("בחר הזמנה כדי למחוק", ToastStat.ERROR)
-        return
+        return false
     }
     data = {oi:order_id, action:ApiCall.order_delete}
     return await new Promise((reslove) => apiPost(ApiRoute.api,data).then(
         async (res) =>{
             if (!res.success || res.deleted){
                 showToast(res.notice, ToastStat.DONE);
-                return
+                return false
             }
             await fetchOrders()
             createListClientOrders()
             callback?callback():null
             c_runtime.currentOrderIdView = null
-            reslove()
+            reslove(true)
         }
     ))
 }

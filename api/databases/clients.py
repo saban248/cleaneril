@@ -11,8 +11,6 @@ from api.databases.general import get_columns, get_latest_columns, delete_column
 from api.ptc import generate_hex
 
 from api.databases.ptc import cleaneril_db, StateDocument, ServerConfig, StateOrder
-from api.routes import cil_struct
-from api.routes.ptc import ClientLeadFrom, CalenderClients, get_calender_client, is_bwt_date, PaymentInvoice
 
 
 class ClientProfile(cleaneril_db.Model):
@@ -53,7 +51,7 @@ def create_client_profile(manager_id:str, fullname:str, address:str, phone:str, 
     return client
 
 
-def edit_exist_client(response:cil_struct.Client):...
+def edit_exist_client(response):...
 
 def delete_client(client_id):
     delete_column(ClientProfile, get_clients(client_id=client_id).first())
