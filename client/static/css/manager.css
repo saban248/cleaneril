@@ -301,7 +301,8 @@
     justify-content: center;
     column-gap: 10px;
     align-items: center;
-    padding: 5px;
+    padding: 5px 10px;
+
 }
 .action-search > i{
     font-size: 1.1rem;

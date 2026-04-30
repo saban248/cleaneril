@@ -244,3 +244,9 @@ document.addEventListener("DOMContentLoaded", async function (){
     });
 
 })
+
+
+
+// calendar
+function initialCalendar(){}
+

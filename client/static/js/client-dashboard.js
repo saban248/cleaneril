@@ -113,7 +113,7 @@ async function fetchClientOrder(order_id = c_runtime.currentOrderIdView, api_act
             c_clients.currentCard = clientCardsView.ORDER
             c_clients.enterCard = true;
             if (c_clients.order_edit || c_clients.new_order){
-                onLoadEditClient()
+                onLoadEditClient(res.order_id)
             }
             reslove();
         }

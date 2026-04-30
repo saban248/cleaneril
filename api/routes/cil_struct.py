@@ -138,7 +138,7 @@ class CleanOrder:
         else:
             self.op = 0
         if self.price:
-            self.price = int(self.price)
+            self.price = int(float(self.price))
         else:
             self.price = 0
         if self.lf:

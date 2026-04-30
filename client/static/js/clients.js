@@ -104,9 +104,11 @@ async function publishCleanOrder(order_id, state){
     const offPrice = document.getElementById('client-off-price').value;
     const expense = document.getElementById("client-expense").value;
     const profitSharing = ft(document.getElementById("profitSharing").value);
-    const w = document.getElementById('esm')?.children[0]
-    const workers = [w?w.id.substring(1,32):'']
-    const pay_type = 0
+    const workers = []
+    for (w of document.getElementById('esm').children){
+        workers.push(w.id.replace("s", ''))
+    }
+    const pay_type = document.getElementById("payGroup").dataset.tp
     const pay_notes = ''
     const order_type = 1
 
@@ -222,8 +224,6 @@ function updateMACSOnLoad(cache = true){
             updateMenuActionClientsSorted(item, s, cache)
         }
     }
-    const calender = document.getElementById("acc")
-    calender.innerText = getCalenderClientText(parseInt(ManagerCache.getClientsCalender()))
 
 }
 
@@ -401,88 +401,55 @@ const calanderItems = [
 ]
 
 
-function openMenuCalander(t){
-    const menu = document.getElementById("calanderClients")
-    if (menu.classList.contains("show")) {
-        menu.classList.remove("show")
-        return
-    }
-    const rect = t.getBoundingClientRect()
-    menu.innerHTML = "" // ניקוי
-    calanderItems.forEach(item => {
-        let cma = document.createElement("div")
-        cma.className = "cma"
-        let cma1 = document.createElement('div')
-        cma1.className = "cma1"
-        cma1.innerHTML = item.icon
-        
-        let cma2 = document.createElement("div")
-        cma2.className = 'cma2'
-        cma2.textContent = item.text
-        cma.appendChild(cma1)
-        cma.appendChild(cma2)
-
-        cma.onclick = () => {
-            item.action(item.text)
-            menu.classList.remove("show")
-        }
-        menu.appendChild(cma)
-    })
-
-    menu.classList.add("show")
-    const menuWidth = menu.offsetWidth;
-    const windowWidth = window.innerWidth;
-
-    let left = rect.left;
-    if (left + menuWidth > windowWidth) {
-        left = windowWidth - menuWidth - 5; 
-    }
-
-    menu.style.top = `${rect.bottom + window.scrollY + 6}px`
-    menu.style.left = `${left + window.scrollX}px`
+function showCalendarOrders(t){
+    
 } 
 
-async function onLoadEditClient(){
+async function onLoadEditClient(oid){
     editOrdersClient()
     await fetchWorkers()
-    
-    let worker = null;
-    for (const sw of c_runtime.workers){
-        let lastSelectWorker = document.getElementById("lsw"+sw.employee_id)
-        if (lastSelectWorker!=undefined){
-            worker = sw;
-            break;
+
+    const order = get_order_by_order_id(oid)
+    if (order){
+        for (let sw of c_runtime.workers){
+            if (order.workers.includes(sw.employee_id)){
+                selectWorkerToClient(sw)
+            }
+
         }
-
-
     }
-    if (worker){
-        selectWorkerToClient(worker);
-    }
+
     let paymentState = 0;
     const group = document.getElementById("payGroup");
     const buttons = group.querySelectorAll("button");
     const indicator = group.querySelector(".indicator");
     buttons.forEach(btn => {
-    btn.addEventListener("click", () => {
-        const value = Number(btn.dataset.tp);
-        paymentState = value;
-        group.dataset.tp = value;
-        buttons.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        moveIndicator(btn);
-    });
+        btn.addEventListener("click", () => {
+            const value = Number(btn.dataset.tp);
+            paymentState = value;
+            group.dataset.tp = value;
+            buttons.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            moveIndicator(btn);
+        });
     });
 
     function moveIndicator(btn) {
-    const rect = btn.getBoundingClientRect();
-    const parentRect = group.getBoundingClientRect();
+        const rect = btn.getBoundingClientRect();
+        const parentRect = group.getBoundingClientRect();
 
-    indicator.style.left = (rect.left - parentRect.left) + "px";
-    indicator.style.width = rect.width + "px";
+        indicator.style.left = (rect.left - parentRect.left) + "px";
+        indicator.style.width = rect.width + "px";
     }
-    const defaultBtn = group.querySelector('[data-tp="2"]');
-    defaultBtn.click();
+
+    setTimeout( ()=> {
+        if (!order){
+            document.getElementById("tp-default").click()
+            return
+        }
+        const pt = order.payment_type
+        group.querySelector(`[data-tp="${pt}"]`).click();
+    }, 500);
 
 }
 

@@ -49,6 +49,10 @@ function set_current_receipt_id_default(){
     c_runtime.currentInvoiceIdView = receipt?.receipt_id
 }
 
+function get_order_by_order_id(oid){
+    return c_runtime.orders.find(o => o.order_id == oid)
+}
+
 function doLogin(t){
     onApiCall(t)
     const username = document.getElementById('username');
@@ -267,10 +271,10 @@ function closeMenuTabsDashboard(){
 }
 
 
+// { text: "מודעות", action: (p) => switchPageManager(PageManager.CARDS), icon:'<i class="fa-solid fa-newspaper"></i>'}
 const GeneralMenuitems = [
     { text: "עובדים", action: (p) => switchPageManager(PageManager.WORKERS), icon:'<i class="fa-solid fa-users"></i>'},
     { text: "קבלות", action: (p) => switchPageManager(PageManager.INVOICES), icon:'<i class="fa-solid fa-file-invoice"></i>'},
-    { text: "מודעות", action: (p) => switchPageManager(PageManager.CARDS), icon:'<i class="fa-solid fa-newspaper"></i>'}
 ]
 function showMenuGeneralItems(t){
     const menu = document.getElementById("generalMenu")

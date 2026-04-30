@@ -215,10 +215,9 @@ function updateUI(id, value, icon = '₪') {
 }
 
 async function reloadReports(){
-    const currentYear = reportsCalendar.sFrom ? reportsCalendar.sFrom.getFullYear() : new Date().getFullYear();
+    const currentYear = new Date().getFullYear();
     await fetchFundsAndOrdersReports();
-    await fetchGraphFunds(currentYear);
-    await fetchGraphOrders(currentYear);
+    await selectYearReportsChart(currentYear)
 }
 
 async function fetchGraphReports(rAction, year, callback){
@@ -321,6 +320,8 @@ function switchReportsTab(tab){
 
 
 document.addEventListener("DOMContentLoaded", function () {
+    initChartsFunds()
+    initChartsOrders()
     goToMonth()
     renderCalendar();
     updateDateDisplay();

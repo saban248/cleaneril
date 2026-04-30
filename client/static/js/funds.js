@@ -70,8 +70,6 @@ async function selectYearReportsChart(y){
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    initChartsFunds()
-    initChartsOrders()
     document.addEventListener("click", e => {
       const menu = document.getElementById("yearFundsMenu")
         if (!menu.contains(e.target) && !e.target.classList.contains("year-select")) {
