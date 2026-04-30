@@ -630,49 +630,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 async function prepareOrderImage() {
-    const element = IS_MOBILE
-        ? document.getElementById("client-template-dashboard")
-        : document.getElementById("the-client-card");
-
+    const element = document.getElementById("the-client-card");
     if (!element) return;
-
-    // Store original state to restore after capture
-    const originalStyle = element.getAttribute('style') || '';
-    const scrollParent = document.querySelector('.ce-body');
-    const originalScroll = scrollParent ? scrollParent.scrollTop : 0;
-
     try {
-        // Force the element to expand fully and avoid cropping due to scroll containers
-        element.style.height = 'auto';
-        element.style.overflow = 'visible';
-        element.style.position = 'relative';
-        if (IS_MOBILE) element.style.width = '410px'; // Maintain design width for mobile share
-
         const canvas = await html2canvas(element, {
-            scale: IS_MOBILE ? 3 : 2,
-            backgroundColor: "#ffffff",
-            useCORS: true,
-            allowTaint: true,
-            logging: false,
-            // Capture the full area of the content regardless of current scroll position
-            width: element.scrollWidth,
-            height: element.scrollHeight,
-            windowWidth: element.scrollWidth,
-            windowHeight: element.scrollHeight
+            scale: 3,
+            backgroundColor: "#fff",
         });
 
-        const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png", 1.0));
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
         CONFIG.IMG_ORDER = blob;
 
     } catch (err) {
         showToast(err,ToastStat.ERROR)
         console.error("Image preparation failed:", err);
         CONFIG.IMG_ORDER = null;
-    } finally {
-        // Restore UI state
-        element.setAttribute('style', originalStyle);
-        if (scrollParent) scrollParent.scrollTop = originalScroll;
-    }
+    } finally {}
 }
 
 

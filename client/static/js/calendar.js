@@ -201,7 +201,7 @@ function initialCalendarClients(initial = false){
             const id = info.event.id
             const marker = markersClients[id]
             if (marker==undefined)return
-            mapClients.setView(marker.getLatLng(), 16) // Street level zoom
+            mapClients.setView(marker.getLatLng(), 8) // Street level zoom
             marker.openPopup()
 
         }

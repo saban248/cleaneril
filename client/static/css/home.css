@@ -416,6 +416,7 @@ body, *{
     min-height: 80vh;
     position: relative;
     transform-origin: center;
+    opacity: 1 !important;
 }
 .clean-card.show, .client-card.show, .worker-card.show{
     display: flex !important;

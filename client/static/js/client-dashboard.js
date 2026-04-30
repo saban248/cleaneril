@@ -253,6 +253,8 @@ async function switchViewClientDashboard(v = c_clients.currentCard, fetch = true
         showToast("סיים יצירת הזמנה חדשה לפני", ToastStat.ERROR)
         return
     }
+    const parentBody = document.getElementById("client-template-dashboard")
+    parentBody.scrollTop = 0;
 
     if (!v){v = c_clients.currentCard}
     switch (v){
@@ -461,6 +463,8 @@ async function editExistOrder(order_id = c_runtime.currentOrderIdView){
     c_runtime.currentOrderIdView = order_id;
     if (!order_id)return
     await fetchClientOrder(order_id, ApiCall.order_edit)
+    const parentBody = document.getElementById("client-template-dashboard")
+    parentBody.scrollTop = 0;
 }
 
 async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid = c_runtime.currentClientIdView) {

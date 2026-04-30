@@ -348,7 +348,7 @@
     height: 100%;  
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    /* overflow-y: scroll; */
     background: white;
     opacity: 0;
     transform: scale(0.5);
@@ -384,9 +384,9 @@
     column-gap: 10px;
     row-gap: 20px;
     flex: 1;
+    height: 90%;
+    overflow: scroll;
     background:white;
-    overflow-y: scroll;
-    height: 80vh;
 }
 .input-card-edit{
     font-size: inherit;
@@ -474,6 +474,7 @@
     border: 1px solid #ddd !important;
     min-width: 350px;
     box-sizing: content-box !important;
+    background: #fff !important;
 }
 .client-head, .worker-head{
     display: flex;
