@@ -37,8 +37,8 @@ function get_total_price_by_order_id(order_id){
         return 0
     }
 
-    var total = 0
-    for ([k, item] of Object.entries(order.items)){
+    let total = 0;
+    for (const [k, item] of Object.entries(order.items)){
         total += parseInt(item.price);
     }
     return total-order.off_price
@@ -51,12 +51,13 @@ function set_current_receipt_id_default(){
 
 function doLogin(t){
     onApiCall(t)
-    username = document.getElementById('username');
-    password = document.getElementById("password");
+    const username = document.getElementById('username');
+    const password = document.getElementById("password");
     if (!username.value || !password.value){
         showToast("type user or password", ToastStat.ERROR);
+        return;
     }
-    data = {username:username.value, password:password.value}
+    const data = {username:username.value, password:password.value}
     apiPost(ApiRoute.auth, data).then(
         (res) =>{
             if (!res.success){
@@ -76,30 +77,10 @@ function switchPageManager(page){
         CONFIG.CURRENT_PAGE = last_page;
     }
 
-
     const lp = document.getElementById(getPageManager(last_page));
-    lp.classList.remove("show")
-    var _page_ = null;
-    switch (page) {
-        case PageManager.GIFTS:
-        case PageManager.LINKS:
-        case PageManager.CARDS:
-        case PageManager.SETTINGS:
-            _page_ = document.getElementById(getPageManager(page))
-        case PageManager.CLIENTS:
-            _page_ = document.getElementById(getPageManager(page));
-        case PageManager.FUNDS:
-            _page_ = document.getElementById(getPageManager(page))
-        case PageManager.WORKERS:
-            _page_ = document.getElementById(getPageManager(page))
-        case PageManager.CALENDAR:
-            _page_ = document.getElementById(getPageManager(page))
-        case PageManager.INVOICES:
-            _page_ = document.getElementById(getPageManager(page))
-    
-        default:
-            break;
-    }
+    if (lp) lp.classList.remove("show");
+
+    const _page_ = document.getElementById(getPageManager(page));
     if (!_page_)return
     _page_.classList.add("show")
     ManagerCache.setManagerPage(page)
@@ -113,7 +94,7 @@ function createCard(card_id=null){
     mainEdit.classList.remove('hide');
     mainEdit.classList.add('show');
     const toast = showToast("מעבד...")
-    data = {action:ApiCall.card_editor, ci:card_id}
+    const data = {action:ApiCall.card_editor, ci:card_id}
     apiPost(ApiRoute.api, data).then(
         (res) => {
             if (!res.success){
@@ -153,8 +134,8 @@ async function publishCard(state_card=ApiCall.card_save){
         const blob = await res.blob();
 
         // Create File object from Blob
-        a = src.split(".")
-        eof = a[a.length-1]
+        const a = src.split(".")
+        const eof = a[a.length-1]
         file = new File([blob], card_id+"."+eof, { type: blob.type });
         filename = file.name;
     }
@@ -163,11 +144,11 @@ async function publishCard(state_card=ApiCall.card_save){
     }
 
     const whatsapp = document.getElementById("whatsapp-text").value
-    var off_price = parseInt(document.getElementById("off-price").value)
+    let off_price = parseInt(document.getElementById("off-price").value)
     if (!off_price){
         off_price = 0
     }
-    data = {
+    const data = {
         action:state_card,
         ci:card_id,
         ct:card_title,
@@ -199,7 +180,7 @@ async function deleteCard(card_id){
     const ok = await showAsk({msg:message.WdeleteCard})
     if (!ok)return;
     
-    data = {ci:card_id, action:ApiCall.card_delete}
+    const data = {ci:card_id, action:ApiCall.card_delete}
     apiPost(ApiRoute.api,data).then(
         (res) =>{
             if (!res.success || res.deleted){
@@ -260,8 +241,7 @@ function uploadImage(file, name, action) {
                 });
             };
             reader.readAsDataURL(file);
-        case ApiUploadFile.LOGO:
-            
+            break;
     }
 }
 

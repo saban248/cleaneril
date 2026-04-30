@@ -215,10 +215,10 @@ function updateUI(id, value, icon = '₪') {
 }
 
 async function reloadReports(){
-    await fetchFundsAndOrdersReports()
-    await fetchGraphFunds(2026)
-    await fetchGraphOrders(2026)
-
+    const currentYear = reportsCalendar.sFrom ? reportsCalendar.sFrom.getFullYear() : new Date().getFullYear();
+    await fetchFundsAndOrdersReports();
+    await fetchGraphFunds(currentYear);
+    await fetchGraphOrders(currentYear);
 }
 
 async function fetchGraphReports(rAction, year, callback){
@@ -231,13 +231,13 @@ async function fetchGraphReports(rAction, year, callback){
         (res) => {
             if (!res.success){
                 showToast(res.notice, ToastStat.ERROR);
-                
-            }else{
+            }else if (callback){
                 callback(res)
+            }
+            reslove(res)
         }
-        reslove()
-    })
-)}
+    ))
+}
 
 
 async function fetchGraphOrders(y){
@@ -268,18 +268,19 @@ async function fetchFundsAndOrdersReports(){
     const on = 'ordersNumber';
     const or = 'ordersRepeat';
     const oc = 'ordersCanceled';
+    const currentYear = reportsCalendar.sFrom ? reportsCalendar.sFrom.getFullYear() : new Date().getFullYear();
     const toast = showToast("מעבד..")
-    data = {action:ApiCall.api_reports,rAction:ReportsApi.funds,
-        year:2026, df:reportsCalendar.sFrom.getTime()/1000,
+    const data = {action:ApiCall.api_reports,rAction:ReportsApi.funds,
+        year:currentYear, df:reportsCalendar.sFrom.getTime()/1000,
         dt:reportsCalendar.sTo.getTime()/1000
     }
     return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
         (res) =>{
             if (!res.success){
-                showToast(res.notice, ToastStat.ERROR,toast);
+                showToast(res.notice, ToastStat.ERROR, toast);
+                reslove(res);
                 return;
             }            
-
             updateUI(fti, res.ie, '')
             updateUI(fe, res.e)
             updateUI(fi, res.i)
@@ -290,8 +291,9 @@ async function fetchFundsAndOrdersReports(){
             updateUI(or, res.ccr, '')
             updateUI(oc, res.occ, '')
             closeToast(toast)
-            reslove();
-    }))
+            reslove(res);
+        }
+    ))
 }
 
 
@@ -342,7 +344,3 @@ document.addEventListener("DOMContentLoaded", function () {
 
 }
 )
-
-
-
-

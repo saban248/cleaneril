@@ -29,7 +29,7 @@ function getYearsItems({ past = 20, future = 0} = {}) {
     return items;
 }
 function openMenuSelectYear(){
-    items = getYearsItems()
+    const items = getYearsItems()
     const menu = document.getElementById("yearFundsMenu")
 
     if (menu.classList.contains("show")) {
@@ -80,4 +80,3 @@ document.addEventListener("DOMContentLoaded", function () {
     })
 
 });
-

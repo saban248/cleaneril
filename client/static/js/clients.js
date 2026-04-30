@@ -3,17 +3,17 @@
 
 
 function mainSyncTotalPrice(element){
-    var currentValue = element.value;
-    if (!currentValue == '' && !/^\d+$/.test(currentValue))return
+    let currentValue = element.value;
+    if (currentValue !== '' && !/^\d+$/.test(currentValue)) return;
     if (currentValue == ''){currentValue = 0}
     const clientPrice = document.getElementById("client-price")
     const __items_ordered = document.getElementById('items-ordered').children.length;
     let total = 0
-    for (let i=1;i<__items_ordered;i++){
-        var p = document.getElementById(i+'-price'); 
+    for (let i=0; i < __items_ordered; i++){
+        const p = document.getElementById(i+'-price'); 
         const value = p?.value?p.value.replace(/[^\d]/g, ""):p.innerText.replace(/[^\d]/g, "")
-        if (element == p)continue
-        total += parseInt((value||0))
+        if (element === p || !p) continue
+        total += parseInt(value || 0, 10);
     }
 
     clientPrice.value = total+parseInt(currentValue)
@@ -42,7 +42,8 @@ function onPublishClientShowProgress(fullname, stat, done = false){
     const icon = document.getElementById("cpp-icon")
     const title = document.getElementById("cpp-title");
     const bAction = document.getElementById("beforeProgressDone");
-    const aAction = document.getElementById("afterProgressDone")
+    const aAction = document.getElementById("afterProgressDone");
+    let iClass = "";
     if (!done){
         iClass = "fa-solid fa-circle-notch fa-spin"
         icon.classList = iClass
@@ -89,9 +90,9 @@ async function publishCleanOrder(order_id, state){
     const address = document.getElementById('client-location').value;
     const phone = document.getElementById('client-phone').value;
     const __items_ordered = document.getElementById('items-ordered').children.length;
-    for (let i=0;i<=__items_ordered;i++){
-        var n = document.getElementById(i+'-name');
-        var p = document.getElementById(i+'-price'); 
+    for (let i=0; i <= __items_ordered; i++){
+        const n = document.getElementById(i+'-name');
+        const p = document.getElementById(i+'-price'); 
         if (n==null||p==null)continue
         c_runtime.items_ordered[i] = {name:n.value||n.textContent, price:parseInt((p.value||p.textContent).replace(/\D+/g, ''),10)}
 
@@ -114,7 +115,7 @@ async function publishCleanOrder(order_id, state){
     /** coordinate */
     const [lat, lng] = await geocodeAddressOSM(address)
     const data = {action:ApiCall.order_save,
-        oi:order_id, s:state,
+        oi:order_id, s:parseInt(state),
         phone:phone,o:Boolean(parseInt(offPrice)),
         op:offPrice,fn:fullname,
         address:address, i:JSON.stringify(c_runtime.items_ordered),
@@ -166,7 +167,7 @@ function doSearchClientsLocal(){
     
     const input = document.getElementById("searchClient")
     const value = input.value.toLowerCase();
-    for (order of c_runtime.orders){
+    for (const order of c_runtime.orders){
         const order_id = order.order_id+'main'
         const phone = cleanPhoneJustNumbers(order.phone).includes(value);
         const name = order.fullname.toLowerCase().includes(value);
@@ -181,7 +182,7 @@ function doSearchClientsLocal(){
 }
 function sortedClientsByState(){
     const parent = document.getElementById("listClients")
-    for (child of parent.children){
+    for (const child of parent.children){
         if (parseInt(child.dataset.stat)&c_runtime.state_client_selected){
             child.classList.remove("hide")
         }
@@ -215,10 +216,10 @@ function updateMenuActionClientsSorted(t, state, cache = true){
 function updateMACSOnLoad(cache = true){
     const parent = document.getElementById("macs").children
     const ca = Array.from(parent);
-    for (state of ca){
-        const s = state.dataset.s
+    for (const item of ca){
+        const s = item.dataset.s
         if (c_runtime.state_client_selected&s){
-            updateMenuActionClientsSorted(state, s,cache)
+            updateMenuActionClientsSorted(item, s, cache)
         }
     }
     const calender = document.getElementById("acc")
@@ -445,8 +446,8 @@ async function onLoadEditClient(){
     editOrdersClient()
     await fetchWorkers()
     
-    let worker = null
-    for (sw of c_runtime.workers){
+    let worker = null;
+    for (const sw of c_runtime.workers){
         let lastSelectWorker = document.getElementById("lsw"+sw.employee_id)
         if (lastSelectWorker!=undefined){
             worker = sw;
@@ -629,56 +630,49 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 async function prepareOrderImage() {
-    const cropCanvas = document.createElement("canvas");
-    const ctx = cropCanvas.getContext("2d");
+    const element = IS_MOBILE
+        ? document.getElementById("client-template-dashboard")
+        : document.getElementById("the-client-card");
 
-    if (IS_MOBILE){
-        const element = document.getElementById("client-template-dashboard");
-        const scale = 3;
-        const targetWidth = 410;
-        const realHeight = element.offsetHeight;
-        element.style.height = `${realHeight+30}px`;
+    if (!element) return;
+
+    // Store original state to restore after capture
+    const originalStyle = element.getAttribute('style') || '';
+    const scrollParent = document.querySelector('.ce-body');
+    const originalScroll = scrollParent ? scrollParent.scrollTop : 0;
+
+    try {
+        // Force the element to expand fully and avoid cropping due to scroll containers
+        element.style.height = 'auto';
+        element.style.overflow = 'visible';
+        element.style.position = 'relative';
+        if (IS_MOBILE) element.style.width = '410px'; // Maintain design width for mobile share
+
         const canvas = await html2canvas(element, {
-        scale: scale,
-        backgroundColor: "#ffffff",
-        useCORS: true
+            scale: IS_MOBILE ? 3 : 2,
+            backgroundColor: "#ffffff",
+            useCORS: true,
+            allowTaint: true,
+            logging: false,
+            // Capture the full area of the content regardless of current scroll position
+            width: element.scrollWidth,
+            height: element.scrollHeight,
+            windowWidth: element.scrollWidth,
+            windowHeight: element.scrollHeight
         });
-        cropCanvas.width = targetWidth * scale;
-        cropCanvas.height = canvas.height;
 
-        const cropX = Math.max(0, (canvas.width - cropCanvas.width) / 2);
-
-        ctx.drawImage(
-        canvas,
-        cropX,
-        0,
-        cropCanvas.width,
-        canvas.height,
-        0,
-        0,
-        cropCanvas.width,
-        canvas.height
-        );
-
-        const image = await new Promise(resolve =>
-            cropCanvas.toBlob(resolve, "image/png")
-        );
-        CONFIG.IMG_ORDER = image;
-        element.style.height = `${realHeight}px`;
-    }else{
-        const element = document.getElementById("the-client-card");
-        const canvas = await html2canvas(element, {
-            scale: 2,
-            backgroundColor: '#fff'
-        });
-        const blob = await new Promise(resolve => {
-            canvas.toBlob(resolve, 'image/png');
-        });
-        
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png", 1.0));
         CONFIG.IMG_ORDER = blob;
+
+    } catch (err) {
+        showToast(err,ToastStat.ERROR)
+        console.error("Image preparation failed:", err);
+        CONFIG.IMG_ORDER = null;
+    } finally {
+        // Restore UI state
+        element.setAttribute('style', originalStyle);
+        if (scrollParent) scrollParent.scrollTop = originalScroll;
     }
-
-
 }
 
 
@@ -692,25 +686,27 @@ async function fetchClients() {
         (res) => {
             if (!res.success){
                 showToast(message.EfetchClients)
+                reslove(res);
                 return;
             }
             c_runtime.clients = res.clients;
-            reslove();
+            reslove(res);
         }
     ))
 }
+
 async function fetchOrders(){
     return await new Promise((reslove) => apiPost(ApiRoute.api,{action:ApiCall.orders_list, fromY:c_runtime.showClientsFrom}).then(
         res =>{
             if (!res.success){
                 showToast(message.EfetchOrders)
+                reslove(res);
                 return
             }
             c_runtime.orders = res.orders;
             loadListClientsHtml()
-            reslove();
+            reslove(res);
         }
-        
     ))
 }
 

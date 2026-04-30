@@ -53,6 +53,12 @@
     gap:5px;
     padding: 5px;
 }
+.dl1{
+    order: 1;
+}
+.dl2{
+    order: 2;
+}
 
 .calendar-panel,
 .map-panel{
@@ -61,7 +67,7 @@
     display:flex;
     flex-direction:column;
     overflow:hidden;
-    min-height: 400px;
+    min-height: 300px;
 }
 
 #calendar{
@@ -106,7 +112,15 @@
     .dispatch-layout{
         grid-template-columns:1fr;
         grid-template-rows:1fr 1fr;
+        grid-auto-flow: row dense;
         padding: 1px;
+    }
+    .dl1{
+        order: 2;
+    }
+    .dl2{
+        order: 1;
+        height: 300px;
     }
     #calendar{
         padding: 1px;
@@ -116,76 +130,80 @@
 
 
 
-.cool-popup .leaflet-popup-content{
-    margin:0;
+
+/* לבטל לגמרי את Leaflet UI */
+.custom-popup .leaflet-popup-content-wrapper {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
 }
 
-.client-popup{
-    font-family:system-ui;
-    width:220px;
+.custom-popup .leaflet-popup-content {
+    margin: 0 !important;
+    width: 150px !important;
+}
+
+.custom-popup .leaflet-popup-tip {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* הכרטיס שלך = שליטה מלאה */
+.order-popup {
+    text-align: right;
+    direction: ltr !important;
+    width: 150px;
+    background: rgba(20, 20, 30, 0.92);
+    color: #fff;
+    border-radius: 14px;
+    padding: 12px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    font-family: sans-serif;
 }
 
 /* header */
-
-.popup-header{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin-bottom:8px;
+.order-popup-header {
+    margin-bottom: 8px;
 }
 
-.popup-avatar{
-    width:34px;
-    height:34px;
-    border-radius:50%;
-    background:#3b82f6;
-    color:white;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:bold;
+.client-name {
+    font-size: 14px;
+    font-weight: 600;
 }
 
-.client-name{
-    font-weight:600;
-    font-size:14px;
-}
-
-.client-date{
-    font-size:12px;
-    color:#6b7280;
+.client-date {
+    font-size: 11px;
+    opacity: 0.6;
 }
 
 /* body */
-
-.popup-row{
-    display:flex;
-    gap:6px;
-    font-size:13px;
-    margin-bottom:8px;
+.order-popup-body {
+    font-size: 12px;
+    opacity: 0.85;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
-.popup-icon{
-    opacity:0.7;
+/* button */
+.order-popup-actions {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
 }
 
-/* actions */
-
-.popup-actions{
-    display:flex;
-    justify-content:flex-end;
+.order-popup-actions button {
+    background: #1f2937;
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    cursor: pointer;
 }
 
-.popup-actions button{
-    border:none;
-    background:#3b82f6;
-    color:white;
-    font-size:12px;
-    padding:5px 10px;
-    border-radius:6px;
-    cursor:pointer;
+.order-popup-actions button:hover {
+    background: #374151;
 }
 
-.popup-actions button:hover{
-    background:#2563eb;
-}

@@ -25,19 +25,14 @@ async function createInvoice(client_id = c_runtime.currentClientIdView, order_id
     const data = {action:ApiCall.invoice_create, cid:client_id, oid:order_id, stat:InvoiceStatType.PAID,pt:PaymentInvoice.BANK_TRANSFER
     }
     const toast = showToast(message.createInvoice)
-    return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
-        async res =>{
-            if (!res.success){
-                showToast(res.notice, ToastStat.ERROR, toast);
-                return
-            }
-            await fetchInvoice();
-            showToast('נוצר בהצלחה',ToastStat.DONE, toast);
-            reslove();
-
-
-        }
-    ))
+    const res = await apiPost(ApiRoute.api, data);
+    if (res.success) {
+        await fetchInvoice();
+        showToast('נוצר בהצלחה', ToastStat.DONE, toast);
+    } else {
+        showToast(res.notice, ToastStat.ERROR, toast);
+    }
+    return res;
 }
 
 async function deleteReceipt(receipt_id = c_runtime.currentInvoiceIdView, callback){
@@ -67,17 +62,14 @@ async function deleteReceipt(receipt_id = c_runtime.currentInvoiceIdView, callba
 }
 
 async function fetchInvoice(){
-    return await new Promise((reslove) => apiPost(ApiRoute.api, {action:ApiCall.invoice_list}).then(
-        res => {
-            if (!res.success){
-                showToast(message.notice, ToastStat.ERROR)
-                return
-            }
-            c_runtime.invoices = res.invoices;
-            loadListInvoicesHtml()
-            reslove()
-        }
-    ))
+    const res = await apiPost(ApiRoute.api, { action: ApiCall.invoice_list });
+    if (res.success) {
+        c_runtime.invoices = res.invoices;
+        loadListInvoicesHtml();
+    } else {
+        showToast(message.notice, ToastStat.ERROR);
+    }
+    return res;
 }
 
 function loadListInvoicesHtml(){

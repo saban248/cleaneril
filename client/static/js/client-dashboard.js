@@ -56,7 +56,10 @@ function hideClientDashboard(){
 
 }
 
-async function openClientDashbaord(client_id = c_runtime.currentClientIdView, order_id = c_runtime.currentOrderIdView, fetch = true){
+async function openClientDashbaord(client_id = c_runtime.currentClientIdView, order_id = c_runtime.currentOrderIdView, fetch = true, switchView = false){
+    if (switchView){
+        switchPageManager(PageManager.CLIENTS)
+    }
     if (!client_id){
         client_id = get_client_by_order_id(order_id)?.client_id
     }
@@ -64,6 +67,8 @@ async function openClientDashbaord(client_id = c_runtime.currentClientIdView, or
     c_runtime.currentOrderIdView = order_id;
     showClientDashboard()
     await fetchClientDashboard(client_id)
+    
+
     c_clients.enterCard = true;
     switchViewClientDashboard(clientCardsView.ORDER, fetch)
 }
@@ -115,6 +120,7 @@ async function fetchClientOrder(order_id = c_runtime.currentOrderIdView, api_act
     ))
 }
 function createListClientOrders(){
+    const parent = document.getElementById("listClientOrders");
     const deleteChildren = ()=>{
         [...parent.children].forEach(child => {
             if (child.id !== "iel-orders") {
@@ -122,7 +128,6 @@ function createListClientOrders(){
             }
         });
     }
-    const parent = document.getElementById("listClientOrders");
     const currentOrder = c_runtime.orders.find(c=> c.order_id == c_runtime.currentOrderIdView);
     const icon = document.getElementById('iel-orders');
     if (!c_runtime.orders || !currentOrder){
@@ -242,7 +247,7 @@ function switchClientCardAction(){
 }
 async function switchViewClientDashboard(v = c_clients.currentCard, fetch = true, back = false){
     if (isCantExitEditOrder()){
-        if (await !askAboutExitEditOrder()){return}
+        if (!(await askAboutExitEditOrder())){return}
     }
     if (c_clients.currentOrderIdView && c_clients.new_order){
         showToast("סיים יצירת הזמנה חדשה לפני", ToastStat.ERROR)
@@ -356,7 +361,7 @@ function createListClientReceipts(){
 
 async function showClientOrder(oid = c_runtime.currentOrderIdView, fetch = true){
     if (isCantExitEditOrder()){
-        if (await !askAboutExitEditOrder()){return}
+        if (!(await askAboutExitEditOrder())){return}
 
     }
     if (fetch){
@@ -445,32 +450,64 @@ async function editExistOrder(order_id = c_runtime.currentOrderIdView){
     if (!c_clients.client_view){
             if (!c_runtime.currentClientIdView){
                 const client = get_client_by_order_id(order_id)
-                c_runtime.currentClientIdView = client.client_id;
+                if (client){
+                    c_runtime.currentClientIdView = client.client_id;
+                }
                 
             }
         await openClientDashbaord(c_runtime.currentClientIdView, order_id, false)
     }
     c_clients.order_edit = true; 
-    c_runtime.currentClientIdView = order_id;
+    c_runtime.currentOrderIdView = order_id;
     if (!order_id)return
     await fetchClientOrder(order_id, ApiCall.order_edit)
 }
 
-async function shareOrderToClientAsPhoto(cid = c_runtime.currentClientIdView){
+async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid = c_runtime.currentClientIdView) {
     if (isCantExitEditOrder()){
-        if (await !askAboutExitEditOrder()){return}
-
+        if (!(await askAboutExitEditOrder())){return}
     }
-    await showClientOrder(cid)
-    await prepareOrderImage()
-    const file = new File([CONFIG.IMG_ORDER], "order.png", { type: "image/png" });
 
-    if (navigator.share) {
-        await navigator.share({
-            title: "הזמנה",
-            text: "הזמנה חדשה",
-            files: [file]
-        });
+    if (!oid) {
+        showToast("לא נבחרה הזמנה לשיתוף", ToastStat.ERROR);
+        return;
+    }
+
+    const toastId = showToast("מכין תמונה לשיתוף...", ToastStat.LOAD);
+
+    try {
+        // Ensure the order view is rendered for the capture
+        await showClientOrder(oid);
+        await sleep(300); // Wait for layout and rendering to finish
+        await prepareOrderImage();
+
+        if (!CONFIG.IMG_ORDER) {
+            showToast(message.EneedRefresh, ToastStat.ERROR, toastId)
+            return
+        }
+
+        const client = get_client_by_order_id(oid);
+        const fileName = `order_${oid}.png`;
+        const file = new File([CONFIG.IMG_ORDER], fileName, { type: "image/png" });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+                title: "פרטי הזמנה",
+                text: `סיכום הזמנה עבור ${client?.fullname || 'לקוח'}`,
+                files: [file]
+            });
+            showToast("שותף בהצלחה", ToastStat.DONE, toastId);
+        } else {
+            // Fallback to download if sharing files is not supported
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(CONFIG.IMG_ORDER);
+            link.download = fileName;
+            link.click();
+            showToast("שיתוף קבצים אינו נתמך - התמונה הורדה", ToastStat.DONE, toastId);
+        }
+    } catch (err) {
+        console.error("Sharing failed:", err);
+        showToast("שגיאה ביצירת השיתוף", ToastStat.ERROR, toastId);
     }
 }
 
@@ -635,5 +672,3 @@ async function setStateCleanOrder(order_id = c_runtime.currentOrderIdView, state
     ))
 
 }
-
-

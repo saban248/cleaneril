@@ -33,16 +33,11 @@ function getStateClient(state) {
     return result;
 }
 function getStateClientText(s){
-    switch (s){
-        case s&StateOrder.WAIT:
-            return "לא נסגר"
-        case s&StateOrder.CLOSED:
-            return "בהמתנה"
-        case s&StateOrder.CANCELED:
-            return "בוטל"
-        case s&StateOrder.DONE:
-            return "הושלם!"
-    }
+    if (s & StateOrder.WAIT) return "לא נסגר";
+    if (s & StateOrder.CLOSED) return "בהמתנה";
+    if (s & StateOrder.CANCELED) return "בוטל";
+    if (s & StateOrder.DONE) return "הושלם!";
+    return "לא ידוע";
 }
 
 

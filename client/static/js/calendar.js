@@ -1,6 +1,6 @@
 
-/** @type {{id:string, name:string,date:string,lat:number,lng:number,stat:number, address:string},{[]}} */
-var calendarCacheOrders = {}
+/** @type {Object.<string, Object>} */
+var calendarCacheOrders = {}; // Flat cache indexed by order key
 var mapClients = null;
 /** @type {object[]} */
 var markersClients = {}
@@ -8,7 +8,6 @@ var markerLayer = null;
 var calendar = null;
 let selectS = null
 let selectE = null
-let lastDateFetched = 0;
 
 
 function sleep(ms) {
@@ -16,19 +15,24 @@ function sleep(ms) {
 }
 
 function getOrdersCalendar(){
-    var s = document.getElementById("calendar-from").dataset.s;
-    var e = document.getElementById("calendar-to").dataset.e;
+    let s = document.getElementById("calendar-from").dataset.s;
+    let e = document.getElementById("calendar-to").dataset.e;
+    let start, end;
     if (!s||!e){
-        var [s, e] = getCurrentMonthRange()
+        [start, end] = getCurrentMonthRange();
     }
     else{
-        [s,e] = [new Date(s), new Date(e)]
+        start = new Date(s);
+        end = new Date(e);
     }
-    return calendarCacheOrders[lastDateFetched]
-        ?.filter(c => {
-            const d = new Date(c.date*1000)
-            return (c.stat&c_runtime.state_calendar_selected) && (d >= s && d <= e)
-        })||[]
+
+    if (start) start.setHours(0, 0, 0, 0);
+    if (end) end.setHours(0, 0, 0, 0);
+
+    return Object.values(calendarCacheOrders).filter(c => {
+        const d = new Date(c.date * 1000);
+        return (c.stat & c_runtime.state_calendar_selected) && (d >= start && d < end);
+    });
         
 }
 
@@ -86,52 +90,65 @@ function initialMapClients(){
 
  
 function resetMarkersClients(){
-    markerLayer.clearLayers()
+    markerLayer.clearLayers();
+    markersClients = {}; // Clear cache to prevent stale references
 
     getOrdersCalendar().forEach(c=>{
         const coordinates = Array.isArray(c.coordinates) ? c.coordinates : JSON.parse(c.coordinates);
         if (!coordinates){return}
-        marker = L.marker(coordinates)
-        .bindPopup(`
-            <div class="client-popup">
-                <div class="popup-header">
-                    <div class="popup-title">
-                        <div class="client-name">${c.fullname}</div>
-                        <div class="client-date">${c.date}</div>
+        const marker = L.marker(coordinates)
+        .bindPopup(
+                `
+            <div class="order-popup">
+                <div class="order-popup-header">
+                    <div class="client-name">${c.fullname}</div>
+                    <div class="client-date">
+                        ${dateFloatToYMD(c.date)} | ${dateFloatToHour(c.date)}
                     </div>
                 </div>
-                <div class="popup-body">
-                    <div class="popup-row">
-                        <span class="popup-icon">📍</span>
-                        <span>${c.address}</span>
-                    </div>
+
+                <div class="order-popup-body">
+                    <div>${c.address}</div>
+                    <div>${c.price || 0}₪</div>
                 </div>
-                <div class="popup-actions">
-                    <button onclick="openClient(${c.id})">פתח לקוח</button>
+
+                <div class="order-popup-actions">
+                    <button onclick="openClientDashbaord('${c.client_id}', '${c.order_id}',true,true)">
+                        פרטי ההזמנה
+                    </button>
                 </div>
             </div>
-            `,{
-                className:"cool-popup",
-                maxWidth:260
-            }).addTo(markerLayer)
+            `,
+            {
+                className: "custom-popup",
+                closeButton: false,
+                maxWidth: 200
+            }
+            ).addTo(markerLayer);
             
 
-    markersClients[c.id] = marker
+    markersClients[c.key] = marker
     })
     
     
 }
 
 function resetCalendarEvents(){
-    calendar.removeAllEvents()
-    calendar.addEventSource(getOrdersCalendar().map(c=>({
-            title:c.fullname,
-            start:c.date,
-            id:c.id,
-            backgroundColor:getColorByStat(c.stat),
-            borderColor:getColorByStat(c.stat)
-        })
-    ))
+    // Remove existing client events while preserving UI-only events like 'selected-range'
+    calendar.getEvents().forEach(event => {
+        if (event.id !== 'selected-range') event.remove();
+    });
+
+    // Map and add individual events to ensure compatibility with selection highlights
+    getOrdersCalendar().forEach(c => {
+        calendar.addEvent({
+            title: c.fullname,
+            start: new Date(c.date * 1000), // FullCalendar requires a Date object, not seconds
+            id: c.key,
+            backgroundColor: getColorByStat(c.stat),
+            borderColor: getColorByStat(c.stat)
+        });
+    });
 }
 
 function initialCalendarClients(initial = false){
@@ -144,9 +161,8 @@ function initialCalendarClients(initial = false){
         longPressDelay: 100,
         selectLongPressDelay: 100,
         select: function(info){
-            fetchClientsCalendar()
-            updateFromTo(new Date(info.startStr), new Date(info.endStr))
-            onSelectRangeCalendar()
+            updateFromTo(info.start, info.end)
+            fetchClientsCalendar(); // This triggers onSelectRangeCalendar internally
             calendar.getEventById("selected-range")?.remove();
             calendar.addEvent({
                 id: "selected-range",
@@ -158,25 +174,25 @@ function initialCalendarClients(initial = false){
 
         initialView: "dayGridMonth",
         headerToolbar:{
-        start:'title',
-        left: 'prev,next',      
-        center: 'title',   
-        right: 'dayGridMonth,timeGridWeek,dayGridDay' 
+            left: 'prev,next today',      
+            center: 'title',   
+            right: 'dayGridMonth,timeGridWeek,dayGridDay' 
         },
         buttonText: {
-            day: 'היום',
-            month: 'החודש',
-            week: 'השבוע',
+            today: 'היום',
+            month: 'חודש',
+            week: 'שבוע',
+            day: 'יום'
         },
         datesSet: function(info){
-            updateFromTo(...getMonthRange(info.start))
+            updateFromTo(info.start, info.end);
             fetchClientsCalendar();
         },
         dayMaxEvents: 2,
         events: getOrdersCalendar().map(c=>({
-            title:c.name,
-            start:c.date,
-            id:c.id,
+            title:c.fullname,
+            start: new Date(c.date * 1000),
+            id:c.key,
             backgroundColor:getColorByStat(c.stat),
             borderColor:getColorByStat(c.stat)
         })),
@@ -185,7 +201,7 @@ function initialCalendarClients(initial = false){
             const id = info.event.id
             const marker = markersClients[id]
             if (marker==undefined)return
-            mapClients.setView(marker.getLatLng(), 9)
+            mapClients.setView(marker.getLatLng(), 16) // Street level zoom
             marker.openPopup()
 
         }
@@ -197,12 +213,17 @@ function initialCalendarClients(initial = false){
 function updateFromTo(s, e){
     const dateFrom = document.getElementById("calendar-from")
     const dateTo = document.getElementById("calendar-to")
-    fs =formatDateCalendar(s)
-    fe = formatDateCalendar(e)
+    const fs = formatDateCalendar(s)
+    const fe = formatDateCalendar(e)
+    
+    // Calculate inclusive end for display purposes
+    const displayEnd = new Date(e.getTime() - 1);
+    const feDisplay = formatDateCalendar(displayEnd);
+
     dateFrom.dataset.s = fs
-    dateTo.dataset.e = fe
-    dateFrom.textContent = fs.replace("-", ".").replace("-", ".")
-    dateTo.textContent = fe.replace("-", ".").replace("-", ".")
+    dateTo.dataset.e = fe // Store exclusive end for logic
+    dateFrom.textContent = fs.replace(/-/g, ".")
+    dateTo.textContent = feDisplay.replace(/-/g, ".")
     selectS = s
     selectE = e
 }
@@ -215,8 +236,8 @@ function onSelectRangeCalendar(){
 
 function selectCalendarState(t){
     updateMenuActionCalendarSorted(t, t.dataset.s)
-    onSelectRangeCalendar()
     calendar.select(selectS, selectE)
+    onSelectRangeCalendar()
 }
 
 function updateMenuActionCalendarSorted(t, state, cache = true){
@@ -238,17 +259,16 @@ async function fetchClientsCalendar(){
         df:selectS.getTime()/1000,
         dt:selectE.getTime()/1000
     }
-    const newDateToFetch = data.df
-    if (lastDateFetched in calendarCacheOrders){
-        lastDateFetched = newDateToFetch;
-        return
-    }
+    
     await apiPost(ApiRoute.api, data).then( res =>{
-        if (!res.success){
-            return;
+        if (!res.success) {
+            showToast(res.notice, ToastStat.ERROR)
+            return
         }
-        lastDateFetched = newDateToFetch
-        calendarCacheOrders[lastDateFetched] = res.data;
+         // Merge new data into the flat cache
+            res.data.forEach(order => {
+                calendarCacheOrders[order.key] = order;
+            });
     })
     onSelectRangeCalendar();
 }
