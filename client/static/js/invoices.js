@@ -1,10 +1,7 @@
 
 
-
-
-
-async function createImgInvoice(template, img){
-    await html2canvas(template, { scale: 2, backgroundColor: '#fff'}).then(canvas => {
+async function createImgInvoice(template, img, scale = 2){
+    await html2canvas(template, { scale: scale, backgroundColor: '#fff'}).then(canvas => {
         img.src = canvas.toDataURL('image/png');
     });
 }
@@ -16,23 +13,28 @@ function closeViewInvoice(){
 } 
 
 
-
-async function createInvoice(client_id = c_runtime.currentClientIdView, order_id = c_runtime.currentOrderIdView){
+async function createInvoice(client_id = c_runtime.currentClientIdView, order_id = c_runtime.currentOrderIdView, dany){
     if (isCantExitEditOrder()){
         if (!askAboutExitEditOrder()){return}
 
     }
-    const data = {action:ApiCall.invoice_create, cid:client_id, oid:order_id, stat:InvoiceStatType.PAID,pt:PaymentInvoice.BANK_TRANSFER
+    const data = {action:ApiCall.invoice_create, cid:client_id, oid:order_id, stat:InvoiceStatType.PAID,
+        is_c:false, cf:0,...dany
     }
     const toast = showToast(message.createInvoice)
-    const res = await apiPost(ApiRoute.api, data);
-    if (res.success) {
-        await fetchInvoice();
-        showToast('נוצר בהצלחה', ToastStat.DONE, toast);
-    } else {
-        showToast(res.notice, ToastStat.ERROR, toast);
-    }
-    return res;
+    return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
+        async res =>{
+            if (!res.success){
+                showToast(res.notice, ToastStat.ERROR, toast);
+                return
+            }
+            await fetchInvoice();
+            showToast('נוצר בהצלחה',ToastStat.DONE, toast);
+            reslove();
+
+
+        }
+    ))
 }
 
 async function deleteReceipt(receipt_id = c_runtime.currentInvoiceIdView, callback){
@@ -62,14 +64,17 @@ async function deleteReceipt(receipt_id = c_runtime.currentInvoiceIdView, callba
 }
 
 async function fetchInvoice(){
-    const res = await apiPost(ApiRoute.api, { action: ApiCall.invoice_list });
-    if (res.success) {
-        c_runtime.invoices = res.invoices;
-        loadListInvoicesHtml();
-    } else {
-        showToast(message.notice, ToastStat.ERROR);
-    }
-    return res;
+    return await new Promise((reslove) => apiPost(ApiRoute.api, {action:ApiCall.invoice_list}).then(
+        res => {
+            if (!res.success){
+                showToast(message.notice, ToastStat.ERROR)
+                return
+            }
+            c_runtime.invoices = res.invoices;
+            loadListInvoicesHtml()
+            reslove()
+        }
+    ))
 }
 
 function loadListInvoicesHtml(){
@@ -99,11 +104,17 @@ function createInvoiceItem(invoice, actions = true, callback){
         div.onclick = ()=> callback()
     }
 
-    div.innerHTML = `
+    let html = '';
+    if (actions && c_runtime.isInvoiceSelectMode) {
+        html += `
+            <div class="invoice-selection" style="padding: 0 10px;">
+                <input type="checkbox" class="invoice-checkbox" value="${invoice.receipt_id}">
+            </div>`;
+    }
+    html += `
         <div class="avatar client-state-${invoice.stat}">
         ${invoice.key}
         </div>
-        
         <div class="content">
         <div class="in-content">
             <div class="top">
@@ -119,23 +130,27 @@ function createInvoiceItem(invoice, actions = true, callback){
             </div>
         </div>
         </div>
-        `
+    `;
+
     if (actions){
-        const clientActions = `
+        html += `
         <div class="client-footer">
         <i class="fa-solid fa-eye no-mobile"></i>
         <i class="fa-solid fa-share-from-square no-mobile"></i>
         <i class="fa-solid fa-bars menu-client"></i>
         </div>
         `;
-        div.innerHTML += clientActions;
-        
-        const icons = div.querySelectorAll(".client-footer i");
-
-        // icons[0].onclick = () => viewClientOrder(client.client_id);
-        // icons[1].onclick = () => shareOrderToClientAsPhoto(client.client_id);
-        icons[2].onclick = (e) => openMenuClient(e.target, client.client_id);
     }
+
+    div.innerHTML = html;
+
+    if (actions) {
+        const icons = div.querySelectorAll(".client-footer i");
+        icons[0].onclick = () => viewInvoiceDetails(invoice.receipt_id);
+        icons[1].onclick = () => downloadInvoiceAsImage(invoice.receipt_id);
+        icons[2].onclick = (e) => openMenuClient(e.target, order.client_id, order.order_id);
+    }
+
     return div;
 }
 
@@ -143,3 +158,15 @@ document.addEventListener("DOMContentLoaded", function (){
     fetchInvoice();
     
 })
+
+
+
+
+
+async function viewInvoiceDetails(iid) {
+    const res = await apiPost(ApiRoute.api, { action: ApiCall.invoice_view, iid: iid });
+    if (res.success) {
+        document.getElementById("invoice-template").innerHTML = res.template;
+        document.getElementById("viewInvoice").classList.add("show");
+    }
+}

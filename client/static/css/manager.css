@@ -301,12 +301,34 @@
     justify-content: center;
     column-gap: 10px;
     align-items: center;
-    padding: 5px 10px;
+    border-radius: 5px;
+
+    cursor: pointer;
 
 }
 .action-search > i{
     font-size: 1.1rem;
+    padding: 10px;
+    border-radius: 50%;
+    box-shadow: 0 0 11px #ebebeb;
+    background: #ebebeb;
+    transition: 300ms;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    text-align: center;
+    border: 1;
 }
+.action-search > i, .action-search > input{
+    box-shadow: 0 0 11px #ebebeb;
+    padding: 10px;
+}
+.action-search > i:hover,
+.action-search > i:active{
+    outline: 1px solid #adadad;
+    transform: scale(1.09);
+}
+
 .ac1, .ac2, .ac3, .ac4, .sc1, .sc2, .sc4{
     word-break: keep-all;
 }

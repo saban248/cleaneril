@@ -10,6 +10,7 @@ const c_runtime = {
     showClientsFrom:new Date().getFullYear()-1,
     invoices:[],
     clients:[],
+    isInvoiceSelectMode: false,
     currentClientIdView:null,
     currentOrderIdView:null,
     currentInvoiceIdView:null,

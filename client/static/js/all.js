@@ -246,7 +246,21 @@ document.addEventListener("DOMContentLoaded", async function (){
 })
 
 
+// GENERAL SEARCH
 
-// calendar
-function initialCalendar(){}
+function closeSearchInput(id, t){
+    const input = document.getElementById(id)
+    input.classList.remove("show")
+    const [ix, io] = [t.parentElement.children[0], t.parentElement.children[1]]
+    ix.style.display = "none"
+    io.style.display = "block"
 
+    input.value = '';
+}
+function openSearchInput(id, t){
+    const input = document.getElementById(id)
+    input.classList.add("show")
+    const [ix, io] = [t.parentElement.children[0], t.parentElement.children[1]]
+    ix.style.display = "block"
+    io.style.display = "none"
+}

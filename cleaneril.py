@@ -8,6 +8,7 @@ from api.jfunc import *
 
 
 
+
 if __name__ == "__main__":
     with cleaneril.app_context():
         cleaneril_db.create_all()

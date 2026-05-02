@@ -146,27 +146,13 @@ async function publishCleanOrder(order_id, state){
 
 }
 
+
 function closeSearchClients(t){
-    const input = document.getElementById("searchClient")
-    input.classList.remove("show")
-    const [ix, io] = [t.parentElement.children[0], t.parentElement.children[1]]
-    ix.style.display = "none"
-    io.style.display = "block"
-
-    input.value = '';
+    closeSearchInput("searchClient", t)
     doSearchClientsLocal()
-}
-function openSearchClients(t){
-    const input = document.getElementById("searchClient")
-    input.classList.add("show")
-    const [ix, io] = [t.parentElement.children[0], t.parentElement.children[1]]
-    ix.style.display = "block"
-    io.style.display = "none"
-
 }
 
 function doSearchClientsLocal(){
-    
     const input = document.getElementById("searchClient")
     const value = input.value.toLowerCase();
     for (const order of c_runtime.orders){
@@ -174,7 +160,8 @@ function doSearchClientsLocal(){
         const phone = cleanPhoneJustNumbers(order.phone).includes(value);
         const name = order.fullname.toLowerCase().includes(value);
         const date = dateFloatToYMD(order.date).includes(value);
-        if ((value == ''||phone||name||date) && c_runtime.state_client_selected&order.stat){
+        const cid = order.client_id.toLowerCase() == value;
+        if ((value == ''||phone||name||date||cid) && c_runtime.state_client_selected&order.stat){
             document.getElementById(order_id).classList.remove("hide")
         }
         else{

@@ -3,7 +3,8 @@ const c_clients = {
     currentCard:clientCardsView.ORDER,
     order_edit:false,
     new_order:false,
-    client_view:false
+    client_view:false,
+    receipt_edit:false
 }
 
 function isCantExitEditOrder(){
@@ -185,7 +186,7 @@ async function fetchClientOrderInvoice(iid){
     ))
 }
 
-async function createClientOrderInvoiceImg(iid){
+async function createClientOrderInvoiceImg(iid, scale = 2){
     if (iid == undefined || c_runtime.blockRenderReceiptImg)return
     c_runtime.blockRenderReceiptImg = true;
     await fetchClientOrderInvoice(iid)
@@ -194,7 +195,7 @@ async function createClientOrderInvoiceImg(iid){
     const icon = document.getElementById("before-load-receipt");
     icon.style.display = 'none'
     template.style.display = 'block'
-    await createImgInvoice(template, img)
+    await createImgInvoice(template, img, scale)
     img.style.display = 'block'
     template.style.display = 'none'
     c_runtime.blockRenderReceiptImg = false;
@@ -300,6 +301,8 @@ function switchMenuActionClientCard(){
     const adoc = document.getElementById("adoc")
     // delete receipt order
     const adro = document.getElementById("adro")
+    // cancel edit receipt order
+    const acero = document.getElementById("acero")
     const s = (element) => element.classList.remove("hide")||element.classList.add("show")
     const h = (element) => element.classList.remove("show")||element.classList.add("hide")
     if (c_clients.new_order){
@@ -316,22 +319,32 @@ function switchMenuActionClientCard(){
             h(asrp)
             h(aero)
             h(adro)
+            h(acero)
             break
         case clientCardsView.RECEIPT:
             h(acoi)
             h(asop)
             h(aeeo)
+            
             h(adoc)
             h(adco)
-            s(asrp)
-            s(aero)
-            s(adro)
+            if (c_clients.receipt_edit){
+                h(aero)
+                h(adro)
+                h(asrp)
+                s(acero)
+            }else{
+                s(aero)
+                s(adro)
+                s(asrp)
+                h(acero)
+            }
             break
     }
 }
 
  
-function createListClientReceipts(){
+async function createListClientReceipts(){
     const parent = document.getElementById("listClientReceipts");
     const currentClient = c_runtime.orders.find(c=> c.client_id == c_runtime.currentClientIdView);
     if (!c_runtime.invoices || !currentClient){
@@ -347,8 +360,8 @@ function createListClientReceipts(){
     parent.replaceChildren();
     for (let receipt of c_runtime.invoices.filter(r => r.client_id == c_runtime.currentClientIdView)){
         const element = createInvoiceItem(receipt,false, async ()=>{
-            await showClientReceipt(receipt.receipt_id)
-            createListClientReceipts()
+           showClientReceipt(receipt.receipt_id);
+           createListClientReceipts()
         }
         )
         if (!element){continue}
@@ -409,15 +422,15 @@ function hideClientOrders(){
 }
 
 async function showClientReceipt(iid = c_runtime.currentInvoiceIdView, fetch = true){
-    if (fetch){
-        await createClientOrderInvoiceImg(iid)
-    }
     const invoice = document.getElementById("the-client-invoice");
     invoice.classList.add("show")
     if (IS_MOBILE){
         hideClientReceipts()
     }
     c_clients.enterCard = true;
+    if (fetch){
+        setTimeout(() => createClientOrderInvoiceImg(iid, 2), 500)
+    }
     switchClientCardAction()
 }
 function hideClientReceipt(){
@@ -445,6 +458,29 @@ function hideClientReceipts(){
     parent?.classList.remove("show")
 
 }
+
+function editReceiptOrder(){
+    const rid = c_runtime.currentInvoiceIdView
+    const timg = document.getElementById("receiptImgTemplate");
+    const tedit = document.getElementById("receiptEditTemplate");
+    timg.classList.remove("show");
+    tedit.classList.add("show")
+
+    c_clients.receipt_edit = true;
+    switchMenuActionClientCard()
+}
+
+function closeEditReceiptOrder(){
+    const timg = document.getElementById("receiptImgTemplate");
+    const tedit = document.getElementById("receiptEditTemplate");
+    timg.classList.add("show");
+    tedit.classList.remove("show")
+
+    c_clients.receipt_edit = false;
+    switchMenuActionClientCard()
+}
+
+
 
 /** ACTIONS */
 
@@ -547,8 +583,6 @@ async function createOrder(){
     await openClientDashbaord(c_runtime.currentClientIdView, null, false)
     await fetchClientOrder(null, ApiCall.order_new)
     showClientOrder(c_runtime.currentOrderIdView, false)
-    
-
 }
 
 

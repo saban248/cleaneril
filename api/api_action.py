@@ -13,7 +13,8 @@ from api.databases.clients import ClientProfile
 from api.databases.company import ApiCompany
 from api.databases.crads import ApiCards, Cards
 from api.databases.employee import ApiEmployee, Employee
-from api.databases.general import get_columns_no_instance
+from api.databases.general import get_columns_no_instance, get_column_no_instance
+from api.databases.invoice import Receipt
 from api.databases.manager import ApiManager, on_register_create_company
 from api.databases.orders import CleanOrder
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril
@@ -132,7 +133,7 @@ def get_api_action(session, request, **breq) -> dict:
 
         case ApiCall.invoice_create:
             inv = cil_struct.Invoice().build(**breq)
-            code = invoice.create_receipt(manager_id,inv.cid,inv.oid,inv.stat, inv.pt)
+            code = invoice.create_receipt(manager_id,inv.cid,inv.oid,inv.stat, inv.is_c, inv.cf, inv.force)
             return SJson.auto_code(code)
 
         case ApiCall.invoice_list:
@@ -258,7 +259,7 @@ def get_worker_template(manager, worker_id:str, edit:bool = True, **_):
 
 def get_invoice_template(manager_id:str, receipt):
     company = ApiCompany.get_companies(manager_id=manager_id).first()
-    order = orders.get_clean_orders(manager_id=manager_id, order_id=receipt.order_id).first()
+    order = CleanOrder(**receipt.data)
     return render_template(Pages.invoice.f_dashboard, company=company, invoice=receipt, order=order)
 
 def api_upload_file(session, data:dict):

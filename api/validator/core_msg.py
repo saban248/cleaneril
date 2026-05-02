@@ -16,7 +16,11 @@ class BaseServerMsg:
         self.load_xml_server_msg()
 
     def load_xml_server_msg(self):
-        tree = ET.parse(ServerConfig.SERVER_MSG_PATH)
+        try:
+            tree = ET.parse(ServerConfig.SERVER_MSG_PATH)
+        except FileNotFoundError as e:
+            print(e)
+            return
         root = tree.getroot()
         for m in root.findall("msg"):
             code = int(m.get("code"))

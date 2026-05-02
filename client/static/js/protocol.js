@@ -99,6 +99,24 @@ function getPaymentStatText(pt){
 }
 
 
+const InvoiceAboutDeleted = {
+    CANCELED:1<<0,
+    REFUND:1<<1,
+    MISSINFO:1<<2
+}
+
+function getInvoiceAboutDeletedText(flag){
+    switch (flag){
+        case InvoiceAboutDeleted.CANCELED:
+            return "עיסקה בוטלה"
+         case InvoiceAboutDeleted.REFUND:
+            return "החזר כספי"
+         case InvoiceAboutDeleted.MISSINFO:
+            return "פרטים קבלה שגויים" 
+    }
+    return "לא צויין"
+}
+
 function getSocialMedia(social) {
     const result = [];
 

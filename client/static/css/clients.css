@@ -345,10 +345,19 @@
     height: auto;
     overflow: hidden;
     background: #f5f5f5; 
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
     flex:1;
+}
+.receipt-img.show{
+    display: flex;
+}
+.edit-receipt-order{
+    display: none;
+}
+.edit-receipt-order.show{
+    display: block;
 }
 
 .img-invoice {

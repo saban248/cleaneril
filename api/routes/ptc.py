@@ -41,9 +41,17 @@ class PaymentInvoice(IntFlag):
     CHECK         = 1<<2
     OTHER         = 1<<3
 
+
 class InvoiceStatType(IntFlag):
     DRAFT           = 1<<0
     PAID            = 1<<1
+
+
+class InvoiceAboutDeleted(IntFlag):
+    CANCELED        = 1<<0
+    REFUND          = 1<<1
+    MISSINFO        = 1<<2
+
 
 def get_calender_client(cc:int):
     __day__ = 3600 * 24

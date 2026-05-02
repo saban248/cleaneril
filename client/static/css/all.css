@@ -229,3 +229,20 @@
   background: #e2e2e2;
   
 }
+
+.btn-icon{
+  padding: 10px;
+  border-radius: 50%;
+  box-shadow: 0 0 11px #ebebeb;
+  background: #ebebeb;
+  transition: 300ms;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  text-align: center;
+}
+.btn-icon:hover,
+.btn-icon:active{
+    outline: 1px solid #adadad;
+    transform: scale(1.09);
+}

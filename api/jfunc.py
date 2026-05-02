@@ -6,7 +6,8 @@ from zoneinfo import ZoneInfo
 
 from api.databases.employee import Employee
 from api.databases.ptc import StateOrder, cleaneril, ManagerPermissions
-from api.routes.ptc import PaymentInvoice
+from api.routes.cil_struct import Invoice
+from api.routes.ptc import PaymentInvoice, InvoiceAboutDeleted
 
 
 # jinja functions
@@ -79,7 +80,7 @@ def payment_type_text(flag):
         case PaymentInvoice.CASH:
             return "מזומן"
         case PaymentInvoice.BANK_TRANSFER:
-            return "העברה"
+            return "העברה בנקאית"
         case PaymentInvoice.CHECK:
             return "צ'יק"
         case PaymentInvoice.OTHER:
@@ -95,6 +96,18 @@ def vat_of_price(price):
 def zfill_number(number):
     return str(number).zfill(4)
 
+
+@cleaneril.template_filter("iad")
+def invoice_about_deleted(flag):
+    match flag:
+        case InvoiceAboutDeleted.CANCELED:
+            return "עיסקה בוטלה"
+        case InvoiceAboutDeleted.REFUND:
+            return "החזר כספי"
+        case InvoiceAboutDeleted.MISSINFO:
+            return "פרטים קבלה שגויים"
+
+    return 'לא צויין'
 
 
 def clean_phone_just_numbers(phone):

@@ -74,7 +74,10 @@ def upgrade_from_clients_to_clean_order(manager_id):
     db.row_factory = sqlite3.Row
     cur = db.cursor()
 
-    cur.execute("SELECT * FROM clients")
+    try:
+        cur.execute("SELECT * FROM clients")
+    except sqlite3.OperationalError:
+        return
     rows = cur.fetchall()
     for c in rows:
         old_order_id = c['client_id']

@@ -25,9 +25,9 @@
                 בוטל
                 <span class="count-stat"></span>
             </div>
-            <div class="action-client action-search">
+            <div class="action-search">
                 <i class="fa-solid fa-circle-xmark" style="display: none;" onclick="closeSearchClients(this)"></i>
-                <i class="fa-solid fa-magnifying-glass" onclick="openSearchClients(this)"></i>
+                <i class="fa-solid fa-magnifying-glass" onclick="openSearchInput('searchClient', this)"></i>
                 <input class="c-input-fn seacrh-input" type="text" placeholder="שם, פאלפון, תאריך" id="searchClient" oninput="doSearchClientsLocal(this)">
             </div>
         </div>
@@ -61,6 +61,7 @@
                     <i class="fa-solid fa-clone" id="adco"></i>
                     <i class="fa-solid fa-trash-can" id="adoc" onclick="deleteOrderFromDashhbaord()"></i>
                     <i class="fa-solid fa-trash-can" id="adro" onclick="deleteReceiptFromDashbaord()"></i>
+                    <i class="fa-solid fa-xmark" id="acero" onclick="closeEditReceiptOrder()"></i>
                 </div>
             </div>
         </div>
