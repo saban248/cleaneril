@@ -4,7 +4,8 @@
     <div class="client-h-title">
         <img src="/static/images/logo/{{company.logo_path}}">
         <div class="dcompany">
-            <span id="dc1">הזמנת ניקוי ריפודים</span>
+            <span id="dc1">{{ order.order_type | tcot}}
+            </span>
             <div class="cd-calls">
                 <div><i class="fa-solid fa-phone-flip" ></i>
                     <span>{{company.company_phone}}</span>
@@ -112,7 +113,8 @@
                     <span class="price-all {{order.off}}">{{order.price-order.off_price}}<span style="color: #6e6e6e;font-size: 1.1rem;">₪</span></span>
                 {%endif%}
                 <span class="price-all {% if order.off%}price-all-off{%endif%}">{{order.price}}<span id='spnprice' style="color: #6e6e6e;font-size: 1.1rem;">₪</span></span>
-                <span class="p-vat">כולל מע"מ</span> 
+                <!-- <span class="p-vat">כולל מע"מ</span>  -->
+
             {%else%}
                 <div class="off-price">
                     <span>מחיר סופי (לפני הנחה / הוצאות)</span>
@@ -179,15 +181,9 @@
 </div>
 <div class="client-footer {% if not editor %} disable {%endif%}">
     <div class="card-action-editor" id="beforeProgressDone">
-        <i class="fa-solid fa-user-xmark ctype-4" onclick="publishCleanOrder('{{order.order_id}}', StateOrder.CANCELED)"></i>
-        <i class="fa-solid fa-person-circle-question ctype-1" onclick="publishCleanOrder('{{order.order_id}}', StateOrder.WAIT)"></i>
-        <i class="fa-solid fa-user-clock ctype-2" onclick="publishCleanOrder('{{order.order_id}}', StateOrder.CLOSED)"></i>
-        <i class="fa-solid fa-user-check ctype-8" onclick="publishCleanOrder('{{order.order_id}}', StateOrder.DONE)"></i>
+
     </div>
     <div class="card-action-editor-saved" id="afterProgressDone">
-        <i class="fa-solid fa-share-from-square" onclick="shareOrderToClientAsLink('{{order.order_id}}')">
-        </i>
-        <i class="fa-solid fa-image" onclick="shareOrderToClientAsPhoto('{{order.order_id}}')"></i>
         <i class="fa-solid fa-eye" onclick="showClientOrder('{{order.order_id}}')"></i>
     </div>
 </div>

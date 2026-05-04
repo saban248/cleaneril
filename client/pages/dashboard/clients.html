@@ -1,7 +1,7 @@
 <div class="dashboard-page" id="CLIENTS">
     <div class="page-head">
         <h2>הזמנות - ניהול  סגירות</h2>
-        <i class="fa-solid fa-circle-plus create-card" onclick="createOrder()"></i>
+        <i class="fa-solid fa-circle-plus create-card" onclick="initSelectOrderTypeToCreate()"></i>
     </div>
 
     <div class="page-body">
@@ -46,9 +46,9 @@
             <i class="fa-solid fa-circle-xmark" onclick="closeClientDashboard()"></i>
             <div class="main-client-dashbaord-card-action">
                 <div class="client-card-action" id="clientCardAViews">
-                    <i class="fa-solid fa-file-invoice" onclick="switchViewClientDashboard(clientCardsView.ORDER)"></i>
-                    <i class="fa-solid fa-receipt" onclick="switchViewClientDashboard(clientCardsView.RECEIPT)"></i>
-                    <i class="fa-solid fa-chart-column"></i>
+                    <i class="fa-solid fa-file-invoice" onclick="switchViewClientDashboard(clientCardsView.ORDER)" id="cdv1"></i>
+                    <i class="fa-solid fa-receipt" onclick="switchViewClientDashboard(clientCardsView.RECEIPT)" id="cdv2"></i>
+                    <i class="fa-solid fa-chart-column" id="cdv4"></i>
                 </div>
                 <div class="client-card-action show" id="actionIntoCard">
                     <i class="fa-solid fa-circle-chevron-right" onclick="switchViewClientDashboard(null, true, true)" id="arfc"></i>
@@ -57,19 +57,19 @@
                     <i class="fa-solid fa-share-from-square" onclick="shareOrderToClientAsPhoto()" id="asop"></i>
                     <i class="fa-solid fa-pencil" onclick="editExistOrder()" id="aeeo"></i>
                     <i class="fa-solid fa-pencil" onclick="editReceiptOrder()" id="aero"></i>
-                    <i class="fa-solid fa-file-circle-plus" id="acoi" onclick="createInvoice()"></i>
+                    <i class="fa-solid fa-file-circle-plus" id="acoi" onclick="createReceiptFromDashbaord()"></i>
                     <i class="fa-solid fa-clone" id="adco"></i>
                     <i class="fa-solid fa-trash-can" id="adoc" onclick="deleteOrderFromDashhbaord()"></i>
                     <i class="fa-solid fa-trash-can" id="adro" onclick="deleteReceiptFromDashbaord()"></i>
                     <i class="fa-solid fa-xmark" id="acero" onclick="closeEditReceiptOrder()"></i>
+                    <i class="fa-solid fa-user-xmark ctype-4" onclick="publisCleanOrderFromDashboard(StateOrder.CANCELED)" id="apcocan"></i>
+                    <i class="fa-solid fa-person-circle-question ctype-1" onclick="publisCleanOrderFromDashboard(StateOrder.WAIT)" id="apcow"></i>
+                    <i class="fa-solid fa-user-clock ctype-2" onclick="publisCleanOrderFromDashboard(StateOrder.CLOSED)" id="apcoc"></i>
+                    <i class="fa-solid fa-user-check ctype-8" onclick="publisCleanOrderFromDashboard(StateOrder.DONE)" id="apcod"></i>
                 </div>
             </div>
         </div>
         <div class="ce-body" id="client-template-dashboard">
-            <h1>
-                <i class="fa-solid fa-circle-notch fa-spin fa-spin"></i>
-                building..
-            </h1>
         </div>
     </div>
     

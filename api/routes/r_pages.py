@@ -4,13 +4,12 @@ import os
 
 import markdown
 from flask import session, request, jsonify, render_template, redirect, url_for, abort
-
+import api.databases.company as companies
 from api.databases.crads import ApiCards
 from api.databases.employee import ApiEmployee
 from api.databases.manager import ApiManager
 from api.databases.orders import CountOfOrderByStat
 from api.databases.ptc import cleaneril, ServerConfig
-from api.databases.company import ApiCompany
 from api.ptc import special_things, SJson, ShortSession, get_dictionary_http
 from api.routes.ptc import RoutePages, Pages
 from api.routes import cil_struct
@@ -42,7 +41,7 @@ def dashboard():
     dash = cil_struct.Dashboard().build(**breq)
     manager = ShortSession.get_admin_details(session)
     manager_id = manager["manager_id"]
-    company = ApiCompany.get_companies(manager_id=manager_id).first()
+    company = companies.get_companies(manager_id=manager_id).first()
     workers = ApiEmployee.get_employees(manager_id=manager_id).all()
     # count_stat_orders
     cso = CountOfOrderByStat()

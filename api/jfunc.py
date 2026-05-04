@@ -7,7 +7,7 @@ from zoneinfo import ZoneInfo
 from api.databases.employee import Employee
 from api.databases.ptc import StateOrder, cleaneril, ManagerPermissions
 from api.routes.cil_struct import Invoice
-from api.routes.ptc import PaymentInvoice, InvoiceAboutDeleted
+from api.routes.ptc import PaymentInvoice, InvoiceAboutDeleted, CleanOrderType
 
 
 # jinja functions
@@ -108,6 +108,18 @@ def invoice_about_deleted(flag):
             return "פרטים קבלה שגויים"
 
     return 'לא צויין'
+
+@cleaneril.template_filter("tcot")
+def title_clean_order_type(flag):
+    match flag:
+        case CleanOrderType.UPHOLSTERY:
+            return "הזמנת ניקוי ריפודים"
+        case CleanOrderType.AIR_CONDITIONER:
+            return "הזמנת ניקוי מזגנים"
+        case CleanOrderType.GENERAL:
+            return "הזמנת ניקוי כללי"
+
+    return title_clean_order_type(CleanOrderType.GENERAL)
 
 
 def clean_phone_just_numbers(phone):

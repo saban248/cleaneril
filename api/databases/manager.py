@@ -1,6 +1,6 @@
 from typing import Union
 
-from api.databases.company import ApiCompany
+from api.databases import company
 from api.databases.ptc import cleaneril_db, ManagerPermissions
 from api.ptc import generate_hex
 from api.validator import core_msg, company as comp
@@ -55,7 +55,7 @@ def on_register_create_company(user:str, pwd:str) -> int:
     null = 'unknown'
     new = ApiManager.register(user, ManagerPermissions.ADMIN, pwd)
     if not new:return core_msg.ServerCode.Register.e_account_exist
-    ApiCompany.create_company(null,null,new.manager_id,False)
+    company.create_company(null,null,new.manager_id,False)
     return core_msg.ServerCode.success
 
 def new_manager_hb():
@@ -66,4 +66,4 @@ def new_manager_hb():
 
     new_manager = ApiManager.register(**manager)
     if not new_manager:return
-    ApiCompany.create_company("הברקה בדקה",new_manager.username, new_manager.manager_id, False)
+    company.create_company("הברקה בדקה",new_manager.username, new_manager.manager_id, False)

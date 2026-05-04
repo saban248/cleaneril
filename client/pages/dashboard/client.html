@@ -1,4 +1,15 @@
-<div class="client-card" id="the-client-card" data-ci="{{client.client_id}}"></div>
+<div class="client-card" id="the-client-card" data-ci="{{client.client_id}}">
+    <div class="type-clean-order" id="typeCleanOrder">
+        <div class="tco-header">
+            <i class="icon icon-64">
+                {% include "icon/order.svg" %}
+            </i>
+            <span>סוג הזמנה</span>
+        </div>
+        <div class="tco-body" id="tcoItems">
+        </div>
+    </div>
+</div>
 
 <div class="client-card" id="the-client-orders">
     <div class="client-orders-head">
@@ -24,7 +35,7 @@
         </i>
     </div>
     <div class="edit-receipt-order" id="receiptEditTemplate">
-        
+
     </div>
 </div>
 <div class="client-card" id="the-client-receipts">

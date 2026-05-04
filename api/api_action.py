@@ -7,10 +7,10 @@ from flask import render_template_string, render_template
 
 from api.data.ptc import AnalyticsData
 from api.databases import invoice
+import api.databases.company as companies
 from api.databases import orders, clients
 from api.databases.bridge import set_employee_to_client, on_create_order_create_client
 from api.databases.clients import ClientProfile
-from api.databases.company import ApiCompany
 from api.databases.crads import ApiCards, Cards
 from api.databases.employee import ApiEmployee, Employee
 from api.databases.general import get_columns_no_instance, get_column_no_instance
@@ -48,8 +48,10 @@ def get_api_action(session, request, **breq) -> dict:
             on_create_order_create_client(order)
             return SJson.auto_code(__success__)
         case ApiCall.order_new:
+            sleep(2)
             r_order = cil_struct.CleanOrder().build(**breq)
             order = orders.create_clean_order(manager_id,r_order.client_id, r_order)
+            print(r_order.ot, order.order_type)
             template = {"template":get_client_order_template(manager, order,True), "order_id":order.order_id}
             return SJson.auto_code(__success__, **template)
         case ApiCall.order_view:
@@ -85,7 +87,7 @@ def get_api_action(session, request, **breq) -> dict:
 
         case ApiCall.conf_company:
             config = cil_struct.Company().build(**breq)
-            code = ApiCompany.update_company_details(manager_id, config.c_name,config.c_owner, config.c_vat,
+            code = companies.update_company_details(manager_id, config.c_name,config.c_owner, config.c_vat,
                                               config.c_desc,config.c_phone, config.c_email, config.c_vat_code,
                                                       config.c_gpse)
             return SJson.auto_code(code)
@@ -216,7 +218,7 @@ def get_register_action(session, **breq):
                 return {"success":False}
             name = company.name(register.c_name)
             if name:return SJson.auto_code(name)
-            exist = ApiCompany.get_companies(company_name=register.c_name).first()
+            exist = companies.get_companies(company_name=register.c_name).first()
             if exist:return core_msg.ServerCode.Register.e_account_exist
             desc = company.description(register.c_desc)
             if desc:return SJson.auto_code(desc)
@@ -224,7 +226,7 @@ def get_register_action(session, **breq):
             if phone:return SJson.auto_code(phone)
             fullname = company.ownername(register.o_name)
             if fullname:return SJson.auto_code(fullname)
-            stat = ApiCompany.update_company_details(register.mid,register.c_name,None,None,
+            stat = companies.update_company_details(register.mid,register.c_name,None,None,
                                                      register.c_desc,register.c_phone, None)
             return SJson.auto_code(stat)
 
@@ -240,9 +242,9 @@ def get_card_edit_template(card_id:str, **_):
                        )
 
 def get_client_order_template(manager, order:CleanOrder, edit:bool = True, **_):
-    company = ApiCompany.get_companies(manager_id=manager["manager_id"]).first()
+    _company = companies.get_companies(manager_id=manager["manager_id"]).first()
     return render_template(f'{Pages.dashboard.path}order.html',
-                           editor=edit, order=order, manager=manager, company=company)
+                           editor=edit, order=order, manager=manager, company=_company)
 
 def get_client_template(manager_id:str, client_id:str):
     client: ClientProfile = clients.get_clients(manager_id=manager_id, client_id=client_id).first()
@@ -252,15 +254,15 @@ def get_client_template(manager_id:str, client_id:str):
 def get_worker_template(manager, worker_id:str, edit:bool = True, **_):
     manager_id = manager["manager_id"]
     worker:Employee = ApiEmployee.create_employee(worker_id, manager_id)
-    company = ApiCompany.get_companies(manager_id=manager_id).first()
+    _company = companies.get_companies(manager_id=manager_id).first()
     return render_template(f'{Pages.dashboard.path}worker.html',
-                           editor=edit, worker=worker, manager=manager, company=company)
+                           editor=edit, worker=worker, manager=manager, company=_company)
 
 
 def get_invoice_template(manager_id:str, receipt):
-    company = ApiCompany.get_companies(manager_id=manager_id).first()
+    _company = companies.get_companies(manager_id=manager_id).first()
     order = CleanOrder(**receipt.data)
-    return render_template(Pages.invoice.f_dashboard, company=company, invoice=receipt, order=order)
+    return render_template(Pages.invoice.f_dashboard, company=_company, invoice=receipt, order=order)
 
 def api_upload_file(session, data:dict):
     flag = int(data.get("action", -1))
@@ -289,7 +291,7 @@ def api_upload_file(session, data:dict):
             with open(fullpath, "wb") as f:
                 f.write(image_bytes)
 
-            ApiCompany.change_logo(manager_id, name)
+            companies.change_logo(manager_id, name)
 
 
     return SJson.auto_code(core_msg.ServerCode.success)

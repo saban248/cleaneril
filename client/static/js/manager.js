@@ -54,6 +54,10 @@ function get_order_by_order_id(oid){
     return c_runtime.orders.find(o => o.order_id == oid)
 }
 
+function get_receipt_by_order_id(oid){
+    return c_runtime.invoices.find(r => r.order_id == oid && !r.is_credit)
+}
+
 function doLogin(t){
     onApiCall(t)
     const username = document.getElementById('username');

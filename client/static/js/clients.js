@@ -79,6 +79,13 @@ function onPublishClientHideProgress(){
 
 async function publishCleanOrder(order_id, state){
     if (c_runtime.blockPublishClient)return;
+    if (!order_id){
+        order_id = c_runtime.currentOrderIdView
+        if (!order_id){
+            showToast(message.EneedRefresh, ToastStat.ERROR);
+            return
+        }
+    }
     c_runtime.blockPublishClient =true;
     const fullname = document.getElementById('fullname').value;
     const date = document.getElementById('client-date').value;
@@ -126,7 +133,7 @@ async function publishCleanOrder(order_id, state){
         pt:pay_type,pn:pay_notes,ot:order_type
     }
     const toast = showToast("מעבד...");
-    apiPost(ApiRoute.api,data).then(
+    return await new Promise((resolve) => apiPost(ApiRoute.api,data).then(
         async (res)=>{
             if (!res.success){
                 showToast(res.notice, ToastStat.ERROR, toast);
@@ -141,8 +148,9 @@ async function publishCleanOrder(order_id, state){
             }
             c_runtime.blockPublishClient = false
             c_clients.order_edit = c_clients.new_order = false;
+            resolve();
         }
-    )
+    ))
 
 }
 

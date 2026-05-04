@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from api.data.ptc import get_month_range_by_ym
 from api.databases.general import unknown
 from api.databases.ptc import StateOrder, ServerConfig
-from api.routes.ptc import CalenderClients, ClientLeadFrom, OrderType, PaymentInvoice, InvoiceAboutDeleted
+from api.routes.ptc import CalenderClients, ClientLeadFrom, CleanOrderType, PaymentInvoice, InvoiceAboutDeleted
 
 
 def struct_builder(cls, **data):
@@ -123,6 +123,7 @@ class CleanOrder:
     pt:int          = None
     pn:str          = None
     ot:int          = None
+
     def build(self, **data):
         struct_builder(self, **data)
         self.o = bool(self.o)
@@ -172,7 +173,7 @@ class CleanOrder:
         if self.ot:
             self.ot = int(self.ot)
         else:
-            self.ot = OrderType.GENERAL
+            self.ot = CleanOrderType.GENERAL
         if not self.address:
             self.address = unknown
         if not self.notes:

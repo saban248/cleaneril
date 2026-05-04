@@ -9,7 +9,7 @@ from api.databases.orders import CleanOrder
 from api.databases.ptc import cleaneril_db, ServerConfig
 from api.jfunc import clean_phone_just_numbers, match_nums_words
 from api.routes import cil_struct
-from api.routes.ptc import OrderType, PaymentInvoice
+from api.routes.ptc import CleanOrderType, PaymentInvoice
 
 
 def set_employee_to_client(wid:str, mid:str):
@@ -91,7 +91,7 @@ def upgrade_from_clients_to_clean_order(manager_id):
         order.order_id = old_order_id
         order.manager_id = manager_id
         order.client_id = client.client_id
-        order.order_type = OrderType.UPHOLSTERY
+        order.order_type = CleanOrderType.UPHOLSTERY
         order.fullname = fullname
         order.workers = [c['worker']]
         order.stat = c['state']

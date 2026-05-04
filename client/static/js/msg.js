@@ -11,6 +11,7 @@ const message = {
     notice:"שם לב",
     WdeleteCard:"הכרטיס מודעה יימחק, להמשיך?",
     WdeleteWorker:"העובד יימחק מהמערכת, להמשיך?",
-    WdeleteReceipt:"הקבלה תמחק לצמיתות, להמשיך?"
+    WdeleteReceipt:"הקבלה תמחק לצמיתות, להמשיך?",
+    IAboutCreateReceipt:`לפני שאתה מדפיס קבלה, האם כל הפרטים נכונים?.\n לא ניתן לשנות אחרי הדפסה`
     
 }

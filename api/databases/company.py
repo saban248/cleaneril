@@ -1,8 +1,10 @@
 from typing import Union
 
+from api.databases.general import get_columns
 from api.databases.ptc import cleaneril_db, ServerConfig
 from api.ptc import generate_hex
 from api.validator import core_msg
+
 
 unknown = 'unknown'
 
@@ -23,71 +25,64 @@ class Company(cleaneril_db.Model):
     gpse = cleaneril_db.Column(cleaneril_db.Integer, nullable=True, default=50)
 
 
-class ApiCompany:
 
-    @staticmethod
-    def get_companies(source:bool = True, **kwargs) -> Union[Company, list[Union[dict, Company]]]:
-        companies = Company.query.filter_by(**kwargs)
-        if source:
-            return companies
-        for company in companies:del company.__dict__["_sa_instance_state"]
+def get_companies(source:bool = True, **kwargs) -> Union[Company, list[Union[dict, Company]]]:
+    return get_columns(Company, source, **kwargs)
 
-        return companies
 
-    @staticmethod
-    def create_company(c_name:str, o_name:str, manager_id:str, c_vat:bool):
-        company = Company.query.filter_by(manager_id=manager_id).first()
-        if company:return 1
-        new_company = Company()
-        new_company.company_name = c_name
-        new_company.owner_fullname = o_name
-        new_company.manager_id = manager_id
-        new_company.vat_company = c_vat
-        new_company.company_id = generate_hex(15)
-        new_company.logo_path = ServerConfig.DEFAULT_COMPANY_LOGO
-        new_company.company_description = "unknown"
-        new_company.company_phone = "unknown"
-        new_company.company_email = ServerConfig.DEFAULT_COMPANY_EMAIL
-        new_company.company_VAT = "000-000-000"
-        new_company.gpse = ServerConfig.DEFAULT_GPSE
 
-        cleaneril_db.session.add(new_company)
-        cleaneril_db.session.commit()
+def create_company(c_name:str, o_name:str, manager_id:str, c_vat:bool):
+    company = Company.query.filter_by(manager_id=manager_id).first()
+    if company:return 1
+    new_company = Company()
+    new_company.company_name = c_name
+    new_company.owner_fullname = o_name
+    new_company.manager_id = manager_id
+    new_company.vat_company = c_vat
+    new_company.company_id = generate_hex(15)
+    new_company.logo_path = ServerConfig.DEFAULT_COMPANY_LOGO
+    new_company.company_description = "unknown"
+    new_company.company_phone = "unknown"
+    new_company.company_email = ServerConfig.DEFAULT_COMPANY_EMAIL
+    new_company.company_VAT = "000-000-000"
+    new_company.gpse = ServerConfig.DEFAULT_GPSE
 
-        return 0
+    cleaneril_db.session.add(new_company)
+    cleaneril_db.session.commit()
 
-    @staticmethod
-    def update_company_details(manager_id:str, c_name:str = None, o_name:str = None, c_vat:bool = None,
-                               c_desc:str = None, c_phone:str = None, c_email:str = None, c_vat_code:str = None,
-                               c_gpse:int = None):
-        company:Company = ApiCompany.get_companies(manager_id=manager_id).first()
-        if not company:return core_msg.ServerCode.General.something_wrong
-        if c_name:
-            company.company_name = c_name
-        if o_name:
-            company.owner_fullname = o_name
-        if c_vat:
-            company.vat_company = c_vat
-        if c_desc:
-            company.company_description = c_desc
-        if c_phone:
-            company.company_phone = c_phone
-        if c_email:
-            company.company_email = c_email
-        if c_vat_code:
-            company.company_VAT = c_vat_code
-        if c_gpse:
-            company.gpse = c_gpse
+    return 0
 
-        cleaneril_db.session.commit()
 
-        return core_msg.ServerCode.success
+def update_company_details(manager_id:str, c_name:str = None, o_name:str = None, c_vat:bool = None,
+                           c_desc:str = None, c_phone:str = None, c_email:str = None, c_vat_code:str = None,
+                           c_gpse:int = None):
+    company:Company = get_companies(manager_id=manager_id).first()
+    if not company:return core_msg.ServerCode.General.something_wrong
+    if c_name:
+        company.company_name = c_name
+    if o_name:
+        company.owner_fullname = o_name
+    if c_vat:
+        company.vat_company = c_vat
+    if c_desc:
+        company.company_description = c_desc
+    if c_phone:
+        company.company_phone = c_phone
+    if c_email:
+        company.company_email = c_email
+    if c_vat_code:
+        company.company_VAT = c_vat_code
+    if c_gpse:
+        company.gpse = c_gpse
 
-    @staticmethod
-    def change_logo(manager_id:str, logo_filename:str):
-        company:Company = ApiCompany.get_companies(manager_id=manager_id).first()
-        if not company:return 1
+    cleaneril_db.session.commit()
+    return core_msg.ServerCode.success
 
-        company.logo_path = logo_filename
-        cleaneril_db.session.commit()
-        return 0
+
+def change_logo(manager_id:str, logo_filename:str):
+    company:Company = get_companies(manager_id=manager_id).first()
+    if not company:return core_msg.ServerCode.General.something_wrong
+
+    company.logo_path = logo_filename
+    cleaneril_db.session.commit()
+    return core_msg.ServerCode.success

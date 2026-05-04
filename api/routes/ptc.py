@@ -18,7 +18,7 @@ class ClientLeadFrom(IntFlag):
     FRIENDS         = 1<<5
 
 
-class OrderType(IntFlag):
+class CleanOrderType(IntFlag):
     UPHOLSTERY      = 1<<0
     AIR_CONDITIONER = 1<<1
 

@@ -251,16 +251,16 @@
 }
 
 .ctype-1{
-    background: #638390;
+    background: #638390 !important;
 }
 .ctype-2{
-    background: #a2a954;
+    background: #a2a954 !important;
 }
 .ctype-4{
-    background: rgb(182, 104, 104);
+    background: rgb(182, 104, 104) !important;
 }
 .ctype-8{
-    background: #5fbb98;
+    background: #5fbb98 !important;
 }
 .card-body, .client-body, .worker-body{
 

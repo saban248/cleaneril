@@ -4,7 +4,8 @@ const c_clients = {
     order_edit:false,
     new_order:false,
     client_view:false,
-    receipt_edit:false
+    receipt_edit:false,
+    cot_selected:CleanOrderType.UPHOLSTERY
 }
 
 function isCantExitEditOrder(){
@@ -26,7 +27,6 @@ async function askAboutExitEditOrder(){
 async function closeClientDashboard(){
     if (c_clients.new_order){
         const deleted = await deleteOrder(c_runtime.currentOrderIdView)
-        console.log(deleted)
         if (!deleted)return
         c_clients.new_order = false;
         
@@ -96,10 +96,11 @@ async function fetchClientDashboard(client_id = c_runtime.currentClientIdView){
 
 }
 
-async function fetchClientOrder(order_id = c_runtime.currentOrderIdView, api_action = ApiCall.order_view){
+async function fetchClientOrder(order_id = c_runtime.currentOrderIdView, api_action = ApiCall.order_view, dany){
     if (!order_id && !c_clients.new_order){return}
     const toast = showToast("מעבד...");
-    data = {action:api_action, oi:order_id}
+    data = {action:api_action, oi:order_id, ...dany}
+    console.log(data)
     return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
         (res) => {
             if (!res.success){
@@ -278,10 +279,15 @@ async function switchViewClientDashboard(v = c_clients.currentCard, fetch = true
             hideClientOrders()
             break       
     }
+    const lastBtnView = document.getElementById(`cdv${c_clients.currentCard}`)
+    const currentBtnView = document.getElementById(`cdv${v}`)
+    lastBtnView.classList.remove("current-cdv")
+    currentBtnView.classList.add("current-cdv")
     c_clients.currentCard = v
     if (back){c_clients.enterCard = false;}
     switchClientCardAction()
     switchMenuActionClientCard()
+
 }
 
 function switchMenuActionClientCard(){
@@ -303,29 +309,35 @@ function switchMenuActionClientCard(){
     const adro = document.getElementById("adro")
     // cancel edit receipt order
     const acero = document.getElementById("acero")
+    // publish clean order cancel
+    const apcocan = document.getElementById("apcocan")
+    // publish clean order 
+    const apcow = document.getElementById("apcow")
+    // publish clean order closed
+    const apcoc = document.getElementById("apcoc")
+    // publish clean order done
+    const apcod = document.getElementById("apcod");
+
     const s = (element) => element.classList.remove("hide")||element.classList.add("show")
     const h = (element) => element.classList.remove("show")||element.classList.add("hide")
-    if (c_clients.new_order){
-        h(asop);h(aeeo);h(acoi);h(asrp);h(aero);h(adoc);h(adro);h(adco)
-        return
-    }
+    const receipt = get_receipt_by_order_id(c_runtime.currentOrderIdView);
     switch (c_clients.currentCard){
         case clientCardsView.ORDER:
-            s(asop)
-            s(aeeo)
-            s(acoi)
-            s(adoc)
-            s(adco)
-            h(asrp)
-            h(aero)
-            h(adro)
-            h(acero)
+            if (c_clients.new_order||c_clients.order_edit){
+                h(asop);h(aeeo);h(adoc);h(adco);h(acoi)
+                s(apcocan);s(apcow);s(apcoc);s(apcod)
+            }else{
+                h(apcocan);h(apcow);h(apcoc);h(apcod)
+                s(asop);s(aeeo);s(adoc);s(adco);
+                if (receipt){h(acoi)}else{s(acoi)}
+            }
+            h(acero);
+            h(asrp);h(aero);h(adro);
             break
         case clientCardsView.RECEIPT:
             h(acoi)
             h(asop)
             h(aeeo)
-            
             h(adoc)
             h(adco)
             if (c_clients.receipt_edit){
@@ -334,7 +346,7 @@ function switchMenuActionClientCard(){
                 h(asrp)
                 s(acero)
             }else{
-                s(aero)
+                h(aero)
                 s(adro)
                 s(asrp)
                 h(acero)
@@ -501,6 +513,7 @@ async function editExistOrder(order_id = c_runtime.currentOrderIdView){
     await fetchClientOrder(order_id, ApiCall.order_edit)
     const parentBody = document.getElementById("client-template-dashboard")
     parentBody.scrollTop = 0;
+    switchMenuActionClientCard()
 }
 
 async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid = c_runtime.currentClientIdView) {
@@ -560,7 +573,7 @@ async function deleteOrder(order_id = c_runtime.currentOrderIdView, callback){
     if (!ok){return false}
     if (!order_id){
         showToast("בחר הזמנה כדי למחוק", ToastStat.ERROR)
-        return false
+        return true
     }
     data = {oi:order_id, action:ApiCall.order_delete}
     return await new Promise((reslove) => apiPost(ApiRoute.api,data).then(
@@ -578,10 +591,37 @@ async function deleteOrder(order_id = c_runtime.currentOrderIdView, callback){
     ))
 }
 
-async function createOrder(){
+async function initSelectOrderTypeToCreate(){
     c_clients.new_order = true;
     await openClientDashbaord(c_runtime.currentClientIdView, null, false)
-    await fetchClientOrder(null, ApiCall.order_new)
+    const typeClean = document.getElementById("typeCleanOrder");
+    const tcoItems = document.getElementById("tcoItems");
+    for (let [flag_name, flag] of Object.entries(CleanOrderType)){
+        const name = getCleanOrderTypeText(flag)
+        const icon = getCleanOrderTypeIcon(flag)
+        const html = `
+        <div class="tco-item" onclick="SelectOrderTypeToCreate(this, ${flag})">
+            <div class="tcoi-header">
+                ${name}
+            </div>
+            <div class="tcoi-body">
+                <i class="${icon}"></i>
+            </div>
+        </div>`
+        tcoItems.innerHTML += html;
+    }
+    typeClean.classList.add("show")
+}
+
+function SelectOrderTypeToCreate(t, cot){
+    c_clients.cot_selected = cot;
+    t.classList.add("selected")
+    setTimeout(()=>createOrder(), 500)
+}
+
+async function createOrder(){
+    await openClientDashbaord(c_runtime.currentClientIdView, null, false)
+    await fetchClientOrder(null, ApiCall.order_new, {ot:c_clients.cot_selected})
     showClientOrder(c_runtime.currentOrderIdView, false)
 }
 
@@ -690,6 +730,17 @@ async function deleteOrderFromDashhbaord(order_id = c_runtime.currentOrderIdView
     await deleteOrder(order_id, success)
 }
 
+async function createReceiptFromDashbaord() {
+    const createReceipt = await showAsk({title:message.notice, msg:message.IAboutCreateReceipt})
+    if (!createReceipt){return}
+    await createInvoice()
+    switchMenuActionClientCard()
+}
+
+async function publisCleanOrderFromDashboard(stat) {
+    await publishCleanOrder(c_runtime.currentOrderIdView, stat)
+    switchMenuActionClientCard()
+}
 
 
 async function setStateCleanOrder(order_id = c_runtime.currentOrderIdView, state){

@@ -241,7 +241,40 @@ const InvoiceStatType = {
 
 const clientCardsView = {
     ORDER:1<<0,
-    RECEIPT:1<<1
+    RECEIPT:1<<1,
+    REPORTS:1<<2
+}
+
+const CleanOrderType = {
+    UPHOLSTERY:1<<0,
+    AIR_CONDITIONER:1<<1,
+    GENERAL:1<<0|1<<1
+}
+
+function getCleanOrderTypeText(flag){
+    switch (flag) {
+        case CleanOrderType.UPHOLSTERY:
+            return "ריפודים"
+    
+        case CleanOrderType.AIR_CONDITIONER:
+            return "מזגנים"
+
+        case CleanOrderType.GENERAL:
+            return "כללי"
+    }
+    return getCleanOrderTypeText(CleanOrderType.GENERAL)
+}
+
+function getCleanOrderTypeIcon(flag){
+    switch (flag) {
+        case CleanOrderType.AIR_CONDITIONER:
+            return "fa-solid fa-fan"
+        case CleanOrderType.UPHOLSTERY:
+            return "fa-solid fa-couch"
+        case CleanOrderType.GENERAL:
+            return "fa-solid fa-soap"
+    }
+    return getCleanOrderTypeIcon(CleanOrderType.GENERAL)
 }
 
 window.SocialMedia = SocialMedia;

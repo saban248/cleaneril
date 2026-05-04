@@ -1,6 +1,5 @@
 from typing import Union
 
-from api.databases.company import ApiCompany
 from api.databases.ptc import cleaneril_db, ManagerPermissions, ServerConfig
 from api.ptc import generate_hex
 from api.validator import core_msg
