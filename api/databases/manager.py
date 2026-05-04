@@ -50,7 +50,6 @@ class ApiManager:
 
         return core_msg.ServerCode.success
 
-
 def on_register_create_company(user:str, pwd:str) -> int:
     null = 'unknown'
     new = ApiManager.register(user, ManagerPermissions.ADMIN, pwd)

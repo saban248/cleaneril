@@ -165,6 +165,9 @@ const mPermissions = {
     ADMIN:1<<2
 }
 
+const PageRoute = {
+    createAccount:"/create_account"
+}
 const ApiRoute = {
     auth:"do_auth",
     api:"api",

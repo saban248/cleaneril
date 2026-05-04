@@ -62,7 +62,21 @@ function onApiCall(t, done = false){
     }
     
 }
+function completeFromCacheHistory(){
+    const cahceData = ManagerCache.getRegisterHistory()
+    // level 2
+    ld2 = cahceData[RegisterApi.level2]
+    if (Object.keys(ld2).length != 0){
+        document.getElementById('ownerVATCode').value = ld2.vc;
+        document.getElementById("onwerName").value = ld2.fn;
+        document.getElementById("onwerPhone").value = ld2.op;
+        document.getElementById("companyPhone").value = ld2.cp;
+        document.getElementById("companyDesc").value = ld2.d;
+        document.getElementById("companyName").value = ld2.cn
+    }
 
+
+}
 function doRegister(t){
     const fullname = document.getElementById("username").value;
     const pwd1 = document.getElementById("pwd1").value;
@@ -78,7 +92,7 @@ function doRegister(t){
         res =>{
             console.log(res)
             if (!res.success){
-                showToast(res.notice)
+                showToast(res.notice, ToastStat.ERROR)
             }
             else{
                 completeRegsiterLevel(LEVELS.AUTH)
@@ -90,18 +104,24 @@ function doRegister(t){
 }
 
 function doCompany(t){
+    const vatCode = document.getElementById("ownerVATCode").value;
     const fullname = document.getElementById("onwerName").value;
-    const phone = document.getElementById("companyPhone").value;
-    const name = document.getElementById("companyName").value;
+    const onwerPhone = cleanPhoneJustNumbers(document.getElementById("onwerPhone").value);
+    const companyPhone = cleanPhoneJustNumbers(document.getElementById("companyPhone").value);
+    const companyName = document.getElementById("companyName").value;
     const desc = document.getElementById("companyDesc").value;
     const csrf = document.getElementById("cXsXrF").value;
 
-    if (!/^(05\d{8}|0[2-9]\d{7})$/ .test(phone)){
+    if (!isValidIsraeliID(vatCode)){
+        showToast("מספר עוסק / ת.ז לא תקין", ToastStat.ERROR)
+        return;
+    }
+    if (!isValidPhone(onwerPhone) || (companyPhone != '' && isValidPhone(companyPhone))){
         showToast("מספר הפלאפון לא תקין", ToastStat.ERROR)
         return;
     }
 
-    if (name.split(/\s+/).length < 2){
+    if (companyName.split(/\s+/).length < 2){
         showToast("העסק חייב להכיל 2 מילים", ToastStat.ERROR)
         return;
     }
@@ -111,9 +131,20 @@ function doCompany(t){
         showToast("תיאור העסק לא תקין", ToastStat.ERROR)
         return;
     }
+    ManagerCache.setRegisterHisotry(RegisterApi.level2, {
+        vc:vatCode,
+        fn:fullname,
+        op:onwerPhone,
+        cp:companyPhone,
+        cn:companyName,
+        d:desc
+
+    })
 
     onApiCall(t)
-    const data = {action:RegisterApi.level2, c_phone:phone, c_name:name, c_desc:desc, mid:csrf, o_name:fullname}
+    const data = {action:RegisterApi.level2, c_phone:companyPhone,o_phone:onwerPhone, c_name:companyName, c_desc:desc, mid:csrf, o_name:fullname,
+        vat_code:vatCode
+    }
     apiPost(ApiRoute.register, data).then(
         res =>{
             onApiCall(t, true)
@@ -138,10 +169,13 @@ function doLogo(t){
     const img = document.getElementById('setLogo');
     const csrf = document.getElementById("cXsXrF").value;
     const file = img.files[0];
-    const finish = () => {
+    const callback = (res) => {
         completeRegsiterLevel(LEVELS.LOGO);
+        ManagerCache.deleteRegisteristory()
+        onApiCall(t, false)
     }
     onApiCall(t)
+    console.log(file)
     uploadImage(t, file,"unknwon", ApiUploadFile.LOGO, csrf, finish);
 }
 
@@ -170,17 +204,16 @@ document.addEventListener("DOMContentLoaded", function (){
             img.src = URL.createObjectURL(file)
         }
     })
+    const media = window.matchMedia("(max-width: 768px)");
+        media.addEventListener("change", (e) => {
+            isMobile = e.matches;
+            welcomeForContinue()
 
+    });
+    completeFromCacheHistory()
     welcomeForContinue();
 }
 )
-
-const media = window.matchMedia("(max-width: 768px)");
-media.addEventListener("change", (e) => {
-    isMobile = e.matches;
-    welcomeForContinue()
-
-});
 
 
 
@@ -205,7 +238,6 @@ function uploadImage(t, file, name, action, mid, callback) {
                         return;
                     }
                     if (action == ApiUploadFile.LOGO){
-                        onApiCall(t,true)
                         callback()
                     }
 

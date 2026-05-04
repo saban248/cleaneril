@@ -182,6 +182,27 @@ function cleanPhoneJustNumbers(phone) {
   return digits;
 }
 
+function isValidPhone(phone){
+    return /^(05\d{8}|0[2-9]\d{7})$/.test(phone)
+}
+
+function isValidIsraeliID(id) {
+    if (!/^\d+$/.test(id)) return false;
+
+    id = id.padStart(9, '0'); // השלמה ל-9 ספרות
+
+    let sum = 0;
+
+    for (let i = 0; i < 9; i++) {
+        let num = Number(id[i]) * ((i % 2) + 1);
+
+        if (num > 9) num -= 9;
+
+        sum += num;
+    }
+
+    return sum % 10 === 0;
+}
 
 function matchNumsWords(nums, str1, str2) {
   const words1 = (str1 || '').toLowerCase().split(/\s+/);

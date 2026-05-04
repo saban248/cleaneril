@@ -1,5 +1,8 @@
 
 
+const CODES = {
+    registerNotFinished:14
+}
 const message = {
     EfetchClients: "שגיאה בהצגת לקוחות",
     EfetchOrders:"שגיאה בהצגת ההזמנות",

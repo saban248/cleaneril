@@ -41,13 +41,14 @@ class BaseServerMsg:
 
 
 class ServerCode:
-    # 13
+    # 15
     success = 0
     class Company:
         short_company_name          = 2
         name_company_exist          = 3
         i_company_description       = 5
         i_owner_name                = 8
+        i_vat_code                  = 13
     class General:
         invalid_phone               = 4
         invalid_passwd              = 6
@@ -56,6 +57,7 @@ class ServerCode:
     class Register:
         invalid_username            = 1
         e_account_exist             = 7
+        register_not_finished       = 14
     class Receipt:
         receipt_exist               = 9
         receipt_create_problem      = 12

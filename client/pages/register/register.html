@@ -55,7 +55,7 @@
             <div class="input-group">
                 <label>
                     <i class="fa-solid fa-circle-user"></i>
-                    שם משתמש (באנגלית)
+                    שם משתמש
                 </label>
                 <input type="text" placeholder=" " required class="register-input" id="username" autocomplete="off">
             </div>
@@ -86,7 +86,7 @@
             </button>
             <input type="hidden" id="cXsXrF" value="">
             <div class="divider">או</div>
-            <button type="button" class="btn-login" onclick="redirect('auth')" >היכנס למערכת</button>
+            <button type="button" class="btn-other" onclick="redirect('auth')" >היכנס למערכת</button>
         </form>
         <div class="credit">
             נכתב ונבנה ע"י
@@ -113,8 +113,15 @@
         <form>
             <div class="input-group">
                 <label>
+                    <i class="fa-solid fa-square-phone-flip"></i>
+                    מספר עוסק פטור/מורשה
+                </label>
+                <input type="tel" placeholder=" " required class="register-input" id="ownerVATCode" >
+            </div>
+            <div class="input-group">
+                <label>
                     <i class="fa-solid fa-address-card"></i>
-                   שם מלא בעל העסק  
+                   שם מלא בעל העסק (עברית בלבד)
                 </label>
                 <input type="text" placeholder=" " required class="register-input" id="onwerName" >
             </div>
@@ -123,12 +130,19 @@
                     <i class="fa-solid fa-square-phone-flip"></i>
                    מספר פאלפון אישי
                 </label>
+                <input type="tel" placeholder=" " required class="register-input" id="onwerPhone" >
+            </div>
+            <div class="input-group">
+                <label>
+                    <i class="fa-solid fa-square-phone-flip"></i>
+                   מספר פאלפון לעסק (אם קיים)
+                </label>
                 <input type="tel" placeholder=" " required class="register-input" id="companyPhone" >
             </div>
             <div class="input-group">
                 <label>
                     <i class="fa-solid fa-building"></i>
-                    שם העסק (שני מילים)
+                    שם העסק (עד 2 מילים)
                 </label>
                 <input type="text" placeholder=" " required class="register-input" id="companyName" >
             </div>
@@ -198,8 +212,8 @@
             <i  class="fa-solid fa-circle-notch fa-spin registerLoad" style="display: none;"></i>
         </button>
     </div>
-    <div id="toast-container"></div>
 </div>
+    <div id="toast-container"></div>
     <div id="confirmModal" class="modal hide">
         <div class="modal-box">
             <div class="modal-header">
@@ -219,5 +233,7 @@
 </body>
 <script src="/static/js/register.js"></script>
 <script src="/static/js/all.js"></script>
+<script src="/static/js/msg.js"></script>
 <script src="/static/js/protocol.js"></script>
+<script src="/static/js/cache.js"></script>
 </html>

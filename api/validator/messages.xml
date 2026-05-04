@@ -38,5 +38,11 @@
     <msg code="12" lang="en"></msg>
     <msg code="12" lang="he">בעיה ביצירת הקבלה</msg>
 
+    <msg code="13" lang="en"></msg>
+    <msg code="13" lang="he">ת.ז \ מספר עוסק לא תקין</msg>
+
+    <msg code="14" lang="en"></msg>
+    <msg code="14" lang="he">ההרשמה לא הסתיימה, מעביר אותך להרשמה...</msg>
+
 
 </messages>

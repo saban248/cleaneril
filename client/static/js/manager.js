@@ -67,10 +67,15 @@ function doLogin(t){
         return;
     }
     const data = {username:username.value, password:password.value}
+    const toast = showToast("נכנס..", ToastStat.LOAD)
     apiPost(ApiRoute.auth, data).then(
         (res) =>{
             if (!res.success){
-                showToast(res.notice, ToastStat.ERROR)
+                showToast(res.notice, ToastStat.ERROR, toast)
+            }
+            if (res.code == CODES.registerNotFinished){
+                setTimeout(()=>location.href = PageRoute.createAccount, 1600);
+                return
             }
             onApiCall(t, true)
             location.href = '/dashboard'

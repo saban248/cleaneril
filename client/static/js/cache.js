@@ -1,3 +1,7 @@
+const KEYS = {
+    dregister:1<<0
+}
+
 class ManagerCache{
 
     static create_cache(){
@@ -56,6 +60,29 @@ class ManagerCache{
 
     static exist(){
         return Boolean(localStorage.getItem("exist"));
+    }
+    static createRegsiterHistory(){
+        const data = {}
+        for (let [fname, flag] of Object.entries(RegisterApi)){
+            data[flag] = {}
+        }
+        localStorage.setItem(KEYS.dregister,JSON.stringify(data))
+    }
+    static deleteRegisteristory(){
+        localStorage.removeItem(KEYS.dregister)
+    }
+    static getRegisterHistory(__again = false){
+        const data = localStorage.getItem(KEYS.dregister)
+        if (!data && !__again){
+            ManagerCache.createRegsiterHistory()
+            return ManagerCache.getRegisterHistory(true)
+        }
+        return JSON.parse(data)
+    }
+    static setRegisterHisotry(level, dany){
+        const data = ManagerCache.getRegisterHistory()
+        data[level] = {...dany}
+        localStorage.setItem(KEYS.dregister, JSON.stringify(data))
     }
 
 }

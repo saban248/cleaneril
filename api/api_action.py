@@ -3,7 +3,7 @@ import json
 import os
 from time import sleep
 
-from flask import render_template_string, render_template
+from flask import render_template_string, render_template, jsonify, session
 
 from api.data.ptc import AnalyticsData
 from api.databases import invoice
@@ -18,13 +18,14 @@ from api.databases.invoice import Receipt
 from api.databases.manager import ApiManager, on_register_create_company
 from api.databases.orders import CleanOrder
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril
-from api.ptc import special_things, SJson, ShortSession
+from api.ptc import special_things, SJson, ShortSession, generate_hex
 from api.routes.cil_struct import ReportsDataAnalyze
+from api.routes.general import set_session_data_admin
 from api.routes.ptc import Pages, ApiCall, ApiUploadFile, RegisterApi, PaymentInvoice, ReportsApi
 from api.validator import core_msg, company
 from api.routes import cil_struct
 
-def get_api_action(session, request, **breq) -> dict:
+def get_api_action(request, **breq) -> dict:
     action = int(breq.get("action", -1))
     manager = ShortSession.get_admin_details(session)
     manager_id = manager["manager_id"]
@@ -83,7 +84,7 @@ def get_api_action(session, request, **breq) -> dict:
             code = orders.set_clean_order_stat(manager_id, order_id=r_order.oi, stat=r_order.s)
             return SJson.auto_code(code)
         case ApiCall.api_reports:
-            return get_app_reports_api(session,request,**breq)
+            return get_app_reports_api(request,**breq)
 
         case ApiCall.conf_company:
             config = cil_struct.Company().build(**breq)
@@ -157,7 +158,7 @@ def get_api_action(session, request, **breq) -> dict:
 
 
 
-def get_app_reports_api(session, request, **breq) -> dict:
+def get_app_reports_api(request, **breq) -> dict:
     manager = ShortSession.get_admin_details(session)
     manager_id = manager["manager_id"]
     __success__ = core_msg.ServerCode.success
@@ -198,7 +199,7 @@ def get_app_reports_api(session, request, **breq) -> dict:
 
 
 
-def get_register_action(session, **breq):
+def get_register_action(**breq):
     action = int(breq.get("action", -1))
     register = cil_struct.Register().build(**breq)
     match action:
@@ -209,25 +210,34 @@ def get_register_action(session, **breq):
             if pwd:return SJson.auto_code(pwd)
             stat = on_register_create_company(register.username, register.password)
             if stat:
-                return SJson.auto_code(stat)
+                manager = ApiManager.get_managers(username=register.username, password=register.password).first()
+                _company: companies.Company = companies.get_companies(manager_id=manager.manager_id).first()
+                if _company.register_level == RegisterApi.DONE:
+                    return SJson.auto_code(core_msg.ServerCode.Register.e_account_exist)
+                set_session_data_admin(session, manager)
+                return SJson.auto_code(core_msg.ServerCode.success, **{"mid":manager.manager_id})
             return {"success":not stat,
                     "mid":ApiManager.get_managers(username=register.username, password=register.password).first().manager_id}
         case RegisterApi.level2:
             manager = ApiManager.get_managers(manager_id=register.mid).first()
             if not manager:
-                return {"success":False}
-            name = company.name(register.c_name)
+                return SJson.auto_code(core_msg.ServerCode.General.access_denied)
+            vat_code = company.is_valid_israeli_id(register.vat_code)
+            if vat_code:return SJson.auto_code(vat_code)
+            name = company.company_name(register.c_name)
             if name:return SJson.auto_code(name)
             exist = companies.get_companies(company_name=register.c_name).first()
-            if exist:return core_msg.ServerCode.Register.e_account_exist
+            if exist:return SJson.auto_code(core_msg.ServerCode.Company.name_company_exist)
             desc = company.description(register.c_desc)
             if desc:return SJson.auto_code(desc)
-            phone = company.phone(register.c_phone)
-            if phone:return SJson.auto_code(phone)
+            c_phone = company.phone(register.c_phone)
+            o_phone = company.phone(register.o_phone)
+            if(register.c_phone and c_phone) or o_phone:return SJson.auto_code(c_phone)
             fullname = company.ownername(register.o_name)
             if fullname:return SJson.auto_code(fullname)
-            stat = companies.update_company_details(register.mid,register.c_name,None,None,
-                                                     register.c_desc,register.c_phone, None)
+            stat = companies.update_company_details(register.mid,register.c_name,register.o_phone,None,
+                                                     register.c_desc,register.c_phone, register.o_phone,None,
+                                                    register.vat_code,None, RegisterApi.DONE)
             return SJson.auto_code(stat)
 
 
@@ -264,7 +274,7 @@ def get_invoice_template(manager_id:str, receipt):
     order = CleanOrder(**receipt.data)
     return render_template(Pages.invoice.f_dashboard, company=_company, invoice=receipt, order=order)
 
-def api_upload_file(session, data:dict):
+def api_upload_file(data:dict):
     flag = int(data.get("action", -1))
 
     filename = data["filename"]

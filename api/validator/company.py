@@ -10,15 +10,15 @@ def username(u: str) -> int:
         return __error__
     u = u.strip()
 
-    if not u.isalnum():
+    if not u.isalnum() or u.isdigit():
         return __error__
 
-    if len(u) < 3:
+    if not len(u) >= 3:
         return __error__
 
     return __success__
 
-def name(n):
+def company_name(n):
     n = re.sub(r'\s+', ' ', n)
     if all(ord(c) < 128 for c in n):
         n = " ".join(word.capitalize() for word in n.split(" "))
@@ -60,7 +60,24 @@ def ownername(n):
     if not n:
         return __error__
 
-    if not re.fullmatch(r'[^\W\d_]+( [^\W\d_]+)+', n, re.UNICODE):
+    if not re.fullmatch(r'[\u0590-\u05FF]+( [\u0590-\u05FF]+)+', n):
         return __error__
 
     return core_msg.ServerCode.success
+
+
+
+def is_valid_israeli_id(id_number:str) -> int:
+    __error__ = core_msg.ServerCode.Company.i_vat_code
+    if not id_number or (id_number and not id_number.isdigit()):
+        return __error__
+
+    id_number = id_number.zfill(9)  # השלמה ל-9 ספרות
+    total = 0
+    for i, digit in enumerate(id_number):
+        num = int(digit) * (1 if i % 2 == 0 else 2)
+        if num > 9:
+            num -= 9
+        total += num
+
+    return __error__ if not total % 10 == 0 else core_msg.ServerCode.success

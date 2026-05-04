@@ -59,7 +59,7 @@ class ApiEmployee:
         if source:
             return employees
 
-        return [{c.name: getattr(e, c.name) for c in e.__table__.columns}for e in employees]
+        return [{c.company_name: getattr(e, c.company_name) for c in e.__table__.columns} for e in employees]
 
     @staticmethod
     def get_employees_search(manager_id):

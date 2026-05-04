@@ -227,6 +227,7 @@ class Company:
     c_vat_code:int      = None
     c_phone:str     = None
     c_gpse:int      = None
+    level:int       = None
 
     def build(self, **data):
         struct_builder(self,**data)
@@ -286,8 +287,10 @@ class Register:
     c_name:str          = None
     c_desc:str          = None
     c_phone:str         = None
+    o_phone:str         = None
     o_name:str          = None
     c_email:str         = None
+    vat_code:str        = None
     mid:str             = None
 
     def build(self, **data):
