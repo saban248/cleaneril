@@ -26,7 +26,7 @@ def home():
 
 @cleaneril.route(RoutePages.auth.path, methods=['GET'])
 def auth():
-    if ShortSession.is_admin():
+    if ShortSession.is_admin_active():
         return redirect(url_for('dashboard'))
 
     return render_template(Pages.auth.html, company_name=ServerConfig.COMPANY_NAME)
@@ -36,6 +36,8 @@ def auth():
 def dashboard():
     if not ShortSession.is_admin() :
         return redirect(url_for("auth"))
+    if ShortSession.is_admin_unactive():
+        return redirect(url_for("create_account"))
 
     breq = get_dictionary_http(request)
     dash = cil_struct.Dashboard().build(**breq)

@@ -25,6 +25,7 @@ body{
     margin-top: 5%;
     margin-bottom: 5%;
     height: 90%;
+    min-height: 500px;
 }
 
 /* LEFT */
@@ -194,6 +195,9 @@ button{
 .btn-other{
     color:black !important; 
 }
+.btn-continue-done{
+    display: block !important;
+}
 .accept-terms{
     text-align: right !important;
 }
@@ -213,9 +217,10 @@ color:#777;
 .credit, .accept-terms{
     text-align:center;
     margin-top:15px;
-    font-size:13px;
+    font-size:10px;
     transform: skew(-15deg);
     color: #888;
+    cursor: pointer;
 }
 
 .credit a{

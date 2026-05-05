@@ -547,15 +547,16 @@ function onSetWorkerToClient(worker){
 
 async function fetchWorkers(){
     const data = {action:ApiCall.client_workers}
-    await apiPost(ApiRoute.api, data).then( res =>{
+    return await new Promise((resolve) =>apiPost(ApiRoute.api, data).then( res =>{
         if (!res.success){
             showToast(res.notice, ToastStat.ERROR);
-            return null;
+            resolve(null)
+            return
         }
         c_runtime.workers = res.workers;
-        return res.workers;
+        reslove(res.workers)
 
-    })
+    }))
 }
 
 

@@ -6,6 +6,7 @@ from typing import Union
 from flask import Request, session
 
 from api.databases.ptc import ManagerPermissions
+from api.routes.ptc import RegisterApi
 from api.validator import core_msg
 
 CONTENT_TYPE_DATA = "multipart/form-data"
@@ -28,6 +29,14 @@ class ShortSession:
     C = 'company'
 
     @staticmethod
+    def is_admin_active():
+        register_done = ShortSession.company().get("register_level") == RegisterApi.DONE
+        return ShortSession.is_admin() and register_done
+    @staticmethod
+    def is_admin_unactive():
+        register_not_finished = ShortSession.company().get("register_level") != RegisterApi.DONE
+        return ShortSession.is_admin() and register_not_finished
+    @staticmethod
     def is_admin():
         return ShortSession.manager().get('permission', 0) & ManagerPermissions.ADMIN
 
@@ -44,6 +53,9 @@ class ShortSession:
     @staticmethod
     def manager() -> dict:
         return session.get(ShortSession.M,{})
+    @staticmethod
+    def manager_id():
+        return session.get(ShortSession.M,{}).get("manager_id")
 
     @staticmethod
     def company() -> dict:

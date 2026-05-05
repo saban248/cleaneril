@@ -291,7 +291,6 @@ class Register:
     o_name:str          = None
     c_email:str         = None
     vat_code:str        = None
-    mid:str             = None
 
     def build(self, **data):
         struct_builder(self, **data)

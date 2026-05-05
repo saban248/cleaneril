@@ -90,7 +90,6 @@ function doRegister(t){
     const data = {action:RegisterApi.level1, username:fullname, password:pwd1, xCSRF:csrf.value}
     apiPost(ApiRoute.register, data).then(
         res =>{
-            console.log(res)
             if (!res.success){
                 showToast(res.notice, ToastStat.ERROR)
             }
@@ -169,20 +168,31 @@ function doLogo(t){
     const img = document.getElementById('setLogo');
     const csrf = document.getElementById("cXsXrF").value;
     const file = img.files[0];
-    const callback = (res) => {
-        completeRegsiterLevel(LEVELS.LOGO);
-        ManagerCache.deleteRegisteristory()
-        onApiCall(t, false)
-    }
-    onApiCall(t)
-    console.log(file)
-    uploadImage(t, file,"unknwon", ApiUploadFile.LOGO, csrf, finish);
+
+    const reader = new FileReader();
+    reader.onload = function () {
+        const base64Data = reader.result.split(",")[1];
+        apiPost(ApiRoute.register, {
+            filename:'ok',
+            action:RegisterApi.level3,
+            data: base64Data
+        }).then(res => {
+            if (!res.success){
+                showToast(res.notice, ToastStat.ERROR)
+                return;
+            }
+            completeRegsiterLevel(LEVELS.LOGO);
+            onApiCall(t,true)
+
+        });
+    };
+    reader.readAsDataURL(file);
 }
 
 document.addEventListener("DOMContentLoaded", function (){
     const pass=document.getElementById("pwd1")
     const bar=document.getElementById("bar")
-    pass.addEventListener("input",()=>{
+    pass?.addEventListener("input",()=>{
         let v=pass.value
         let s=0
         if(v.length>5) s+=25
@@ -198,7 +208,7 @@ document.addEventListener("DOMContentLoaded", function (){
     const input = document.getElementById("setLogo")
     const img = document.getElementById("logoView")
 
-    input.addEventListener("change", () => {
+    input?.addEventListener("change", () => {
         const file = input.files[0]
         if (file) {
             img.src = URL.createObjectURL(file)

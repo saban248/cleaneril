@@ -15,15 +15,18 @@ from api.databases.employee import ApiEmployee, Employee
 from api.databases.general import get_columns_no_instance
 from api.databases.manager import ApiManager, on_register_create_company
 from api.databases.orders import CleanOrder
-from api.databases.ptc import StateDocument, ServerConfig, cleaneril
+from api.databases.ptc import StateDocument, ServerConfig, cleaneril, ManagerPermissions, cleaneril_db
 from api.ptc import special_things, SJson, ShortSession
 from api.routes import cil_struct
 from api.routes.cil_struct import ReportsDataAnalyze
+from api.routes.general import set_session_data_admin
 from api.routes.ptc import Pages, ApiCall, ApiUploadFile, RegisterApi, ReportsApi
 from api.validator import core_msg, company
 
 
-def get_api_action(request, **breq) -> dict:
+
+
+def get_api_action(**breq) -> dict:
     action = int(breq.get("action", -1))
     manager = ShortSession.manager()
     manager_id = manager["manager_id"]
@@ -82,7 +85,7 @@ def get_api_action(request, **breq) -> dict:
             code = orders.set_clean_order_stat(manager_id, order_id=r_order.oi, stat=r_order.s)
             return SJson.auto_code(code)
         case ApiCall.api_reports:
-            return get_app_reports_api(request,**breq)
+            return get_app_reports_api(**breq)
 
         case ApiCall.conf_company:
             config = cil_struct.Company().build(**breq)
@@ -156,8 +159,8 @@ def get_api_action(request, **breq) -> dict:
 
 
 
-def get_app_reports_api(request, **breq) -> dict:
-    manager = ShortSession.get_admin_details()
+def get_app_reports_api(**breq) -> dict:
+    manager = ShortSession.manager()
     manager_id = manager["manager_id"]
     __success__ = core_msg.ServerCode.success
     reports = cil_struct.Reports().build(**breq)
@@ -200,6 +203,7 @@ def get_app_reports_api(request, **breq) -> dict:
 def get_register_action(**breq):
     action = int(breq.get("action", -1))
     register = cil_struct.Register().build(**breq)
+    print(breq)
     match action:
         case RegisterApi.level1:
             user = company.username(register.username)
@@ -207,17 +211,17 @@ def get_register_action(**breq):
             pwd = company.password(register.password)
             if pwd:return SJson.auto_code(pwd)
             stat = on_register_create_company(register.username, register.password)
+            manager = ApiManager.get_managers(username=register.username, password=register.password).first()
+            _company: companies.Company = companies.get_companies(manager_id=manager.manager_id).first()
             if stat:
-                manager = ApiManager.get_managers(username=register.username, password=register.password).first()
-                _company: companies.Company = companies.get_companies(manager_id=manager.manager_id).first()
                 if _company.register_level == RegisterApi.DONE:
                     return SJson.auto_code(core_msg.ServerCode.Register.e_account_exist)
 
-                return SJson.auto_code(core_msg.ServerCode.success, **{"mid":manager.manager_id})
-            return {"success":not stat,
-                    "mid":ApiManager.get_managers(username=register.username, password=register.password).first().manager_id}
+            ShortSession.set_admin_details(manager, _company)
+            return SJson.auto_code(stat)
         case RegisterApi.level2:
-            manager = ApiManager.get_managers(manager_id=register.mid).first()
+            manager_id = ShortSession.manager_id()
+            manager = ApiManager.get_managers(manager_id=manager_id).first()
             if not manager:
                 return SJson.auto_code(core_msg.ServerCode.General.access_denied)
             vat_code = company.is_valid_israeli_id(register.vat_code)
@@ -233,10 +237,17 @@ def get_register_action(**breq):
             if(register.c_phone and c_phone) or o_phone:return SJson.auto_code(c_phone)
             fullname = company.ownername(register.o_name)
             if fullname:return SJson.auto_code(fullname)
-            stat = companies.update_company_details(register.mid,register.c_name,register.o_phone,None,
+            stat = companies.update_company_details(manager_id,register.c_name,register.o_phone,None,
                                                      register.c_desc,register.c_phone, register.o_phone,None,
                                                     register.vat_code,None, RegisterApi.DONE)
+            # WHEN DONE
+            manager.permission = ManagerPermissions.ADMIN
+            cleaneril_db.session.commit()
+            _company: companies.Company = companies.get_companies(manager_id=manager.manager_id).first()
+            set_session_data_admin(manager, _company)
             return SJson.auto_code(stat)
+        case RegisterApi.level3:
+            return api_upload_file(ApiUploadFile.LOGO,**breq)
 
 
     return {}
@@ -272,16 +283,17 @@ def get_invoice_template(manager_id:str, receipt):
     order = CleanOrder(**receipt.data)
     return render_template(Pages.invoice.f_dashboard, company=_company, invoice=receipt, order=order)
 
-def api_upload_file(data:dict):
-    flag = int(data.get("action", -1))
+def api_upload_file(flag, **data):
+    filename = data.get("filename", "null")
+    img_data = data.get("data")
+    if not img_data:
+        return SJson.auto_code(core_msg.ServerCode.General.something_wrong)
 
-    filename = data["filename"]
-    img_data = data["data"]
     image_bytes = base64.b64decode(img_data)
-    manager_id: str = ShortSession.get_admin_details().get("manager_id") or data.get("mid")
+    manager_id:str = ShortSession.manager_id()
     match flag:
         case ApiUploadFile.CARD:
-            if not ShortSession.is_admin():
+            if not ShortSession.is_admin_active():
                 return SJson.auto_code(core_msg.ServerCode.General.access_denied)
             fullpath = os.path.join(os.path.basename(os.path.dirname(cleaneril.static_folder)),
                                     str(os.path.join(ServerConfig.FOLDER_IMAGE_BA, filename)))

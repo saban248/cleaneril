@@ -8,15 +8,17 @@ from api.databases.ptc import cleaneril
 from api.ptc import ShortSession, SJson, get_dictionary_http
 from api.routes import cil_struct
 from api.routes.general import set_session_data_admin
-from api.routes.ptc import RouteApi, RegisterApi
+from api.routes.ptc import RouteApi
 from api.validator import core_msg
 
 
 @cleaneril.route(RouteApi.do_auth.path, methods=["POST"])
 def authorize():
     __success__ = core_msg.ServerCode.success
-    if ShortSession.is_admin():
+    if ShortSession.is_admin_active():
         return SJson.auto_code(__success__)
+    if ShortSession.is_admin_unactive():
+        return SJson.auto_code(core_msg.ServerCode.Register.register_not_finished)
 
     breq = get_dictionary_http(request)
     auth = cil_struct.Auth().build(**breq).__dict__
@@ -25,8 +27,6 @@ def authorize():
         return SJson.auto_code(code)
     manager = ApiManager.get_managers(False, **breq).first()
     _company = companies.get_companies(manager_id=manager.manager_id).first()
-    # if _company.register_level != RegisterApi.DONE:
-    #     return SJson.auto_code(core_msg.ServerCode.Register.register_not_finished)
 
     set_session_data_admin(manager, _company)
     # UPGRADES
@@ -37,13 +37,12 @@ def authorize():
 
 @cleaneril.route(RouteApi.api.path, methods=["POST"])
 def api():
-    if not ShortSession.is_admin():
+    if not ShortSession.is_admin_active():
         return SJson.auto_code(core_msg.ServerCode.General.access_denied)
 
     breq = get_dictionary_http(request)
-    sjson = get_api_action(request, **breq)
+    sjson = get_api_action(**breq)
     return sjson
-
 
 
 @cleaneril.route(RouteApi.up_image.path, methods=["POST"])
