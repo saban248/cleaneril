@@ -94,3 +94,10 @@ def change_logo(manager_id:str, logo_filename:str):
     company.logo_path = logo_filename
     cleaneril_db.session.commit()
     return core_msg.ServerCode.success
+
+
+def delete_company(manager_id:str):
+    company:Company = get_companies(manager_id=manager_id).first()
+    cleaneril_db.session.delete(company)
+    cleaneril_db.session.commit()
+    return core_msg.ServerCode.success

@@ -58,12 +58,12 @@ class StateOrder(IntFlag):
     #mask
     ALL = WAIT|CLOSED|CANCELED|DONE
 
+# hierarchy PTC
 class ManagerPermissions(IntFlag):
     VIEW            = 1<<0
     EDIT            = 1<<1
-    ADMIN           = 1<<2
-    ROOT            = 1<<3
-
+    ADMIN           = VIEW|EDIT
+    ROOT            = ADMIN|(1<<2)
 
 
 

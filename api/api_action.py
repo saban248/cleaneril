@@ -1,33 +1,31 @@
 import base64
-import json
 import os
 from time import sleep
 
-from flask import render_template_string, render_template, jsonify, session
+from flask import render_template
 
+import api.databases.company as companies
 from api.data.ptc import AnalyticsData
 from api.databases import invoice
-import api.databases.company as companies
 from api.databases import orders, clients
-from api.databases.bridge import set_employee_to_client, on_create_order_create_client
+from api.databases.bridge import on_create_order_create_client
 from api.databases.clients import ClientProfile
 from api.databases.crads import ApiCards, Cards
 from api.databases.employee import ApiEmployee, Employee
-from api.databases.general import get_columns_no_instance, get_column_no_instance
-from api.databases.invoice import Receipt
+from api.databases.general import get_columns_no_instance
 from api.databases.manager import ApiManager, on_register_create_company
 from api.databases.orders import CleanOrder
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril
-from api.ptc import special_things, SJson, ShortSession, generate_hex
-from api.routes.cil_struct import ReportsDataAnalyze
-from api.routes.general import set_session_data_admin
-from api.routes.ptc import Pages, ApiCall, ApiUploadFile, RegisterApi, PaymentInvoice, ReportsApi
-from api.validator import core_msg, company
+from api.ptc import special_things, SJson, ShortSession
 from api.routes import cil_struct
+from api.routes.cil_struct import ReportsDataAnalyze
+from api.routes.ptc import Pages, ApiCall, ApiUploadFile, RegisterApi, ReportsApi
+from api.validator import core_msg, company
+
 
 def get_api_action(request, **breq) -> dict:
     action = int(breq.get("action", -1))
-    manager = ShortSession.get_admin_details(session)
+    manager = ShortSession.manager()
     manager_id = manager["manager_id"]
     __success__ = core_msg.ServerCode.success
     match action:
@@ -159,7 +157,7 @@ def get_api_action(request, **breq) -> dict:
 
 
 def get_app_reports_api(request, **breq) -> dict:
-    manager = ShortSession.get_admin_details(session)
+    manager = ShortSession.get_admin_details()
     manager_id = manager["manager_id"]
     __success__ = core_msg.ServerCode.success
     reports = cil_struct.Reports().build(**breq)
@@ -214,7 +212,7 @@ def get_register_action(**breq):
                 _company: companies.Company = companies.get_companies(manager_id=manager.manager_id).first()
                 if _company.register_level == RegisterApi.DONE:
                     return SJson.auto_code(core_msg.ServerCode.Register.e_account_exist)
-                set_session_data_admin(session, manager)
+
                 return SJson.auto_code(core_msg.ServerCode.success, **{"mid":manager.manager_id})
             return {"success":not stat,
                     "mid":ApiManager.get_managers(username=register.username, password=register.password).first().manager_id}
@@ -280,10 +278,10 @@ def api_upload_file(data:dict):
     filename = data["filename"]
     img_data = data["data"]
     image_bytes = base64.b64decode(img_data)
-    manager_id: str = ShortSession.get_admin_details(session).get("manager_id") or data.get("mid")
+    manager_id: str = ShortSession.get_admin_details().get("manager_id") or data.get("mid")
     match flag:
         case ApiUploadFile.CARD:
-            if not ShortSession.is_admin(session):
+            if not ShortSession.is_admin():
                 return SJson.auto_code(core_msg.ServerCode.General.access_denied)
             fullpath = os.path.join(os.path.basename(os.path.dirname(cleaneril.static_folder)),
                                     str(os.path.join(ServerConfig.FOLDER_IMAGE_BA, filename)))

@@ -26,7 +26,7 @@ def home():
 
 @cleaneril.route(RoutePages.auth.path, methods=['GET'])
 def auth():
-    if ShortSession.is_admin(session):
+    if ShortSession.is_admin():
         return redirect(url_for('dashboard'))
 
     return render_template(Pages.auth.html, company_name=ServerConfig.COMPANY_NAME)
@@ -34,14 +34,14 @@ def auth():
 
 @cleaneril.route(RoutePages.dashboard.path, methods=["GET"])
 def dashboard():
-    if not ShortSession.is_admin(session):
+    if not ShortSession.is_admin() :
         return redirect(url_for("auth"))
 
     breq = get_dictionary_http(request)
     dash = cil_struct.Dashboard().build(**breq)
-    manager = ShortSession.get_admin_details(session)
+    manager = ShortSession.manager()
+    company = ShortSession.company()
     manager_id = manager["manager_id"]
-    company = companies.get_companies(manager_id=manager_id).first()
     workers = ApiEmployee.get_employees(manager_id=manager_id).all()
     # count_stat_orders
     cso = CountOfOrderByStat()

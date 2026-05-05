@@ -1,6 +1,7 @@
 from typing import Union
 
 from api.databases import company
+from api.databases.company import delete_company
 from api.databases.ptc import cleaneril_db, ManagerPermissions
 from api.ptc import generate_hex
 from api.validator import core_msg, company as comp
@@ -50,19 +51,37 @@ class ApiManager:
 
         return core_msg.ServerCode.success
 
+
+def delete_manager(username:str, password:str):
+    manager = ApiManager.get_managers(username=username, password=password).first()
+    cleaneril_db.session.delete(manager)
+    cleaneril_db.session.commit()
+    return core_msg.ServerCode.success
+
+
 def on_register_create_company(user:str, pwd:str) -> int:
     null = 'unknown'
-    new = ApiManager.register(user, ManagerPermissions.ADMIN, pwd)
+    new = ApiManager.register(user, -1, pwd)
     if not new:return core_msg.ServerCode.Register.e_account_exist
     company.create_company(null,null,new.manager_id,False)
     return core_msg.ServerCode.success
 
+
+def on_delete_manager_delete_company(user:str, pwd:str) -> int:
+    delete_manager(user,pwd)
+    # delete_company();
+
+
 def new_manager_hb():
+    u = 'avraham'
+    p = 'Ghs553321'
     manager = dict(username = "avraham",
          password = "Ghs553321",
-         permission = ManagerPermissions.VIEW | ManagerPermissions.EDIT,
+         permission = ManagerPermissions.ROOT,
          )
 
     new_manager = ApiManager.register(**manager)
     if not new_manager:return
     company.create_company("הברקה בדקה",new_manager.username, new_manager.manager_id, False)
+
+

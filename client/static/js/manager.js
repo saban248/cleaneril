@@ -82,6 +82,9 @@ function doLogin(t){
         }
     )
 }
+function doLogout(){
+    apiPost()
+}
 
 function switchPageManager(page){
     closeMenuTabsDashboard()
@@ -285,6 +288,8 @@ function closeMenuTabsDashboard(){
 const GeneralMenuitems = [
     { text: "עובדים", action: (p) => switchPageManager(PageManager.WORKERS), icon:'<i class="fa-solid fa-users"></i>'},
     { text: "קבלות", action: (p) => switchPageManager(PageManager.INVOICES), icon:'<i class="fa-solid fa-file-invoice"></i>'},
+    { text: "יציאה", action: (p) => switchPageManager(PageManager.INVOICES), icon:'<i class="fa-solid fa-file-invoice"></i>'},
+
 ]
 function showMenuGeneralItems(t){
     const menu = document.getElementById("generalMenu")

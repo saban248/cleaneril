@@ -3,9 +3,9 @@ import os
 from copy import deepcopy
 from typing import Union
 
-from flask import Request
-from flask.sessions import SessionMixin
+from flask import Request, session
 
+from api.databases.ptc import ManagerPermissions
 from api.validator import core_msg
 
 CONTENT_TYPE_DATA = "multipart/form-data"
@@ -24,30 +24,44 @@ special_things = [
 
 
 class ShortSession:
+    M = 'manager'
+    C = 'company'
 
     @staticmethod
-    def set_admin(session:SessionMixin):
-        session["is_admin"] = True
+    def is_admin():
+        return ShortSession.manager().get('permission', 0) & ManagerPermissions.ADMIN
 
     @staticmethod
-    def is_admin(session:SessionMixin):
-        return session.get("is_admin")
+    def is_root():
+        return ShortSession.manager().get('permission') == ManagerPermissions.ROOT
 
     @staticmethod
-    def set_nonce(session:SessionMixin) -> str:
+    def set_nonce() -> str:
         nonce = binascii.b2a_hex(os.urandom(16)).decode()
         session["nonce"] = nonce
-
         return nonce
-    @staticmethod
-    def get_admin_details(session:SessionMixin) -> dict:
-        return session.get("details", {})
 
     @staticmethod
-    def set_admin_details(session:SessionMixin, data:dict):
-        session['details'] = data
+    def manager() -> dict:
+        return session.get(ShortSession.M,{})
+
     @staticmethod
-    def valid_nonce(session:SessionMixin, breq:dict):
+    def company() -> dict:
+        return session.get(ShortSession.C,{})
+
+    @staticmethod
+    def set_admin_details(manager, company):
+        delattr(manager, '_sa_instance_state')
+        delattr(company, '_sa_instance_state')
+        session[ShortSession.M] = manager.__dict__
+        session[ShortSession.C] = company.__dict__
+
+    @property
+    def permission(self):
+        return self.manager().get('permission', 0)
+
+    @staticmethod
+    def valid_nonce(breq:dict):
         return session.get("nonce", str(None)) == breq.get("nonce")
 
 
