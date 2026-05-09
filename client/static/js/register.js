@@ -16,6 +16,7 @@ function continueToLevel(){
 }
 
 function welcomeForContinue(){
+    if (window.location.pathname == PageRoute.auth)return
     if (!isMobile){
         showSpecificLevel(currentLevel)
         return
@@ -67,7 +68,9 @@ function completeFromCacheHistory(){
     // level 2
     ld2 = cahceData[RegisterApi.level2]
     if (Object.keys(ld2).length != 0){
-        document.getElementById('ownerVATCode').value = ld2.vc;
+        const ovc = document.getElementById('ownerVATCode');
+        if (!ovc)return
+        ovc.value = ld2.vc;
         document.getElementById("onwerName").value = ld2.fn;
         document.getElementById("onwerPhone").value = ld2.op;
         document.getElementById("companyPhone").value = ld2.cp;

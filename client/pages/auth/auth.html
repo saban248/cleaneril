@@ -64,7 +64,7 @@
                 </label>
                 <input type="password" id="password" placeholder=" " required class="register-input" autocomplete="off">
             </div>
-            <button class="btn-register" onclick="doLogin(this);event.preventDefault()">
+            <button class="btn-register" onclick="event.preventDefault();doLogin(this)">
                 <span>התחבר</span>
                 <i  class="fa-solid fa-circle-notch fa-spin registerLoad" style="display: none;"></i>
             </button>

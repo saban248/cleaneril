@@ -166,13 +166,15 @@ const mPermissions = {
 }
 
 const PageRoute = {
-    createAccount:"/create_account"
+    createAccount:"/create_account",
+    auth:"/auth"
 }
 const ApiRoute = {
     auth:"do_auth",
     api:"api",
     upImage:"up_image",
-    register: "register"
+    register: "register",
+    logout:"logout"
 }
 const RegisterApi = {
     level1:1<<0,

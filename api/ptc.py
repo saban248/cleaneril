@@ -76,6 +76,9 @@ class ShortSession:
     def valid_nonce(breq:dict):
         return session.get("nonce", str(None)) == breq.get("nonce")
 
+    @staticmethod
+    def logout():
+        session.clear()
 
 
 

@@ -110,6 +110,7 @@ class RouteApi(RoutePagesBase):
     api     = 1<<1
     up_image = 1<<2
     register = 1<<3
+    logout   = 1<<4
 
 
 class RegisterApi(IntFlag):

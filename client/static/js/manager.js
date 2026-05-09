@@ -68,6 +68,7 @@ function doLogin(t){
     }
     const data = {username:username.value, password:password.value}
     const toast = showToast("נכנס..", ToastStat.LOAD)
+
     apiPost(ApiRoute.auth, data).then(
         (res) =>{
             if (!res.success){
@@ -83,7 +84,16 @@ function doLogin(t){
     )
 }
 function doLogout(){
-    apiPost()
+    const toast = showToast(message.Ilogout)
+    setTimeout(() => apiPost(ApiRoute.logout).then(
+        (res) => {
+            if (!res.success){
+                showToast(res.notice, ToastStat.ERROR);
+                return
+            }
+            location.reload()
+        }
+    ), 1000)
 }
 
 function switchPageManager(page){
@@ -273,6 +283,7 @@ function openMenuTabsDashboard(t){
 }
 
 function closeMenuTabsDashboard(){
+    
     const iconMenuO = document.getElementById("mtdasboard-open");
     const iconMenuC = document.getElementById("mtdasboard-close");
     iconMenuO.style.display = 'inline-flex';
@@ -288,7 +299,7 @@ function closeMenuTabsDashboard(){
 const GeneralMenuitems = [
     { text: "עובדים", action: (p) => switchPageManager(PageManager.WORKERS), icon:'<i class="fa-solid fa-users"></i>'},
     { text: "קבלות", action: (p) => switchPageManager(PageManager.INVOICES), icon:'<i class="fa-solid fa-file-invoice"></i>'},
-    { text: "יציאה", action: (p) => switchPageManager(PageManager.INVOICES), icon:'<i class="fa-solid fa-file-invoice"></i>'},
+    { text: "יציאה", action: (p) => doLogout(), icon:'<i class="fa-solid fa-person-walking-arrow-right"></i>'},
 
 ]
 function showMenuGeneralItems(t){

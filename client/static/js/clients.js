@@ -554,7 +554,7 @@ async function fetchWorkers(){
             return
         }
         c_runtime.workers = res.workers;
-        reslove(res.workers)
+        resolve(res.workers)
 
     }))
 }

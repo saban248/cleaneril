@@ -50,7 +50,6 @@ def get_api_action(**breq) -> dict:
             on_create_order_create_client(order)
             return SJson.auto_code(__success__)
         case ApiCall.order_new:
-            sleep(2)
             r_order = cil_struct.CleanOrder().build(**breq)
             order = orders.create_clean_order(manager_id,r_order.client_id, r_order)
             print(r_order.ot, order.order_type)

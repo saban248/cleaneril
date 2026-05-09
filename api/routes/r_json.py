@@ -57,3 +57,10 @@ def register():
     breq = get_dictionary_http(request)
     get_ac = get_register_action(**breq)
     return get_ac
+
+@cleaneril.route(RouteApi.logout.path, methods=["POST"])
+def logout():
+    ShortSession.logout()
+    return SJson.auto_code(core_msg.ServerCode.success)
+
+
