@@ -1,7 +1,6 @@
 import binascii
 import os
 from copy import deepcopy
-from typing import Union
 
 from flask import Request, session
 
@@ -13,6 +12,7 @@ CONTENT_TYPE_DATA = "multipart/form-data"
 CONTENT_TYPE_FORM = "application/x-www-form-urlencoded"
 CONTENT_TYPE_JSON = "application/json"
 CONTENT_TYPE_ARGS = "a"
+CLEANERIL_VERSION = 1.0
 
 special_things = [
     "חיטוי מחיידקים",
