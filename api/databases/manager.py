@@ -40,8 +40,12 @@ class ApiManager:
         if source:
             return managers
 
-        for manager in managers:del manager.__dict__['_sa_instance_state']
-        return managers
+        temp = []
+        for manager in managers:
+            copy =  manager.__dict__
+            del copy['_sa_instance_state']
+            temp.append(copy)
+        return temp
 
     @staticmethod
     def auth(**kwargs):
@@ -52,8 +56,8 @@ class ApiManager:
         return core_msg.ServerCode.success
 
 
-def delete_manager(username:str, password:str):
-    manager = ApiManager.get_managers(username=username, password=password).first()
+def delete_manager(username:str, password:str, **kwargs):
+    manager = ApiManager.get_managers(username=username, password=password, **kwargs).first()
     cleaneril_db.session.delete(manager)
     cleaneril_db.session.commit()
     return core_msg.ServerCode.success

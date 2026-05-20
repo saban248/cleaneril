@@ -73,11 +73,12 @@ def upgrade_from_clients_to_clean_order(manager_id):
     db = sqlite3.connect(ServerConfig.DB_PATH)
     db.row_factory = sqlite3.Row
     cur = db.cursor()
-
     try:
         cur.execute("SELECT * FROM clients")
-    except sqlite3.OperationalError:
+    except sqlite3.OperationalError as error:
+        print(error)
         return
+
     rows = cur.fetchall()
     for c in rows:
         old_order_id = c['client_id']
@@ -112,5 +113,6 @@ def upgrade_from_clients_to_clean_order(manager_id):
         order.lead_from = c['lead_from']
         order.profit_sharing = 0
         order.expense = c['expense']
+
         cleaneril_db.session.add(order)
         cleaneril_db.session.commit()

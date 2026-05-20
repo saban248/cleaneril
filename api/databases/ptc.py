@@ -16,6 +16,7 @@ class ServerConfig:
     DEF_wNAME    = FILE_NAME_DB
     DEF_wPWD     = "?"+DEF_wNAME
     COMPANY_NAME        = 'הברקה בדקה'
+    APPLICATION_NAME = 'CleanerIL'
     API_PATH = os.path.join(os.path.curdir, 'api')
     API_VALIDATOR_PATH = os.path.join(API_PATH, 'validator')
     DB_FOLDER = os.path.join(os.getcwd(), "instance")
@@ -33,6 +34,7 @@ class ServerConfig:
     DEFAULT_WHATSAPP_LINK = WHATSAPP_LINK.format(phone=DEFAULT_PHONE, text=DEFAULT_WHATSAPP_MSG)
     DEFAULT_COMPANY_EMAIL = "example@company.com"
     VAT_IL = 18
+    APP_VERSION = 1.0
 
 
 cleaneril.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{FILE_NAME_DB}.db"

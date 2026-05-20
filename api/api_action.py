@@ -14,7 +14,7 @@ from api.databases.crads import ApiCards, Cards
 from api.databases.employee import ApiEmployee, Employee
 from api.databases.general import get_columns_no_instance
 from api.databases.manager import ApiManager, on_register_create_company
-from api.databases.orders import CleanOrder
+from api.databases.orders import CleanOrder, get_clean_order_done, get_clean_order_latest
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril, ManagerPermissions, cleaneril_db
 from api.ptc import special_things, SJson, ShortSession
 from api.routes import cil_struct
@@ -52,7 +52,6 @@ def get_api_action(**breq) -> dict:
         case ApiCall.order_new:
             r_order = cil_struct.CleanOrder().build(**breq)
             order = orders.create_clean_order(manager_id,r_order.client_id, r_order)
-            print(r_order.ot, order.order_type)
             template = {"template":get_client_order_template(manager, order,True), "order_id":order.order_id}
             return SJson.auto_code(__success__, **template)
         case ApiCall.order_view:
@@ -202,7 +201,6 @@ def get_app_reports_api(**breq) -> dict:
 def get_register_action(**breq):
     action = int(breq.get("action", -1))
     register = cil_struct.Register().build(**breq)
-    print(breq)
     match action:
         case RegisterApi.level1:
             user = company.username(register.username)
@@ -217,7 +215,7 @@ def get_register_action(**breq):
                     return SJson.auto_code(core_msg.ServerCode.Register.e_account_exist)
 
             ShortSession.set_admin_details(manager, _company)
-            return SJson.auto_code(stat)
+            return SJson.auto_code(core_msg.ServerCode.success)
         case RegisterApi.level2:
             manager_id = ShortSession.manager_id()
             manager = ApiManager.get_managers(manager_id=manager_id).first()
@@ -259,10 +257,12 @@ def get_card_edit_template(card_id:str, **_):
                            special=special_things
                        )
 
+
 def get_client_order_template(manager, order:CleanOrder, edit:bool = True, **_):
     _company = companies.get_companies(manager_id=manager["manager_id"]).first()
     return render_template(f'{Pages.dashboard.path}order.html',
                            editor=edit, order=order, manager=manager, company=_company)
+
 
 def get_client_template(manager_id:str, client_id:str):
     client: ClientProfile = clients.get_clients(manager_id=manager_id, client_id=client_id).first()
@@ -281,6 +281,7 @@ def get_invoice_template(manager_id:str, receipt):
     _company = companies.get_companies(manager_id=manager_id).first()
     order = CleanOrder(**receipt.data)
     return render_template(Pages.invoice.f_dashboard, company=_company, invoice=receipt, order=order)
+
 
 def api_upload_file(flag, **data):
     filename = data.get("filename", "null")

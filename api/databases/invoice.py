@@ -69,3 +69,26 @@ def delete_receipt(manager_id:str, receipt_id:str):
     cleaneril_db.session.commit()
     return core_msg.ServerCode.success
 
+
+
+def get_receipts_by_date(manager_id:str, df:float, dt:float, dti:bool =True,  **kwargs):
+    """
+
+    :param dti: date to include
+    :param manager_id:
+    :param df: date from
+    :param dt: date to
+    :param kwargs:
+    :return:
+    """
+    _receipts =  (
+        Receipt.query
+        .filter(
+            Receipt.manager_id == manager_id,
+            Receipt.date >= df,
+            Receipt.date <= dt if dti else Receipt.date < dt
+        ))
+    if kwargs:
+        _receipts = _receipts.filter_by(**kwargs)
+
+    return _receipts.all()
