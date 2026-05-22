@@ -17,5 +17,5 @@ def write_to_ini(path,data:str):
 
 
 def write_bkmv_to_zip(path):
-    with zipfile.ZipFile(path,"w",zipfile.ZIP_DEFLATED) as z:
+    with zipfile.ZipFile(os.path.join(path,str(OFConfig.filename_bkmv_zip)),"w",zipfile.ZIP_DEFLATED) as z:
         z.write(os.path.join(path, str(OFConfig.filename_bkmv_txt)), arcname=OFConfig.filename_bkmv_txt)

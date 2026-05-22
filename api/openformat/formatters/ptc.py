@@ -29,7 +29,10 @@ def decimal_field(v, integer_length, decimal_length=2):
 
 
 
-def format_date(v: datetime):
+def format_date(v):
+    if isinstance(v, (int, float)):
+        v = datetime.fromtimestamp(v)
+
     return v.strftime("%Y%m%d")
 
 

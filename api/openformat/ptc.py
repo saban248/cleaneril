@@ -1,5 +1,5 @@
 import os
-from enum import IntFlag
+from enum import IntFlag, Enum
 
 from api.databases.ptc import ServerConfig
 
@@ -23,5 +23,35 @@ class OFConfig:
     SOFTWARE_NUM        = 0
     INI_LENGTH          = 1280
     SOFTWARE_VAT_ID     = 0
+
+
+
+
+
+class OFRecordLengths(Enum):
+    v100A = 95
+    v100C = 444
+    v110D = 339
+    v120D = 222
+    v900Z = 110
+
+    @property
+    def name(self):
+        return super().name.replace("v", "")
+
+    @classmethod
+    def list_names(cls):
+        return [flag.name for flag in cls]
+
+    @staticmethod
+    def get_by_name(name):
+        for flag in OFRecordLengths:
+            if flag.name == name:
+                return flag
+
+        return None
+
+
+
 
 
