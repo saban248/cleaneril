@@ -395,13 +395,12 @@ body, *{
     margin-left: 5%;
     margin-right: 5%;
 }
-.clean-card, .client-card, .worker-card{
+.clean-card.show, .client-card, .worker-card{
     scroll-snap-align: center;
     flex-shrink: 0;
     border-radius: 15px;
     border: 1px solid rgba(255, 255, 255, 0.20);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
-
     transform: translateX(-100%);
     transition: transform 0.3s ease, opacity 0.3s ease;
     display: none;
@@ -417,6 +416,10 @@ body, *{
     position: relative;
     transform-origin: center;
     opacity: 1 !important;
+}
+.clean-card.show, .client-card.show, .worker-card.show{
+    display: flex !important;
+    animation: slide 0.5s forwards;
 }
 .card-ba{
     display: flex !important;
