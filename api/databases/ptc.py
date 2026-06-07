@@ -40,6 +40,8 @@ class ServerConfig:
 cleaneril.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{FILE_NAME_DB}.db"
 cleaneril.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False  # // default
 cleaneril.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
+cleaneril.config["TEMPLATES_AUTO_RELOAD"] = True
+cleaneril.jinja_env.auto_reload = True
 cleaneril.secret_key = binascii.hexlify(os.urandom(8)).decode()
 cleaneril_db = SQLAlchemy(cleaneril)
 migrate = Migrate(cleaneril, cleaneril_db)

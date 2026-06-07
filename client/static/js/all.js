@@ -248,8 +248,10 @@ function closeAsk(code = false) {
 }
 
 document.addEventListener("DOMContentLoaded", async function (){
-    btnCancel.onclick = () => closeAsk(false);
-    btnConfirm.onclick = () => closeAsk(true);
+    if (btnCancel && btnConfirm){
+        btnCancel.onclick = () => {closeAsk(false)};
+        btnConfirm.onclick = () => {closeAsk(true)};
+    }
 
     // ESC + click outside
     window.addEventListener("keydown", (e) => {

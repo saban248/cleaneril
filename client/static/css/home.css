@@ -418,9 +418,24 @@ body, *{
     transform-origin: center;
     opacity: 1 !important;
 }
-.clean-card.show, .client-card.show, .worker-card.show{
+.card-ba{
     display: flex !important;
     animation: slide 0.5s forwards;
+    scroll-snap-align: center;
+    flex-shrink: 0;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 24px;
+    display: flex;
+    flex-direction: column;
+    max-width: 350px;
+    backdrop-filter: blur(9px);
+    margin-bottom: 20px;
+    border-radius: 15px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(255, 255, 255, 0.2);
+    border-image: initial;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .card-head{
