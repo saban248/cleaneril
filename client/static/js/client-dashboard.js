@@ -212,7 +212,6 @@ function removeOrderReceiptImg(){
 
 
 function switchClientCardAction(){
-    const run = (element, display) => element.classList.add(display)
     const show = (element) => element.classList.add('show')||element.classList.remove('hide')
     const hide = (element) => element.classList.remove('show')||element.classList.add('hide')
 
@@ -223,7 +222,7 @@ function switchClientCardAction(){
     const SpecificId = (c_clients.currentCard == clientCardsView.ORDER && c_runtime.currentOrderIdView !=null)
             || (c_clients.currentCard == clientCardsView.RECEIPT && c_runtime.currentInvoiceIdView !=null)
 
-    if (c_clients.enterCard && IS_MOBILE && !c_clients.new_order){
+    if (c_clients.enterCard && IS_MOBILE){
         if (SpecificId){
             show(ainto)
         }else{
