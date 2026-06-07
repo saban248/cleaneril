@@ -2,14 +2,15 @@ import json
 import os
 import sqlite3
 
-from api.databases import orders, clients
+from api.databases import orders, clients, company
 from api.databases.clients import ClientProfile
 from api.databases.employee import ApiEmployee, unknown
+from api.databases.manager import ApiManager
 from api.databases.orders import CleanOrder
-from api.databases.ptc import cleaneril_db, ServerConfig
+from api.databases.ptc import cleaneril_db, ServerConfig, ManagerPermissions
 from api.jfunc import clean_phone_just_numbers, match_nums_words
 from api.routes import cil_struct
-from api.routes.ptc import CleanOrderType, PaymentInvoice
+from api.routes.ptc import CleanOrderType, PaymentInvoice, RegisterApi
 
 
 def set_employee_to_client(wid:str, mid:str):
@@ -116,3 +117,14 @@ def upgrade_from_clients_to_clean_order(manager_id):
 
         cleaneril_db.session.add(order)
         cleaneril_db.session.commit()
+
+def upgrade_from_old_m_to_new_m(manager_id:str):
+    return
+    for manager in ApiManager.get_managers():
+        manager.permission = ManagerPermissions.ADMIN
+        cleaneril_db.session.commit()
+    for com in company.get_companies():
+        com.register_level = RegisterApi.level2
+        cleaneril_db.session.commit()
+
+

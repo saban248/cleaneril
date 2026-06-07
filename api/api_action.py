@@ -122,6 +122,7 @@ def get_api_action(**breq) -> dict:
 
         case ApiCall.orders_list:
             data = cil_struct.ListOrders().build(**breq)
+
             _orders = {"orders":orders.get_clean_order_latest(False, manager_id=manager_id)}
             return SJson.auto_code(__success__, **_orders)
 
@@ -226,7 +227,7 @@ def get_register_action(**breq):
             name = company.company_name(register.c_name)
             if name:return SJson.auto_code(name)
             exist = companies.get_companies(company_name=register.c_name).first()
-            if exist:return SJson.auto_code(core_msg.ServerCode.Company.name_company_exist)
+            if exist and exist.manager_id != manager_id:return SJson.auto_code(core_msg.ServerCode.Company.name_company_exist)
             desc = company.description(register.c_desc)
             if desc:return SJson.auto_code(desc)
             c_phone = company.phone(register.c_phone)

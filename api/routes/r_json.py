@@ -34,10 +34,7 @@ def authorize():
     set_session_data_admin(manager, _company)
     # UPGRADES
     upgrade_from_clients_to_clean_order(manager.manager_id)
-    # done
-    # builder = OFExporter(manager,
-    #                      _company)
-    # print(builder.export())
+
     return SJson.auto_code(__success__)
 
 
