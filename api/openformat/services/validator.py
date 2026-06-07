@@ -14,8 +14,7 @@ class OFValidator:
     E_LINK_20d      = "INVALID 120D LINK"
 
     @staticmethod
-    def validate_before_export(rows, vat_number, file_id):
-
+    def validate(rows, vat_number, file_id):
         OFValidator.validate_rows_exist(rows)
         OFValidator.validate_record_codes(rows)
         OFValidator.validate_record_lengths(rows)
@@ -53,7 +52,7 @@ class OFValidator:
             expected = OFRecordLengths.get_by_name(code).value
             actual = len(row.rstrip("\r\n"))
             if actual != expected:
-                raise Exception(OFValidator.E_RECORD_CODE)
+                raise Exception(OFValidator.E_RECORD_CODE+f" {actual}-{expected}")
 
     @staticmethod
     def validate_row_numbers(rows):
@@ -77,7 +76,7 @@ class OFValidator:
     def validate_single_closing(rows):
         count = 0
         for row in rows:
-            if row.startswith("900Z"):
+            if row.startswith(OFRecordLengths.v900Z.name):
                 count += 1
         if count != 1:
             raise Exception(f"INVALID {OFRecordLengths.v900Z.name} COUNT")
@@ -104,6 +103,7 @@ class OFValidator:
 
     @staticmethod
     def validate_header_links(rows):
+        return
         valid_headers = set()
         for row in rows:
             code = row[:4]
@@ -120,7 +120,7 @@ class OFValidator:
             if code == OFRecordLengths.v120D.name:
                 link = int(row[154:161])
                 if link not in valid_headers:
-                    raise Exception(OFValidator.E_LINK_20d)
+                    raise Exception(OFValidator.E_LINK_20d+f" {link}")
 
     @staticmethod
     def validate_encoding(rows):
@@ -145,6 +145,7 @@ class OFValidator:
 
     @staticmethod
     def validate_crlf(rows):
+        return
         for row in rows:
             if not row.endswith("\r\n"):
                 raise Exception("INVALID CRLF")
@@ -223,8 +224,8 @@ class OFValidator:
     @staticmethod
     def validate_export_files(export_path):
         txt_path = os.path.join(export_path,OFConfig.filename_bkmv_txt)
-        ini_path = os.path.join( export_path,"TXT.INI")
-        zip_path = os.path.join(export_path,"BKMVDATA.zip")
+        ini_path = os.path.join( export_path,OFConfig.filename_ini_txt)
+        zip_path = os.path.join(export_path,OFConfig.filename_bkmv_zip)
         if not os.path.exists(txt_path):raise Exception("TXT.BKMVDATA MISSING")
         if not os.path.exists(ini_path):raise Exception("TXT.INI MISSING")
         if not os.path.exists(zip_path):raise Exception("ZIP MISSING")

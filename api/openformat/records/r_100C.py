@@ -1,7 +1,7 @@
 from api.databases.ptc import ServerConfig
 from api.openformat.formatters.record import OFRecordBuilder
 from api.openformat.formatters.ptc import alpha, numeric, decimal_field, format_date
-from api.openformat.ptc import OFConfig
+from api.openformat.ptc import OFConfig, OFRecordLengths
 
 
 def build_100c(row_number,vat_number, number, date, fullname, total_payment, is_vat):
@@ -21,8 +21,8 @@ def build_100c(row_number,vat_number, number, date, fullname, total_payment, is_
     r.add(alpha("", 30))
     r.add(alpha("", 2))
     r.add(alpha("", 15))
-    r.add(numeric("", 9))
-    r.add(numeric("", 8))
+    r.add(numeric(0, 9))
+    r.add(numeric(0, 8))
     r.add(alpha("", 15))
     r.add(alpha("", 3))
     r.add(decimal_field(total_payment, 12))
@@ -32,6 +32,7 @@ def build_100c(row_number,vat_number, number, date, fullname, total_payment, is_
         r.add(decimal_field(ServerConfig.VAT_IL, 12))
     r.add(decimal_field(total_payment, 12))
 
-    return r.build()
-
+    row = r.build()
+    row = row.ljust(OFRecordLengths.v100C.value)
+    return row
 

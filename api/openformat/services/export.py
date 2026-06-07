@@ -14,6 +14,7 @@ from api.openformat.records.r_100C import build_100c
 from api.openformat.records.r_110D import build_110d
 from api.openformat.records.r_120D import build_120d
 from api.openformat.records.r_900Z import build_900z
+from api.openformat.services.validator import OFValidator
 
 
 def generate_file_id():
@@ -60,6 +61,7 @@ class OFExporter:
         self.__build_ini()
         self.__build_path()
         self.__write()
+        validator = OFValidator.validate(self.__bkm, self.company.company_VAT, self.file_id)
         return self
 
     def __build_path(self):
@@ -87,8 +89,9 @@ class OFExporter:
 
             __120D__ = build_120d(self.__c_rows, self.company.company_VAT, order, receipt, header_link)
             self.__append(__120D__)
-            __900Z__ = build_900z(self.__c_rows, self.company.company_VAT, self.file_id, self.__c_rows)
-            self.__append(__900Z__)
+
+        __900Z__ = build_900z(self.__c_rows, self.company.company_VAT, self.file_id, self.__c_rows)
+        self.__append(__900Z__)
 
     def __build_ini(self):
         summary_rows = build_summary_rows(self.__bkm)

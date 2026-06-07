@@ -32,6 +32,8 @@ def build_120d(row_number,vat_number,order, receipt,header_link):
     r.add(numeric(header_link,7))
     r.add(alpha("", 60))
 
-    return r.build()
+    row = r.build()
+    print(repr(row[140:180]))
+    return row
 
 
