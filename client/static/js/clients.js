@@ -279,6 +279,7 @@ function openMenuStateClients(t, stat){
         cma.onclick = () => {
             item.action(cma)
             menu.classList.remove("show")
+            openMenuStateClients(t, stat)
         }
         menu.appendChild(cma)
         index += 1
