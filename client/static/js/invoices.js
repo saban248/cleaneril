@@ -82,6 +82,7 @@ function loadListInvoicesHtml(){
     parent.replaceChildren();
     c_runtime.invoices.forEach(receipt => {
         const el = createInvoiceItem(receipt);
+        console.log(el)
         if (el==null)return
         parent.appendChild(el);
     });
