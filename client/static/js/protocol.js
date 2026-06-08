@@ -242,7 +242,14 @@ const InvoiceStatType = {
     DRAFT:1<<0,
     PAID:1<<1
 }
-
+function getInvoiceStatTypeText(stat){
+    switch (stat){
+        case InvoiceStatType.DRAFT:
+            return "טיוטה"
+        case InvoiceStatType.PAID:
+            return "שולם"
+    }
+}
 
 const clientCardsView = {
     ORDER:1<<0,

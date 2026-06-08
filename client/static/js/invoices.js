@@ -112,20 +112,20 @@ function createInvoiceItem(invoice, actions = true, callback){
             </div>`;
     }
     html += `
-        <div class="avatar client-state-${invoice.stat}">
+        <div class="avatar invoice-state-${invoice.stat}">
         ${invoice.key}
         </div>
         <div class="content">
         <div class="in-content">
             <div class="top">
-            <span class="name">Invoice-${invoice.key.toString().padStart(4, '0')}</span>
+            <span class="name">${invoice.key.toString().padStart(4, '0')} | ${order.fullname}</span>
             <span class="phone no-mobile">${order.phone}</span>
             </div>
             <div class="bottom">
             <span>${dateFloatToYMD(invoice.date)} ${dateFloatToHour(invoice.date)}</span><br>
-            <span>${invoice.total_price -invoice.off_price || 0}₪ •</span>
-            <span class="client-state-text-${invoice.stat}">
-                ${getStateClientText(1)}
+            <span>${order.price-order.off_price || 0}₪ •</span>
+            <span class="invoice-state-text-${invoice.stat}">
+                ${getInvoiceStatTypeText(invoice.stat)}
             </span>
             </div>
         </div>

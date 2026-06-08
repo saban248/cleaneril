@@ -40,7 +40,7 @@
     column-gap: 10px;
 
 }
-.client-state-1{
+.client-state-1, .invoice-state-1{
     background: #638390!important;
     border: 1px solid #353318 ;
     color: white;
@@ -55,11 +55,12 @@
     border: 1px solid #3b381a;
     color: white;
 }
-.client-state-8{
+.client-state-8, .invoice-state-2{
     background: #5fbb98 !important;
     border: 1px solid #0e2e1b;
     color: white;
 }
+
 
 .seacrh-input{
     display: none;
