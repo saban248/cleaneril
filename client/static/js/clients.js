@@ -117,7 +117,7 @@ async function publishCleanOrder(order_id, state){
     }
     const pay_type = document.getElementById("payGroup").dataset.tp
     const pay_notes = ''
-    const order_type = 1
+    const order_type = c_clients.cot_selected;
 
     onPublishClientShowProgress(fullname, state);
 
@@ -561,20 +561,6 @@ async function fetchWorkers(){
 }
 
 
-document.addEventListener("click", e => {
-    const menu = document.getElementById("clientMenu")
-    if (!menu.contains(e.target) && !e.target.classList.contains("menu-client")) {
-        menu.classList.remove("show")
-        menu.classList.remove("hide")
-    }
-})
-
-// document.addEventListener("click", e => {
-//     const menu = document.getElementById("calanderClients")
-//     if (!menu.contains(e.target) && !e.target.classList.contains("action-client")) {
-//         menu.classList.remove("show")
-//     }
-// })
 
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -588,6 +574,14 @@ document.addEventListener("DOMContentLoaded", function () {
         updateStateClientSetting(ManagerCache.getClientsSortedState(), calender?calender:ManagerCache.getClientsCalender())
     }
     updateMACSOnLoad(false)
+
+    document.addEventListener("click", e => {
+        const menu = document.getElementById("clientMenu")
+        if (!menu.contains(e.target) && !e.target.classList.contains("menu-client")) {
+            menu.classList.remove("show")
+            menu.classList.remove("hide")
+        }
+    })
 });
 
 
@@ -696,15 +690,17 @@ function createOrderItem(client_id, order, actions = true, callback) {
         <div class="content">
         <div class="in-content">
             <div class="top">
-            <span class="name">${order.fullname}</span>
-            <span class="phone no-mobile">${order.phone}</span>
+                <span class="name">${order.fullname}</span>
+                <span class="phone no-mobile">${order.phone}</span>
             </div>
             <div class="bottom">
-            <span>${dateFloatToYMD(order.date)} ${dateFloatToHour(order.date)}</span><br>
-            <span>${order.price -order.off_price || 0}₪ •</span>
-            <span class="client-state-text-${order.stat}">
-                ${getStateClientText(order.stat)}
-            </span>
+                <span>${dateFloatToYMD(order.date)} ${dateFloatToHour(order.date)}</span><br>
+                <span>${order.price -order.off_price || 0}₪ •</span>
+                <span class="client-state-text-${order.stat}">
+                    ${getStateClientText(order.stat)}
+                •</span>
+                <i class="${getCleanOrderTypeIcon(order.order_type)}"></i>
+
             </div>
         </div>
         </div>
