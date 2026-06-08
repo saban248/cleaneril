@@ -727,10 +727,3 @@ function createOrderItem(client_id, order, actions = true, callback) {
     }
     return div;
 }
-
-
-
-document.addEventListener("DOMContentLoaded", async function (){
-    await fetchOrders()
-    await fetchClients()
-})
