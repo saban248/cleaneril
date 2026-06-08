@@ -199,17 +199,18 @@
 
 .create-card{
     border-radius: 50%;
-    padding: 10px;
+    padding: 10px 12px;
     font-size: 1rem;
     background: #1a4678;
     color: white;
     cursor: pointer;
+    text-align: center;
     transition: all 200ms;
     
 }
 .create-card:active,
 .create-card:hover{
-    padding: 5px;
+    padding: 5px 7px;
     font-size: 1.5rem;
     box-shadow: 0 0 11px #939393;
     transform: scale(1.1);
