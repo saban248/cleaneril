@@ -63,7 +63,8 @@ function doLogin(t){
     const username = document.getElementById('username');
     const password = document.getElementById("password");
     if (!username.value || !password.value){
-        showToast("type user or password", ToastStat.ERROR);
+        showToast(message.Elogin||"משהו השתבש", ToastStat.ERROR);
+        onApiCall(t, true)
         return;
     }
     const data = {username:username.value, password:password.value}

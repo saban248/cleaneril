@@ -118,7 +118,7 @@ function doCompany(t){
         showToast("מספר עוסק / ת.ז לא תקין", ToastStat.ERROR)
         return;
     }
-    if (!isValidPhone(onwerPhone) || (companyPhone != '' && isValidPhone(companyPhone))){
+    if (!isValidPhone(onwerPhone) || (companyPhone != '' && !isValidPhone(companyPhone))){
         showToast("מספר הפלאפון לא תקין", ToastStat.ERROR)
         return;
     }
