@@ -277,6 +277,18 @@ function getCleanOrderTypeText(flag){
     return getCleanOrderTypeText(CleanOrderType.GENERAL)
 }
 
+function getCleanOrderTypeTitle(flag){
+    switch (flag) {
+        case CleanOrderType.UPHOLSTERY:
+            return "הזמנת ניקוי ריפודים"
+        case CleanOrderType.AIR_CONDITIONER:
+            return "הזמנת ניקוי מזגנים"
+        case CleanOrderType.GENERAL:
+            return "הזמנת ניקוי כללי"
+    }
+        
+}
+
 function getCleanOrderTypeIcon(flag){
     switch (flag) {
         case CleanOrderType.AIR_CONDITIONER:

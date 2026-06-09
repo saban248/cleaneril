@@ -915,3 +915,16 @@ body, *{
 .login-head{
     display: block;
 }
+
+.edit-order-type-btn {
+    border: 2px dotted #518fd6;
+    padding: 2px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+.edit-order-type-btn:hover {
+    background-color: rgba(81, 143, 214, 0.1);
+    border-style: solid;
+}

@@ -593,13 +593,23 @@ async function deleteOrder(order_id = c_runtime.currentOrderIdView, callback){
 async function initSelectOrderTypeToCreate(){
     c_clients.new_order = true;
     await openClientDashbaord(c_runtime.currentClientIdView, null, false)
+    showSelectOrderTypeToCreate();
+
+}
+
+function showSelectOrderTypeToCreate(exist = false){
     const typeClean = document.getElementById("typeCleanOrder");
     const tcoItems = document.getElementById("tcoItems");
+    if (tcoItems.children.length){
+        typeClean.classList.remove("show")
+        tcoItems.replaceChildren()
+        return;
+    }
     for (let [flag_name, flag] of Object.entries(CleanOrderType)){
         const name = getCleanOrderTypeText(flag)
         const icon = getCleanOrderTypeIcon(flag)
         const html = `
-        <div class="tco-item" onclick="SelectOrderTypeToCreate(this, ${flag})">
+        <div class="tco-item" onclick="SelectOrderTypeToCreate(this, ${flag},${exist});showSelectOrderTypeToCreate()">
             <div class="tcoi-header">
                 ${name}
             </div>
@@ -612,10 +622,24 @@ async function initSelectOrderTypeToCreate(){
     typeClean.classList.add("show")
 }
 
-function SelectOrderTypeToCreate(t, cot){
+
+
+function editExistCleanOrderType(element, flag) {
+    c_clients.cot_selected = flag;
+    const displaySpan = document.getElementById("dc1");
+    if (displaySpan) displaySpan.textContent = getCleanOrderTypeTitle(flag);
+    document.getElementById("typeCleanOrder")?.classList.remove("show");
+}
+
+function SelectOrderTypeToCreate(t, cot, exist = false){
     c_clients.cot_selected = cot;
     t.classList.add("selected")
-    setTimeout(()=>createOrder(), 500)
+    setTimeout(()=>{
+        if (exist){
+            editExistCleanOrderType(t, cot)
+        }else{
+        createOrder()
+        }}, !exist ? 500 : 0)
 }
 
 async function createOrder(){

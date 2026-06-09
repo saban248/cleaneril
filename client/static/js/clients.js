@@ -407,6 +407,7 @@ async function onLoadEditClient(oid){
 
     const order = get_order_by_order_id(oid)
     if (order){
+        c_clients.cot_selected = order.order_type;
         for (let sw of c_runtime.workers){
             if (order.workers.includes(sw.employee_id)){
                 selectWorkerToClient(sw)

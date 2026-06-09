@@ -528,6 +528,19 @@
     font-size: 1.75rem;
     font-weight: bold;
 }
+
+.edit-order-type-btn {
+    border: 2px dotted #88b7ed;
+    padding: 2px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+.edit-order-type-btn:hover {
+    background-color: rgba(126, 131, 136, 0.1);
+}
+
 .dcompany>#dc2, .cd-calls{
     font-size: .75rem;
     color: #5f6060;
