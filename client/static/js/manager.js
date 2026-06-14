@@ -14,6 +14,7 @@ const c_runtime = {
     currentClientIdView:null,
     currentOrderIdView:null,
     currentInvoiceIdView:null,
+    currentWorkerIdView:null
 }
 
 function get_client_by_order_id(order_id){

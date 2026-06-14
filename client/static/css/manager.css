@@ -379,7 +379,7 @@
     pointer-events: none;
     transition: all 0.3s ease;
 }
-.main-edit-client.show{
+.main-edit-client.show,.main-edit-worker.show, .main-edit-card.show, .view-invoice.show{
     opacity: 1;
     transform: scale(1);
     pointer-events: auto;

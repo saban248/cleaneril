@@ -1,10 +1,26 @@
+c_workers = {
+    edit:false,
+    view:false,
+    new:false
+}
 
 
+function showDashbaordWorker(){
+    const mainEdit = document.getElementById("worker-editor")
+    mainEdit.classList.add("show")
+}
+function closeDashboardWorker(){
+    const mainEdit = document.getElementById("worker-editor")
+    mainEdit.classList.remove("show")   
+
+    c_workers.edit = false;
+    c_workers.view = false;
+    c_workers.new = false;
+    c_runtime.currentWorkerIdView = null;
+}
 
 function createEmployee(worker_id=null){
-    const mainEdit = document.getElementById("worker-editor")
-    mainEdit.classList.remove('hide');
-    mainEdit.classList.add('show');
+    showDashbaordWorker();
 
     const toast = showToast("מעבד...")
     data = {action:ApiCall.worker_editor, wid:worker_id}
@@ -17,9 +33,12 @@ function createEmployee(worker_id=null){
 
             const editBody = document.getElementById('worker-template')
             editBody.innerHTML = res.template;
-            if (CONFIG.WORKER_EDIT || !worker_id){
+            if (c_workers.edit || !worker_id){
                 onLoadEditWorker();
             }
+            c_runtime.currentWorkerIdView = worker_id;
+            c_workers.new = true;
+            c_workers.edit = true;
             showToast(res.notice, ToastStat.DONE, toast);
             
         }
@@ -28,19 +47,18 @@ function createEmployee(worker_id=null){
 }
 
 
-function closeCreateWorker(no_api=false){
-    const mainEdit = document.getElementById("worker-editor")
-    mainEdit.classList.remove("show")
-    mainEdit.classList.add("hide")
-    const worker_id = document.getElementById("the-worker-card")?.dataset.ci;
-   ( !no_api && (!CONFIG.WORKER_EDIT && !CONFIG.WORKER_VIEW))&& deleteWorker(worker_id)
-   CONFIG.WORKER_EDIT = false;
-   CONFIG.WORKER_VIEW = false;
+async function closeCreateWorker(){
+    if (c_workers.new){
+        await deleteWorker()
+    }
+    closeDashboardWorker();
+   
+
 }
 
 
 
-async function deleteWorker(worker_id){
+async function deleteWorker(worker_id = c_runtime.currentWorkerIdView){
     const ok = await showAsk({msg:message.WdeleteWorker})
     if (!ok)return;
 
@@ -87,12 +105,10 @@ function setPermissionWorker(t, editor=true){
 }
 
 
+
 function viewEmployeeDetails(employeeId){
-    console.log(employeeId)
     const mainEdit = document.getElementById("worker-editor")
-    mainEdit.classList.remove('hide');
     mainEdit.classList.add('show');
-    CONFIG.WORKER_VIEW =true;
 
     data = {action:ApiCall.worker_view, wid:employeeId}
     const toast = showToast("מעבד...");
@@ -102,7 +118,8 @@ function viewEmployeeDetails(employeeId){
                 showToast(res.notice, ToastStat.ERROR, toast);
                 return
             }
-
+            c_runtime.currentWorkerIdView = employeeId;
+            c_workers.view = true;
             const editBody = document.getElementById('worker-template')
             editBody.innerHTML = res.template;
             showToast(res.notice, ToastStat.DONE, toast);
@@ -129,8 +146,8 @@ function publishWorker(employeeId){
                 showToast(res.notice, ToastStat.ERROR, toast);
                 return
             }
-            closeCreateWorker(true)
-            location.reload()
+
+            showToast(res.notice, ToastStat.DONE, toast);
         }
     )
 

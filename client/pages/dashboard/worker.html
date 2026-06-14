@@ -1,5 +1,5 @@
 {% macro render_employee(worker, editor=False) %}
-<div class="worker-card" {% if editor %}id="the-worker-card"{% endif %} data-ci="{{worker.employee_id}}">
+<div class="worker-card show" {% if editor %}id="the-worker-card"{% endif %} data-ci="{{worker.employee_id}}">
     <div class="worker-head">
         <div class="worker-h-title">
             <img src="/static/images/logo/default_logo.png">
