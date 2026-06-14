@@ -16,5 +16,4 @@ if __name__ == "__main__":
     with cleaneril.app_context():
         cleaneril_db.create_all()
         new_manager_hb()
-        upgrade_manager_to_phone()
     cleaneril.run(host="0.0.0.0", port=80, debug=True)

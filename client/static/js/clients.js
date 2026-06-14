@@ -206,7 +206,7 @@ function updateMenuActionClientsSorted(t, state, cache = true){
     }
     if (!cache)return
 
-    updateStateClientSetting(c_runtime.state_client_selected, ManagerCache.getClientsCalender())
+    updateStateClientSetting(c_runtime.state_client_selected)
     sortedClientsByState()
 }
 
@@ -222,10 +222,9 @@ function updateMACSOnLoad(cache = true){
 
 }
 
-function updateStateClientSetting(state, calender){
+function updateStateClientSetting(state){
     const params = new URLSearchParams(window.location.search);
     params.set("s", state)
-    params.set("c", calender)
     window.history.replaceState({}, "", window.location.pathname + "?" + params.toString());
     ManagerCache.setClientsSortedState(state)
     c_runtime.state_client_selected = state
@@ -572,7 +571,7 @@ document.addEventListener("DOMContentLoaded", function () {
         updateStateClientSetting(state, ManagerCache.getClientsCalender())
     }
     else{
-        updateStateClientSetting(ManagerCache.getClientsSortedState(), calender?calender:ManagerCache.getClientsCalender())
+        updateStateClientSetting(ManagerCache.getClientsSortedState())
     }
     updateMACSOnLoad(false)
 
@@ -668,6 +667,7 @@ function loadListClientsHtml(){
         const el = createOrderItem(order.client_id, order);
         parent.appendChild(el);
     });
+    sortedClientsByState()
 }
 function createOrderItem(client_id, order, actions = true, callback) {
     const div = document.createElement("div");
