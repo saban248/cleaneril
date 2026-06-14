@@ -13,22 +13,32 @@ class Manager(cleaneril_db.Model):
     permission = cleaneril_db.Column(cleaneril_db.Integer, nullable=False)
     password = cleaneril_db.Column(cleaneril_db.String(32), nullable=False)
     manager_id = cleaneril_db.Column(cleaneril_db.String(32), nullable=False)
+    phone = cleaneril_db.Column(cleaneril_db.String(16), nullable=False)
 
 
+
+def manager_exist(phone:str):
+    manager = Manager.query.filter_by(phone=phone).first()
+    return manager is not None
+
+
+def manager_auth(phone:str, password:str) -> Union[None, Manager]:
+    return Manager.query.filter_by(phone=phone, password=password).first()
 
 class ApiManager:
     @staticmethod
-    def register(username:str, permission:int, password:str):
+    def register(phone:str, permission:int, password:str):
 
-        manager = ApiManager.get_managers(username=username, password=password).first()
+        manager = ApiManager.get_managers(phone=phone, password=password).first()
         if manager:
             return None
 
         new = Manager()
-        new.username = username
+        new.username = generate_hex(10)+phone[-4::]
         new.password = password
         new.permission = permission
         new.manager_id = generate_hex(15)
+        new.phone = phone
         cleaneril_db.session.add(new)
         cleaneril_db.session.commit()
 
@@ -63,9 +73,9 @@ def delete_manager(username:str, password:str, **kwargs):
     return core_msg.ServerCode.success
 
 
-def on_register_create_company(user:str, pwd:str) -> int:
+def on_register_create_company(phone:str, pwd:str) -> int:
     null = 'unknown'
-    new = ApiManager.register(user, -1, pwd)
+    new = ApiManager.register(phone, -1, pwd)
     if not new:return core_msg.ServerCode.Register.e_account_exist
     company.create_company(null,null,new.manager_id,False)
     return core_msg.ServerCode.success
@@ -79,9 +89,8 @@ def on_delete_manager_delete_company(user:str, pwd:str) -> int:
 def new_manager_hb():
     u = 'avraham'
     p = 'Ghs553321'
-    manager = dict(username = "avraham",
-         password = "Ghs553321",
-         permission = ManagerPermissions.ROOT,
+    manager = dict(password = "Ghs553321",
+         permission = ManagerPermissions.ROOT, phone = '0585005617'
          )
 
     new_manager = ApiManager.register(**manager)

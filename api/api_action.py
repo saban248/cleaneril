@@ -2,6 +2,7 @@ import base64
 import os
 from time import sleep
 
+import magic
 from flask import render_template
 
 import api.databases.company as companies
@@ -13,9 +14,10 @@ from api.databases.clients import ClientProfile
 from api.databases.crads import ApiCards, Cards
 from api.databases.employee import ApiEmployee, Employee
 from api.databases.general import get_columns_no_instance
-from api.databases.manager import ApiManager, on_register_create_company
+from api.databases.manager import ApiManager, on_register_create_company, manager_exist, manager_auth
 from api.databases.orders import CleanOrder, get_clean_order_done, get_clean_order_latest
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril, ManagerPermissions, cleaneril_db
+from api.general import is_logo_app_valid
 from api.ptc import special_things, SJson, ShortSession
 from api.routes import cil_struct
 from api.routes.cil_struct import ReportsDataAnalyze
@@ -88,8 +90,10 @@ def get_api_action(**breq) -> dict:
         case ApiCall.conf_company:
             config = cil_struct.Company().build(**breq)
             code = companies.update_company_details(manager_id, config.c_name,config.c_owner, config.c_vat,
-                                              config.c_desc,config.c_phone, config.c_email, config.c_vat_code,
+                                              config.c_desc,config.c_phone, config.o_phone, config.c_email, config.c_vat_code,
                                                       config.c_gpse)
+            set_session_data_admin(ApiManager.get_managers(manager_id=manager_id).first(),
+                                   companies.get_companies(manager_id=manager_id).first())
             return SJson.auto_code(code)
 
         case ApiCall.order_workers:
@@ -203,20 +207,35 @@ def get_register_action(**breq):
     action = int(breq.get("action", -1))
     register = cil_struct.Register().build(**breq)
     match action:
-        case RegisterApi.level1:
-            user = company.username(register.username)
-            if user:return SJson.auto_code(user)
+        case RegisterApi.level0:
+            o_phone = company.phone(register.o_phone)
+            if o_phone:return SJson.auto_code(o_phone)
             pwd = company.password(register.password)
             if pwd:return SJson.auto_code(pwd)
-            stat = on_register_create_company(register.username, register.password)
-            manager = ApiManager.get_managers(username=register.username, password=register.password).first()
-            _company: companies.Company = companies.get_companies(manager_id=manager.manager_id).first()
-            if stat:
+            manager = manager_auth(register.o_phone, register.password)
+            if manager:
+                _company: companies.Company = companies.get_companies(manager_id=manager.manager_id).first()
+                if _company.register_level == RegisterApi.DONE:
+                    return SJson.auto_code(core_msg.ServerCode.Register.e_account_exist)
+
+            return SJson.auto_code(core_msg.ServerCode.success)
+        case RegisterApi.level1:
+            # otp
+            # done
+            null = 'unknown'
+            manager = manager_auth(register.o_phone, register.password)
+            if not manager:
+                manager = ApiManager.register(register.o_phone, -1, register.password)
+                _company = companies.create_company(null, null, manager.manager_id, False)
+            else:
+                _company = companies.get_companies(manager_id=manager.manager_id).first()
+            if manager:
                 if _company.register_level == RegisterApi.DONE:
                     return SJson.auto_code(core_msg.ServerCode.Register.e_account_exist)
 
             ShortSession.set_admin_details(manager, _company)
             return SJson.auto_code(core_msg.ServerCode.success)
+
         case RegisterApi.level2:
             manager_id = ShortSession.manager_id()
             manager = ApiManager.get_managers(manager_id=manager_id).first()
@@ -302,13 +321,19 @@ def api_upload_file(flag, **data):
 
             with open(fullpath, "wb") as f:
                 f.write(image_bytes)
+
         case ApiUploadFile.LOGO:
+            print("enter")
             exist = ApiManager.get_managers(manager_id=manager_id).first()
             if not exist:
                 return SJson.auto_code(core_msg.ServerCode.General.access_denied)
             name = manager_id+".png"
             fullpath = os.path.join(os.path.basename(os.path.dirname(cleaneril.static_folder)),
                                     os.path.join(ServerConfig.FOLDER_LOGOS_PATH, name))
+            stat = is_logo_app_valid(image_bytes)
+            if stat:
+                return SJson.auto_code(stat)
+
             with open(fullpath, "wb") as f:
                 f.write(image_bytes)
 
@@ -316,3 +341,7 @@ def api_upload_file(flag, **data):
 
 
     return SJson.auto_code(core_msg.ServerCode.success)
+
+
+
+

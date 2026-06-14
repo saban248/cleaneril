@@ -928,3 +928,21 @@ body, *{
     background-color: rgba(81, 143, 214, 0.1);
     border-style: solid;
 }
+
+.otp-container {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    direction: ltr;
+    margin: 15px 0;
+}
+.otp-input {
+    width: 42px;
+    height: 50px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+}

@@ -177,10 +177,12 @@ const ApiRoute = {
     logout:"logout"
 }
 const RegisterApi = {
+    level0:1<<5,
     level1:1<<0,
     level2:1<<1,
     level3:1<<2,
-    level4:1<<3
+    level4:1<<3,
+    DONE:1<<4
 }
 
 

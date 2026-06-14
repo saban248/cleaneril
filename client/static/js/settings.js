@@ -23,7 +23,8 @@ function saveConfig(view, input, config){
             showToast(res.notice, ToastStat.ERROR, toast);
             return
         }
-        location.reload()
+        view.textContent = input.value
+        showToast("עודכן בהצלחה!", ToastStat.DONE, toast);
     })
 }
 

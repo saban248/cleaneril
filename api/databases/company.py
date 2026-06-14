@@ -80,7 +80,7 @@ def update_company_details(manager_id:str, c_name:str = None, o_name:str = None,
         company.company_VAT = c_vat_code
     if c_gpse:
         company.gpse = c_gpse
-    if r_level:
+    if r_level and not r_level == -1:
         company.register_level = r_level
 
     cleaneril_db.session.commit()

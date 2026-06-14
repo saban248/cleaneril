@@ -13,6 +13,14 @@ CONTENT_TYPE_FORM = "application/x-www-form-urlencoded"
 CONTENT_TYPE_JSON = "application/json"
 CONTENT_TYPE_ARGS = "a"
 
+LOGO_APP_FILE_ALLOWED = {
+    "image/png",
+    "image/jpeg",
+    "image/webp",
+    "image/gif"
+}
+
+
 special_things = [
     "חיטוי מחיידקים",
      "זירוז הייבוש",

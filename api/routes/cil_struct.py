@@ -15,14 +15,16 @@ def struct_builder(cls, **data):
         if k in cls.__dict__:
             setattr(cls, k, v)
 
-
+@dataclass
 class Auth:
-    username:str        = None
+    # phone / ID
+    phone:str        = None
     password:str        = None
 
     def build(self, **data):
         struct_builder(self, **data)
         return self
+
 
 
 class Dashboard:
@@ -40,7 +42,7 @@ class Dashboard:
         if not self.s:self.s = StateOrder.ALL
         return self
 
-
+@dataclass
 class CardEditor:
     action:int      = None
     ci:str          = None
@@ -72,6 +74,7 @@ class CardEditor:
 
         return self
 
+@dataclass
 class ListOrders:
     fromY:int           = None
     toY:int             = None
@@ -226,6 +229,7 @@ class Company:
     c_vat:bool      = None
     c_vat_code:int      = None
     c_phone:str     = None
+    o_phone:str     = None
     c_gpse:int      = None
     level:int       = None
 
@@ -355,3 +359,5 @@ class ReportsDataAnalyze:
     ccr:int         = None
     graph_funds:list =  None
     graph_orders:list = None
+
+

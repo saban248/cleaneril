@@ -1,9 +1,10 @@
 var isMobile = window.innerWidth <= 768;
 const LEVELS = {
     AUTH:1,
-    COMPANY:2,
-    LOGO:3,
-    FINISH:4
+    PHONE_OTP:2,
+    COMPANY:3,
+    LOGO:4,
+    FINISH:5
 }
 var currentLevel = LEVELS.AUTH;
 
@@ -81,7 +82,7 @@ function completeFromCacheHistory(){
 
 }
 function doRegister(t){
-    const fullname = document.getElementById("username").value;
+    const o_phone = document.getElementById("onwerPhone").value;
     const pwd1 = document.getElementById("pwd1").value;
     const pwd2 = document.getElementById("pwd2").value;
     const csrf = document.getElementById("cXsXrF");
@@ -90,7 +91,7 @@ function doRegister(t){
         return;
     }
     onApiCall(t)
-    const data = {action:RegisterApi.level1, username:fullname, password:pwd1, xCSRF:csrf.value}
+    const data = {action:RegisterApi.level0, o_phone:o_phone, password:pwd1, xCSRF:csrf.value}
     apiPost(ApiRoute.register, data).then(
         res =>{
             if (!res.success){
@@ -103,6 +104,32 @@ function doRegister(t){
             onApiCall(t, true)
         }
     )
+}
+
+
+function doOtp(t){
+    const o_phone = document.getElementById("onwerPhone").value;
+    const pwd1 = document.getElementById("pwd1").value;
+    const otp = Array.from(document.querySelectorAll('.otp-input')).map(i => i.value).join('');
+    const csrf = document.getElementById("cXsXrF").value;
+    
+    const toast = showToast("מאמת...", ToastStat.INFO);
+    if (otp.length < 6) {
+        showToast("נא להזין קוד מלא", ToastStat.ERROR, toast);
+        return;
+    }
+
+    onApiCall(t);
+    apiPost(ApiRoute.register, {action: RegisterApi.level1, otp: otp, o_phone: o_phone,
+        password:pwd1, mid: csrf}).then(res => {
+        onApiCall(t, true);
+        if (!res.success) {
+            showToast(res.notice, ToastStat.ERROR, toast);
+            return;
+        }
+        showToast("הקוד אומת בהצלחה!", ToastStat.DONE, toast);
+        completeRegsiterLevel(LEVELS.PHONE_OTP);
+    });
 }
 
 function doCompany(t){
@@ -217,6 +244,30 @@ document.addEventListener("DOMContentLoaded", function (){
             img.src = URL.createObjectURL(file)
         }
     })
+
+    const otpInputs = document.querySelectorAll('.otp-input');
+    otpInputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            if (e.data && index < otpInputs.length - 1) {
+                otpInputs[index + 1].focus();
+            }
+        });
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !input.value && index > 0) {
+                otpInputs[index - 1].focus();
+            }
+        });
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const pasteData = e.clipboardData.getData('text').slice(0, 6).split('');
+            pasteData.forEach((char, i) => {
+                if (otpInputs[i]) otpInputs[i].value = char;
+            });
+            const nextFocus = Math.min(pasteData.length, otpInputs.length - 1);
+            otpInputs[nextFocus].focus();
+        });
+    });
+
     const media = window.matchMedia("(max-width: 768px)");
         media.addEventListener("change", (e) => {
             isMobile = e.matches;

@@ -119,12 +119,20 @@ def upgrade_from_clients_to_clean_order(manager_id):
         cleaneril_db.session.commit()
 
 def upgrade_from_old_m_to_new_m(manager_id:str):
-    return
     for manager in ApiManager.get_managers():
-        manager.permission = ManagerPermissions.ADMIN
+        #manager.permission = ManagerPermissions.ADMIN
+        comp = company.get_companies(manager_id=manager_id).first()
+        manager.phone = comp.owner_phone
         cleaneril_db.session.commit()
+
     for com in company.get_companies():
         com.register_level = RegisterApi.level2
+        cleaneril_db.session.commit()
+
+def upgrade_manager_to_phone():
+    for m in ApiManager.get_managers():
+        comp = company.get_companies(manager_id=m.manager_id).first()
+        m.phone = comp.owner_phone
         cleaneril_db.session.commit()
 
 

@@ -55,9 +55,9 @@
             <div class="input-group">
                 <label>
                     <i class="fa-solid fa-circle-user"></i>
-                    שם משתמש
+                    מספר פלאפון אישי (ישמש כפרטי ההתחברות שלך) 
                 </label>
-                <input type="text" placeholder=" " required class="register-input" id="username" autocomplete="off">
+                <input type="tel" placeholder=" " required class="register-input" style="direction: ltr; text-align: left;" id="onwerPhone" autocomplete="off">
             </div>
             <div class="input-group">
                 <label>
@@ -93,11 +93,55 @@
             <a  onclick="_0C0A0ON_(); return false;">אברהם סבן</a>
         </div>
     </div>
-    <div class="left" id="llevel-2">
+        <div class="left" id="llevel-2">
+        <div class="head">
+            <h2>אימות מספר פלאפון</h2>
+            <p>
+                קוד אימות בן 6 ספרות נשלח למספר הפלאפון שהזנת. אנא הזן את הקוד שקיבלת כדי לאמת את מספר הטלפון שלך ולהמשיך בתהליך ההרשמה.          
+            </p>
+        </div>
+        <div class="icons">
+            <i class="icon icon-128">{% include "icon/register.svg"%}</i>
+            <i class="icon icon-128">{% include "icon/globe.svg"%}</i>
+            <i class="icon icon-128">{% include "icon/graph.svg"%}</i>
+        </div>
+        <button class="btn-continue" onclick="continueToLevel()">
+            <span>קדימה</span>
+            <i  class="fa-solid fa-circle-notch fa-spin registerLoad" style="display: none;"></i>
+        </button>
+    </div>
+    <div class="right" id="rlevel-2">
+        <h1>אימות מספר פלאפון</h1>
+        <form>
+            <div class="input-group">
+                <label>
+                    <i class="fa-solid fa-comment-sms"></i>
+                    6 ספרות שקיבלת בהודעת SMS
+                </label>
+                <div class="otp-container" id="otpInputs">
+                    <input type="tel" maxlength="1" class="otp-input" inputmode="numeric" autocomplete="one-time-code">
+                    <input type="tel" maxlength="1" class="otp-input" inputmode="numeric">
+                    <input type="tel" maxlength="1" class="otp-input" inputmode="numeric">
+                    <input type="tel" maxlength="1" class="otp-input" inputmode="numeric">
+                    <input type="tel" maxlength="1" class="otp-input" inputmode="numeric">
+                    <input type="tel" maxlength="1" class="otp-input" inputmode="numeric">
+                </div>
+            </div>
+            <button class="btn-register" onclick="doOtp(this);event.preventDefault()">
+                <span>אמת קוד</span>
+                <i  class="fa-solid fa-circle-notch fa-spin registerLoad" style="display: none;"></i>
+            </button>
+        </form>
+        <div class="credit">
+            נכתב ונבנה ע"י
+            <a  onclick="_0C0A0ON_(); return false;">אברהם סבן</a>
+        </div>
+    </div>
+    <div class="left" id="llevel-3">
         <div class="head">
             <h2>פרטים על העסק</h2>
             <p>
-                פרטים ראשוניים על העסק שלך, ישתקף בקבלות ובהזמנות ללקוחות שלך      
+                פרטים  על העסק שלך, ישתקף בקבלות ובהזמנות ללקוחות שלך      
             </p>
         </div>
         <div class="icons">
@@ -108,7 +152,7 @@
             <i  class="fa-solid fa-circle-notch fa-spin registerLoad" style="display: none;"></i>
         </button>
     </div>
-    <div class="right" id="rlevel-2">
+    <div class="right" id="rlevel-3">
         <h1>פרטי העסק</h1>
         <form>
             <div class="input-group">
@@ -125,13 +169,7 @@
                 </label>
                 <input type="text" placeholder=" " required class="register-input" id="onwerName" >
             </div>
-            <div class="input-group">
-                <label>
-                    <i class="fa-solid fa-square-phone-flip"></i>
-                   מספר פאלפון אישי
-                </label>
-                <input type="tel" placeholder=" " required class="register-input" id="onwerPhone" >
-            </div>
+
             <div class="input-group">
                 <label>
                     <i class="fa-solid fa-square-phone-flip"></i>
@@ -163,7 +201,7 @@
             <a  onclick="_0C0A0ON_(); return false;">אברהם סבן</a>
         </div>
     </div>
-    <div class="left" id="llevel-3">
+    <div class="left" id="llevel-4">
         <div class="head">
             <h2>לוגו של העסק</h2>
             <p>
@@ -178,7 +216,7 @@
             <i  class="fa-solid fa-circle-notch fa-spin registerLoad" style="display: none;"></i>
         </button>
     </div>
-    <div class="right" id="rlevel-3">
+    <div class="right" id="rlevel-4">
         <h1>לוגו של העסק</h1>
         <form>
             <div class="input-group">
@@ -199,11 +237,11 @@
             <a  onclick="_0C0A0ON_(); return false;">אברהם סבן</a>
         </div>
     </div>
-    <div class="left" id="llevel-4">
+    <div class="left" id="llevel-5">
         <div class="head">
             <h2>סיימת את תהליך ההרשמה!</h2>
             <p>
-                תהליך ההרשמה הסתיים בהצלחה. המערכת מעבדת את הנתונים והחשבון יופעל תוך 30 דקות
+                תהליך ההרשמה הסתיים בהצלחה. המערכת מעבדת את הנתונים והחשבון יופעל תוך זמן קצר
             </p>
         </div>
         <i class="icon icon-128">{% include "icon/finish-register.svg" %}</i>

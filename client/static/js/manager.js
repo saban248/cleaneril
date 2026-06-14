@@ -60,14 +60,15 @@ function get_receipt_by_order_id(oid){
 
 function doLogin(t){
     onApiCall(t)
-    const username = document.getElementById('username');
+    const phone = document.getElementById('phone');
     const password = document.getElementById("password");
-    if (!username.value || !password.value){
+    if (!phone.value || !password.value){
         showToast(message.Elogin||"משהו השתבש", ToastStat.ERROR);
         onApiCall(t, true)
         return;
     }
-    const data = {username:username.value, password:password.value}
+    const data = {phone:phone.value, password:password.value}
+    console.log("doLogin", data)
     const toast = showToast("נכנס..", ToastStat.LOAD)
 
     apiPost(ApiRoute.auth, data).then(
