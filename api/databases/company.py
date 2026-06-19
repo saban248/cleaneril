@@ -54,7 +54,7 @@ def create_company(c_name:str, o_name:str, manager_id:str, c_vat:bool):
     cleaneril_db.session.add(new_company)
     cleaneril_db.session.commit()
 
-    return 0
+    return new_company
 
 
 def update_company_details(manager_id:str, c_name:str = None, o_name:str = None, c_vat:bool = None,

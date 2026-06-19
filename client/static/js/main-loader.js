@@ -3,4 +3,5 @@ document.addEventListener("DOMContentLoaded", async function (){
     await fetchInvoice();
     await fetchClients();
     await fetchWorkers();
+    await fetchPermissions();
 })

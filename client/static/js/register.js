@@ -198,7 +198,7 @@ function doLogo(t){
     const img = document.getElementById('setLogo');
     const csrf = document.getElementById("cXsXrF").value;
     const file = img.files[0];
-
+    const toast = showToast("מעלה לוגו...");
     const reader = new FileReader();
     reader.onload = function () {
         const base64Data = reader.result.split(",")[1];
@@ -208,14 +208,19 @@ function doLogo(t){
             data: base64Data
         }).then(res => {
             if (!res.success){
-                showToast(res.notice, ToastStat.ERROR)
+                showToast(res.notice, ToastStat.ERROR, toast)
                 return;
             }
+            showToast("הלוגו הועלה בהצלחה", ToastStat.DONE, toast)
             completeRegsiterLevel(LEVELS.LOGO);
             onApiCall(t,true)
 
         });
     };
+    if (!file){
+        showToast("נא לבחור לוגו", ToastStat.ERROR, toast)
+        return;
+    }
     reader.readAsDataURL(file);
 }
 
@@ -284,6 +289,7 @@ document.addEventListener("DOMContentLoaded", function (){
 
 function uploadImage(t, file, name, action, mid, callback) {
     if (!file)return;
+    console.log("uploadImage", file, name, action, mid)
     const reader = new FileReader();
     switch (action){
         case ApiUploadFile.CARD:

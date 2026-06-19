@@ -14,7 +14,26 @@ const c_runtime = {
     currentClientIdView:null,
     currentOrderIdView:null,
     currentInvoiceIdView:null,
-    currentWorkerIdView:null
+    currentWorkerIdView:null,
+    currentUPermission:null,
+}
+
+async function fetchPermissions(){
+    const permissions = c_runtime.currentUPermission;
+    if (permissions)return permissions;
+
+    return new Promise((resolve) => {
+        apiPost(ApiRoute.api, {action:ApiCall.permissions}).then(
+            (res) => {
+                if (!res.success){
+                    showToast(res.notice, ToastStat.ERROR)
+                    return
+                }
+                c_runtime.currentUPermission = parseInt(res.p);
+                resolve(res)
+            }
+        )
+    })
 }
 
 function get_client_by_order_id(order_id){
@@ -294,6 +313,8 @@ function closeMenuTabsDashboard(){
     const menu = document.getElementById("generalMenu")
     menu.classList.remove("show")
     const mMaster = document.getElementById("menuMaster")
+    mMaster.style.transform = ``;
+    mMaster.style.top = `-10px`;
     mMaster.classList.remove("open")
 }
 
@@ -302,6 +323,7 @@ function closeMenuTabsDashboard(){
 const GeneralMenuitems = [
     { text: "עובדים", action: (p) => switchPageManager(PageManager.WORKERS), icon:'<i class="fa-solid fa-users"></i>'},
     { text: "קבלות", action: (p) => switchPageManager(PageManager.INVOICES), icon:'<i class="fa-solid fa-file-invoice"></i>'},
+    { text: "מנויים", action: (p) => switchPageManager(PageManager.SUBSCRIPTIONS), icon:'<i class="fa-solid fa-crown"></i>', flag:ManagerPermissions.ROOT},
     { text: "יציאה", action: (p) => doLogout(), icon:'<i class="fa-solid fa-person-walking-arrow-right"></i>'},
 
 ]
@@ -314,8 +336,11 @@ function showMenuGeneralItems(t){
         return
     }
     menu.innerHTML = "";
-
+    let y = 0;
     GeneralMenuitems.forEach(item => {
+        if (0 && item.flag && !(c_runtime.currentUPermission & item.flag)){
+            return
+        }
         let cma = document.createElement("div")
         cma.className = "master-menu-item"
         let cma1 = document.createElement('div')
@@ -333,6 +358,9 @@ function showMenuGeneralItems(t){
             menu.classList.remove("show")
         }
         menu.appendChild(cma)
+        y += 40;
+        mMaster.style.top = `-${y}px`;
+        
     })
 
     // ברירת מחדל – למטה

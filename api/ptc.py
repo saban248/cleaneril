@@ -4,6 +4,7 @@ from copy import deepcopy
 
 from flask import Request, session
 
+from api.databases.general import get_columns_as_dict
 from api.databases.ptc import ManagerPermissions
 from api.routes.ptc import RegisterApi
 from api.validator import core_msg
@@ -70,10 +71,8 @@ class ShortSession:
 
     @staticmethod
     def set_admin_details(manager, company):
-        delattr(manager, '_sa_instance_state')
-        delattr(company, '_sa_instance_state')
-        session[ShortSession.M] = manager.__dict__
-        session[ShortSession.C] = company.__dict__
+        session[ShortSession.M] = get_columns_as_dict(manager)
+        session[ShortSession.C] = get_columns_as_dict(company)
 
     @property
     def permission(self):

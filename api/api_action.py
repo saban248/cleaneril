@@ -157,9 +157,11 @@ def get_api_action(**breq) -> dict:
             _clients = clients.get_clients(False, manager_id=manager_id)
             lclients =  {"clients":_clients}
             return SJson.auto_code(__success__, **lclients)
+        case ApiCall.permissions:
+            _manager = ApiManager.get_managers(manager_id=manager_id).first()
+            return SJson.auto_code(__success__, **{"p":_manager.permission})
 
     return SJson.auto_code(__success__)
-
 
 
 def get_app_reports_api(**breq) -> dict:
@@ -256,15 +258,18 @@ def get_register_action(**breq):
             if fullname:return SJson.auto_code(fullname)
             stat = companies.update_company_details(manager_id,register.c_name,register.o_phone,None,
                                                      register.c_desc,register.c_phone, register.o_phone,None,
-                                                    register.vat_code,None, RegisterApi.DONE)
+                                                    register.vat_code,None, RegisterApi.level3)
             # WHEN DONE
             manager.permission = ManagerPermissions.ADMIN
             cleaneril_db.session.commit()
             _company: companies.Company = companies.get_companies(manager_id=manager.manager_id).first()
-            set_session_data_admin(manager, _company)
             return SJson.auto_code(stat)
         case RegisterApi.level3:
-            return api_upload_file(ApiUploadFile.LOGO,**breq)
+            # validate upload
+            manager_id = ShortSession.manager_id()
+            _stat_ =  api_upload_file(ApiUploadFile.LOGO,**breq)
+            companies.update_company_details(manager_id,r_level=RegisterApi.DONE)
+            return  _stat_
 
 
     return {}
@@ -323,7 +328,6 @@ def api_upload_file(flag, **data):
                 f.write(image_bytes)
 
         case ApiUploadFile.LOGO:
-            print("enter")
             exist = ApiManager.get_managers(manager_id=manager_id).first()
             if not exist:
                 return SJson.auto_code(core_msg.ServerCode.General.access_denied)

@@ -5,7 +5,15 @@ const CONFIG = {
     CURRENT_PAGE:-1,
     IMG_ORDER:0
 }
- const SocialMedia = {
+const ManagerPermissions = {
+    VIEW:1<<0,
+    EDIT:1<<1,
+    ADMIN:1|2,
+    ROOT:(1|2)|(1<<2)
+
+}
+
+const SocialMedia = {
     TIKTOK:1,
     INSTEGRAM:2,
     FACEBOOK:4,
@@ -211,7 +219,8 @@ const ApiCall = {
     order_view:1<<21,
     order_new:1<<22,
     list_clients:1<<23,
-    invoice_delete:1<<24
+    invoice_delete:1<<24,
+    permissions:1<<25,
 }
 
 const ReportsApi = {

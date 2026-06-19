@@ -18,8 +18,11 @@ def get_columns_no_instance(columns:list):
         temp.append(get_column_no_instance(column))
     return temp
 
-def get_columns_as_dict(query:Query) :
-    return [{c.name: getattr(e, c.name) for c in e.__table__.columns} for e in query]
+def get_columns_as_dict(data):
+    if hasattr(data, "__table__"):
+        return {c.name: getattr(data, c.name)for c in data.__table__.columns}
+
+    return [{c.name: getattr(e, c.name) for c in e.__table__.columns} for e in data]
 
 
 def get_columns(table:cleaneril_db.Model, source:bool = True, **kwargs):
