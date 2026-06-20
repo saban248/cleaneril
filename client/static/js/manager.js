@@ -4,6 +4,7 @@ const c_runtime = {
     state_client_selected:0,
     state_calendar_selected:0,
     workers:[],
+    managers:[],
     blockPublishClient:false,
     blockRenderReceiptImg:false,
     orders:[],

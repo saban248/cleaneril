@@ -332,6 +332,16 @@ function getSubscriptionTypeText(flag){
     return 'הכל'
 }
 
+function getSubscriptionOrderText(flag){
+    switch (flag){
+        case 1 :
+            return 'חדש'
+        case 2:
+            return "ישן"
+    }
+    return getSubscriptionOrderText(1)
+
+}
 const UserAccountSubscription = {
     FREE:1<<0,
     PRIMIUM:1<<1

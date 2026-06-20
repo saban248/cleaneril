@@ -16,7 +16,6 @@ class Manager(cleaneril_db.Model):
     phone = cleaneril_db.Column(cleaneril_db.String(16), nullable=False)
 
 
-
 def manager_exist(phone:str):
     manager = Manager.query.filter_by(phone=phone).first()
     return manager is not None
