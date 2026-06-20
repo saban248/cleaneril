@@ -22,7 +22,6 @@ class ClientLeadFrom(IntFlag):
 class CleanOrderType(IntFlag):
     UPHOLSTERY      = 1<<0
     AIR_CONDITIONER = 1<<1
-
     # mask
     GENERAL         = UPHOLSTERY|AIR_CONDITIONER
 
@@ -35,6 +34,21 @@ class CalenderClients(IntFlag):
     MONTH           = 1<<4
     FOREVER         = 1<<5
 
+
+class SubscriptionType(IntFlag):
+    MONTHLY            = 1<<0
+    YEARLY             = 1<<1
+
+
+class UserAccountSubscription(IntFlag):
+    FREE                = 1<<0
+    PREMIUM             = 1<<1
+
+
+class SubscriptionStat(IntFlag):
+    INACTIVE            = 1<<0
+    ACTIVE              = 1<<1
+    EXPIRED             = 1<<2
 
 class PaymentInvoice(IntFlag):
     BANK_TRANSFER = 1<<0
@@ -103,6 +117,7 @@ class RoutePages(RoutePagesBase):
     dashboard = 1<<2
     create_account = 1<<3
     terms = 1<<4
+    subscription = 1<<5
 
 
 class RouteApi(RoutePagesBase):

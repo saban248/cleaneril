@@ -151,6 +151,8 @@ const PageManager = {
     CALENDAR:1<<7,
     INVOICES:1<<8,
     WSHARE:1<<9,
+    SUBSCRIPTIONS:1<<10
+
 }
 
 function getPageManager(page) {
@@ -311,6 +313,25 @@ function getCleanOrderTypeIcon(flag){
     }
     return getCleanOrderTypeIcon(CleanOrderType.GENERAL)
 }
+
+
+
+const subscriptionType = {
+    MONTHLY:1<<0,
+    YEARLY:1<<1
+}
+
+const UserAccountSubscription = {
+    FREE:1<<0,
+    PRIMIUM:1<<1
+}
+
+const SubscriptionStat = {
+    ACTIVE:1<<0,
+    INACTIVE:1<<1,
+    EXPIRED:1<<2
+}
+
 
 window.SocialMedia = SocialMedia;
 window.PageManager = PageManager;
