@@ -321,6 +321,17 @@ const subscriptionType = {
     YEARLY:1<<1
 }
 
+function getSubscriptionTypeText(flag){
+    switch (flag) {
+        case subscriptionType.MONTHLY:
+            return "חודשי"
+        case subscriptionType.YEARLY:
+            return 'שנתי'
+    }
+    
+    return 'הכל'
+}
+
 const UserAccountSubscription = {
     FREE:1<<0,
     PRIMIUM:1<<1
@@ -330,6 +341,19 @@ const SubscriptionStat = {
     ACTIVE:1<<0,
     INACTIVE:1<<1,
     EXPIRED:1<<2
+}
+
+function getSubscriptionStatText(stat){
+    switch (stat) {
+        case SubscriptionStat.ACTIVE:
+            return "פעיל"
+        case SubscriptionStat.INACTIVE:
+            return "לא פעיל"
+        case SubscriptionStat.EXPIRED:
+            return "פג תוקף"
+    }
+
+    return 'הכל'
 }
 
 
