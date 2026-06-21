@@ -1,10 +1,10 @@
-
 const c_runtime = {
     items_ordered:{},
     state_client_selected:0,
     state_calendar_selected:0,
     workers:[],
     managers:[],
+    companies:[],
     blockPublishClient:false,
     blockRenderReceiptImg:false,
     orders:[],
@@ -28,10 +28,41 @@ async function fetchPermissions(){
             (res) => {
                 if (!res.success){
                     showToast(res.notice, ToastStat.ERROR)
-                    return
                 }
-                c_runtime.currentUPermission = parseInt(res.p);
+                else{
+                    c_runtime.currentUPermission = parseInt(res.p);
+                }
                 resolve(res)
+            }
+        )
+    })
+}
+
+
+async function fetchManagers(){
+    return new Promise((resolve) => { 
+        apiPost(ApiRoute.api, {action:ApiCall.list_managers}).then(
+            (res) =>{
+                if (!res.success){
+                }
+                else{
+                    c_runtime.managers = res.managers;
+                }
+                resolve()
+            }
+        )
+    })
+}
+
+async function fetchCompanies(){
+    return new Promise((resolve) => {
+        apiPost(ApiRoute.api, {action:ApiCall.list_companies}).then(
+            (res) =>{
+                if (!res.success){
+                }else{
+                    c_runtime.companies = res.companies;
+                }
+                resolve()
             }
         )
     })

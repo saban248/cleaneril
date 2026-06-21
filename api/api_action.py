@@ -161,6 +161,25 @@ def get_api_action(**breq) -> dict:
             _manager = ApiManager.get_managers(manager_id=manager_id).first()
             return SJson.auto_code(__success__, **{"p":_manager.permission})
 
+        case ApiCall.list_managers:
+            managers = []
+            __code__ = __success__
+            if not ShortSession.is_root():
+                __code__ =core_msg.ServerCode.General.access_denied
+            else:
+                managers = ApiManager.get_managers(False)
+
+            return SJson.auto_code(__code__, **{"managers":managers})
+
+        case ApiCall.list_companies:
+            _companies = []
+            __code__ = __success__
+            if not ShortSession.is_root():
+                __code__ = core_msg.ServerCode.General.access_denied
+            else:
+                _companies = companies.get_companies(False)
+            return SJson.auto_code(__code__, **{"companies":_companies})
+
     return SJson.auto_code(__success__)
 
 

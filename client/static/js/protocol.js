@@ -223,6 +223,8 @@ const ApiCall = {
     list_clients:1<<23,
     invoice_delete:1<<24,
     permissions:1<<25,
+    list_managers:1<<26,
+    list_companies:1<<27
 }
 
 const ReportsApi = {

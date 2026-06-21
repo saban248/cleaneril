@@ -44,7 +44,7 @@ class ApiManager:
         return new
 
     @staticmethod
-    def get_managers(source:bool = True, **kwargs) -> Union[None, Manager]:
+    def get_managers(source:bool = True, **kwargs) -> Union[None, Manager, list]:
         managers = Manager.query.filter_by(**kwargs)
         if source:
             return managers

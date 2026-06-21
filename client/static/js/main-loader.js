@@ -4,4 +4,6 @@ document.addEventListener("DOMContentLoaded", async function (){
     await fetchClients();
     await fetchWorkers();
     await fetchPermissions();
+    await fetchManagers();
+    await fetchCompanies();
 })
