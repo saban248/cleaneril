@@ -73,4 +73,3 @@ class ManagerPermissions(IntFlag):
     ROOT            = ADMIN|(1<<2)
 
 
-

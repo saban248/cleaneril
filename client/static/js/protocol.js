@@ -13,6 +13,21 @@ const ManagerPermissions = {
 
 }
 
+function getManagerPermissionIconText(flag){
+    switch (flag) {
+        case ManagerPermissions.VIEW:
+            return [ "צפייה", "fa-solid fa-eye"]
+        case ManagerPermissions.EDIT:
+            return [ "עריכה", 'fa-solid fa-pen']
+        case ManagerPermissions.ADMIN:
+            return ["מנהל מערכת", "fa-solid fa-user-tie"]
+        case ManagerPermissions.ROOT:
+            return ["root", "fa-solid fa-chess"]
+    }
+    return getManagerPermissionIconText(ManagerPermissions.VIEW)
+
+}
+
 const SocialMedia = {
     TIKTOK:1,
     INSTEGRAM:2,
@@ -224,7 +239,8 @@ const ApiCall = {
     invoice_delete:1<<24,
     permissions:1<<25,
     list_managers:1<<26,
-    list_companies:1<<27
+    list_companies:1<<27,
+    alive:1<<28
 }
 
 const ReportsApi = {

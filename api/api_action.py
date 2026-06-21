@@ -14,7 +14,7 @@ from api.databases.clients import ClientProfile
 from api.databases.crads import ApiCards, Cards
 from api.databases.employee import ApiEmployee, Employee
 from api.databases.general import get_columns_no_instance
-from api.databases.manager import ApiManager, on_register_create_company, manager_exist, manager_auth
+from api.databases.manager import ApiManager, on_register_create_company, manager_exist, manager_auth, update_time_alive
 from api.databases.orders import CleanOrder, get_clean_order_done, get_clean_order_latest
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril, ManagerPermissions, cleaneril_db
 from api.general import is_logo_app_valid
@@ -179,6 +179,10 @@ def get_api_action(**breq) -> dict:
             else:
                 _companies = companies.get_companies(False)
             return SJson.auto_code(__code__, **{"companies":_companies})
+
+        case ApiCall.alive:
+            update_time_alive(manager_id)
+            return SJson.auto_code(__success__)
 
     return SJson.auto_code(__success__)
 

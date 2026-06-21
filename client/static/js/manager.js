@@ -68,6 +68,11 @@ async function fetchCompanies(){
     })
 }
 
+function getCompanyByManagerId(manager_id){
+    return c_runtime.companies.find(company => company.manager_id == manager_id)
+}
+
+
 function get_client_by_order_id(order_id){
     const order = c_runtime.orders.find(o => o.order_id == order_id)
     if (!order){return}
@@ -149,6 +154,37 @@ function doLogout(){
         }
     ), 1000)
 }
+
+async function doAlive(){
+    const intervalMs = 60 * 1000;
+
+    if (doAlive.timerId)return;
+
+    async function sendAlive(){
+        if (doAlive.isSending)return;
+        doAlive.isSending = true;
+
+        try {
+            const res = await apiPost(ApiRoute.api, {action:ApiCall.alive});
+            if (!res.success){
+                clearInterval(doAlive.timerId);
+                doAlive.timerId = null;
+                location.href = '/auth';
+                return false;
+            }
+        } catch (err) {
+        } finally {
+            doAlive.isSending = false;
+        }
+        return true;
+    }
+
+    const aliveOk = await sendAlive();
+    if (!doAlive.timerId){
+        doAlive.timerId = setInterval(sendAlive, intervalMs);
+    }
+}
+
 
 function switchPageManager(page){
     closeMenuTabsDashboard()

@@ -6,4 +6,11 @@ document.addEventListener("DOMContentLoaded", async function (){
     await fetchPermissions();
     await fetchManagers();
     await fetchCompanies();
+    if (typeof renderSubscriptionTable === "function"){
+        renderSubscriptionTable();
+    }
+    if (location.pathname != PageRoute.auth || location.pathname != PageRoute.createAccount){
+        doAlive()
+    }
+    
 })

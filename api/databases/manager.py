@@ -1,10 +1,11 @@
+from datetime import time
 from typing import Union
-
 from api.databases import company
 from api.databases.company import delete_company
 from api.databases.ptc import cleaneril_db, ManagerPermissions
 from api.ptc import generate_hex
 from api.validator import core_msg, company as comp
+import time
 
 class Manager(cleaneril_db.Model):
     __tablename__ = "manager"
@@ -14,6 +15,16 @@ class Manager(cleaneril_db.Model):
     password = cleaneril_db.Column(cleaneril_db.String(32), nullable=False)
     manager_id = cleaneril_db.Column(cleaneril_db.String(32), nullable=False)
     phone = cleaneril_db.Column(cleaneril_db.String(16), nullable=False)
+    time_alive = cleaneril_db.Column(cleaneril_db.Float, nullable=False)
+
+
+def update_time_alive(manager_id:str):
+    manager = ApiManager.get_managers(manager_id=manager_id).first()
+    if not manager:
+        return 1
+    manager.time_alive = time.time()
+    cleaneril_db.session.commit()
+    return 0
 
 
 def manager_exist(phone:str):

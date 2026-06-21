@@ -204,6 +204,7 @@ class ApiCall(IntFlag):
     permissions     = 1<<25
     list_managers   = 1<<26
     list_companies = 1<<27
+    alive           = 1<<28
 
 
 class ReportsApi(IntFlag):
