@@ -73,12 +73,13 @@ function createSubscriptionTableCell(text){
 }
 
 function createSubscriptionPermissionCell(permission, text, icon){
+    if (permission == -1)
     const cell = document.createElement("td");
     const badge = document.createElement("span");
     const iconEl = document.createElement("i");
     const textEl = document.createElement("span");
 
-    badge.className = `subscription-permission permission-${permission}`;
+    badge.className = `subscription-permission permission-${permission != -1 ? permission: 1}`;
     iconEl.className = icon;
     textEl.textContent = text;
 
@@ -147,9 +148,27 @@ function openMenuSubscription(e, managerId){
         menu.appendChild(cma);
     });
 
-    menu.style.top = `${e.clientY + window.scrollY + 6}px`;
-    menu.style.left = `${e.clientX + window.scrollX}px`;
+    menu.style.visibility = "hidden";
+    menu.style.top = "0px";
+    menu.style.left = "0px";
     menu.classList.add("show");
+
+    const margin = 8;
+    const gap = 6;
+    const rect = menu.getBoundingClientRect();
+    const openAbove = e.clientY + rect.height + gap > window.innerHeight - margin;
+    let top = openAbove ? e.clientY - rect.height - gap : e.clientY + gap;
+    let left = e.clientX - rect.width;
+
+    if (left < margin)left = e.clientX;
+    if (left + rect.width > window.innerWidth - margin)left = window.innerWidth - rect.width - margin;
+    if (top < margin)top = margin;
+    if (top + rect.height > window.innerHeight - margin)top = window.innerHeight - rect.height - margin;
+
+    menu.style.transformOrigin = openAbove ? "bottom right" : "top right";
+    menu.style.top = `${top}px`;
+    menu.style.left = `${left}px`;
+    menu.style.visibility = "";
 }
 
 function createSubscriptionTableItem(manager, company){
