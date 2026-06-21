@@ -7,7 +7,7 @@ from flask import render_template
 
 import api.databases.company as companies
 from api.data.ptc import AnalyticsData
-from api.databases import invoice
+from api.databases import invoice, manager as managers
 from api.databases import orders, clients
 from api.databases.bridge import on_create_order_create_client
 from api.databases.clients import ClientProfile
@@ -17,13 +17,14 @@ from api.databases.general import get_columns_no_instance
 from api.databases.manager import ApiManager, on_register_create_company, manager_exist, manager_auth, \
     update_time_alive, get_list_manager_no_pwd
 from api.databases.orders import CleanOrder, get_clean_order_done, get_clean_order_latest
-from api.databases.ptc import StateDocument, ServerConfig, cleaneril, ManagerPermissions, cleaneril_db
+from api.databases.ptc import StateDocument, ServerConfig, cleaneril, ManagerPermissions, cleaneril_db, \
+    ManagerAccountStat
 from api.general import is_logo_app_valid
 from api.ptc import special_things, SJson, ShortSession
 from api.routes import cil_struct
 from api.routes.cil_struct import ReportsDataAnalyze
 from api.routes.general import set_session_data_admin
-from api.routes.ptc import Pages, ApiCall, ApiUploadFile, RegisterApi, ReportsApi
+from api.routes.ptc import Pages, ApiCall, ApiUploadFile, RegisterApi, ReportsApi, SubscriptionApi
 from api.validator import core_msg, company
 
 
@@ -297,6 +298,28 @@ def get_register_action(**breq):
 
 
     return {}
+
+
+def get_subscription_api(**breq):
+    action = int(breq.get("action", -1))
+    subs = cil_struct.Subscription().build(**breq)
+    manager_id = ShortSession.manager_id()
+    code = core_msg.ServerCode.success
+    match action:
+        case SubscriptionApi.m_pending:
+            code = managers.set_account_stat(subs.manager_id, ManagerAccountStat.PENDING)
+        case SubscriptionApi.m_active:
+            code = managers.set_account_stat(subs.manager_id, ManagerAccountStat.ACTIVE)
+        case SubscriptionApi.m_banned:
+            code = managers.set_account_stat(subs.manager_id, ManagerAccountStat.BANNED)
+        case SubscriptionApi.m_pause:
+            code = managers.set_account_stat(subs.manager_id, ManagerAccountStat.PAUSE)
+        case SubscriptionApi.m_delete:
+            code = managers.delete_manager_account(subs.manager_id)
+
+    return SJson.auto_code(code)
+
+
 
 
 def get_card_edit_template(card_id:str, **_):

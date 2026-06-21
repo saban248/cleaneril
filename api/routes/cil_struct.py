@@ -361,3 +361,10 @@ class ReportsDataAnalyze:
     graph_orders:list = None
 
 
+@dataclass
+class Subscription:
+    manager_id:str = None
+
+    def build(self, **data):
+        struct_builder(self, **data)
+        return self

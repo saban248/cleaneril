@@ -53,7 +53,6 @@ function selectSubscriptionOrder(_id, t){
     const stat = parseInt(t.dataset.s);
     c_sub.o = stat;
     const statText = getSubscriptionOrderText(stat);
-    console.log(stat, statText)
     vso.textContent = statText
     toggleFilterOptions(_id)
     // run
@@ -109,7 +108,11 @@ function getLastTimeManagerAliveHourAndYMD(timeAlive){
 
 const menuItemsSubscription = [
     { text: "ניהול", action: (managerId) => showToast("אפשרות צפייה עדיין לא פעילה", ToastStat.ERROR), icon:'<i class="fa-solid fa-eye"></i>'},
-    { text: "מחיקה", action: (managerId) => showToast("אפשרות מחיקה עדיין לא פעילה", ToastStat.ERROR), icon:'<i class="fa-solid fa-trash-can trash"></i>'},
+    { text: "הפעל", action: (managerId) => setManagerAccountStat(managerId, SubscriptionApi.m_active), icon:'<i class="fa-solid fa-play"></i>'},
+    { text: "השהה", action: (managerId) => setManagerAccountStat(managerId, SubscriptionApi.m_pause), icon:'<i class="fa-solid fa-circle-pause"></i>'},
+    { text: "חסום", action: (managerId) => setManagerAccountStat(managerId, SubscriptionApi.m_banned), icon:'<i class="fa-solid fa-ban"></i>'},
+    { text: "להמתנה", action: (managerId) => setManagerAccountStat(managerId, SubscriptionApi.m_pending), icon:'<i class="fa-solid fa-hourglass-start"></i>'},
+    { text: "מחיקה לצמיתות", action: (managerId) => deleteManagerAccount(managerId), icon:'<i class="fa-solid fa-trash-can trash"></i>'},
 ]
 
 function openMenuSubscription(e, managerId){
@@ -258,6 +261,46 @@ function doSearchManagersLocal(){
     }
 }
 
+
+async function setManagerAccountStat(manager_id, stat){
+    const data = {action:stat, manager_id:manager_id}
+    const toast = showToast("מגדיר...");
+    apiPost(ApiRoute.subs, data).then(
+        async (res) =>{
+            if (!res.success){
+                showToast(res.notice, ToastStat.ERROR, toast);
+                return
+            }
+            await fetchManagers()
+            await fetchCompanies()
+            renderSubscriptionTable();
+            showToast(res.notice, ToastStat.DONE, toast);
+        }
+    )
+}
+
+
+async function deleteManagerAccount(mid){
+    const ok = await showAsk({msg:message.WDeleteManagerAccount})
+    if (!ok){return false}
+    const data = {action:SubscriptionApi.m_delete, manager_id:mid}
+    const toast = showToast("מוחק")
+
+    apiPost(ApiRoute.subs, data).then(
+        async (res) =>{
+            if (!res.success){
+                showToast(res.notice, ToastStat.ERROR, toast);
+                return
+            }
+            await fetchManagers()
+            await fetchCompanies()
+            renderSubscriptionTable()
+            showToast(res.notice, ToastStat.DONE, toast);
+
+        }
+    )
+}
+
 document.addEventListener("click", e => {
     const menu = document.getElementById("subscriptionMenu");
     if (!menu)return;
@@ -265,3 +308,5 @@ document.addEventListener("click", e => {
         menu.classList.remove("show");
     }
 })
+
+

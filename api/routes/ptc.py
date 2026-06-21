@@ -126,6 +126,7 @@ class RouteApi(RoutePagesBase):
     up_image = 1<<2
     register = 1<<3
     logout   = 1<<4
+    subscription = 1<<5
 
 
 class RegisterApi(IntFlag):
@@ -136,6 +137,14 @@ class RegisterApi(IntFlag):
     level4 = 1<<3
     level5 = 1<<6
     DONE    = 1<<4
+
+class SubscriptionApi:
+    m_delete = 1<<0
+    m_active = 1<<1
+    m_pause  = 1<<2
+    m_pending = 1<<3
+    m_banned = 1<<4
+
 
 
 class Pages(IntFlag):

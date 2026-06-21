@@ -16,6 +16,7 @@ const message = {
     WdeleteWorker:"העובד יימחק מהמערכת, להמשיך?",
     WdeleteReceipt:"הקבלה תמחק לצמיתות, להמשיך?",
     IAboutCreateReceipt:`לפני שאתה מדפיס קבלה, האם כל הפרטים נכונים?.\n לא ניתן לשנות אחרי הדפסה`,
-    Ilogout:"יוצא מהמערכת.."
+    Ilogout:"יוצא מהמערכת..",
+    WDeleteManagerAccount:"למחוק לצמיתות את המנוי? ימחקו כל התונים"
     
 }

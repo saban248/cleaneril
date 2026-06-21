@@ -220,7 +220,8 @@ const ApiRoute = {
     api:"api",
     upImage:"up_image",
     register: "register",
-    logout:"logout"
+    logout:"logout",
+    subs:"subscription"
 }
 const RegisterApi = {
     level0:1<<5,
@@ -229,6 +230,14 @@ const RegisterApi = {
     level3:1<<2,
     level4:1<<3,
     DONE:1<<4
+}
+
+const SubscriptionApi = {
+    m_delete:1<<0,
+    m_active:1<<1,
+    m_pause:1<<2,
+    m_pending:1<<3,
+    m_banned:1<<4
 }
 
 

@@ -1,7 +1,6 @@
 from datetime import time
 from typing import Union
-from api.databases import company
-from api.databases.company import delete_company
+from api.databases import company as companies
 from api.databases.ptc import cleaneril_db, ManagerPermissions, ManagerAccountStat
 from api.ptc import generate_hex
 from api.validator import core_msg, company as comp
@@ -28,6 +27,14 @@ def update_time_alive(manager_id:str):
     cleaneril_db.session.commit()
     return 0
 
+
+def set_account_stat(manager_id:str,ac:ManagerAccountStat):
+    manager = ApiManager.get_managers(manager_id=manager_id).first()
+    if not manager:
+        return core_msg.ServerCode.General.something_wrong
+    manager.account_stat = ac
+    cleaneril_db.session.commit()
+    return core_msg.ServerCode.success
 
 def manager_exist(phone:str):
     manager = Manager.query.filter_by(phone=phone).first()
@@ -88,11 +95,21 @@ def delete_manager(username:str, password:str, **kwargs):
     return core_msg.ServerCode.success
 
 
+def delete_manager_account(manager_id:str):
+    manager = ApiManager.get_managers(manager_id=manager_id).first()
+    company = companies.get_companies(manager_id=manager_id).first()
+    if not manager or not company:
+        return core_msg.ServerCode.General.something_wrong
+    cleaneril_db.session.delete(manager)
+    cleaneril_db.session.delete(company)
+    cleaneril_db.session.commit()
+    return core_msg.ServerCode.success
+
 def on_register_create_company(phone:str, pwd:str) -> int:
     null = 'unknown'
     new = ApiManager.register(phone, -1, pwd)
     if not new:return core_msg.ServerCode.Register.e_account_exist
-    company.create_company(null,null,new.manager_id,False)
+    companies.create_company(null,null,new.manager_id,False)
     return core_msg.ServerCode.success
 
 

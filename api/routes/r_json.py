@@ -1,7 +1,7 @@
 from flask import request
 
 import api.databases.company as companies
-from api.api_action import get_api_action, api_upload_file, get_register_action
+from api.api_action import get_api_action, api_upload_file, get_register_action, get_subscription_api
 from api.databases.manager import manager_auth, update_time_alive
 from api.databases.ptc import cleaneril
 from api.ptc import ShortSession, SJson, get_dictionary_http
@@ -49,11 +49,23 @@ def up_image():
 
     return response
 
+
 @cleaneril.route(RouteApi.register.path, methods=["POST"])
 def register():
     breq = get_dictionary_http(request)
     get_ac = get_register_action(**breq)
     return get_ac
+
+
+@cleaneril.route(RouteApi.subscription.path, methods=["POST"])
+def subscription():
+    if not ShortSession.is_root():
+        return SJson.auto_code(core_msg.ServerCode.General.access_denied)
+
+    breq = get_dictionary_http(request)
+    get_ac = get_subscription_api(**breq)
+    return get_ac
+
 
 @cleaneril.route(RouteApi.logout.path, methods=["POST"])
 def logout():
