@@ -281,9 +281,9 @@ def get_register_action(**breq):
             if(register.c_phone and c_phone) or o_phone:return SJson.auto_code(c_phone)
             fullname = company.ownername(register.o_name)
             if fullname:return SJson.auto_code(fullname)
-            stat = companies.update_company_details(manager_id,register.c_name,register.o_phone,None,
-                                                     register.c_desc,register.c_phone, register.o_phone,None,
-                                                    register.vat_code,None, RegisterApi.level3)
+            stat = companies.update_company_details(manager_id,register.c_name,register.o_name,False,
+                                                    register.c_desc,register.c_phone,register.o_phone,register.c_email
+                                                    ,register.vat_code,None,RegisterApi.level3)
             # WHEN DONE
             manager.permission = ManagerPermissions.ADMIN
             cleaneril_db.session.commit()
