@@ -13,19 +13,40 @@ const ManagerPermissions = {
 
 }
 
-function getManagerPermissionIconText(flag){
-    switch (flag) {
-        case ManagerPermissions.VIEW:
-            return [ "צפייה", "fa-solid fa-eye"]
-        case ManagerPermissions.EDIT:
-            return [ "עריכה", 'fa-solid fa-pen']
-        case ManagerPermissions.ADMIN:
-            return ["מנהל מערכת", "fa-solid fa-user-tie"]
-        case ManagerPermissions.ROOT:
-            return ["root", "fa-solid fa-chess"]
-    }
-    return getManagerPermissionIconText(ManagerPermissions.VIEW)
+function getManagerPermissionIconText(flag) {
+    if (flag >= ManagerPermissions.ROOT)
+        return ["Root", "fa-solid fa-chess"];
 
+    if (flag >= ManagerPermissions.ADMIN)
+        return ["מנהל מערכת", "fa-solid fa-user-tie"];
+
+    if (flag >= ManagerPermissions.EDIT)
+        return ["עריכה", "fa-solid fa-pen"];
+
+    return ["צפייה", "fa-solid fa-eye"];
+}
+
+const ManagerAccountStat = {
+    ACTIVE:1<<0,
+    PENDING:1<<1,
+    PAUSE:1<<2,
+    BANNED:1<<3,
+    DELETED:1<<4
+}
+function getManagerAccountStatIconText(flag){
+    switch (flag) {
+        case ManagerAccountStat.ACTIVE:
+            return ["פעיל", ""]    
+        case ManagerAccountStat.PENDING:
+            return ["ממתין", ""]
+        case ManagerAccountStat.PAUSE:
+            return ["מושהה", ""]
+        case ManagerAccountStat.BANNED:
+            return ["חסום", ""]
+        case ManagerAccountStat.DELETED:
+            return ["מחוק", ""]
+    }
+    return ["-", ""]
 }
 
 const SocialMedia = {

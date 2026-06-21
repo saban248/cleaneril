@@ -73,3 +73,9 @@ class ManagerPermissions(IntFlag):
     ROOT            = ADMIN|(1<<2)
 
 
+class ManagerAccountStat(IntFlag):
+    ACTIVE = 1<<0
+    PENDING = 1<<1
+    PAUSE  = 1<<2
+    BANNED = 1<<3
+    DELETED = 1<<4

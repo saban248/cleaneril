@@ -2,7 +2,7 @@ from datetime import time
 from typing import Union
 from api.databases import company
 from api.databases.company import delete_company
-from api.databases.ptc import cleaneril_db, ManagerPermissions
+from api.databases.ptc import cleaneril_db, ManagerPermissions, ManagerAccountStat
 from api.ptc import generate_hex
 from api.validator import core_msg, company as comp
 import time
@@ -16,6 +16,8 @@ class Manager(cleaneril_db.Model):
     manager_id = cleaneril_db.Column(cleaneril_db.String(32), nullable=False)
     phone = cleaneril_db.Column(cleaneril_db.String(16), nullable=False)
     time_alive = cleaneril_db.Column(cleaneril_db.Float, nullable=False)
+    time_register = cleaneril_db.Column(cleaneril_db.Float, nullable=False)
+    account_stat = cleaneril_db.Column(cleaneril_db.Integer, nullable=False)
 
 
 def update_time_alive(manager_id:str):
@@ -49,6 +51,9 @@ class ApiManager:
         new.permission = permission
         new.manager_id = generate_hex(15)
         new.phone = phone
+        new.time_alive = 0
+        new.time_register = time.time()
+        new.account_stat = ManagerAccountStat.PENDING
         cleaneril_db.session.add(new)
         cleaneril_db.session.commit()
 
@@ -107,4 +112,11 @@ def new_manager_hb():
     if not new_manager:return
     company.create_company("הברקה בדקה",new_manager.username, new_manager.manager_id, False)
 
+
+def get_list_manager_no_pwd():
+    managers = ApiManager.get_managers(False)
+    for m in managers:
+        del m['password']
+
+    return managers
 

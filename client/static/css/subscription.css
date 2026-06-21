@@ -177,7 +177,6 @@
 #subscriptionMenu{
     position: fixed;
     transform-origin: top right;
-    min-width: 190px;
     padding: 6px;
     border: 1px solid #ececec;
     border-radius: 8px;

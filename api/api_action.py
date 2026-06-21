@@ -14,7 +14,8 @@ from api.databases.clients import ClientProfile
 from api.databases.crads import ApiCards, Cards
 from api.databases.employee import ApiEmployee, Employee
 from api.databases.general import get_columns_no_instance
-from api.databases.manager import ApiManager, on_register_create_company, manager_exist, manager_auth, update_time_alive
+from api.databases.manager import ApiManager, on_register_create_company, manager_exist, manager_auth, \
+    update_time_alive, get_list_manager_no_pwd
 from api.databases.orders import CleanOrder, get_clean_order_done, get_clean_order_latest
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril, ManagerPermissions, cleaneril_db
 from api.general import is_logo_app_valid
@@ -167,7 +168,7 @@ def get_api_action(**breq) -> dict:
             if not ShortSession.is_root():
                 __code__ =core_msg.ServerCode.General.access_denied
             else:
-                managers = ApiManager.get_managers(False)
+                managers = get_list_manager_no_pwd()
 
             return SJson.auto_code(__code__, **{"managers":managers})
 

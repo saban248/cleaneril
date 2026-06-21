@@ -56,6 +56,8 @@ function selectSubscriptionOrder(_id, t){
     console.log(stat, statText)
     vso.textContent = statText
     toggleFilterOptions(_id)
+    // run
+    renderSubscriptionTable();
 }
 
 
@@ -73,13 +75,12 @@ function createSubscriptionTableCell(text){
 }
 
 function createSubscriptionPermissionCell(permission, text, icon){
-    if (permission == -1)
     const cell = document.createElement("td");
     const badge = document.createElement("span");
     const iconEl = document.createElement("i");
     const textEl = document.createElement("span");
 
-    badge.className = `subscription-permission permission-${permission != -1 ? permission: 1}`;
+    badge.className = `subscription-permission permission-${permission != -1 ? permission: ManagerPermissions.VIEW}`;
     iconEl.className = icon;
     textEl.textContent = text;
 
@@ -107,8 +108,7 @@ function getLastTimeManagerAliveHourAndYMD(timeAlive){
 }
 
 const menuItemsSubscription = [
-    { text: "צפייה", action: (managerId) => showToast("אפשרות צפייה עדיין לא פעילה", ToastStat.ERROR), icon:'<i class="fa-solid fa-eye"></i>'},
-    { text: "עריכה", action: (managerId) => showToast("אפשרות עריכה עדיין לא פעילה", ToastStat.ERROR), icon:'<i class="fa-solid fa-pencil"></i>'},
+    { text: "ניהול", action: (managerId) => showToast("אפשרות צפייה עדיין לא פעילה", ToastStat.ERROR), icon:'<i class="fa-solid fa-eye"></i>'},
     { text: "מחיקה", action: (managerId) => showToast("אפשרות מחיקה עדיין לא פעילה", ToastStat.ERROR), icon:'<i class="fa-solid fa-trash-can trash"></i>'},
 ]
 
@@ -181,6 +181,7 @@ function createSubscriptionTableItem(manager, company){
     const phone = manager.phone
     const vat = company?.company_VAT || company?.vat || "";
     const [p_text, p_icon] = getManagerPermissionIconText(permission)
+    const [as_text, as_icon] = getManagerAccountStatIconText(manager.account_stat)
 
     row.id = managerId;
     row.className = "subscription-table-item";
@@ -194,10 +195,12 @@ function createSubscriptionTableItem(manager, company){
 
     row.append(
         statusCell,
+        createSubscriptionTableCell(company.owner_fullname),    
         createSubscriptionTableCell(company.company_name),
         createSubscriptionPermissionCell(permission, p_text, p_icon),
         createSubscriptionTableCell(verified ? "כן":"לא"),
         createSubscriptionTableCell(register_done ? "לא הושלם": "הושלם"),
+        createSubscriptionTableCell(as_text)
 
     );
 
@@ -206,20 +209,28 @@ function createSubscriptionTableItem(manager, company){
 
 function renderSubscriptionTable(){
     const tableBody = document.getElementById("subscriptionsTableBody");
+    tableBody.replaceChildren()
+
     if (!tableBody)return;
-    const managers = Array.isArray(c_runtime.managers) ? c_runtime.managers : [];
 
     tableBody.innerHTML = "";
 
-    if (!managers.length){
+    if (!c_runtime.managers.length){
         const emptyRow = document.createElement("tr");
         emptyRow.className = "subscriptions-empty-row";
         emptyRow.innerHTML = `<td colspan="5">אין מנויים להצגה</td>`;
         tableBody.appendChild(emptyRow);
         return;
     }
+    var copy = [...c_runtime.managers]
+    if (c_sub.o & 1){
+        copy = copy.sort((a, b) => b.time_register - a.time_register);
+    }
+    else if (c_sub.o & 2){
+        copy = copy.sort((a, b) => a.time_register - b.time_register)
+    }
 
-    for (const manager of managers){
+    for (const manager of copy){
         const company = getCompanyByManagerId(manager.manager_id)
         if (!company)continue;
         tableBody.appendChild(createSubscriptionTableItem(manager, company));
@@ -232,9 +243,13 @@ function doSearchManagersLocal(){
     const value = input.value.toLowerCase();
     const managers = Array.isArray(c_runtime.managers) ? c_runtime.managers : [];
     for (const manager of managers){
+        const company = getCompanyByManagerId(manager.manager_id)
         const manager_id = manager.manager_id
+        const phone = manager.phone.includes(value)
+        const ID = company.company_VAT.includes(value)
+        const company_name = company.company_name.includes(value)
         const row = document.getElementById(manager_id);
-        if ((value == ''||manager.phone.includes(value))){
+        if (value == ''||phone||ID||company_name){
             row?.classList.remove("hide")
         }
         else{
