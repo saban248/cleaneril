@@ -134,15 +134,33 @@ function getLastTimeManagerAliveHourAndYMD(timeAlive){
     return `${dayName} ${dateFloatToHour(timeAlive)} ${monthYear}`;
 }
 
-async function fetchTemplateFromServer(url) {
-    const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-    if (!response.ok) {
-        throw new Error(`Failed to fetch template: ${response.status}`);
+async function fetchManagerDashboard(manager_id) {
+    const template = document.getElementById('managerTemplate');
+    const toastId = showToast('טוען..', ToastStat.LOAD);
+    try {
+        const data = { action: SubscriptionApi.manager_dashboard, manager_id: manager_id };
+        const res = await apiPost(ApiRoute.subs, data);
+
+        if (!res || res.success) {
+            const errMsg = res?.notice
+            showToast(errMsg, ToastStat.ERROR, toastId);
+        }
+
+        if (!res.success) {
+            const errMsg = res.notice
+            showToast(errMsg, ToastStat.ERROR, toastId);
+        }
+
+        template.innerHTML = res.template || '';
+        template.dataset.managerId = String(manager_id);
+        showToast(res.notice, ToastStat.DONE, toastId);
+        return template;
+    } catch (err) {
+        showToast(err.message, ToastStat.ERROR, toastId);
+        throw err;
     }
-    const text = await response.text();
-    const bodyMatch = text.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-    return bodyMatch ? bodyMatch[1] : text;
 }
+
 
 function executeTemplateScripts(container) {
     const scripts = Array.from(container.querySelectorAll('script'));
@@ -178,52 +196,23 @@ function hideAllDashboardPages() {
 }
 
 async function openManagerDashboard(managerId) {
-    const url = `/dashboard/subscription/manager.html?manager_id=${encodeURIComponent(managerId)}`;
-    const root = document.querySelector('.dashboard-page');
-    if (!root) {
-        window.location.href = url;
-        return;
-    }
+    const template = document.getElementById('managerTemplate');
 
-    let managerWrapper = document.getElementById('manager-page-wrapper');
-    if (!managerWrapper) {
-        managerWrapper = document.createElement('div');
-        managerWrapper.id = 'manager-page-wrapper';
-        managerWrapper.className = 'dashboard-page';
-        root.appendChild(managerWrapper);
-    }
-
-    const managerPage = managerWrapper.querySelector('#MANAGER-PAGE');
-    if (managerWrapper.dataset.managerId === String(managerId) && managerPage && managerPage.innerHTML.trim().length > 0) {
-        hideAllDashboardPages();
-        managerWrapper.classList.add('show');
-        managerPage.classList.add('show');
+    if (template.dataset.managerId === String(managerId) && template.innerHTML.trim().length > 0) {
+        template.classList.add('show');
         if (typeof switchManagerTab === 'function') {
             switchManagerTab('manager-overview');
         }
-        if (window.history && window.history.pushState) {
-            window.history.pushState({}, '', url);
-        }
         return;
     }
 
-    managerWrapper.dataset.managerId = managerId;
-    showToast('טוען דף ניהול...', ToastStat.LOAD);
     try {
-        const template = await fetchTemplateFromServer(url);
-        managerWrapper.innerHTML = template;
-        executeTemplateScripts(managerWrapper);
-        const loadedManagerPage = managerWrapper.querySelector('#MANAGER-PAGE');
-        hideAllDashboardPages();
-        managerWrapper.classList.add('show');
-        if (loadedManagerPage) {
-            loadedManagerPage.classList.add('show');
-        }
+        await fetchManagerDashboard(managerId);
+        executeTemplateScripts(template);
+        template.classList.add('show');
+
         if (typeof switchManagerTab === 'function') {
             switchManagerTab('manager-overview');
-        }
-        if (window.history && window.history.pushState) {
-            window.history.pushState({}, '', url);
         }
     } catch (error) {
         showToast(error.message || 'שגיאה בטעינת דף ניהול', ToastStat.ERROR);
@@ -336,10 +325,8 @@ function createSubscriptionTableItem(manager, company){
 
 function renderSubscriptionTable(){
     const tableBody = document.getElementById("subscriptionsTableBody");
-    tableBody.replaceChildren()
-
-    if (!tableBody)return;
-
+    if (!tableBody) return;
+    tableBody.replaceChildren();
     tableBody.innerHTML = "";
 
     if (!c_runtime.managers.length){
@@ -374,17 +361,17 @@ function doSearchManagersLocal(){
     const value = input.value.toLowerCase();
     const managers = Array.isArray(c_runtime.managers) ? c_runtime.managers : [];
     for (const manager of managers){
-        const company = getCompanyByManagerId(manager.manager_id)
-        const manager_id = manager.manager_id
-        const phone = manager.phone.includes(value)
-        const ID = company.company_VAT.includes(value)
-        const company_name = company.company_name.includes(value)
+        const company = getCompanyByManagerId(manager.manager_id);
+        const manager_id = manager.manager_id;
         const row = document.getElementById(manager_id);
-        if (value == ''||phone||ID||company_name){
-            row?.classList.remove("hide")
-        }
-        else{
-            row?.classList.add("hide")
+        const phone = manager.phone ? String(manager.phone).toLowerCase().includes(value) : false;
+        const ID = company && company.company_VAT ? String(company.company_VAT).toLowerCase().includes(value) : false;
+        const company_name = company && company.company_name ? String(company.company_name).toLowerCase().includes(value) : false;
+
+        if (value === '' || phone || ID || company_name) {
+            row?.classList.remove("hide");
+        } else {
+            row?.classList.add("hide");
         }
     }
 }

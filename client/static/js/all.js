@@ -10,6 +10,8 @@ function getIconByStatToast(stat){
             return `fa-solid fa-circle-notch fa-spin tc-icon tci-${stat}`;
         case ToastStat.ERROR:
             return `fa-solid fa-triangle-exclamation tc-icon tci-${stat}`
+        default:
+            return '';
     }
 }
 
@@ -31,27 +33,27 @@ function showToast(text, stat = ToastStat.LOAD, id=null){
         body.id = __id+'body'
         icon = document.createElement("i");
         icon.id = __id+'icon'
-        toast.classList = "toast"
-        head.classList = 'tc-head';
-        body.classList = 'tc-body';
+        toast.className = "toast";
+        head.className = 'tc-head';
+        body.className = 'tc-body';
 
         toast.appendChild(head);
         toast.appendChild(body)
         head.appendChild(icon)
-        document.getElementById("toast-container").appendChild(toast)
+        const container = document.getElementById("toast-container");
+        if (container) container.appendChild(toast);
 
     }else{
         toast = document.getElementById(id)
         if (!toast){
-            showToast(text, stat);
-            return;
+            return showToast(text, stat);
         }
         body = document.getElementById(id+'body');
         icon = document.getElementById(id+'icon')
     }
 
-    icon.classList = getIconByStatToast(stat)
-    body.innerText = text
+    if (icon) icon.className = getIconByStatToast(stat);
+    if (body) body.innerText = text;
 
     setTimeout(()=>{toast?.click()}, 6000)
     return __id;
@@ -65,25 +67,39 @@ function closeToast(id){
 async function apiRequest(method, url, body = null) {
     const options = {
         method: method,
-        headers: {
-            "Content-Type": "application/json"
-        }
+        headers: {},
+        credentials: 'same-origin'
     };
 
-    if (body) {
+    // If body is FormData (file upload), let fetch set the correct headers
+    if (body instanceof FormData) {
+        options.body = body;
+    } else if (body !== null && body !== undefined) {
+        options.headers['Content-Type'] = 'application/json';
         options.body = JSON.stringify(body);
     }
 
     try {
         const response = await fetch(url, options);
 
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        // try to parse JSON body if present
+        let parsed = null;
+        try {
+            parsed = await response.json();
+        } catch (e) {
+            // no JSON body
+            parsed = null;
         }
 
-        return await response.json(); // auto parse JSON
+        if (!response.ok) {
+            // return server-provided JSON error when available, otherwise a normalized error
+            if (parsed && typeof parsed === 'object') return parsed;
+            return { error: `HTTP ${response.status}: ${response.statusText}` };
+        }
+
+        return parsed;
     } catch (err) {
-        console.error("API Error:", err);
+        console.error('API Error:', err);
         return { error: err.message };
     }
 }
@@ -227,23 +243,28 @@ const messageEl = document.getElementById("modalMessage");
 const btnConfirm = document.getElementById("btnConfirm");
 const btnCancel = document.getElementById("btnCancel");
 
-let resolver = null;
-
 function showAsk({ title, msg }) {
-    titleEl.textContent = title || message.notice;
-    messageEl.textContent = msg
+    if (titleEl) titleEl.textContent = title || (typeof message !== 'undefined' ? message.notice : '');
+    if (messageEl) messageEl.textContent = msg;
 
-    modal.classList.remove("hide");
+    if (modal) modal.classList.remove("hide");
     return new Promise((resolve) => {
-        resolver = resolve;
+        if (modal) {
+            modal.__ask_resolver = resolve;
+        } else {
+            // fallback when modal element is not present yet
+            window.__ask_resolver = resolve;
+        }
     });
 }
 
 function closeAsk(code = false) {
-    modal.classList.add("hide");
+    if (modal) modal.classList.add("hide");
+    const resolver = modal ? modal.__ask_resolver : window.__ask_resolver;
     if (resolver) {
         resolver(code);
-        resolver = null;
+        if (modal) delete modal.__ask_resolver;
+        else delete window.__ask_resolver;
     }
 }
 
@@ -258,9 +279,11 @@ document.addEventListener("DOMContentLoaded", async function (){
         if (e.key === "Escape") closeAsk(false);
     });
 
-    modal.addEventListener("click", (e) => {
-        if (e.target === modal) closeAsk(false);
-    });
+    if (modal) {
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) closeAsk(false);
+        });
+    }
 
     window.addEventListener("resize", () => {
         IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
@@ -272,20 +295,28 @@ document.addEventListener("DOMContentLoaded", async function (){
 // GENERAL SEARCH
 
 function closeSearchInput(id, t){
-    const input = document.getElementById(id)
-    input.classList.remove("show")
-    const [ix, io] = [t.parentElement.children[0], t.parentElement.children[1]]
-    ix.style.display = "none"
-    io.style.display = "block"
+    const input = document.getElementById(id);
+    if (!input || !t) return;
+    input.classList.remove("show");
+    const parent = t.parentElement;
+    if (parent && parent.children.length >= 2) {
+        const [ix, io] = [parent.children[0], parent.children[1]];
+        if (ix) ix.style.display = "none";
+        if (io) io.style.display = "block";
+    }
 
     input.value = '';
 }
 function openSearchInput(id, t){
-    const input = document.getElementById(id)
-    input.classList.add("show")
-    const [ix, io] = [t.parentElement.children[0], t.parentElement.children[1]]
-    ix.style.display = "block"
-    io.style.display = "none"
+    const input = document.getElementById(id);
+    if (!input || !t) return;
+    input.classList.add("show");
+    const parent = t.parentElement;
+    if (parent && parent.children.length >= 2) {
+        const [ix, io] = [parent.children[0], parent.children[1]];
+        if (ix) ix.style.display = "block";
+        if (io) io.style.display = "none";
+    }
 }
 
 

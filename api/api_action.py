@@ -316,6 +316,8 @@ def get_subscription_api(**breq):
             code = managers.set_account_stat(subs.manager_id, ManagerAccountStat.PAUSE)
         case SubscriptionApi.m_delete:
             code = managers.delete_manager_account(subs.manager_id)
+        case SubscriptionApi.manager_template:
+            template = {"template": get_manager_dashboard_template(manager_id)}
 
     return SJson.auto_code(code)
 
@@ -353,6 +355,10 @@ def get_invoice_template(manager_id:str, receipt):
     _company = companies.get_companies(manager_id=manager_id).first()
     order = CleanOrder(**receipt.data)
     return render_template(Pages.invoice.f_dashboard, company=_company, invoice=receipt, order=order)
+
+
+def get_manager_dashboard_template(manager_id:str):
+    pass
 
 
 def api_upload_file(flag, **data):

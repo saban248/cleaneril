@@ -237,7 +237,8 @@ const SubscriptionApi = {
     m_active:1<<1,
     m_pause:1<<2,
     m_pending:1<<3,
-    m_banned:1<<4
+    m_banned:1<<4,
+    manager_dashboard:1<<5
 }
 
 
