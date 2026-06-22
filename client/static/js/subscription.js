@@ -162,33 +162,6 @@ async function fetchManagerDashboard(manager_id) {
 }
 
 
-function executeTemplateScripts(container) {
-    const scripts = Array.from(container.querySelectorAll('script'));
-    scripts.forEach((script) => {
-        const src = script.src;
-        const type = script.type;
-        const content = script.textContent;
-        const newScript = document.createElement('script');
-
-        if (type) {
-            newScript.type = type;
-        }
-
-        if (src) {
-            if (document.querySelector(`script[src="${src}"]`)) {
-                script.remove();
-                return;
-            }
-            newScript.src = src;
-            newScript.async = false;
-        } else {
-            newScript.textContent = content;
-        }
-
-        script.replaceWith(newScript);
-    });
-}
-
 function hideAllDashboardPages() {
     document.querySelectorAll('.dashboard-page').forEach((page) => {
         page.classList.remove('show');
@@ -208,14 +181,13 @@ async function openManagerDashboard(managerId) {
 
     try {
         await fetchManagerDashboard(managerId);
-        executeTemplateScripts(template);
         template.classList.add('show');
 
         if (typeof switchManagerTab === 'function') {
             switchManagerTab('manager-overview');
         }
     } catch (error) {
-        showToast(error.message || 'שגיאה בטעינת דף ניהול', ToastStat.ERROR);
+        showToast(error.message, ToastStat.ERROR);
     }
 }
 

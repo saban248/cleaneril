@@ -358,7 +358,8 @@ def get_invoice_template(manager_id:str, receipt):
 
 
 def get_manager_dashboard_template(manager_id:str):
-    pass
+    path = os.path.join(Pages.dashboard.path+Pages.subscription.path, Pages.manager.html2)
+    return render_template(f'{path}')
 
 
 def api_upload_file(flag, **data):

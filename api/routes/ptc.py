@@ -149,13 +149,14 @@ class SubscriptionApi:
 
 
 class Pages(IntFlag):
-    home = 1<<0
-    auth = 1<<1
-    dashboard = 1<<2
-    register = 1<<3
-    terms = 1<<4
-    invoice = 1<<5
-
+    home = 1
+    auth = 2
+    dashboard = 3
+    register = 4
+    terms =5
+    invoice = 6
+    manager =7
+    subscription = 8
 
     def __str__(self):
         return self.__repr__()
@@ -169,6 +170,11 @@ class Pages(IntFlag):
     @property
     def html(self):
         return self.__root__+self.name+'.html'
+
+    @property
+    def html2(self):
+        return self.name+'.html'
+
     @property
     def js(self):
         return self.__root__+self.name+".js"
@@ -183,6 +189,15 @@ class Pages(IntFlag):
     def f_dashboard(self):
         return os.path.join(f'{self.dashboard.path}', self.html)
 
+    def __truediv__(self, other):
+        first = str()
+        second = str()
+        if not isinstance(self, str):
+            first = self.name
+        if not isinstance(other, str):
+            second = other.name
+
+        return os.path.join(first, second)
 
 class ApiCall(IntFlag):
 
