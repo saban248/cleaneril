@@ -3,7 +3,7 @@ from flask import request
 import api.databases.company as companies
 from api.api_action import get_api_action, api_upload_file, get_register_action, get_subscription_api
 from api.databases.manager import manager_auth, update_time_alive
-from api.databases.ptc import cleaneril
+from api.databases.ptc import cleaneril, ManagerAccountStat
 from api.ptc import ShortSession, SJson, get_dictionary_http
 from api.routes import cil_struct
 from api.routes.general import set_session_data_admin
@@ -16,7 +16,6 @@ def authorize():
     __success__ = core_msg.ServerCode.success
     if ShortSession.is_admin_active():
         return SJson.auto_code(__success__)
-
     breq = get_dictionary_http(request)
     auth = cil_struct.Auth().build(**breq)
     manager = manager_auth(auth.phone, auth.password)
@@ -24,12 +23,12 @@ def authorize():
         return SJson.auto_code(core_msg.ServerCode.General.access_denied)
 
     _company = companies.get_companies(manager_id=manager.manager_id).first()
-
-    set_session_data_admin(manager, _company)
-    if ShortSession.is_admin_unactive():
+    update_time_alive(manager.manager_id)
+    if manager.account_stat != ManagerAccountStat.ACTIVE:
         return SJson.auto_code(core_msg.ServerCode.Register.register_not_finished)
 
-    update_time_alive(manager.manager_id)
+    set_session_data_admin(manager, _company)
+
     return SJson.auto_code(__success__)
 
 
@@ -37,6 +36,7 @@ def authorize():
 def api():
     if not ShortSession.is_admin_active():
         return SJson.auto_code(core_msg.ServerCode.General.access_denied)
+
     breq = get_dictionary_http(request)
     sjson = get_api_action(**breq)
     return sjson

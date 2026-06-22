@@ -6,6 +6,7 @@ from api.ptc import generate_hex
 from api.validator import core_msg, company as comp
 import time
 
+
 class Manager(cleaneril_db.Model):
     __tablename__ = "manager"
     key = cleaneril_db.Column(cleaneril_db.Integer, nullable=False, primary_key=True)

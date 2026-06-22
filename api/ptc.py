@@ -5,7 +5,7 @@ from copy import deepcopy
 from flask import Request, session
 
 from api.databases.general import get_columns_as_dict
-from api.databases.ptc import ManagerPermissions
+from api.databases.ptc import ManagerPermissions, ManagerAccountStat
 from api.routes.ptc import RegisterApi
 from api.validator import core_msg
 
@@ -38,12 +38,16 @@ class ShortSession:
 
     @staticmethod
     def is_admin_active():
+        account_stat = ShortSession.manager().get('account_stat', -1) == ManagerAccountStat.ACTIVE
         register_done = ShortSession.company().get("register_level") == RegisterApi.DONE
-        return ShortSession.is_admin() and register_done
+        return ShortSession.is_admin() and register_done and account_stat
+
     @staticmethod
     def is_admin_unactive():
+        account_stat_inactive = ShortSession.manager().get('account_stat', -1) != ManagerAccountStat.ACTIVE
         register_not_finished = ShortSession.company().get("register_level") != RegisterApi.DONE
-        return ShortSession.is_admin() and register_not_finished
+        return ShortSession.is_admin() and register_not_finished and account_stat_inactive
+
     @staticmethod
     def is_admin():
         return ShortSession.manager().get('permission', 0) & ManagerPermissions.ADMIN

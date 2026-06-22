@@ -1,8 +1,9 @@
 const c_sub = {
     filterMenuOn:[],
-    s:null,
-    t:null,
-    o:null
+    s:0,
+    t:0,
+    o:1,
+    a:0
 } 
 
 function switchFilterOptions(_id){
@@ -26,15 +27,27 @@ function toggleFilterOptions(_id) {
     }
 }
 
-
+function closeFilterOptions() {
+    for (const id of c_sub.filterMenuOn) {
+        const option = document.getElementById(id);
+        if (option) {
+            option.classList.remove('show');
+        }
+    }
+}
 
 function selectSubscriptionState(_id, t) {
     const vss = document.getElementById('viewSubscriptionStat');
     const stat = parseInt(t.dataset.s);
     const statText = getSubscriptionStatText(stat);
     vss.textContent = statText
-    c_sub.s = stat
     toggleFilterOptions(_id)
+    if (c_sub.s == stat){
+        return
+    }
+    c_sub.s = stat
+    // 
+    renderSubscriptionTable()
 }
 
 
@@ -56,6 +69,21 @@ function selectSubscriptionOrder(_id, t){
     vso.textContent = statText
     toggleFilterOptions(_id)
     // run
+    renderSubscriptionTable();
+}
+
+
+function selectSubscriptionAccountState(_id, t){
+    const vsa = document.getElementById('viewSubscriptionAccount');
+    const stat = parseInt(t.dataset.s);
+    let statText = 'הכל';
+    if (stat !== 0){
+        const res = getManagerAccountStatIconText(stat);
+        statText = Array.isArray(res) ? res[0] : res;
+    }
+    vsa.textContent = statText;
+    c_sub.a = stat;
+    toggleFilterOptions(_id);
     renderSubscriptionTable();
 }
 
@@ -106,8 +134,104 @@ function getLastTimeManagerAliveHourAndYMD(timeAlive){
     return `${dayName} ${dateFloatToHour(timeAlive)} ${monthYear}`;
 }
 
+async function fetchTemplateFromServer(url) {
+    const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+    if (!response.ok) {
+        throw new Error(`Failed to fetch template: ${response.status}`);
+    }
+    const text = await response.text();
+    const bodyMatch = text.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+    return bodyMatch ? bodyMatch[1] : text;
+}
+
+function executeTemplateScripts(container) {
+    const scripts = Array.from(container.querySelectorAll('script'));
+    scripts.forEach((script) => {
+        const src = script.src;
+        const type = script.type;
+        const content = script.textContent;
+        const newScript = document.createElement('script');
+
+        if (type) {
+            newScript.type = type;
+        }
+
+        if (src) {
+            if (document.querySelector(`script[src="${src}"]`)) {
+                script.remove();
+                return;
+            }
+            newScript.src = src;
+            newScript.async = false;
+        } else {
+            newScript.textContent = content;
+        }
+
+        script.replaceWith(newScript);
+    });
+}
+
+function hideAllDashboardPages() {
+    document.querySelectorAll('.dashboard-page').forEach((page) => {
+        page.classList.remove('show');
+    });
+}
+
+async function openManagerDashboard(managerId) {
+    const url = `/dashboard/subscription/manager.html?manager_id=${encodeURIComponent(managerId)}`;
+    const root = document.querySelector('.dashboard-page');
+    if (!root) {
+        window.location.href = url;
+        return;
+    }
+
+    let managerWrapper = document.getElementById('manager-page-wrapper');
+    if (!managerWrapper) {
+        managerWrapper = document.createElement('div');
+        managerWrapper.id = 'manager-page-wrapper';
+        managerWrapper.className = 'dashboard-page';
+        root.appendChild(managerWrapper);
+    }
+
+    const managerPage = managerWrapper.querySelector('#MANAGER-PAGE');
+    if (managerWrapper.dataset.managerId === String(managerId) && managerPage && managerPage.innerHTML.trim().length > 0) {
+        hideAllDashboardPages();
+        managerWrapper.classList.add('show');
+        managerPage.classList.add('show');
+        if (typeof switchManagerTab === 'function') {
+            switchManagerTab('manager-overview');
+        }
+        if (window.history && window.history.pushState) {
+            window.history.pushState({}, '', url);
+        }
+        return;
+    }
+
+    managerWrapper.dataset.managerId = managerId;
+    showToast('טוען דף ניהול...', ToastStat.LOAD);
+    try {
+        const template = await fetchTemplateFromServer(url);
+        managerWrapper.innerHTML = template;
+        executeTemplateScripts(managerWrapper);
+        const loadedManagerPage = managerWrapper.querySelector('#MANAGER-PAGE');
+        hideAllDashboardPages();
+        managerWrapper.classList.add('show');
+        if (loadedManagerPage) {
+            loadedManagerPage.classList.add('show');
+        }
+        if (typeof switchManagerTab === 'function') {
+            switchManagerTab('manager-overview');
+        }
+        if (window.history && window.history.pushState) {
+            window.history.pushState({}, '', url);
+        }
+    } catch (error) {
+        showToast(error.message || 'שגיאה בטעינת דף ניהול', ToastStat.ERROR);
+    }
+}
+
 const menuItemsSubscription = [
-    { text: "ניהול", action: (managerId) => showToast("אפשרות צפייה עדיין לא פעילה", ToastStat.ERROR), icon:'<i class="fa-solid fa-eye"></i>'},
+    { text: "ניהול", action: (managerId) => openManagerDashboard(managerId), icon:'<i class="fa-solid fa-eye"></i>'},
     { text: "הפעל", action: (managerId) => setManagerAccountStat(managerId, SubscriptionApi.m_active), icon:'<i class="fa-solid fa-play"></i>'},
     { text: "השהה", action: (managerId) => setManagerAccountStat(managerId, SubscriptionApi.m_pause), icon:'<i class="fa-solid fa-circle-pause"></i>'},
     { text: "חסום", action: (managerId) => setManagerAccountStat(managerId, SubscriptionApi.m_banned), icon:'<i class="fa-solid fa-ban"></i>'},
@@ -236,6 +360,10 @@ function renderSubscriptionTable(){
     for (const manager of copy){
         const company = getCompanyByManagerId(manager.manager_id)
         if (!company)continue;
+        // account status filter
+        if (c_sub.a && c_sub.a !== 0){
+            if (!(manager.account_stat & c_sub.a)) continue;
+        }
         tableBody.appendChild(createSubscriptionTableItem(manager, company));
     }
 }
@@ -303,9 +431,13 @@ async function deleteManagerAccount(mid){
 
 document.addEventListener("click", e => {
     const menu = document.getElementById("subscriptionMenu");
-    if (!menu)return;
-    if (!menu.contains(e.target)){
+    if (menu && !menu.contains(e.target)){
         menu.classList.remove("show");
+    }
+
+    const clickedInsideFilters = Boolean(e.target.closest('.filter-item, .filter-options, .viewFilterSelected'));
+    if (!clickedInsideFilters) {
+        closeFilterOptions();
     }
 })
 

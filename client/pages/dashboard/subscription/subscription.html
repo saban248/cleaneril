@@ -7,7 +7,7 @@
             <div class="filter-item">
                 <span class="filter-label">
                     <i class="fa-solid fa-filter"></i>
-                    סטטוס 
+                    מנוי 
                 </span>
                 <span class="viewFilterSelected" id="viewSubscriptionStat" onclick="switchFilterOptions('mf-ss')">הכל</span>
                 <div class="filter-options" id="mf-ss">
@@ -64,6 +64,32 @@
                     <div class="filter-option" onclick="selectSubscriptionOrder('mf-so', this)" data-s="4">
                         <i class="fa-solid fa-circle"></i>
                         <span>בהתמנה</span>
+                    </div>
+                </div>
+            </div>
+            <div class="filter-item">
+                <span class="filter-label">
+                    <i class="fa-solid fa-user"></i>
+                    מצב חשבון
+                </span>
+                <span class="viewFilterSelected" id="viewSubscriptionAccount" onclick="switchFilterOptions('mf-sa')">הכל</span>
+                <div class="filter-options" id="mf-sa">
+                    <div class="filter-option" onclick="selectSubscriptionAccountState('mf-sa', this)" data-s="0">הכל</div>
+                    <div class="filter-option" onclick="selectSubscriptionAccountState('mf-sa', this)" data-s="1">
+                        <i class="fa-solid fa-toggle-on"></i>
+                        <span>פעיל</span>
+                    </div>
+                    <div class="filter-option" onclick="selectSubscriptionAccountState('mf-sa', this)" data-s="4">
+                        <i class="fa-solid fa-circle-pause"></i>
+                        <span>מושהה</span>
+                    </div>
+                    <div class="filter-option" onclick="selectSubscriptionAccountState('mf-sa', this)" data-s="8">
+                        <i class="fa-solid fa-ban"></i>
+                        <span>חסום</span>
+                    </div>
+                    <div class="filter-option" onclick="selectSubscriptionAccountState('mf-sa', this)" data-s="2">
+                        <i class="fa-solid fa-hourglass-start"></i>
+                        <span>ממתין</span>
                     </div>
                 </div>
             </div>

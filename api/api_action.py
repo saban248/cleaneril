@@ -376,7 +376,7 @@ def api_upload_file(flag, **data):
 
         case ApiUploadFile.LOGO:
             exist = ApiManager.get_managers(manager_id=manager_id).first()
-            if not exist:
+            if not exist :
                 return SJson.auto_code(core_msg.ServerCode.General.access_denied)
             name = manager_id+".png"
             fullpath = os.path.join(os.path.basename(os.path.dirname(cleaneril.static_folder)),

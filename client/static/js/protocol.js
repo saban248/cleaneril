@@ -15,7 +15,7 @@ const ManagerPermissions = {
 
 function getManagerPermissionIconText(flag) {
     if (flag >= ManagerPermissions.ROOT)
-        return ["Root", "fa-solid fa-chess"];
+        return ["root", "fa-solid fa-chess"];
 
     if (flag >= ManagerPermissions.ADMIN)
         return ["מנהל מערכת", "fa-solid fa-user-tie"];
