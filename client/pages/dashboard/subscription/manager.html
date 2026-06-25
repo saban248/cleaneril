@@ -1,157 +1,190 @@
-<div class="dashboard-page" id="MANAGER-PAGE">
-        <div class="page-head">
-            <h2>�� ����</h2>
-        </div>
-
-        <div class="page-body">
-            <div class="reports-tabs manager-tabs">
-                <button class="reports-tab selected" type="button" data-panel="manager-overview" onclick="switchManagerTab('manager-overview')">�����</button>
-                <button class="reports-tab" type="button" data-panel="manager-campaign" onclick="switchManagerTab('manager-campaign')">������</button>
-                <button class="reports-tab" type="button" data-panel="manager-finances" onclick="switchManagerTab('manager-finances')">�����</button>
-                <button class="reports-tab" type="button" data-panel="manager-account" onclick="switchManagerTab('manager-account')">�����</button>
-                <button class="reports-tab" type="button" data-panel="manager-permissions" onclick="switchManagerTab('manager-permissions')">������</button>
+<div class="manager-dashboard" id="managerDashboard">
+    <div class="md-header">
+        <h2>דף מנהל</h2>
+        <button type="button" class="manager-close-btn" aria-label="סגור">×</button>
+    </div>
+    <div class="md-body">
+                <div class="reports-tabs manager-tabs">
+                <button class="reports-tab selected" type="button" data-panel="manager-overview" onclick="switchManagerTab('manager-overview')">סקירה</button>
+                <button class="reports-tab" type="button" data-panel="manager-campaign" onclick="switchManagerTab('manager-campaign')">קמפיינים</button>
+                <button class="reports-tab" type="button" data-panel="manager-finances" onclick="switchManagerTab('manager-finances')">כספים</button>
+                <button class="reports-tab" type="button" data-panel="manager-account" onclick="switchManagerTab('manager-account')">חשבון</button>
+                <button class="reports-tab" type="button" data-panel="manager-permissions" onclick="switchManagerTab('manager-permissions')">הרשאות</button>
             </div>
 
-            <div class="manager-content">
-                <section id="manager-overview" class="reports-content manager-panel show">
-                    <div class="reports-general-card">
-                        <div class="rgc-head">
-                            <div class="rgc-title">���� ����</div>
-                        </div>
-                        <div class="rgc-body manager-summary">
-                            <div class="manager-summary-row">
-                                <div>
-                                    <strong>�� ���:</strong> �� ����
-                                </div>
-                                <div>
-                                    <strong>����� �����:</strong> ����
-                                </div>
-                            </div>
-                            <div class="manager-summary-row">
-                                <div>
-                                    <strong>����:</strong> �� �����
-                                </div>
-                                <div>
-                                    <strong>����� �����:</strong> 01.01.2025
-                                </div>
-                            </div>
-                        </div>
+        <div class="manager-content">
+            <section id="manager-overview" class="reports-content manager-panel show">
+                <div class="reports-general-card">
+                    <div class="rgc-head">
+                            <div class="rgc-title">סיכום מנהל</div>
                     </div>
-
-                    <div class="reports-general-card">
-                        <div class="rgc-head">
-                            <div class="rgc-title">����� ����</div>
+                    <div class="rgc-body manager-summary">
+                        <div class="manager-summary-row">
+                            <div>
+                                <strong>שם מנהל:</strong> —
+                            </div>
+                            <div>
+                                <strong>שם העסק:</strong> —
+                            </div>
                         </div>
-                        <div class="rgc-body">
-                            <div class="manager-grid">
-                                <div class="manager-stat-card">
-                                    <span class="manager-stat-label">������</span>
-                                    <span class="manager-stat-value">� 125,600</span>
-                                </div>
-                                <div class="manager-stat-card">
-                                    <span class="manager-stat-label">������</span>
-                                    <span class="manager-stat-value">� 37,450</span>
-                                </div>
-                                <div class="manager-stat-card">
-                                    <span class="manager-stat-label">���� ���</span>
-                                    <span class="manager-stat-value">� 88,150</span>
-                                </div>
+                        <div class="manager-summary-row">
+                            <div>
+                                <strong>סטטוס:</strong> —
+                            </div>
+                            <div>
+                                <strong>תאריך רישום:</strong> 01.01.2025
                             </div>
                         </div>
                     </div>
-                </section>
+                </div>
 
-                <section id="manager-campaign" class="reports-content manager-panel">
-                    <div class="reports-general-card">
-                        <div class="rgc-head">
-                            <div class="rgc-title">����� ������</div>
-                        </div>
-                        <div class="rgc-body">
-                            <p>����� ����� ������ �� �������� ������, ����� ������ ������.</p>
+                <div class="reports-general-card">
+                    <div class="rgc-head">
+                            <div class="rgc-title">סטטיסטיקות</div>
+                    </div>
+                    <div class="rgc-body">
+                        <div class="manager-grid">
+                            <div class="manager-stat-card">
+                                <span class="manager-stat-label">סה"כ הכנסות</span>
+                                <span class="manager-stat-value">₪ 125,600</span>
+                            </div>
+                            <div class="manager-stat-card">
+                                <span class="manager-stat-label">הכנסות נטו</span>
+                                <span class="manager-stat-value">₪ 37,450</span>
+                            </div>
+                            <div class="manager-stat-card">
+                                <span class="manager-stat-label">מאזן</span>
+                                <span class="manager-stat-value">₪ 88,150</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="reports-general-card">
-                        <div class="rgc-head">
-                            <div class="rgc-title">���� �����</div>
-                        </div>
-                        <div class="rgc-body">
-                            <ul>
-                                <li>������ �����: 120</li>
-                                <li>����� �����: 3.2%</li>
-                                <li>���� ��� ���: � 48</li>
-                            </ul>
-                        </div>
-                    </div>
-                </section>
+                </div>
+            </section>
 
-                <section id="manager-finances" class="reports-content manager-panel">
-                    <div class="reports-general-card">
-                        <div class="rgc-head">
-                            <div class="rgc-title">������ �������</div>
-                        </div>
-                        <div class="rgc-body">
-                            <p>��� ����� ����� �������� ������ ��� �����.</p>
-                        </div>
+            <section id="manager-campaign" class="reports-content manager-panel">
+                <div class="reports-general-card">
+                    <div class="rgc-head">
+                            <div class="rgc-title">נתוני קמפיין</div>
                     </div>
-                    <div class="reports-general-card">
-                        <div class="rgc-head">
-                            <div class="rgc-title">������ ������</div>
-                        </div>
-                        <div class="rgc-body">
-                            <ul>
-                                <li>��"� ������: � 180,000</li>
-                                <li>���� ����: � 12,400</li>
-                                <li>������� �������: 8</li>
-                            </ul>
-                        </div>
+                    <div class="rgc-body">
+                        <p>כאן יוצגו תקצירי הקמפיינים, תובנות וביצועים.</p>
                     </div>
-                </section>
+                </div>
+                <div class="reports-general-card">
+                    <div class="rgc-head">
+                            <div class="rgc-title">נתוני קמפיין</div>
+                    </div>
+                    <div class="rgc-body">
+                        <ul>
+                            <li>קמפיינים פעילים: 120</li>
+                            <li>שיעור המרה: 3.2%</li>
+                            <li>עלות ממוצעת: ₪ 48</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
 
-                <section id="manager-account" class="reports-content manager-panel">
-                    <div class="reports-general-card">
-                        <div class="rgc-head">
-                            <div class="rgc-title">����� �����</div>
-                        </div>
-                        <div class="rgc-body">
-                            <p>��� ���� �������� ������ ����� ������, ����� ����� ������ �������.</p>
-                        </div>
+            <section id="manager-finances" class="reports-content manager-panel">
+                <div class="reports-general-card">
+                    <div class="rgc-head">
+                            <div class="rgc-title">מצב כספים</div>
                     </div>
-                    <div class="reports-general-card">
-                        <div class="rgc-head">
-                            <div class="rgc-title">������ �����</div>
-                        </div>
-                        <div class="rgc-body manager-settings-actions">
-                            <button class="action-client">��� / ����</button>
-                            <button class="action-client">����</button>
-                            <button class="action-client">��� �����</button>
-                        </div>
+                    <div class="rgc-body">
+                        <p>כאן יוצגו נתוני הכנסות והוצאות לפי תקופה.</p>
                     </div>
-                </section>
+                </div>
+                <div class="reports-general-card">
+                    <div class="rgc-head">
+                            <div class="rgc-title">נתוני חשבון</div>
+                    </div>
+                    <div class="rgc-body">
+                        <ul>
+                            <li>סה"כ הכנסות: ₪ 180,000</li>
+                            <li>הוצאה חודשית: ₪ 12,400</li>
+                            <li>פעילויות פתוחות: 8</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
 
-                <section id="manager-permissions" class="reports-content manager-panel">
-                    <div class="reports-general-card">
-                        <div class="rgc-head">
-                            <div class="rgc-title">������</div>
-                        </div>
-                        <div class="rgc-body">
-                            <ul>
-                                <li>��� ���� ������: ���� �����</li>
-                                <li>���� �������: �����</li>
-                                <li>���� ������: �����</li>
-                            </ul>
-                        </div>
+            <section id="manager-account" class="reports-content manager-panel">
+                <div class="reports-general-card">
+                    <div class="rgc-head">
+                            <div class="rgc-title">הגדרות חשבון</div>
                     </div>
-                    <div class="reports-general-card">
-                        <div class="rgc-head">
-                            <div class="rgc-title">����� �����</div>
-                        </div>
-                        <div class="rgc-body manager-settings-actions">
-                            <button class="action-client">���� �����</button>
-                            <button class="action-client">���� �����</button>
-                            <button class="action-client">���� �-root</button>
-                        </div>
+                    <div class="rgc-body">
+                        <p>כאן ניתן לשנות הגדרות החשבון ולהציג פרטים רלוונטיים.</p>
                     </div>
-                </section>
-            </div>
+                </div>
+                <div class="reports-general-card">
+                    <div class="rgc-head">
+                        <div class="rgc-title">פרטי חשבון</div>
+                    </div>
+                    <div class="rgc-body manager-settings-actions">
+                        <button class="action-client">ערוך / שמור</button>
+                        <button class="action-client">אפס סיסמה</button>
+                        <button class="action-client">סגור חשבון</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="manager-permissions" class="reports-content manager-panel">
+                <div class="reports-general-card">
+                    <div class="rgc-head">
+                            <div class="rgc-title">הרשאות</div>
+                    </div>
+                    <div class="rgc-body">
+                        <ul>
+                            <li>רמת גישה: צפייה בלבד</li>
+                            <li>הרשאות נוספות: עריכה</li>
+                            <li>פורמט כניסה: סיסמה</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="reports-general-card">
+                    <div class="rgc-head">
+                            <div class="rgc-title">פעולות מנהל</div>
+                    </div>
+                    <div class="rgc-body manager-settings-actions">
+                        <button class="action-client">הוספת הרשאה</button>
+                        <button class="action-client">עריכת הרשאה</button>
+                        <button class="action-client">הפוך ל-root</button>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
+    <div class="md-footer">
+
+    </div>
+    
+</div>
+<script>
+(function(){
+    // Close button hides the overlay container (#managerTemplate or .template-manager-dashboard)
+    var btn = document.querySelector('.manager-close-btn');
+    if(!btn) return;
+    btn.addEventListener('click', function(){
+        var container = document.getElementById('managerTemplate') || document.querySelector('.template-manager-dashboard');
+        if(!container) return;
+        container.classList.remove('show');
+    });
+})();
+</script>
+<style>
+.manager-close-btn{
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    background: #ffffffcc;
+    border: 0;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(2,6,23,0.12);
+    z-index: 100001;
+}
+.manager-close-btn:active{ transform: scale(0.98); }
+</style>

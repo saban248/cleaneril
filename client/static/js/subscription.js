@@ -153,6 +153,8 @@ async function fetchManagerDashboard(manager_id) {
 
         template.innerHTML = res.template || '';
         template.dataset.managerId = String(manager_id);
+        // Reveal the injected template as a fullscreen overlay
+        template.classList.add('show');
         showToast(res.notice, ToastStat.DONE, toastId);
         return template;
     } catch (err) {
@@ -162,11 +164,6 @@ async function fetchManagerDashboard(manager_id) {
 }
 
 
-function hideAllDashboardPages() {
-    document.querySelectorAll('.dashboard-page').forEach((page) => {
-        page.classList.remove('show');
-    });
-}
 
 async function openManagerDashboard(managerId) {
     const template = document.getElementById('managerTemplate');

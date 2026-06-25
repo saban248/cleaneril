@@ -318,6 +318,7 @@ def get_subscription_api(**breq):
             code = managers.delete_manager_account(subs.manager_id)
         case SubscriptionApi.manager_template:
             template = {"template": get_manager_dashboard_template(manager_id)}
+            return SJson.auto_code(code, **template)
 
     return SJson.auto_code(code)
 
