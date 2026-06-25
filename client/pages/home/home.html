@@ -41,17 +41,14 @@
         In your html page, add the snippet and call gtag_report_conversion when someone clicks on the chosen link or button. -->
         <script>
         function gtag_report_conversion(url) {
-        var callback = function () {
-            if (typeof(url) != 'undefined') {
-            location.href = 'tel:'+url;
-            }
-        };
+
         gtag('event', 'conversion', {
             'send_to': 'AW-11094984610/B722CN2G0MUcEKKPwKop',
             'value': 1.0,
             'currency': 'ILS',
             'event_callback': null
         });
+        location.href = 'tel:'+url;
         return false;
         }
         </script>
