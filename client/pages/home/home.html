@@ -43,14 +43,14 @@
         function gtag_report_conversion(url) {
         var callback = function () {
             if (typeof(url) != 'undefined') {
-            window.location = url;
+            window.location = 'tel:'+url;
             }
         };
         gtag('event', 'conversion', {
             'send_to': 'AW-11094984610/B722CN2G0MUcEKKPwKop',
             'value': 1.0,
             'currency': 'ILS',
-            'event_callback': callback
+            'event_callback': null
         });
         return false;
         }
