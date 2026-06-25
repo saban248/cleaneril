@@ -19,6 +19,9 @@ function openWhatsApp(full_link){
 }
 
 function phoneCall(number){
+    gtag('event', 'phone_call', {
+        phone_number: number
+    });
     location.href = 'tel:'+number
 }
 
