@@ -15,19 +15,23 @@ window.addEventListener("scroll", () => {
 
 
 function openWhatsApp(full_link){
-    gtag('event', 'whatsapp_link', {
-        link: full_link,
-        page_location: window.location.href
-    });
+    if (!location.host.includes("127.0.0.1")){
+        gtag('event', 'whatsapp_link', {
+            link: full_link,
+            page_location: window.location.href
+        });
+    }
     open(full_link, "_blank")
     
 }
 
 function phoneCall(number){
-    gtag('event', 'phone_call', {
-        phone_number: number,
-        page_location: window.location.href
-    });
+    if (!location.host.includes("127.0.0.1")){
+        gtag('event', 'phone_call', {
+            phone_number: number,
+            page_location: window.location.href
+        });
+    }
     location.href = 'tel:'+number
 }
 
