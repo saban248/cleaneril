@@ -97,3 +97,15 @@ prevBtn.addEventListener('click', () => {
 });
 
 updateSlider();
+
+// --- Pin welcome to top when reaching the aboutus/works section ---
+(function(){
+    const welcome = document.querySelector('.body-home > .welcome');
+    const about = document.querySelector('.aboutus.works') || document.getElementById('recommends');
+    if (!welcome || !about) return;
+
+    let pinned = false;
+
+    const head = document.querySelector('.head-home');
+
+})();

@@ -12,12 +12,6 @@
             </div>
         {% endif %}
 
-        <div class="card-action">
-            <i class="fa-solid fa-phone phonecell" onclick="phoneCall('{{card.phone}}')" class="cta-button" href="tel:{{card.phone}}"></i>
-            <i class="icon icon-32 whatsapp" onclick="openWhatsApp('{{card.whatsapp_link}}')">
-                {% include "icon/whatsapp.svg" %}
-            </i>
-        </div>
     </div>
     
     {%if card.off %}

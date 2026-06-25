@@ -244,15 +244,45 @@ body, *{
 
 
 .clean-cards{
+    padding-top: 48px;
     position: relative;
     direction: rtl;
-    padding: 5px;
-    padding-top: 20px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    column-gap: 22px;
+        /* premium gold gradient with darker accents */
+    display: block; /* container for the slider */
+    overflow: hidden; /* hide overflowing slides */
 }
+
+/* Horizontal sliding carousel behavior for the cards inside */
+.clean-cards .cards{
+    display: flex;
+    flex-wrap: nowrap;
+    column-gap: 22px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px 4% 24px;
+    margin: 0 auto;
+}
+
+.clean-cards .cards::-webkit-scrollbar{ height: 8px; }
+.clean-cards .cards::-webkit-scrollbar-thumb{ background: rgba(0,0,0,0.08); border-radius: 6px; }
+.clean-cards .cards{ scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.08) transparent; }
+
+/* Card items should be fixed-width and snap to center */
+.clean-card, .client-card, .worker-card, .card-ba{
+    flex: 0 0 320px;
+    scroll-snap-align: center;
+    display: flex;
+    flex-direction: column;
+    padding: .75rem;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.10);
+    box-shadow: 0 6px 22px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+/* make navigation arrows visible when carousel is hovered on larger screens */
+.clean-cards:hover .cards-nevigate{ display: flex; }
 
 .cards-nevigate{
     display: flex;
@@ -408,7 +438,7 @@ body, *{
     flex-direction: column;
     padding: .75rem;
     max-width: 350px;
-    background: rgba(255, 255, 255, 0.10);
+    background: rgb(255, 255, 255);
     backdrop-filter: blur(9px);
     -webkit-backdrop-filter: blur(9px);
     margin-bottom: 20px;
@@ -428,6 +458,7 @@ body, *{
     flex-shrink: 0;
     box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 24px;
     display: flex;
+    justify-content: space-between;
     flex-direction: column;
     max-width: 350px;
     backdrop-filter: blur(9px);
@@ -438,7 +469,7 @@ body, *{
     border-color: rgba(255, 255, 255, 0.2);
     border-image: initial;
     padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgb(255, 255, 255);
 }
 
 .card-head{
