@@ -35,6 +35,25 @@
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-N5N4T36G');</script>
     <!-- End Google Tag Manager -->
+            <!-- Event snippet for קליק לשיחה conversion page
+        In your html page, add the snippet and call gtag_report_conversion when someone clicks on the chosen link or button. -->
+        <script>
+        function gtag_report_conversion(url) {
+        var callback = function () {
+            if (typeof(url) != 'undefined') {
+            window.location = url;
+            }
+        };
+        gtag('event', 'conversion', {
+            'send_to': 'AW-11094984610/B722CN2G0MUcEKKPwKop',
+            'value': 1.0,
+            'currency': 'ILS',
+            'event_callback': callback
+        });
+        return false;
+        }
+        </script>
+
 </head>
 <body>
 
@@ -478,7 +497,7 @@
     </div>
     <div class="quickcall">
         <div class="qc-head">
-            <i class="fa-solid fa-phone" onclick="phoneCall('058-5005617')"></i>
+            <i class="fa-solid fa-phone" onclick="gtag_report_conversion('058-5005617')"></i>
             <i class="icon icon-24 whatsapp" onclick="openWhatsApp('https:\/\/api.whatsapp.com/send/?phone=9720585005617&text=%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%94%D7%96%D7%9E%D7%99%D7%9F%20%D7%A0%D7%99%D7%A7%D7%95%D7%99%20%D7%A1%D7%A4%D7%94&type=phone_number&app_absent=0')">
                 {% include "icon/whatsapp.svg" %}
             </i>
@@ -489,7 +508,7 @@
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
-    
+
 </body>
 <script src="/static/js/home.js"></script>
 <script src="/static/js/all.js"></script>
