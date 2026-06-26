@@ -152,11 +152,10 @@ async function fetchManagerDashboard(manager_id) {
         }
 
         template.innerHTML = res.template || '';
-        template.dataset.managerId = String(manager_id);
-        // Reveal the injected template as a fullscreen overlay
+        c_runtime.currentManagerIdView = manager_id;        
         template.classList.add('show');
         showToast(res.notice, ToastStat.DONE, toastId);
-        return template;
+        onLoadManagerDashboard()
     } catch (err) {
         showToast(err.message, ToastStat.ERROR, toastId);
         throw err;
@@ -164,21 +163,22 @@ async function fetchManagerDashboard(manager_id) {
 }
 
 
+function showManagerDashboard(){
+    const template = document.getElementById('managerTemplate');
+    template.classList.add("show")
+}
+function hideManagerDashboard(){
+    const template = document.getElementById('managerTemplate');
+    template.classList.remove("show")
+}
+function closeManagerDashboard(){
+    hideManagerDashboard()
+}
 
 async function openManagerDashboard(managerId) {
-    const template = document.getElementById('managerTemplate');
-
-    if (template.dataset.managerId === String(managerId) && template.innerHTML.trim().length > 0) {
-        template.classList.add('show');
-        if (typeof switchManagerTab === 'function') {
-            switchManagerTab('manager-overview');
-        }
-        return;
-    }
-
     try {
         await fetchManagerDashboard(managerId);
-        template.classList.add('show');
+        showManagerDashboard()
 
         if (typeof switchManagerTab === 'function') {
             switchManagerTab('manager-overview');

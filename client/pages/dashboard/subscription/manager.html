@@ -1,19 +1,22 @@
 <div class="manager-dashboard" id="managerDashboard">
     <div class="md-header">
-        <h2>דף מנהל</h2>
-        <button type="button" class="manager-close-btn" aria-label="סגור">×</button>
+        <i class="fa-solid fa-xmark manager-template-close" onclick="closeManagerDashboard()"></i>
+        <h2>
+            דף מנהל:
+            <span id="managerNameTitle"></span>
+        </h2>
     </div>
     <div class="md-body">
-                <div class="reports-tabs manager-tabs">
-                <button class="reports-tab selected" type="button" data-panel="manager-overview" onclick="switchManagerTab('manager-overview')">סקירה</button>
-                <button class="reports-tab" type="button" data-panel="manager-campaign" onclick="switchManagerTab('manager-campaign')">קמפיינים</button>
-                <button class="reports-tab" type="button" data-panel="manager-finances" onclick="switchManagerTab('manager-finances')">כספים</button>
-                <button class="reports-tab" type="button" data-panel="manager-account" onclick="switchManagerTab('manager-account')">חשבון</button>
-                <button class="reports-tab" type="button" data-panel="manager-permissions" onclick="switchManagerTab('manager-permissions')">הרשאות</button>
-            </div>
+        <div class="md-tabs">
+            <i class="md-tab-item md-tab-selected" data-view="1" onclick="switchManagerTab(MDTabsView.SUMMARY)">כללי</i>
+            <i class="md-tab-item" data-view="2" onclick="switchManagerTab(MDTabsView.FUNDS)">כספים</i>
+            <i class="md-tab-item" data-view="4" onclick="switchManagerTab(MDTabsView.ACCOUNT)">חשבון</i>
+            <i class="md-tab-item" data-view="8" onclick="switchManagerTab(MDTabsView.LOGS)">יומן פעילות</i>
+            <i class="md-tab-item" data-view="16" onclick="switchManagerTab(MDTabsView.SETTINGS)">הגדרות</i>
+        </div>
 
-        <div class="manager-content">
-            <section id="manager-overview" class="reports-content manager-panel show">
+        <div class="md-views">
+            <section id="1" class="md-view show">
                 <div class="reports-general-card">
                     <div class="rgc-head">
                             <div class="rgc-title">סיכום מנהל</div>
@@ -61,7 +64,7 @@
                 </div>
             </section>
 
-            <section id="manager-campaign" class="reports-content manager-panel">
+            <section id="2" class="md-view">
                 <div class="reports-general-card">
                     <div class="rgc-head">
                             <div class="rgc-title">נתוני קמפיין</div>
@@ -84,7 +87,7 @@
                 </div>
             </section>
 
-            <section id="manager-finances" class="reports-content manager-panel">
+            <section id="4" class="md-view">
                 <div class="reports-general-card">
                     <div class="rgc-head">
                             <div class="rgc-title">מצב כספים</div>
@@ -107,7 +110,7 @@
                 </div>
             </section>
 
-            <section id="manager-account" class="reports-content manager-panel">
+            <section id="8" class="md-view">
                 <div class="reports-general-card">
                     <div class="rgc-head">
                             <div class="rgc-title">הגדרות חשבון</div>
@@ -128,7 +131,7 @@
                 </div>
             </section>
 
-            <section id="manager-permissions" class="reports-content manager-panel">
+            <section id="16" class="md-view">
                 <div class="reports-general-card">
                     <div class="rgc-head">
                             <div class="rgc-title">הרשאות</div>

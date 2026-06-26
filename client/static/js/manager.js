@@ -17,6 +17,7 @@ const c_runtime = {
     currentInvoiceIdView:null,
     currentWorkerIdView:null,
     currentUPermission:null,
+    currentManagerIdView:null
 }
 
 async function fetchPermissions(){
@@ -72,6 +73,10 @@ function getCompanyByManagerId(manager_id){
     return c_runtime.companies.find(company => company.manager_id == manager_id)
 }
 
+function getManagerById(manager_id){
+    if (!c_runtime.managers)return
+    return c_runtime.managers.find(m => m.manager_id == manager_id)
+}
 
 function get_client_by_order_id(order_id){
     const order = c_runtime.orders.find(o => o.order_id == order_id)

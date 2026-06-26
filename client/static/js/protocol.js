@@ -416,6 +416,14 @@ function getSubscriptionStatText(stat){
 }
 
 
+const MDTabsView = {
+    SUMMARY:1<<0,
+    FUNDS:1<<1,
+    ACCOUNT:1<<2,
+    LOGS:1<<3,
+    SETTINGS:1<<4
+}
+
 window.SocialMedia = SocialMedia;
 window.PageManager = PageManager;
 window.StateOrder = StateOrder
