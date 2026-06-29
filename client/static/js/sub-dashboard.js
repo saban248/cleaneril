@@ -22,7 +22,9 @@ function MDSetViewSummary(m, c){
     const companyVAT = document.getElementById("companyVAT");
     const companyPhone = document.getElementById("companyPhone")
     const companyEmail = document.getElementById("companyEmail");
-
+    const lastManagerActivity = document.getElementById("lastManagerActivity")
+    const closeClientToday = document.getElementById("closeClientToday")
+    const incomeMoneyToady = document.getElementById("incomeMoneyToady");
     fullname.textContent = c.owner_fullname;
     managerPhone.textContent = m.phone;
     managerUserName.textContent = m.username;
@@ -30,6 +32,10 @@ function MDSetViewSummary(m, c){
     companyVAT.textContent = Boolean(c.vat_company)?"מורשה":"פטור"
     companyPhone.textContent = c.company_phone;
     companyEmail.textContent = c.company_email;
+    lastManagerActivity.textContent = getLastTimeManagerAliveHourAndYMD(m.time_alive);
+    closeClientToday.textContent = 0
+    incomeMoneyToady.textContent = 0
+
 }
 
 

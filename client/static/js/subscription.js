@@ -117,7 +117,7 @@ function createSubscriptionPermissionCell(permission, text, icon){
 }
 
 function getLastTimeManagerAliveHourAndYMD(timeAlive){
-    if (!timeAlive)return "-";
+    if (!timeAlive)return "לא ידוע";
     if (timeAlive > 1e12)timeAlive = timeAlive / 1000;
 
     const date = new Date(timeAlive * 1000);
