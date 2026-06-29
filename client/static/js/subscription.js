@@ -179,10 +179,6 @@ async function openManagerDashboard(managerId) {
     try {
         await fetchManagerDashboard(managerId);
         showManagerDashboard()
-
-        if (typeof switchManagerTab === 'function') {
-            switchManagerTab('manager-overview');
-        }
     } catch (error) {
         showToast(error.message, ToastStat.ERROR);
     }

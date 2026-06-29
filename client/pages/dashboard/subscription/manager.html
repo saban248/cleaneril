@@ -8,15 +8,15 @@
     </div>
     <div class="md-body">
         <div class="md-tabs">
-            <i class="md-tab-item md-tab-selected" data-view="1" onclick="switchManagerTab(MDTabsView.SUMMARY)">כללי</i>
-            <i class="md-tab-item" data-view="2" onclick="switchManagerTab(MDTabsView.FUNDS)">כספים</i>
-            <i class="md-tab-item" data-view="4" onclick="switchManagerTab(MDTabsView.ACCOUNT)">חשבון</i>
-            <i class="md-tab-item" data-view="8" onclick="switchManagerTab(MDTabsView.LOGS)">יומן פעילות</i>
-            <i class="md-tab-item" data-view="16" onclick="switchManagerTab(MDTabsView.SETTINGS)">הגדרות</i>
+            <i class="md-tab-item md-tab-selected" data-tab="1" onclick="switchManagerTab(MDTabsView.SUMMARY)">כללי</i>
+            <i class="md-tab-item" data-tab="2" onclick="switchManagerTab(MDTabsView.FUNDS)">כספים</i>
+            <i class="md-tab-item" data-tab="4" onclick="switchManagerTab(MDTabsView.ACCOUNT)">חשבון</i>
+            <i class="md-tab-item" ddata-tab="8" onclick="switchManagerTab(MDTabsView.LOGS)">יומן פעילות</i>
+            <i class="md-tab-item" data-tab="16" onclick="switchManagerTab(MDTabsView.SETTINGS)">הגדרות</i>
         </div>
 
         <div class="md-views">
-            <section id="1" class="md-view show">
+            <section data-view="1" class="md-view show">
                 <div class="reports-general-card">
                     <div class="rgc-head">
                             <div class="rgc-title">סיכום מנהל</div>
@@ -64,7 +64,7 @@
                 </div>
             </section>
 
-            <section id="2" class="md-view">
+            <section data-view="2" class="md-view">
                 <div class="reports-general-card">
                     <div class="rgc-head">
                             <div class="rgc-title">נתוני קמפיין</div>
@@ -87,7 +87,7 @@
                 </div>
             </section>
 
-            <section id="4" class="md-view">
+            <section data-view="4" class="md-view">
                 <div class="reports-general-card">
                     <div class="rgc-head">
                             <div class="rgc-title">מצב כספים</div>
@@ -110,7 +110,7 @@
                 </div>
             </section>
 
-            <section id="8" class="md-view">
+            <section data-view="8" class="md-view">
                 <div class="reports-general-card">
                     <div class="rgc-head">
                             <div class="rgc-title">הגדרות חשבון</div>
@@ -131,7 +131,7 @@
                 </div>
             </section>
 
-            <section id="16" class="md-view">
+            <section data-view="16" class="md-view">
                 <div class="reports-general-card">
                     <div class="rgc-head">
                             <div class="rgc-title">הרשאות</div>
@@ -162,18 +162,7 @@
     </div>
     
 </div>
-<script>
-(function(){
-    // Close button hides the overlay container (#managerTemplate or .template-manager-dashboard)
-    var btn = document.querySelector('.manager-close-btn');
-    if(!btn) return;
-    btn.addEventListener('click', function(){
-        var container = document.getElementById('managerTemplate') || document.querySelector('.template-manager-dashboard');
-        if(!container) return;
-        container.classList.remove('show');
-    });
-})();
-</script>
+
 <style>
 .manager-close-btn{
     position: absolute;

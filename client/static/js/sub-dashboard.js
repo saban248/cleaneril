@@ -19,11 +19,13 @@ function onLoadManagerDashboard(){
 
 function switchManagerTab(viewId) {
     document.querySelectorAll('.md-view').forEach(view => {
-        view.classList.toggle('show', view.dataset.view === viewId);
+        console.log(view.dataset.view, viewId)
+        view.classList.toggle('show', view.dataset.view == viewId);
+        
     });
 
     document.querySelectorAll('.md-tab-item').forEach(tab => {
-        tab.classList.toggle('md-tab-selected', parseInt(tab.dataset.view) === viewId);
+        tab.classList.toggle('md-tab-selected', parseInt(tab.dataset.tab) === viewId);
     });
 }
 
