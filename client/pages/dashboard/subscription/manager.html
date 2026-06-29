@@ -17,47 +17,61 @@
 
         <div class="md-views">
             <section data-view="1" class="md-view show">
-                <div class="reports-general-card">
-                    <div class="rgc-head">
-                            <div class="rgc-title">סיכום מנהל</div>
-                    </div>
-                    <div class="rgc-body manager-summary">
-                        <div class="manager-summary-row">
-                            <div>
-                                <strong>שם מנהל:</strong> —
-                            </div>
-                            <div>
-                                <strong>שם העסק:</strong> —
+                <div class="md-company-logo" id="companyLogo"></div>
+                <div class="md-cards">
+                    <div class="md-card-info">
+                        <div class="mdi-head">
+                            <div class="mdi-title">
+                                <span>פרטי מנהל</span>
                             </div>
                         </div>
-                        <div class="manager-summary-row">
-                            <div>
-                                <strong>סטטוס:</strong> —
-                            </div>
-                            <div>
-                                <strong>תאריך רישום:</strong> 01.01.2025
+                        <div class="mdi-body">
+                            <div class="mdi-infos">
+                                <div class="mdi-info">
+                                    <span>שם מלא</span>
+                                    <span id="managerName"></span>
+                                </div>
+                                <div class="mdi-info">
+                                    <span>פאלפון אישי</span>
+                                    <span id="managerPhone"></span>
+                                </div>
+                                <div class="mdi-info">
+                                    <span>שם משתמש</span>
+                                    <span id="managerUserName"></span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="reports-general-card">
-                    <div class="rgc-head">
-                            <div class="rgc-title">סטטיסטיקות</div>
-                    </div>
-                    <div class="rgc-body">
-                        <div class="manager-grid">
-                            <div class="manager-stat-card">
-                                <span class="manager-stat-label">סה"כ הכנסות</span>
-                                <span class="manager-stat-value">₪ 125,600</span>
+                    <div class="md-card-info">
+                        <div class="mdi-head">
+                            <div class="mdi-title">
+                                <span>פרטי העסק</span>
                             </div>
-                            <div class="manager-stat-card">
-                                <span class="manager-stat-label">הכנסות נטו</span>
-                                <span class="manager-stat-value">₪ 37,450</span>
-                            </div>
-                            <div class="manager-stat-card">
-                                <span class="manager-stat-label">מאזן</span>
-                                <span class="manager-stat-value">₪ 88,150</span>
+                        </div>
+                        <div class="mdi-body">
+                            <div class="mdi-infos">
+                                <div class="mdi-info">
+                                    <span>שם העסק</span>
+                                    <span id="companyName"></span>
+                                </div>
+                                <div class="mdi-infos">
+                                    <div class="mdi-info">
+                                        <span>מעמד העסק</span>
+                                        <span id="companyVAT"></span>
+                                    </div>
+                                </div>
+                                <div class="mdi-infos">
+                                    <div class="mdi-info">
+                                        <span>מספר פאלפון עסק</span>
+                                        <span id="companyPhone"></span>
+                                    </div>
+                                </div>
+                                <div class="mdi-infos">
+                                    <div class="mdi-info">
+                                        <span>מייל של העסק</span>
+                                        <span id="companyEmail"></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -163,20 +177,3 @@
     
 </div>
 
-<style>
-.manager-close-btn{
-    position: absolute;
-    top: 12px;
-    right: 14px;
-    background: #ffffffcc;
-    border: 0;
-    border-radius: 8px;
-    padding: 6px 10px;
-    font-size: 20px;
-    line-height: 1;
-    cursor: pointer;
-    box-shadow: 0 6px 18px rgba(2,6,23,0.12);
-    z-index: 100001;
-}
-.manager-close-btn:active{ transform: scale(0.98); }
-</style>

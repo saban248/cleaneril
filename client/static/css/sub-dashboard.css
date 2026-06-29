@@ -91,6 +91,59 @@
   display: none;
 }
 
+.md-company-logo{
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 24px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+    border: 2px solid rgba(255,255,255,0.5);
+}
+
+
+.md-cards{
+  display: flex;
+  flex-direction: row;
+  row-gap: 10px;
+  column-gap: 10px;
+
+}
+.md-card-info{
+  padding: 10px;
+  border-radius: 7px;
+  box-shadow: 0 0 11px #e7e8eb;
+
+}
+.mdi-head{
+  border-bottom: 1px solid #e3e3e3;
+  margin-bottom:20px;
+}
+.mdi-title{
+  
+}
+.mdi-body{
+}
+.mdi-infos{
+  display: flex;
+  column-gap: 10px;
+  row-gap: 10px;
+  flex-wrap: wrap;
+  
+}
+.mdi-info{
+  font-size: 14px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 5px;
+
+
+}
+.mdi-info > span:first-child{
+  font-size: 13px;
+  color: #475569;
+}
+
+
 .manager-summary {
   display: grid;
   gap: 16px;
@@ -188,6 +241,10 @@
 
   .manager-settings-actions {
     flex-direction: column;
+  }
+  .md-cards{
+    flex-direction: column;
+
   }
 }
 
