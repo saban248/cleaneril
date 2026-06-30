@@ -26,6 +26,7 @@ class Company(cleaneril_db.Model):
     # general profit sharing employee
     gpse = cleaneril_db.Column(cleaneril_db.Integer, nullable=True, default=50)
     register_level = cleaneril_db.Column(cleaneril_db.Integer, nullable=True, default=-1)
+    company_approved = cleaneril_db.Column(cleaneril_db.Boolean, nullable=False, default=False)
 
 
 def get_companies(source:bool = True, **kwargs) -> Union[Company, list[Union[dict, Company]]]:

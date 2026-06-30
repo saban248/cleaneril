@@ -120,7 +120,21 @@
 }
 .mdi-title{
   font-weight: bold;
+  display: flex;
+  justify-content: space-between;
   
+}
+.md-compnay-approval{
+  font-size: 14px !important;
+
+}
+.mdcni{
+  background: #d04d4d89;
+  color: #6d0c0c;
+}
+.mdci{
+  background: #0b420a7f;
+  color: #0f2a25;
 }
 .mdi-body{
 }
@@ -132,17 +146,19 @@
   
 }
 .mdi-info{
-  font-size: 14px;
+  font-size: 12px;
   display: grid;
   grid-template-columns: 1fr;
   gap: 5px;
+  color: #64748b;
 
 
 }
 .mdi-info > span:first-child{
   font-size: 13px;
-  color: #475569;
+  color: #232a34;
 }
+
 
 
 .manager-summary {

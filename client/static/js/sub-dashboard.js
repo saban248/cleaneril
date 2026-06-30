@@ -14,6 +14,29 @@ function MDSetLogoCompany(m, c){
     logo.style.backgroundRepeat = "no-repeat";
 }
 
+function MDSetCompanyApproved(m, c){
+    const mdCompApprov = document.getElementById("mdCompApprov");
+    let icon = 'null'
+    let text = 'unknown'
+    if (c.company_approved){
+        icon = 'fa-solid fa-house-circle-check'
+        text = 'מאומת'
+        mdCompApprov.classList.add("mdci")
+        mdCompApprov.classList.remove("mdcni")
+    }
+    else{
+        icon = 'fa-solid fa-house-circle-xmark'
+        text = 'לא מאומת'
+        mdCompApprov.classList.add("mdcni")
+        mdCompApprov.classList.remove("mdci")
+    }
+    const eicon = document.createElement('i')
+    const span = document.createElement("span")
+    span.textContent = text
+    eicon.className = icon;
+    mdCompApprov.appendChild(eicon)
+    mdCompApprov.appendChild(span)
+}
 function MDSetViewSummary(m, c){
     const fullname = document.getElementById("managerName");
     const managerPhone = document.getElementById("managerPhone");
@@ -35,6 +58,8 @@ function MDSetViewSummary(m, c){
     lastManagerActivity.textContent = getLastTimeManagerAliveHourAndYMD(m.time_alive);
     closeClientToday.textContent = 0
     incomeMoneyToady.textContent = 0
+
+    MDSetCompanyApproved(m, c)
 
 }
 
