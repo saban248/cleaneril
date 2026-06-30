@@ -14,28 +14,51 @@ function MDSetLogoCompany(m, c){
     logo.style.backgroundRepeat = "no-repeat";
 }
 
+function MDSetManagerAccountApproved(m, c){
+    const mdManagerApprove = document.getElementById("mdManagerApprov");
+    MDGeneralApproved(mdManagerApprove, m?.account_approved)
+}
 function MDSetCompanyApproved(m, c){
     const mdCompApprov = document.getElementById("mdCompApprov");
-    let icon = 'null'
-    let text = 'unknown'
-    if (c.company_approved){
+    MDGeneralApproved(mdCompApprov, c?.company_approved)
+}
+function MDGeneralApproved(element, condition){
+        if (condition){
         icon = 'fa-solid fa-house-circle-check'
         text = 'מאומת'
-        mdCompApprov.classList.add("mdci")
-        mdCompApprov.classList.remove("mdcni")
+        element.classList.add("mdci")
+        element.classList.remove("mdcni")
     }
     else{
         icon = 'fa-solid fa-house-circle-xmark'
         text = 'לא מאומת'
-        mdCompApprov.classList.add("mdcni")
-        mdCompApprov.classList.remove("mdci")
+        element.classList.add("mdcni")
+        element.classList.remove("mdci")
     }
     const eicon = document.createElement('i')
     const span = document.createElement("span")
     span.textContent = text
     eicon.className = icon;
-    mdCompApprov.appendChild(eicon)
-    mdCompApprov.appendChild(span)
+    element.appendChild(eicon)
+    element.appendChild(span)
+
+}
+function MDSetSummaryWorkersInfo(m, c){
+    const data = {action:SubscriptionApi.manager_workers, manager_id:m.manager_id}
+    const summaryCountWorkers = document.getElementById("summaryCountWorkers");
+    apiPost(ApiRoute.subs, data).then(
+        (res) =>{
+            if (!res.success){
+                return
+            }
+            summaryCountWorkers.textContent = res.workers?res.workers.length:0
+        }
+    )
+    const companyProfitSharing = document.getElementById("companyProfitSharing");
+    const compkanyActiveEmployees = document.getElementById("compkanyActiveEmployees");
+    companyProfitSharing.textContent = `${c.gpse}%`
+    compkanyActiveEmployees.textContent = '-'
+
 }
 function MDSetViewSummary(m, c){
     const fullname = document.getElementById("managerName");
@@ -60,6 +83,8 @@ function MDSetViewSummary(m, c){
     incomeMoneyToady.textContent = 0
 
     MDSetCompanyApproved(m, c)
+    MDSetManagerAccountApproved()
+    MDSetSummaryWorkersInfo(m, c)
 
 }
 

@@ -18,6 +18,7 @@ class Manager(cleaneril_db.Model):
     time_alive = cleaneril_db.Column(cleaneril_db.Float, nullable=False)
     time_register = cleaneril_db.Column(cleaneril_db.Float, nullable=False)
     account_stat = cleaneril_db.Column(cleaneril_db.Integer, nullable=False)
+    account_approved = cleaneril_db.Column(cleaneril_db.Boolean, nullable=False)
 
 
 def update_time_alive(manager_id:str):
@@ -62,6 +63,7 @@ class ApiManager:
         new.time_alive = 0
         new.time_register = time.time()
         new.account_stat = ManagerAccountStat.PENDING
+        new.account_approved = False
         cleaneril_db.session.add(new)
         cleaneril_db.session.commit()
 

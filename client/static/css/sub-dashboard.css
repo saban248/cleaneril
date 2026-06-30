@@ -125,15 +125,27 @@
   
 }
 .md-compnay-approval{
-  font-size: 14px !important;
-
+  font-size: 12px !important;
+  border-radius: 4px;
+  padding: 2px;
+  display: flex;
+  column-gap: 5px;
+  align-items: end;
+}
+.md-compnay-approval > i{
+  border-left: 1px solid #ffffff;
+  padding-left: 5px;
+}
+.md-compnay-approval > span{
+  opacity: 0.9;
+  flex: 1;
 }
 .mdcni{
-  background: #d04d4d89;
+  background: #ebbfbf89;
   color: #6d0c0c;
 }
 .mdci{
-  background: #0b420a7f;
+  background: #70c86f7f;
   color: #0f2a25;
 }
 .mdi-body{

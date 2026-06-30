@@ -319,6 +319,10 @@ def get_subscription_api(**breq):
         case SubscriptionApi.manager_template:
             template = {"template": get_manager_dashboard_template(manager_id)}
             return SJson.auto_code(code, **template)
+        case SubscriptionApi.manager_workers:
+            employees = ApiEmployee.get_employees(manager_id=subs.manager_id).all()
+            return SJson.auto_code(code, **{"workers": get_columns_no_instance(employees)})
+
 
     return SJson.auto_code(code)
 

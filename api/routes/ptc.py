@@ -145,6 +145,7 @@ class SubscriptionApi:
     m_pending = 1<<3
     m_banned = 1<<4
     manager_template = 1<<5
+    manager_workers = 1<<6
 
 
 
