@@ -239,7 +239,8 @@ const SubscriptionApi = {
     m_pending:1<<3,
     m_banned:1<<4,
     manager_dashboard:1<<5,
-    manager_workers:1<<6
+    manager_workers:1<<6,
+    approve_assets:1<<7
 }
 
 

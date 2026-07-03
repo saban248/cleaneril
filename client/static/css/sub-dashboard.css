@@ -150,6 +150,7 @@
 }
 .mdi-body{
 }
+
 .mdi-infos{
   display: flex;
   column-gap: 10px;
@@ -171,7 +172,31 @@
   color: #232a34;
 }
 
+.mdi-footer{
+  border-top: 1px solid #e3e3e3;
+  margin-top: 5px;
+  padding-top: 5px;
+}
 
+.mdi-actions-btn{
+  display: flex;
+  column-gap: 10px;
+  font-size: 12px;
+  outline: none;
+  border: none;
+  padding: 7px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 300ms;
+}
+.mdi-actions-btn:hover,
+.mdi-actions-btn:active{
+  box-shadow: 0 0 11px #c9c7c7;
+  outline: 1px solid #c5c5c5;
+}
+#doApprovCompany,#doApprovManager{
+  display:none; 
+}
 
 .manager-summary {
   display: grid;
@@ -243,34 +268,8 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 900px) {
-  .page-body {
-    margin-left: 8%;
-    margin-right: 8%;
-  }
-
-  .manager-summary-row {
-    grid-template-columns: 1fr;
-  }
-
-  .card-item, .worker-item {
-    grid-template-columns: 1fr;
-  }
-}
 
 @media (max-width: 640px) {
-  .reports-tabs.manager-tabs {
-    flex-direction: column;
-  }
-
-  .page-body {
-    margin-left: 4%;
-    margin-right: 4%;
-  }
-
-  .manager-settings-actions {
-    flex-direction: column;
-  }
   .md-cards{
     flex-direction: column;
 

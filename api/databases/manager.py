@@ -46,6 +46,16 @@ def manager_exist(phone:str):
 def manager_auth(phone:str, password:str) -> Union[None, Manager]:
     return Manager.query.filter_by(phone=phone, password=password).first()
 
+
+def set_manager_approve(manager_id:str):
+    manager = ApiManager.get_managers(manager_id=manager_id).first()
+    if not manager:
+        return core_msg.ServerCode.General.something_wrong
+
+    manager.account_approved = True
+    cleaneril_db.session.commit()
+    return core_msg.ServerCode.success
+
 class ApiManager:
     @staticmethod
     def register(phone:str, permission:int, password:str):

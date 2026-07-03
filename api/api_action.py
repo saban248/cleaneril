@@ -322,6 +322,11 @@ def get_subscription_api(**breq):
         case SubscriptionApi.manager_workers:
             employees = ApiEmployee.get_employees(manager_id=subs.manager_id).all()
             return SJson.auto_code(code, **{"workers": get_columns_no_instance(employees)})
+        case SubscriptionApi.approve_assets:
+            if subs.asset == 1:
+                code = companies.set_company_approve(subs.manager_id)
+            elif subs.asset == 2:
+                code = managers.set_manager_approve(subs.manager_id)
 
 
     return SJson.auto_code(code)

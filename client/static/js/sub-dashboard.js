@@ -23,7 +23,8 @@ function MDSetCompanyApproved(m, c){
     MDGeneralApproved(mdCompApprov, c?.company_approved)
 }
 function MDGeneralApproved(element, condition){
-        if (condition){
+
+    if (condition){
         icon = 'fa-solid fa-house-circle-check'
         text = 'מאומת'
         element.classList.add("mdci")
@@ -34,6 +35,7 @@ function MDGeneralApproved(element, condition){
         text = 'לא מאומת'
         element.classList.add("mdcni")
         element.classList.remove("mdci")
+        
     }
     const eicon = document.createElement('i')
     const span = document.createElement("span")
@@ -41,6 +43,7 @@ function MDGeneralApproved(element, condition){
     eicon.className = icon;
     element.appendChild(eicon)
     element.appendChild(span)
+    
 
 }
 function MDSetSummaryWorkersInfo(m, c){
@@ -71,6 +74,8 @@ function MDSetViewSummary(m, c){
     const lastManagerActivity = document.getElementById("lastManagerActivity")
     const closeClientToday = document.getElementById("closeClientToday")
     const incomeMoneyToady = document.getElementById("incomeMoneyToady");
+    const doApprovCompany = document.getElementById("doApprovCompany")
+    const doApprovManager = document.getElementById("doApprovManager");
     fullname.textContent = c.owner_fullname;
     managerPhone.textContent = m.phone;
     managerUserName.textContent = m.username;
@@ -81,9 +86,11 @@ function MDSetViewSummary(m, c){
     lastManagerActivity.textContent = getLastTimeManagerAliveHourAndYMD(m.time_alive);
     closeClientToday.textContent = 0
     incomeMoneyToady.textContent = 0
+    doApprovManager.classList.toggle("show", !m.account_approved)
+    doApprovCompany.classList.toggle("show", !c.company_approved)
 
     MDSetCompanyApproved(m, c)
-    MDSetManagerAccountApproved()
+    MDSetManagerAccountApproved(m, c)
     MDSetSummaryWorkersInfo(m, c)
 
 }
@@ -101,14 +108,34 @@ function onLoadManagerDashboard(){
 
 
 
+async function doApprovAssets(asset, dany){
+    const ask = showAsk({msg:"האם אתה בטוח שאתה רוצה לאשר את הנכסים של המנהל הזה?"})
+    const resAsk = await ask;
+    if (!resAsk){
+        return null
+    }
+    const data = {action:SubscriptionApi.approve_assets, manager_id:c_runtime.currentManagerIdView, asset:asset, ...dany}
+    const res = await apiPost(ApiRoute.subs, data);
+    const toast = showToast(res?.notice)
+    if (!res || !res.success){
+        showToast(res?.notice, ToastStat.ERROR, toast)
+        return null
+    }
+    showToast(res.notice, ToastStat.DONE, toast);
+    setTimeout(()=>{
+        reloadManagerDashboard()
+    }, 1000)
+
+}
+
 function switchManagerTab(viewId) {
     document.querySelectorAll('.md-view').forEach(view => {
-        console.log(view.dataset.view, viewId)
         view.classList.toggle('show', view.dataset.view == viewId);
         
     });
 
     document.querySelectorAll('.md-tab-item').forEach(tab => {
+        console.log(tab.dataset.tab, viewId, tab.dataset.tab == viewId)
         tab.classList.toggle('md-tab-selected', parseInt(tab.dataset.tab) === viewId);
     });
 }

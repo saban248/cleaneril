@@ -2,80 +2,523 @@
     <div class="page-head">
         <h2>הגדרות מערכת</h2>
     </div>
-    <div class="page-body">
-        <div class="main-config">
-            <div class="conf-group">
-                <div class="conf">
-                    <span>לוגו העסק</span>
-                    <div class="logo-img">
-                        <img class="conf-group-img" src="/static/images/logo/{{company.logo_path}}" alt="company logo" id="logoView">
-                        <i class="fa-solid fa-image edit-logo-img" onclick="setLogo()"></i>
-                        <input type="file" id="setLogo" accept="image/*" style="display:none">
+    <div class="page-body settings-container">
+        <!-- Profile Section -->
+        <div class="settings-profile-section">
+            <img class="settings-profile-avatar" src="/static/images/logo/{{company.logo_path}}" alt="company logo" id="logoView">
+            <div class="settings-profile-info">
+                <h3 id="nameCompanyView" class="settings-profile-name">{{company.company_name}}</h3>
+                <p id="descCompanyView" class="settings-profile-desc">{{company.company_description}}</p>
+            </div>
+            <i class="fa-solid fa-image settings-edit-logo" onclick="setLogo()"></i>
+            <input type="file" id="setLogo" accept="image/*" style="display:none">
+        </div>
+
+        <!-- Main Settings List -->
+        <div class="settings-list">
+            <!-- Company Branding Section -->
+            <div class="settings-section">
+                <h4 class="settings-section-title">📋 מידע העסק</h4>
+                
+                <!-- Company Name -->
+                <div class="settings-item" onclick="editNameCompany()">
+                    <div class="settings-item-left">
+                        <i class="fa-solid fa-briefcase settings-item-icon"></i>
+                        <div class="settings-item-text">
+                            <span class="settings-label">שם העסק</span>
+                            <span class="settings-value">{{company.company_name}}</span>
+                        </div>
                     </div>
+                    <i class="fa-solid fa-chevron-left settings-chevron"></i>
+                    <input placeholder="שם העסק" value="{{company.company_name}}" class="input-setting input-name-company" type="hidden" maxlength="20" id="nameCompany">
                 </div>
-                <div class="conf-cd">
-                    <div class="conf">
-                        <span>שם העסק</span>
-                        <div onclick="editNameCompany()">
-                            <span id="nameCompanyView" class="cl-c-name">{{company.company_name}}</span>
-                            <input placeholder="שם העסק" value="{{company.company_name}}" class="input-setting input-name-company" type="hidden" maxlength="20" id="nameCompany">
+
+                <!-- Company Description -->
+                <div class="settings-item" onclick="editDescCompany(this)">
+                    <div class="settings-item-left">
+                        <i class="fa-solid fa-file-text settings-item-icon"></i>
+                        <div class="settings-item-text">
+                            <span class="settings-label">תיאור העסק</span>
+                            <span class="settings-value">{{company.company_description}}</span>
                         </div>
                     </div>
-                    <div class="conf">
-                        <span>תיאור קצר לעסק</span>
-                        <div onclick="editDescCompany(this)">
-                            <span id="descCompanyView" class="cl-c-desc">{{company.company_description}}</span>
-                            <input placeholder="תיאור לעסק" value="{{company.company_description}}" class="input-setting input-desc-company" type="hidden" maxlength="30" id="descCompany">
+                    <i class="fa-solid fa-chevron-left settings-chevron"></i>
+                    <input placeholder="תיאור לעסק" value="{{company.company_description}}" class="input-setting input-desc-company" type="hidden" maxlength="30" id="descCompany">
+                </div>
+
+                <!-- Company Phone -->
+                <div class="settings-item" onclick="editPhoneCompany(this)">
+                    <div class="settings-item-left">
+                        <i class="fa-solid fa-phone settings-item-icon"></i>
+                        <div class="settings-item-text">
+                            <span class="settings-label">טלפון</span>
+                            <span class="settings-value" id="phoneCompanyView">{{company.company_phone}}</span>
                         </div>
                     </div>
-                    <div class="conf">
-                        <span>מספר פאלפון - בעלים</span>
-                        <div onclick="editPhoneCompany(this)">
-                            <span id="phoneCompanyView" class="cl-c-desc">{{company.company_phone}}</span>
-                            <input placeholder="מספר פאלפון לעסק" value="{{company.company_phone}}" class="input-setting input-desc-company" type="hidden" maxlength="30" id="phoneCompany">
+                    <i class="fa-solid fa-chevron-left settings-chevron"></i>
+                    <input placeholder="מספר טלפון לעסק" value="{{company.company_phone}}" class="input-setting input-desc-company" type="hidden" maxlength="30" id="phoneCompany">
+                </div>
+
+                <!-- Company Email -->
+                <div class="settings-item" onclick="editEmailCompany(this)">
+                    <div class="settings-item-left">
+                        <i class="fa-solid fa-envelope settings-item-icon"></i>
+                        <div class="settings-item-text">
+                            <span class="settings-label">אימייל</span>
+                            <span class="settings-value" id="emailCompanyView">{{company.company_email}}</span>
                         </div>
                     </div>
-                    <div class="conf">
-                        <span>אימייל העסק</span>
-                        <div onclick="editEmailCompany(this)">
-                            <span id="emailCompanyView" class="cl-c-desc">{{company.company_email}}</span>
-                            <input placeholder="מספר אימייל לעסק" value="{{company.company_email}}" class="input-setting input-desc-company" type="hidden" maxlength="30" id="emailCompany">
+                    <i class="fa-solid fa-chevron-left settings-chevron"></i>
+                    <input placeholder="מספר אימייל לעסק" value="{{company.company_email}}" class="input-setting input-desc-company" type="hidden" maxlength="30" id="emailCompany">
+                </div>
+
+                <!-- VAT Number -->
+                <div class="settings-item" onclick="editVATCompany(this)">
+                    <div class="settings-item-left">
+                        <i class="fa-solid fa-receipt settings-item-icon"></i>
+                        <div class="settings-item-text">
+                            <span class="settings-label">מספר עוסק</span>
+                            <span class="settings-value" id="VATCompanyView">{{company.company_VAT}}</span>
                         </div>
                     </div>
-                    <div class="conf">
-                        <span>מספר עוסק</span>
-                        <div onclick="editVATCompany(this)">
-                            <span id="VATCompanyView" class="cl-c-desc">{{company.company_VAT}}</span>
-                            <input placeholder="מספר עוסק פטור/מורשה" value="{{company.company_VAT}}" class="input-setting input-desc-company" type="hidden" maxlength="30" id="VATCompany">
+                    <i class="fa-solid fa-chevron-left settings-chevron"></i>
+                    <input placeholder="מספר עוסק פטור/מורשה" value="{{company.company_VAT}}" class="input-setting input-desc-company" type="hidden" maxlength="30" id="VATCompany">
+                </div>
+
+                <!-- Tax Status -->
+                <div class="settings-item" onclick="editTaxStatus()">
+                    <div class="settings-item-left">
+                        <i class="fa-solid fa-landmark settings-item-icon"></i>
+                        <div class="settings-item-text">
+                            <span class="settings-label">סוג עוסק</span>
+                            <span class="settings-value" id="taxStatusView">{{company.tax_status or 'עוסק מורשה'}}</span>
                         </div>
                     </div>
+                    <i class="fa-solid fa-chevron-left settings-chevron"></i>
+                    <input type="hidden" id="taxStatus" value="{{company.tax_status or 'עוסק מורשה'}}">
                 </div>
             </div>
-            <div class="conf-group">
-                <div class="conf">
-                    <span>עובדים / קבלנים</span>
-                    <div class="logo-img">
-                        <i class="icon conf-group-icon">
-                            {% include "icon/employee.svg" %}
-                        </i>
+
+            <!-- Employee Management Section -->
+            <div class="settings-section">
+                <h4 class="settings-section-title">👥 ניהול צוות</h4>
+                
+                <!-- Add Employee -->
+                <div class="settings-item" onclick="createClient()">
+                    <div class="settings-item-left">
+                        <i class="fa-solid fa-user-plus settings-item-icon"></i>
+                        <span class="settings-label">הוסף עובד או קבלן</span>
                     </div>
+                    <i class="fa-solid fa-chevron-left settings-chevron"></i>
                 </div>
-                <div class="conf-cd">
-                    <div class="conf">
-                        <span>הוסף עובד / קבלן</span>
-                        <div onclick="editDescCompany(this)">
-                            <i class="fa-solid fa-circle-plus create-card" onclick="createClient()"></i>
+
+                <!-- Profit Share -->
+                <div class="settings-item" onclick="editGPSECompany(this)">
+                    <div class="settings-item-left">
+                        <i class="fa-solid fa-percent settings-item-icon"></i>
+                        <div class="settings-item-text">
+                            <span class="settings-label">חלוקת רווח בעיסקה</span>
+                            <span class="settings-value" id="GPSECompanyView">{{company.gpse or 50}}%</span>
                         </div>
                     </div>
-                    <div class="conf">
-                        <span>חלוקת רווח לעובד לעיסקה</span>
-                        <div onclick="editGPSECompany(this)">
-                            <span id="GPSECompanyView" class="cl-c-desc">{{company.gpse}}%</span>
-                            <input placeholder="{{company.gpse or 50}}%" value="{{company.gpse or 50}}" class="input-setting input-desc-company" type="hidden" maxlength="30" id="GPSECompany">
+                    <i class="fa-solid fa-chevron-left settings-chevron"></i>
+                    <input placeholder="{{company.gpse or 50}}%" value="{{company.gpse or 50}}" class="input-setting input-desc-company" type="hidden" maxlength="30" id="GPSECompany">
+                </div>
+            </div>
+
+            <!-- Order Settings Section -->
+            <div class="settings-section">
+                <h4 class="settings-section-title">📦 הגדרות הזמנות</h4>
+
+                <!-- Show Company ID on Orders -->
+                <div class="settings-item">
+                    <div class="settings-item-left">
+                        <i class="fa-solid fa-id-card settings-item-icon"></i>
+                        <div class="settings-item-text">
+                            <span class="settings-label">הצג מזהה עסק בהזמנות</span>
+                            <span class="settings-value">ok</span>
                         </div>
+                    </div>
+                    <div class="settings-toggle-switch">
+                        <input type="checkbox" id="showIdOnOrder" class="toggle-input" checked onchange="toggleShowIdOnOrder()">
+                        <label for="showIdOnOrder" class="toggle-label"></label>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.settings-container {
+    padding: 0 !important;
+    background: #f5f5f5;
+}
+
+.settings-profile-section {
+    background: white;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    position: relative;
+}
+
+.settings-profile-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.settings-profile-info {
+    flex: 1;
+}
+
+.settings-profile-name {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #262626;
+}
+
+.settings-profile-desc {
+    margin: 4px 0 0 0;
+    font-size: 13px;
+    color: #65676b;
+}
+
+.settings-edit-logo {
+    cursor: pointer;
+    font-size: 20px;
+    color: #0095f6;
+    transition: transform 0.2s;
+}
+
+.settings-edit-logo:hover {
+    transform: scale(1.1);
+}
+
+.settings-list {
+    margin-top: 8px;
+}
+
+.settings-section {
+    background: white;
+    margin-bottom: 8px;
+}
+
+.settings-section-title {
+    margin: 0;
+    padding: 12px 16px 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #65676b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.settings-item {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s;
+}
+
+.settings-item:hover {
+    background-color: #f5f5f5;
+}
+
+.settings-item:last-child {
+    border-bottom: none;
+}
+
+.settings-item-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.settings-item-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+    color: #0095f6;
+}
+
+.settings-item-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.settings-label {
+    display: block;
+    font-size: 14px;
+    color: #262626;
+    font-weight: 500;
+}
+
+.settings-value {
+    display: block;
+    font-size: 13px;
+    color: #65676b;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
+}
+
+.settings-chevron {
+    font-size: 16px;
+    color: #ccc;
+    margin-left: 8px;
+}
+
+.input-setting {
+    display: none !important;
+}
+
+/* Edit Modal Styles */
+.settings-edit-modal {
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+.settings-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.settings-modal-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    z-index: 1000;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.settings-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.settings-modal-header h5 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #262626;
+}
+
+.settings-modal-header i {
+    cursor: pointer;
+    font-size: 18px;
+    color: #65676b;
+}
+
+.settings-modal-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    font-size: 15px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.settings-modal-input:focus {
+    background: #f5f5f5;
+}
+
+.settings-modal-footer {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid #f0f0f0;
+    background: #fafafa;
+}
+
+.settings-btn-cancel,
+.settings-btn-save {
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.settings-btn-cancel {
+    background: #f0f0f0;
+    color: #262626;
+}
+
+.settings-btn-cancel:hover {
+    background: #e4e4e4;
+}
+
+.settings-btn-save {
+    background: #0095f6;
+    color: white;
+}
+
+.settings-btn-save:hover {
+    background: #0080d0;
+}
+
+.settings-btn-save:active {
+    transform: scale(0.98);
+}
+
+/* Tax Status Options */
+.settings-tax-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.settings-tax-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 2px solid #e4e4e4;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.settings-tax-option:hover {
+    border-color: #0095f6;
+    background: #f5fbff;
+}
+
+.settings-tax-option.active {
+    border-color: #0095f6;
+    background: #e0f2ff;
+}
+
+.settings-tax-option i {
+    font-size: 18px;
+    color: #0095f6;
+    width: 24px;
+    text-align: center;
+    opacity: 0;
+}
+
+.settings-tax-option.active i {
+    opacity: 1;
+}
+
+.settings-tax-option div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.settings-tax-title {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #262626;
+}
+
+.settings-tax-desc {
+    display: block;
+    font-size: 12px;
+    color: #65676b;
+}
+
+/* Toggle Switch */
+.settings-toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 28px;
+}
+
+.toggle-input {
+    display: none;
+}
+
+.toggle-label {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.3s;
+    border-radius: 28px;
+}
+
+.toggle-label::before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+.toggle-input:checked + .toggle-label {
+    background-color: #0095f6;
+}
+
+.toggle-input:checked + .toggle-label::before {
+    transform: translateX(20px);
+}
+
+.toggle-input:disabled + .toggle-label {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+</style>

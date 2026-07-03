@@ -364,6 +364,7 @@ class ReportsDataAnalyze:
 @dataclass
 class Subscription:
     manager_id:str = None
+    asset:int       = None
 
     def build(self, **data):
         struct_builder(self, **data)

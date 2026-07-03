@@ -102,3 +102,13 @@ def delete_company(manager_id:str):
     cleaneril_db.session.delete(company)
     cleaneril_db.session.commit()
     return core_msg.ServerCode.success
+
+
+
+def set_company_approve(manager_id:str):
+    company:Company = get_companies(manager_id=manager_id).first()
+    if not company:return core_msg.ServerCode.General.something_wrong
+    company.company_approved = True
+    cleaneril_db.session.commit()
+
+    return core_msg.ServerCode.success

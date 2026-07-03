@@ -141,25 +141,20 @@ async function fetchManagerDashboard(manager_id) {
         const data = { action: SubscriptionApi.manager_dashboard, manager_id: manager_id };
         const res = await apiPost(ApiRoute.subs, data);
 
-        if (!res || res.success) {
+        if (!res || !res.success) {
             const errMsg = res?.notice
-            showToast(errMsg, ToastStat.ERROR, toastId);
-        }
-
-        if (!res.success) {
-            const errMsg = res.notice
             showToast(errMsg, ToastStat.ERROR, toastId);
         }
 
         template.innerHTML = res.template || '';
         c_runtime.currentManagerIdView = manager_id;        
         template.classList.add('show');
-        showToast(res.notice, ToastStat.DONE, toastId);
         onLoadManagerDashboard()
     } catch (err) {
         showToast(err.message, ToastStat.ERROR, toastId);
         throw err;
     }
+    closeToast(toastId);
 }
 
 
@@ -173,6 +168,13 @@ function hideManagerDashboard(){
 }
 function closeManagerDashboard(){
     hideManagerDashboard()
+}
+async function reloadManagerDashboard(){
+    await fetchManagers();
+    await fetchCompanies();
+    closeManagerDashboard()
+    openManagerDashboard(c_runtime.currentManagerIdView)
+
 }
 
 async function openManagerDashboard(managerId) {
