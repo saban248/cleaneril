@@ -5,7 +5,10 @@
     <div class="page-body settings-container">
         <!-- Profile Section -->
         <div class="settings-profile-section">
-            <img class="settings-profile-avatar" src="/static/images/logo/{{company.logo_path}}" alt="company logo" id="logoView">
+            <div class="settings-avatar-wrapper">
+                <img class="settings-profile-avatar" src="/static/images/logo/{{company.logo_path}}" alt="company logo" id="logoView">
+                <span class="settings-plan-badge {{company.plan_type or 'free'}}">{{company.plan_type or 'FREE'}}</span>
+            </div>
             <div class="settings-profile-info">
                 <h3 id="nameCompanyView" class="settings-profile-name">{{company.company_name}}</h3>
                 <p id="descCompanyView" class="settings-profile-desc">{{company.company_description}}</p>
@@ -170,6 +173,37 @@
     height: 60px;
     border-radius: 50%;
     object-fit: cover;
+}
+
+.settings-avatar-wrapper {
+    position: relative;
+    width: 60px;
+    height: 60px;
+}
+
+.settings-plan-badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    border: 2px solid white;
+    min-width: 40px;
+    text-align: center;
+}
+
+.settings-plan-badge.premium,
+.settings-plan-badge.PREMIUM {
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    color: #333;
+}
+
+.settings-plan-badge.free,
+.settings-plan-badge.FREE {
+    background: #e4e4e4;
+    color: #65676b;
 }
 
 .settings-profile-info {

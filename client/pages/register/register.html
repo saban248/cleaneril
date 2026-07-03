@@ -239,6 +239,93 @@
     </div>
     <div class="left" id="llevel-5">
         <div class="head">
+            <h2>בחר תוכנית הרשמה</h2>
+            <p>
+               בחר בתוכנית המתאימה לך. ניתן לשנות את התוכנית בכל עת מהגדרות החשבון.
+            </p>
+        </div>
+        <div class="icons">
+            <i class="icon icon-128">{% include "icon/graph.svg"%}</i>
+        </div>
+        <button class="btn-continue" onclick="continueToLevel()">
+            <span>קדימה</span>
+            <i  class="fa-solid fa-circle-notch fa-spin registerLoad" style="display: none;"></i>
+        </button>
+    </div>
+    <div class="right" id="rlevel-5">
+        <h1>בחר תוכנית הרשמה</h1>
+        <form>
+            <div class="subscription-container">
+                <div class="subscription-section">
+                    <h3>סוג חשבון</h3>
+                    <div class="plan-selector">
+                        <div class="plan-card free" onclick="selectPlan(UserAccountSubscription.FREE, this)">
+                            <div class="plan-header">
+                                <h4>חינמי</h4>
+                                <span class="plan-price">₪0</span>
+                            </div>
+                            <p class="plan-duration">לחודש</p>
+                            <ul class="plan-features" id="listFreeFeature">
+                                <li><i class="fa-solid fa-check"></i> ניהול לקוחות בסיסי</li>
+                                <li><i class="fa-solid fa-check"></i> עד 50 הזמנות בחודש</li>
+                                <li><i class="fa-solid fa-check"></i> דוחות בסיסיים</li>
+                                <li><i class="fa-solid fa-times"></i> עובדים</li>
+                                <li><i class="fa-solid fa-times"></i> API</li>
+                            </ul>
+                        </div>
+
+                        <div class="plan-card premium" onclick="selectPlan(UserAccountSubscription.PREMIUM, this)">
+                            <div class="plan-badge">מומלץ</div>
+                            <div class="plan-header">
+                                <h4>פרימיום</h4>
+                                <span class="plan-price">₪15</span>
+                            </div>
+                            <p class="plan-duration">לחודש (לאחר 3 חודשים חינמיים)</p>
+                            <ul class="plan-features" id="listPremiumFeature">
+                                <li><i class="fa-solid fa-check"></i> ניהול לקוחות מתקדם</li>
+                                <li><i class="fa-solid fa-check"></i> הזמנות בלתי מוגבלות</li>
+                                <li><i class="fa-solid fa-check"></i> דוחות מתקדמים</li>
+                                <li><i class="fa-solid fa-check"></i> ניהול עובדים</li>
+                                <li><i class="fa-solid fa-check"></i> גישה ל-API</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="subscription-section">
+                    <h3>תדירות תשלום</h3>
+                    <div class="subscription-selector">
+                        <div class="subscription-option monthly" onclick="selectSubscription('MONTHLY', this)">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            <span>חודשי</span>
+                            <p>התשלום בכל חודש</p>
+                        </div>
+
+                        <div class="subscription-option yearly" onclick="selectSubscription('YEARLY', this)">
+                            <div class="save-badge">חסוך 17%</div>
+                            <i class="fa-solid fa-calendar-check"></i>
+                            <span>שנתי</span>
+                            <p>₪154 בשנה</p>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" id="selectedPlan" value="FREE">
+                <input type="hidden" id="selectedSubscription" value="MONTHLY">
+            </div>
+
+            <button type="button" class="btn-register" onclick="doSubscription(this);event.preventDefault()">
+                <span>המשך</span>
+                <i class="fa-solid fa-circle-notch fa-spin registerLoad" style="display: none;"></i>
+            </button>
+        </form>
+        <div class="credit">
+            נכתב ונבנה ע"י
+            <a  onclick="_0C0A0ON_(); return false;">אברהם סבן</a>
+        </div>
+    </div>
+
+    <div class="left" id="llevel-6">
+        <div class="head">
             <h2>סיימת את תהליך ההרשמה!</h2>
             <p>
                 תהליך ההרשמה הסתיים בהצלחה. המערכת מעבדת את הנתונים והחשבון יופעל תוך זמן קצר
@@ -269,9 +356,9 @@
         </div>
     </div>
 </body>
+<script src="/static/js/protocol.js"></script>
 <script src="/static/js/register.js"></script>
 <script src="/static/js/all.js"></script>
 <script src="/static/js/msg.js"></script>
-<script src="/static/js/protocol.js"></script>
 <script src="/static/js/cache.js"></script>
 </html>

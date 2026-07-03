@@ -397,12 +397,23 @@ const UserAccountSubscription = {
     FREE:1<<0,
     PRIMIUM:1<<1
 }
+function getUserAccountSubscriptionText(flag){
+    switch (flag) {
+        case UserAccountSubscription.FREE:
+            return "חינם"
+        case UserAccountSubscription.PRIMIUM:
+            return "פרימיום"
+    }
+}
+
 
 const SubscriptionStat = {
     ACTIVE:1<<0,
     INACTIVE:1<<1,
     EXPIRED:1<<2
 }
+
+
 
 function getSubscriptionStatText(stat){
     switch (stat) {
@@ -417,6 +428,58 @@ function getSubscriptionStatText(stat){
     return 'הכל'
 }
 
+const OrderFeature = Object.freeze({
+    CREATE:     1 << 0,
+    SHARE:      1 << 1,
+    DUPLICATE:  1 << 2,
+    SUMMARY:    1 << 3
+});
+
+const WorkerFeature = Object.freeze({
+    CREATE:     1 << 0
+});
+
+const InvoiceFeature = Object.freeze({
+    CREATE:     1 << 0
+});
+
+const ReportsFeature = Object.freeze({
+    GRAPH_VIEW: 1 << 0
+});
+
+
+const SubscriptionPlanFree = {
+    orders: OrderFeature.CREATE,
+    workers: WorkerFeature.CREATE,
+    invoices: InvoiceFeature.CREATE,
+    reports: 0
+};
+
+const SubscriptionPlanPremium = {
+    orders: OrderFeature.CREATE | OrderFeature.SHARE | OrderFeature.DUPLICATE | OrderFeature.SUMMARY,
+    workers: WorkerFeature.CREATE,
+    invoices: InvoiceFeature.CREATE,
+    reports: ReportsFeature.GRAPH_VIEW
+};
+
+function getPlanSubsFeatures(plan) {
+    const result = [];
+
+    for (const module in plan) {
+        const permissions = plan[module];
+
+        for (const [bit, text] of Object.entries(FeatureDetails[module])) {
+            if (permissions & Number(bit)) {
+                result.push({
+                    module,
+                    text
+                });
+            }
+        }
+    }
+
+    return result;
+}
 
 const MDTabsView = {
     SUMMARY:1<<0,
@@ -425,6 +488,9 @@ const MDTabsView = {
     LOGS:1<<3,
     SETTINGS:1<<4
 }
+
+
+
 
 window.SocialMedia = SocialMedia;
 window.PageManager = PageManager;

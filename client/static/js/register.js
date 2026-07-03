@@ -1,10 +1,12 @@
 var isMobile = window.innerWidth <= 768;
+const debug = true;
 const LEVELS = {
     AUTH:1,
     PHONE_OTP:2,
     COMPANY:3,
     LOGO:4,
-    FINISH:5
+    SUBSCRIPTION:5,
+    FINISH:6
 }
 var currentLevel = LEVELS.AUTH;
 
@@ -82,6 +84,8 @@ function completeFromCacheHistory(){
 
 }
 function doRegister(t){
+    if (debug){completeRegsiterLevel(LEVELS.AUTH)}
+
     const o_phone = document.getElementById("onwerPhone").value;
     const pwd1 = document.getElementById("pwd1").value;
     const pwd2 = document.getElementById("pwd2").value;
@@ -108,6 +112,7 @@ function doRegister(t){
 
 
 function doOtp(t){
+    if (debug){completeRegsiterLevel(LEVELS.PHONE_OTP);}
     const o_phone = document.getElementById("onwerPhone").value;
     const pwd1 = document.getElementById("pwd1").value;
     const otp = Array.from(document.querySelectorAll('.otp-input')).map(i => i.value).join('');
@@ -133,6 +138,7 @@ function doOtp(t){
 }
 
 function doCompany(t){
+    if (debug){completeRegsiterLevel(LEVELS.COMPANY);}
     const vatCode = document.getElementById("ownerVATCode").value;
     const fullname = document.getElementById("onwerName").value;
     const onwerPhone = cleanPhoneJustNumbers(document.getElementById("onwerPhone").value);
@@ -195,6 +201,7 @@ function setLogo() {
 }
 
 function doLogo(t){
+    if (debug){completeRegsiterLevel(LEVELS.LOGO);}
     const img = document.getElementById('setLogo');
     const csrf = document.getElementById("cXsXrF").value;
     const file = img.files[0];
@@ -281,6 +288,16 @@ document.addEventListener("DOMContentLoaded", function (){
     });
     completeFromCacheHistory()
     welcomeForContinue();
+    
+    // Initialize subscription plan selection
+    const freePlan = document.querySelector('.plan-card.free');
+    const monthlyOption = document.querySelector('.subscription-option.monthly');
+    if (freePlan) {
+        freePlan.classList.add('selected');
+    }
+    if (monthlyOption) {
+        monthlyOption.classList.add('selected');
+    }
 }
 )
 
@@ -317,3 +334,57 @@ function uploadImage(t, file, name, action, mid, callback) {
             
     }
 }
+
+/**
+ * Select subscription plan (FREE or PREMIUM)
+ */
+function selectPlan(plan, element) {
+    document.querySelectorAll('.plan-card').forEach(el => el.classList.remove('selected'));
+    element.classList.add('selected');
+    document.getElementById('selectedPlan').value = getUserAccountSubscriptionText(plan);
+}
+
+/**
+ * Select subscription type (MONTHLY or YEARLY)
+ */
+function selectSubscription(type, element) {
+    document.querySelectorAll('.subscription-option').forEach(el => el.classList.remove('selected'));
+    element.classList.add('selected');
+    document.getElementById('selectedSubscription').value = type;
+}
+
+/**
+ * Complete subscription selection and continue
+ */
+function doSubscription(button) {
+    const plan = document.getElementById('selectedPlan').value;
+    const subscription = document.getElementById('selectedSubscription').value;
+    
+    if (!plan || !subscription) {
+        showToast('בחר תוכנית וסוג הרשמה', ToastStat.ERROR);
+        return;
+    }
+    
+    // Store subscription info in cache for API submission
+    sessionStorage.setItem('subscription_plan', plan);
+    sessionStorage.setItem('subscription_type', subscription);
+    
+    completeRegsiterLevel(LEVELS.SUBSCRIPTION);
+}
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const listPremiumFeature = document.getElementById("listPremiumFeature");
+    const listFreeFeature = document.getElementById("listFreeFeature");
+    
+    for (feature of getPlanSubsFeatures(SubscriptionPlanFree)) {
+        const li = document.createElement("li");
+        const icon = document.createElement("i");
+        icon.classList.add("fa-solid", "fa-check");
+        li.appendChild(icon);
+        li.textContent = feature.text.description;
+        listPremiumFeature.appendChild(li);
+    }
+
+})

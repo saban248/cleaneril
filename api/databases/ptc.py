@@ -79,3 +79,5 @@ class ManagerAccountStat(IntFlag):
     PAUSE  = 1<<2
     BANNED = 1<<3
     DELETED = 1<<4
+
+

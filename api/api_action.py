@@ -296,6 +296,10 @@ def get_register_action(**breq):
             companies.update_company_details(manager_id,r_level=RegisterApi.DONE)
             return  _stat_
 
+        case RegisterApi.level4:
+            # subscription
+            manager_id = ShortSession.manager_id()
+
 
     return {}
 
