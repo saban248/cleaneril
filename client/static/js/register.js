@@ -339,13 +339,7 @@ function doSubscription() {
         showToast('בחר תוכנית הרשמה', ToastStat.ERROR);
         return;
     }
-    apiPost("/subs").then(res => {
-        if (!res.success) {
-            showToast(res.notice, ToastStat.ERROR);
-            return;
-        }
-        window.location.href = res.url;
-    })
+
 }
 
 
