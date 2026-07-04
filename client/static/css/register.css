@@ -307,9 +307,7 @@ color:#777;
         flex: 0 0 100%;
         scroll-snap-align: start;
     }
-    .plan-card.selected{
-        transform: scale(1);
-    }
+
 
 
 }
@@ -359,6 +357,7 @@ color:#777;
     display: flex;
     flex-direction: column;
     transition: all 0.2s;
+    opacity: 0.5;
 }
 
 .plan-card:hover {
@@ -370,6 +369,7 @@ color:#777;
     border-color: #0095f6;
     background: #ffffff;
     transform: scale(1.02);
+    opacity: 1;
 }
 
 .plan-card.premium {

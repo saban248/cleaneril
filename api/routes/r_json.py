@@ -1,6 +1,7 @@
 from flask import request
 
 import api.databases.company as companies
+import cleaneril
 from api.api_action import get_api_action, api_upload_file, get_register_action, get_subscription_api
 from api.databases.manager import manager_auth, update_time_alive
 from api.databases.ptc import cleaneril, ManagerAccountStat
@@ -9,7 +10,42 @@ from api.routes import cil_struct
 from api.routes.general import set_session_data_admin
 from api.routes.ptc import RouteApi, ApiUploadFile
 from api.validator import core_msg
+import stripe
 
+@cleaneril.route('/subs', methods=["POST"])
+def subs():
+    breq = get_dictionary_http(request)
+    stripe.api_key = 'sk_test_51TpZwOKpKcmlSHaeByasypWNTNs7AnOCR6Kf9Cp4NkpxUqYzvg2LzqfrtHZTh1PtWixpSbEUcCLekKvP9rG1FrQR00CaOUrOFY'
+    checkout = stripe.checkout.Session.create(
+        mode="subscription",
+        line_items=[
+            {
+                "price": "price_1Tpa9zKpKcmlSHaeF9qv13uQ",
+                "quantity": 1
+            }
+        ],
+        success_url="https://havraka-bdaka.com/success",
+        cancel_url="https://havraka-bdaka.com/cancel"
+    )
+
+    return SJson.auto_code(core_msg.ServerCode.success, **{
+        "url": checkout.url
+    })
+
+@cleaneril.post("/smsubs/webhook")
+def stripe_webhook():
+    payload = request.data
+
+    event = stripe.Webhook.construct_event(
+        payload,
+        request.headers["Stripe-Signature"],
+        'whsec_iR0vhfDSKzB7z0NawvWfLzf09fjQJN2p'
+    )
+
+    if event["type"] == "invoice.paid":
+        ...
+
+    return "", 200
 
 @cleaneril.route(RouteApi.do_auth.path, methods=["POST"])
 def authorize():

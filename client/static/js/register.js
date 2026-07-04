@@ -294,6 +294,7 @@ function selectPlan(plan, element) {
             setTimeout(() => item.classList.add('is-visible'), 190 * (index + 1));
         });
     }
+    updateContinueButtonText();
 }
 
 function updatePlanPricing() {
@@ -307,6 +308,15 @@ function updatePlanPricing() {
         case subscriptionType.YEARLY:
             thePlanPrice.textContent = `${price*12}`;
             break;
+    }
+}
+
+function updateContinueButtonText() {
+    const continueFromSubscription = document.getElementById("continueFromSubscription");
+    if (c_register.subscription_plan === UserAccountSubscription.FREE) {
+        continueFromSubscription.textContent = `המשך לחשבון רגיל `;
+    } else if (c_register.subscription_plan === UserAccountSubscription.PREMIUM) {
+        continueFromSubscription.textContent = `המשך לחשבון פרימיום`;
     }
 }
 
@@ -360,8 +370,8 @@ document.addEventListener("DOMContentLoaded", function () {
     renderPlanFeatures(listPremiumFeature, SubscriptionPlanPremium);
     updatePlanPricing();
     selectSubscriptionType(subscriptionType.MONTHLY);
-    selectPlan(UserAccountSubscription.FREE, document.querySelector(`.plan-card[data-subplan="${UserAccountSubscription.FREE}"]`));
     selectPlan(UserAccountSubscription.PREMIUM, document.querySelector(`.plan-card[data-subplan="${UserAccountSubscription.PREMIUM}"]`));
+    selectPlan(UserAccountSubscription.FREE, document.querySelector(`.plan-card[data-subplan="${UserAccountSubscription.FREE}"]`));
 
 
 })
