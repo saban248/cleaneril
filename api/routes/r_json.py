@@ -35,11 +35,11 @@ def subs():
 @cleaneril.post("/smsubs/webhook")
 def stripe_webhook():
     payload = request.data
-
+    welcome = 'whsec_iR0vhfDSKzB7z0NawvWfLzf09fjQJN2p'
     event = stripe.Webhook.construct_event(
         payload,
         request.headers["Stripe-Signature"],
-        'w'+'h'+'sec_iR0vhfDSKzB7z0NawvWfLzf09fjQJN2p'
+        welcome
     )
 
     if event["type"] == "invoice.paid":
