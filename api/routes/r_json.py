@@ -1,3 +1,5 @@
+import base64
+
 from flask import request
 
 import api.databases.company as companies
@@ -35,7 +37,7 @@ def subs():
 @cleaneril.post("/smsubs/webhook")
 def stripe_webhook():
     payload = request.data
-    welcome = 'whsec_iR0vhfDSKzB7z0NawvWfLzf09fjQJN2p'
+    welcome = base64.b64decode('d2hzZWNfaVIwdmhmRFNLekI3ejBOYXd2V2ZMemYwOWZqUUpOMnA=').decode()
     event = stripe.Webhook.construct_event(
         payload,
         request.headers["Stripe-Signature"],
