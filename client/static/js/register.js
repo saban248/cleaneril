@@ -339,8 +339,13 @@ function doSubscription() {
         showToast('בחר תוכנית הרשמה', ToastStat.ERROR);
         return;
     }
-    
-    completeRegsiterLevel(LEVELS.SUBSCRIPTION);
+    apiPost("/subs").then(res => {
+        if (!res.success) {
+            showToast(res.notice, ToastStat.ERROR);
+            return;
+        }
+        window.location.href = res.url;
+    })
 }
 
 
