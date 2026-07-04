@@ -259,61 +259,43 @@
                 <div class="subscription-section">
                     <h3>סוג חשבון</h3>
                     <div class="plan-selector">
-                        <div class="plan-card free" onclick="selectPlan(UserAccountSubscription.FREE, this)">
+                        <div class="plan-card free" data-subplan="1" onclick="selectPlan(UserAccountSubscription.FREE, this)">
                             <div class="plan-header">
                                 <h4>חינמי</h4>
-                                <span class="plan-price">₪0</span>
+                                <div class="plan-price">
+                                    0
+                                    <span class="plan-price-icon">₪</span>
+                                </div>
                             </div>
-                            <p class="plan-duration">לחודש</p>
+                            <div class="plan-duration">
+                            </div>
                             <ul class="plan-features" id="listFreeFeature">
-                                <li><i class="fa-solid fa-check"></i> ניהול לקוחות בסיסי</li>
-                                <li><i class="fa-solid fa-check"></i> עד 50 הזמנות בחודש</li>
-                                <li><i class="fa-solid fa-check"></i> דוחות בסיסיים</li>
-                                <li><i class="fa-solid fa-times"></i> עובדים</li>
-                                <li><i class="fa-solid fa-times"></i> API</li>
                             </ul>
                         </div>
 
-                        <div class="plan-card premium" onclick="selectPlan(UserAccountSubscription.PREMIUM, this)">
-                            <div class="plan-badge">מומלץ</div>
+                        <div class="plan-card premium" data-subplan="2" onclick="selectPlan(UserAccountSubscription.PREMIUM, this)">
+                            <div class="plan-badge">גישה מלאה</div>
                             <div class="plan-header">
                                 <h4>פרימיום</h4>
-                                <span class="plan-price">₪15</span>
+                                <div class="plan-price">
+                                    <span id="thePlanPrice">0</span>
+                                    <span class="plan-price-icon">₪</span>
+                                </div>
                             </div>
-                            <p class="plan-duration">לחודש (לאחר 3 חודשים חינמיים)</p>
+                            <div class="plan-duration">
+                                <div class="billing-switch" role="group" aria-label="תדירות תשלום">
+                                    <button type="button" class="billing-pill active" data-subtype="1" onclick="event.stopPropagation(); selectSubscriptionType(subscriptionType.MONTHLY)">חודשי</button>
+                                    <button type="button" class="billing-pill" data-subtype="2" onclick="event.stopPropagation(); selectSubscriptionType(subscriptionType.YEARLY)">שנתי</button>
+                                </div>
+                            </div>
                             <ul class="plan-features" id="listPremiumFeature">
-                                <li><i class="fa-solid fa-check"></i> ניהול לקוחות מתקדם</li>
-                                <li><i class="fa-solid fa-check"></i> הזמנות בלתי מוגבלות</li>
-                                <li><i class="fa-solid fa-check"></i> דוחות מתקדמים</li>
-                                <li><i class="fa-solid fa-check"></i> ניהול עובדים</li>
-                                <li><i class="fa-solid fa-check"></i> גישה ל-API</li>
                             </ul>
                         </div>
                     </div>
                 </div>
-                <div class="subscription-section">
-                    <h3>תדירות תשלום</h3>
-                    <div class="subscription-selector">
-                        <div class="subscription-option monthly" onclick="selectSubscription('MONTHLY', this)">
-                            <i class="fa-solid fa-calendar-days"></i>
-                            <span>חודשי</span>
-                            <p>התשלום בכל חודש</p>
-                        </div>
-
-                        <div class="subscription-option yearly" onclick="selectSubscription('YEARLY', this)">
-                            <div class="save-badge">חסוך 17%</div>
-                            <i class="fa-solid fa-calendar-check"></i>
-                            <span>שנתי</span>
-                            <p>₪154 בשנה</p>
-                        </div>
-                    </div>
-                </div>
-
-                <input type="hidden" id="selectedPlan" value="FREE">
-                <input type="hidden" id="selectedSubscription" value="MONTHLY">
             </div>
 
-            <button type="button" class="btn-register" onclick="doSubscription(this);event.preventDefault()">
+            <button type="button" class="btn-register" onclick="doSubscription();event.preventDefault()">
                 <span>המשך</span>
                 <i class="fa-solid fa-circle-notch fa-spin registerLoad" style="display: none;"></i>
             </button>

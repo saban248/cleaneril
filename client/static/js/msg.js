@@ -25,41 +25,53 @@ const message = {
 const FeatureDetails = {
     orders: {
         [OrderFeature.CREATE]: {
-            title: "יצירת הזמנה חדשה",
-            description: "יצירת הזמנת ניקוי חדשה."
+            title: "יצירת הזמנות ניקוי",
+            description: "יצירת הזמנת ניקוי חדשה.",
+            icon:'fa-solid fa-file-lines',
         },
         [OrderFeature.SHARE]: {
             title: "שיתוף הזמנה",
-            description: "שליחת קישור להזמנה ללקוח."
+            description: "שליחת תמונת הזמנה ללקוח.",
+            icon:'fa-solid fa-share-nodes',
         },
         [OrderFeature.DUPLICATE]: {
             title: "שכפול הזמנה",
-            description: "יצירת עותק של הזמנה קיימת."
+            description: "יצירת עותק של הזמנה קיימת.",
+            icon:'fa-solid fa-copy',
         },
         [OrderFeature.SUMMARY]: {
-            title: "סיכום לקוח",
-            description: "צפייה בהיסטוריית הלקוח."
+            title: "סיכום וסטטיסטיקות לקוח",
+            description: "צפייה בסיכום ההזמנות והסטטיסטיקות של כל לקוח. ",
+            icon:'fa-solid fa-chart-simple',
+        },
+        [OrderFeature.SMS_REMINDER]: {
+            title: "תזכורת ללקוח SMS",
+            description: "שליחת תזכורת ללקוח 24 השעות לפני ההגעה.",
+            icon:'fa-solid fa-message',
         }
     },
 
     workers: {
         [WorkerFeature.CREATE]: {
-            title: "יצירת עובד",
-            description: "הוספת עובדים חדשים למערכת."
+            title: "הוספת  עובדים לעסק",
+            description: "הוספת עובדים חדשים למערכת.",
+            icon:'fa-solid fa-user-plus',
         }
     },
 
     invoices: {
         [InvoiceFeature.CREATE]: {
-            title: "יצירת חשבונית",
-            description: "יצירת חשבוניות וקבלות."
+            title: "יצירת חשבוניות",
+            description: "יצירת חשבוניות וקבלות.",
+            icon:'fa-solid fa-file-invoice',
         }
     },
 
     reports: {
         [ReportsFeature.GRAPH_VIEW]: {
-            title: "גרפים",
-            description: "צפייה בגרפים וסטטיסטיקות."
+            title: "גרפים של פעילות העסק",
+            description: "צפייה בגרפים של פעילות העסק.",
+            icon:'fa-solid fa-chart-line',
         }
     }
 };

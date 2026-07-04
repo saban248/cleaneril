@@ -1,5 +1,9 @@
 var isMobile = window.innerWidth <= 768;
 const debug = true;
+const c_register = {
+    subscription_plan: null,
+    subscription_type: UserAccountSubscription.MONTHLY,
+}
 const LEVELS = {
     AUTH:1,
     PHONE_OTP:2,
@@ -9,6 +13,7 @@ const LEVELS = {
     FINISH:6
 }
 var currentLevel = LEVELS.AUTH;
+
 
 
 function continueToLevel(){
@@ -231,6 +236,138 @@ function doLogo(t){
     reader.readAsDataURL(file);
 }
 
+
+
+
+function uploadImage(t, file, name, action, mid, callback) {
+    if (!file)return;
+    console.log("uploadImage", file, name, action, mid)
+    const reader = new FileReader();
+    switch (action){
+        case ApiUploadFile.CARD:
+        case ApiUploadFile.LOGO:
+            reader.onload = function () {
+                const base64Data = reader.result.split(",")[1];
+                apiPost(ApiRoute.upImage, {
+                    filename:name,
+                    action:action,
+                    mid:mid,
+                    data: base64Data
+                }).then(res => {
+                    if (!res.success){
+                        showToast("העלאת התמונה נכשלה")
+                        onApiCall(t,true)
+                        return;
+                    }
+                    if (action == ApiUploadFile.LOGO){
+                        callback()
+                    }
+
+                });
+            };
+            reader.readAsDataURL(file);
+            
+    }
+}
+
+/**
+ * Select subscription plan (FREE or PREMIUM)
+ */
+function selectPlan(plan, element) {
+    c_register.subscription_plan = plan;
+    document.querySelectorAll('.plan-card').forEach(el => el.classList.remove('selected'));
+    element.classList.add('selected');
+
+    for (const [t, k] of Object.entries(UserAccountSubscription)){
+        if (k == plan){
+            const listFeature = document.querySelector(`.plan-card[data-subplan='${plan}'] ul`);
+            for (el of listFeature.children) {
+                el.classList.remove('is-visible');
+            }
+        }
+    }
+ 
+    const featuresList = element.querySelector('.plan-features');
+    if (featuresList) {
+        const items = Array.from(featuresList.children);
+        items.forEach((item, index) => {
+            setTimeout(() => item.classList.add('is-visible'), 190 * (index + 1));
+        });
+    }
+}
+
+function updatePlanPricing() {
+    const price = 20
+    const thePlanPrice = document.getElementById("thePlanPrice");
+    switch (c_register.subscription_type) {
+        case subscriptionType.MONTHLY:
+            thePlanPrice.textContent = `${price}`;
+            break;
+    
+        case subscriptionType.YEARLY:
+            thePlanPrice.textContent = `${price*12}`;
+            break;
+    }
+}
+
+/**
+ * Select subscription type (MONTHLY or YEARLY)
+ */
+function selectSubscriptionType(sub_type) {
+    c_register.subscription_type = sub_type;
+    document.querySelectorAll('.billing-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.subtype == sub_type);
+    });
+    updatePlanPricing();
+}
+
+/**
+ * Complete subscription selection and continue
+ */
+function doSubscription() {    
+    if (!c_register.subscription_plan) {
+        showToast('בחר תוכנית הרשמה', ToastStat.ERROR);
+        return;
+    }
+    
+    completeRegsiterLevel(LEVELS.SUBSCRIPTION);
+}
+
+
+
+function renderPlanFeatures(container, plan) {
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    for (const feature of getPlanSubsFeatures(plan)) {
+        const li = document.createElement("li");
+        const icon = document.createElement("i");
+        const span = document.createElement("span");
+        icon.className = feature.text.icon;
+        span.textContent = feature.text.title;
+        li.appendChild(icon);
+        li.appendChild(span);
+        container.appendChild(li);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const listPremiumFeature = document.getElementById("listPremiumFeature");
+    const listFreeFeature = document.getElementById("listFreeFeature");
+
+    renderPlanFeatures(listFreeFeature, SubscriptionPlanFree);
+    renderPlanFeatures(listPremiumFeature, SubscriptionPlanPremium);
+    updatePlanPricing();
+    selectSubscriptionType(subscriptionType.MONTHLY);
+    selectPlan(UserAccountSubscription.FREE, document.querySelector(`.plan-card[data-subplan="${UserAccountSubscription.FREE}"]`));
+    selectPlan(UserAccountSubscription.PREMIUM, document.querySelector(`.plan-card[data-subplan="${UserAccountSubscription.PREMIUM}"]`));
+
+
+})
+
+
+
 document.addEventListener("DOMContentLoaded", function (){
     const pass=document.getElementById("pwd1")
     const bar=document.getElementById("bar")
@@ -289,102 +426,5 @@ document.addEventListener("DOMContentLoaded", function (){
     completeFromCacheHistory()
     welcomeForContinue();
     
-    // Initialize subscription plan selection
-    const freePlan = document.querySelector('.plan-card.free');
-    const monthlyOption = document.querySelector('.subscription-option.monthly');
-    if (freePlan) {
-        freePlan.classList.add('selected');
-    }
-    if (monthlyOption) {
-        monthlyOption.classList.add('selected');
-    }
 }
 )
-
-
-
-
-function uploadImage(t, file, name, action, mid, callback) {
-    if (!file)return;
-    console.log("uploadImage", file, name, action, mid)
-    const reader = new FileReader();
-    switch (action){
-        case ApiUploadFile.CARD:
-        case ApiUploadFile.LOGO:
-            reader.onload = function () {
-                const base64Data = reader.result.split(",")[1];
-                apiPost(ApiRoute.upImage, {
-                    filename:name,
-                    action:action,
-                    mid:mid,
-                    data: base64Data
-                }).then(res => {
-                    if (!res.success){
-                        showToast("העלאת התמונה נכשלה")
-                        onApiCall(t,true)
-                        return;
-                    }
-                    if (action == ApiUploadFile.LOGO){
-                        callback()
-                    }
-
-                });
-            };
-            reader.readAsDataURL(file);
-            
-    }
-}
-
-/**
- * Select subscription plan (FREE or PREMIUM)
- */
-function selectPlan(plan, element) {
-    document.querySelectorAll('.plan-card').forEach(el => el.classList.remove('selected'));
-    element.classList.add('selected');
-    document.getElementById('selectedPlan').value = getUserAccountSubscriptionText(plan);
-}
-
-/**
- * Select subscription type (MONTHLY or YEARLY)
- */
-function selectSubscription(type, element) {
-    document.querySelectorAll('.subscription-option').forEach(el => el.classList.remove('selected'));
-    element.classList.add('selected');
-    document.getElementById('selectedSubscription').value = type;
-}
-
-/**
- * Complete subscription selection and continue
- */
-function doSubscription(button) {
-    const plan = document.getElementById('selectedPlan').value;
-    const subscription = document.getElementById('selectedSubscription').value;
-    
-    if (!plan || !subscription) {
-        showToast('בחר תוכנית וסוג הרשמה', ToastStat.ERROR);
-        return;
-    }
-    
-    // Store subscription info in cache for API submission
-    sessionStorage.setItem('subscription_plan', plan);
-    sessionStorage.setItem('subscription_type', subscription);
-    
-    completeRegsiterLevel(LEVELS.SUBSCRIPTION);
-}
-
-
-
-document.addEventListener("DOMContentLoaded", function () {
-    const listPremiumFeature = document.getElementById("listPremiumFeature");
-    const listFreeFeature = document.getElementById("listFreeFeature");
-    
-    for (feature of getPlanSubsFeatures(SubscriptionPlanFree)) {
-        const li = document.createElement("li");
-        const icon = document.createElement("i");
-        icon.classList.add("fa-solid", "fa-check");
-        li.appendChild(icon);
-        li.textContent = feature.text.description;
-        listPremiumFeature.appendChild(li);
-    }
-
-})

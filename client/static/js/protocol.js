@@ -395,7 +395,7 @@ function getSubscriptionOrderText(flag){
 }
 const UserAccountSubscription = {
     FREE:1<<0,
-    PRIMIUM:1<<1
+    PREMIUM:1<<1
 }
 function getUserAccountSubscriptionText(flag){
     switch (flag) {
@@ -432,7 +432,8 @@ const OrderFeature = Object.freeze({
     CREATE:     1 << 0,
     SHARE:      1 << 1,
     DUPLICATE:  1 << 2,
-    SUMMARY:    1 << 3
+    SUMMARY:    1 << 3,
+    SMS_REMINDER: 1 << 4
 });
 
 const WorkerFeature = Object.freeze({
@@ -456,7 +457,8 @@ const SubscriptionPlanFree = {
 };
 
 const SubscriptionPlanPremium = {
-    orders: OrderFeature.CREATE | OrderFeature.SHARE | OrderFeature.DUPLICATE | OrderFeature.SUMMARY,
+    orders: OrderFeature.CREATE | OrderFeature.SHARE | OrderFeature.DUPLICATE | OrderFeature.SUMMARY
+    | OrderFeature.SMS_REMINDER,
     workers: WorkerFeature.CREATE,
     invoices: InvoiceFeature.CREATE,
     reports: ReportsFeature.GRAPH_VIEW

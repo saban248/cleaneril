@@ -6,6 +6,7 @@ class OrderFeature(IntFlag):
     SHARE      = 1 << 1
     DUPLICATE  = 1 << 2
     SUMMARY    = 1 << 3
+    SMS_REMINDER = 1 << 4
 
 
 class WorkerFeature(IntFlag):

@@ -26,7 +26,8 @@ PREMIUM = SubscriptionPlan(
         OrderFeature.CREATE |
         OrderFeature.SHARE |
         OrderFeature.DUPLICATE |
-        OrderFeature.SUMMARY
+        OrderFeature.SUMMARY |
+        OrderFeature.SMS_REMINDER
     ),
     workers=WorkerFeature.CREATE,
     invoices=InvoiceFeature.CREATE,
