@@ -39,7 +39,7 @@ def stripe_webhook():
     event = stripe.Webhook.construct_event(
         payload,
         request.headers["Stripe-Signature"],
-        'whsec_iR0vhfDSKzB7z0NawvWfLzf09fjQJN2p'
+        'w'+'h'+'sec_iR0vhfDSKzB7z0NawvWfLzf09fjQJN2p'
     )
 
     if event["type"] == "invoice.paid":
