@@ -74,6 +74,10 @@ class ShortSession:
         return session.get(ShortSession.C,{})
 
     @staticmethod
+    def company_id():
+        return session.get(ShortSession.C,{}).get("company_id")
+
+    @staticmethod
     def set_admin_details(manager, company):
         session[ShortSession.M] = get_columns_as_dict(manager)
         session[ShortSession.C] = get_columns_as_dict(company)

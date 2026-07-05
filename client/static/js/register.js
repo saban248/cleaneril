@@ -1,5 +1,5 @@
 var isMobile = window.innerWidth <= 768;
-const debug = true;
+const debug = false;
 const c_register = {
     subscription_plan: null,
     subscription_type: UserAccountSubscription.MONTHLY,
@@ -107,7 +107,8 @@ function doRegister(t){
                 showToast(res.notice, ToastStat.ERROR)
             }
             else{
-                completeRegsiterLevel(LEVELS.AUTH)
+                const level = res.level?res.level:LEVELS.AUTH
+                completeRegsiterLevel(level)
                 csrf.value = res.mid;
             }
             onApiCall(t, true)
@@ -334,11 +335,25 @@ function selectSubscriptionType(sub_type) {
 /**
  * Complete subscription selection and continue
  */
-function doSubscription() {    
+async function doSubscription() {    
     if (!c_register.subscription_plan) {
         showToast('בחר תוכנית הרשמה', ToastStat.ERROR);
         return;
     }
+    const data = {
+        action: RegisterApi.level4,
+        sub_plan: c_register.subscription_plan,
+        sub_type: c_register.subscription_type
+    }
+    const toast = showToast("בתהליך..");
+    const res = await apiPost(ApiRoute.register, data);
+    if (!res.success) {
+        showToast(res.notice, ToastStat.ERROR, toast);
+        return;
+    }
+    closeToast(toast);
+    completeRegsiterLevel(LEVELS.SUBSCRIPTION);
+    showToast("ההרשמה הושלמה בהצלחה!", ToastStat.DONE);
 
 }
 

@@ -1,9 +1,6 @@
-import base64
-
 from flask import request
 
 import api.databases.company as companies
-import cleaneril
 from api.api_action import get_api_action, api_upload_file, get_register_action, get_subscription_api
 from api.databases.manager import manager_auth, update_time_alive
 from api.databases.ptc import cleaneril, ManagerAccountStat

@@ -411,7 +411,7 @@ function showMenuGeneralItems(t){
     menu.innerHTML = "";
     let y = 0;
     GeneralMenuitems.forEach(item => {
-        if (0 && item.flag && !(c_runtime.currentUPermission & item.flag)){
+        if (item.flag && (c_runtime.currentUPermission < item.flag)){
             return
         }
         let cma = document.createElement("div")

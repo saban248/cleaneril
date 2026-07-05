@@ -296,6 +296,8 @@ class Register:
     c_email:str         = None
     vat_code:str        = None
     # subscription
+    sub_plan:int        = None
+    sub_type:int        = None
     
 
     def build(self, **data):

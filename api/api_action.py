@@ -7,7 +7,7 @@ from flask import render_template
 
 import api.databases.company as companies
 from api.data.ptc import AnalyticsData
-from api.databases import invoice, manager as managers
+from api.databases import invoice, manager as managers, subscriptions
 from api.databases import orders, clients
 from api.databases.bridge import on_create_order_create_client
 from api.databases.clients import ClientProfile
@@ -24,7 +24,7 @@ from api.ptc import special_things, SJson, ShortSession
 from api.routes import cil_struct
 from api.routes.cil_struct import ReportsDataAnalyze
 from api.routes.general import set_session_data_admin
-from api.routes.ptc import Pages, ApiCall, ApiUploadFile, RegisterApi, ReportsApi, SubscriptionApi
+from api.routes.ptc import Pages, ApiCall, ApiUploadFile, RegisterApi, ReportsApi, SubscriptionApi, SubscriptionStat
 from api.validator import core_msg, company
 
 
@@ -233,6 +233,7 @@ def get_app_reports_api(**breq) -> dict:
 def get_register_action(**breq):
     action = int(breq.get("action", -1))
     register = cil_struct.Register().build(**breq)
+
     match action:
         case RegisterApi.level0:
             o_phone = company.phone(register.o_phone)
@@ -242,10 +243,12 @@ def get_register_action(**breq):
             manager = manager_auth(register.o_phone, register.password)
             if manager:
                 _company: companies.Company = companies.get_companies(manager_id=manager.manager_id).first()
+                ShortSession.set_admin_details(manager, _company)
                 if _company.register_level == RegisterApi.DONE:
                     return SJson.auto_code(core_msg.ServerCode.Register.e_account_exist)
+                elif _company.register_level != RegisterApi.level2:
+                    return SJson.auto_code(core_msg.ServerCode.success, **{'level':_company.register_level.bit_length()})
 
-            return SJson.auto_code(core_msg.ServerCode.success)
         case RegisterApi.level1:
             # otp
             # done
@@ -261,12 +264,12 @@ def get_register_action(**breq):
                     return SJson.auto_code(core_msg.ServerCode.Register.e_account_exist)
 
             ShortSession.set_admin_details(manager, _company)
-            return SJson.auto_code(core_msg.ServerCode.success)
 
         case RegisterApi.level2:
             manager_id = ShortSession.manager_id()
             manager = ApiManager.get_managers(manager_id=manager_id).first()
-            if not manager:
+            _company = companies.get_companies(manager_id=manager_id).first()
+            if not manager or( not _company or _company.register_level != RegisterApi.level2):
                 return SJson.auto_code(core_msg.ServerCode.General.access_denied)
             vat_code = company.is_valid_israeli_id(register.vat_code)
             if vat_code:return SJson.auto_code(vat_code)
@@ -287,21 +290,34 @@ def get_register_action(**breq):
             # WHEN DONE
             manager.permission = ManagerPermissions.ADMIN
             cleaneril_db.session.commit()
-            _company: companies.Company = companies.get_companies(manager_id=manager.manager_id).first()
             return SJson.auto_code(stat)
         case RegisterApi.level3:
             # validate upload
             manager_id = ShortSession.manager_id()
-            _stat_ =  api_upload_file(ApiUploadFile.LOGO,**breq)
-            companies.update_company_details(manager_id,r_level=RegisterApi.DONE)
-            return  _stat_
+            _company = companies.get_companies(manager_id=manager_id).first()
+            if not _company or _company.register_level != RegisterApi.level3:
+                return SJson.auto_code(core_msg.ServerCode.General.access_denied)
+
+            _stat_ = api_upload_file(ApiUploadFile.LOGO,**breq)
+            companies.update_company_details(manager_id,r_level=RegisterApi.level4)
+            return _stat_
 
         case RegisterApi.level4:
             # subscription
             manager_id = ShortSession.manager_id()
+            company_id = ShortSession.company_id()
+            _company = companies.get_companies(company_id=company_id).first()
+            if not _company or _company.register_level != RegisterApi.level4:
+                return SJson.auto_code(core_msg.ServerCode.General.access_denied)
+
+            subscription = subscriptions.create_manager_subscription(manager_id,company_id, register.sub_type,
+                                                                     register.sub_plan, SubscriptionStat.ACTIVE)
+            _company.register_level = RegisterApi.DONE
+            cleaneril_db.session.commit()
+            return SJson.auto_code(subscription)
 
 
-    return {}
+    return SJson.auto_code(core_msg.ServerCode.success)
 
 
 def get_subscription_api(**breq):
