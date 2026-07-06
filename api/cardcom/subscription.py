@@ -51,7 +51,6 @@ class LowProfileResult:
 
 
 class CardComSubscription:
-
     BASE_URL = "https://secure.cardcom.solutions/api/v11"
 
     def __init__(
@@ -114,11 +113,7 @@ class CardComSubscription:
         if not low_profile_id:
             raise RuntimeError("CardCom did not return LowProfileId.")
 
-        return CheckoutResult(
-            url=url,
-            low_profile_id=low_profile_id,
-            raw=data,
-        )
+        return CheckoutResult(url=url,low_profile_id=low_profile_id,raw=data,)
 
     def get_result(self, low_profile_id: str) -> LowProfileResult:
 

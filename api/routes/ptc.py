@@ -148,6 +148,7 @@ class SubscriptionApi:
     manager_workers = 1<<6
     approve_assets = 1<<7
     list_subscriptions = 1<<8
+    create_premium  = 1<<9
 
 
 

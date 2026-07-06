@@ -350,6 +350,7 @@ def get_subscription_api(**breq):
         case SubscriptionApi.list_subscriptions:
             l_subs = subscriptions.get_subscriptions(False)
             return SJson.auto_code(code, **{"subscriptions": l_subs})
+        case SubscriptionApi.create_premium:
 
     return SJson.auto_code(code)
 
