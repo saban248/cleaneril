@@ -147,6 +147,7 @@ class SubscriptionApi:
     manager_template = 1<<5
     manager_workers = 1<<6
     approve_assets = 1<<7
+    list_subscriptions = 1<<8
 
 
 

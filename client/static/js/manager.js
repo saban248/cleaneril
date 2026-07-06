@@ -5,6 +5,7 @@ const c_runtime = {
     workers:[],
     managers:[],
     companies:[],
+    subscriptions:[],
     blockPublishClient:false,
     blockRenderReceiptImg:false,
     orders:[],
@@ -69,8 +70,28 @@ async function fetchCompanies(){
     })
 }
 
+function fetchSubscriptions(){
+    return new Promise((resolve) => {
+        apiPost(ApiRoute.subs, {action:SubscriptionApi.list_subscriptions}).then(
+            (res) =>{
+                if (!res.success){
+                    showToast(res.notice, ToastStat.ERROR)
+                }else{
+                    c_runtime.subscriptions = res.subscriptions;
+                }
+                resolve()
+            }
+        )
+    })
+}
+
 function getCompanyByManagerId(manager_id){
     return c_runtime.companies.find(company => company.manager_id == manager_id)
+}
+
+function getSubscriptionByManagerId(manager_id){
+    return c_runtime.subscriptions.find(sub => sub.manager_id == manager_id)
+    
 }
 
 function getManagerById(manager_id){

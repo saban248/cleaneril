@@ -347,7 +347,9 @@ def get_subscription_api(**breq):
                 code = companies.set_company_approve(subs.manager_id)
             elif subs.asset == 2:
                 code = managers.set_manager_approve(subs.manager_id)
-
+        case SubscriptionApi.list_subscriptions:
+            l_subs = subscriptions.get_subscriptions(False)
+            return SJson.auto_code(code, **{"subscriptions": l_subs})
 
     return SJson.auto_code(code)
 

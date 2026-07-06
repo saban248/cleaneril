@@ -116,6 +116,30 @@ function createSubscriptionPermissionCell(permission, text, icon){
     return cell;
 }
 
+function createSubscriptionAccountStatCell(account_plan, text, icon){
+    const cell = document.createElement("td");
+    const badge = document.createElement("span");
+    const iconEl = document.createElement("i");
+    const textEl = document.createElement("span");
+    
+    iconEl.className = icon;
+    textEl.textContent = text;
+    
+    let planClass = 'plan-default';
+    if (account_plan == UserAccountSubscription.FREE) {
+            planClass = 'plan-free';
+    } else if (account_plan == UserAccountSubscription.PREMIUM ) {
+        planClass = 'plan-premium';
+    }
+
+    
+    
+    badge.className = `subscription-account-stat ${planClass}`;
+    badge.append(iconEl, textEl);
+    cell.appendChild(badge);
+    return cell;
+}
+
 function getLastTimeManagerAliveHourAndYMD(timeAlive){
     if (!timeAlive)return "לא ידוע";
     if (timeAlive > 1e12)timeAlive = timeAlive / 1000;
@@ -254,7 +278,7 @@ function openMenuSubscription(e, managerId){
     menu.style.visibility = "";
 }
 
-function createSubscriptionTableItem(manager, company){
+function createSubscriptionTableItem(manager, company, sub){
     const row = document.createElement("tr");
     const managerId = manager.manager_id;
     const permission = manager.permission;
@@ -265,6 +289,7 @@ function createSubscriptionTableItem(manager, company){
     const vat = company?.company_VAT || company?.vat || "";
     const [p_text, p_icon] = getManagerPermissionIconText(permission)
     const [as_text, as_icon] = getManagerAccountStatIconText(manager.account_stat)
+    const [s_text, s_icon] = getUserAccountSubscriptionIconText(sub?.subscription_plan)
 
     row.id = managerId;
     row.className = "subscription-table-item";
@@ -283,7 +308,8 @@ function createSubscriptionTableItem(manager, company){
         createSubscriptionPermissionCell(permission, p_text, p_icon),
         createSubscriptionTableCell(verified ? "כן":"לא"),
         createSubscriptionTableCell(register_done ? "לא הושלם": "הושלם"),
-        createSubscriptionTableCell(as_text)
+        createSubscriptionTableCell(as_text),
+        createSubscriptionAccountStatCell(sub?.subscription_plan, s_text, s_icon),
 
     );
 
@@ -299,7 +325,7 @@ function renderSubscriptionTable(){
     if (!c_runtime.managers.length){
         const emptyRow = document.createElement("tr");
         emptyRow.className = "subscriptions-empty-row";
-        emptyRow.innerHTML = `<td colspan="5">אין מנויים להצגה</td>`;
+        emptyRow.innerHTML = `<td colspan="8">אין מנויים להצגה</td>`;
         tableBody.appendChild(emptyRow);
         return;
     }
@@ -313,12 +339,13 @@ function renderSubscriptionTable(){
 
     for (const manager of copy){
         const company = getCompanyByManagerId(manager.manager_id)
+        const sub = getSubscriptionByManagerId(manager.manager_id)
         if (!company)continue;
         // account status filter
         if (c_sub.a && c_sub.a !== 0){
             if (!(manager.account_stat & c_sub.a)) continue;
         }
-        tableBody.appendChild(createSubscriptionTableItem(manager, company));
+        tableBody.appendChild(createSubscriptionTableItem(manager, company, sub));
     }
 }
 

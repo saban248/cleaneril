@@ -240,7 +240,8 @@ const SubscriptionApi = {
     m_banned:1<<4,
     manager_dashboard:1<<5,
     manager_workers:1<<6,
-    approve_assets:1<<7
+    approve_assets:1<<7,
+    list_subscriptions:1<<8
 }
 
 
@@ -397,13 +398,17 @@ const UserAccountSubscription = {
     FREE:1<<0,
     PREMIUM:1<<1
 }
-function getUserAccountSubscriptionText(flag){
+
+
+function getUserAccountSubscriptionIconText(flag){
     switch (flag) {
         case UserAccountSubscription.FREE:
-            return "חינם"
-        case UserAccountSubscription.PRIMIUM:
-            return "פרימיום"
+            return ["חינם", "fa-solid fa-user"]
+        case UserAccountSubscription.PREMIUM:
+            return ["פרימיום", "fa-solid fa-crown"]
     }
+
+    return getUserAccountSubscriptionIconText(UserAccountSubscription.FREE)
 }
 
 

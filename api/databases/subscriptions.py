@@ -60,6 +60,9 @@ def create_manager_subscription(manager_id:str, company_id:str, plan_type:int = 
     new.worker_features = WorkerFeature.CREATE
     new.invoice_features = WorkerFeature.CREATE
     new.reports_features = ReportsFeature(0)
+    cleaneril_db.session.add(new)
+    cleaneril_db.session.commit()
+    
     return core_msg.ServerCode.success
 
 
