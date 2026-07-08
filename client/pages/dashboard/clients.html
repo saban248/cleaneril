@@ -15,21 +15,26 @@
                 </span>
                 <span class="viewFilterSelected" id="viewSubscriptionStat" onclick="switchFilterOptions('mf-ss')">הכל</span>
                 <div class="filter-options" id="mf-ss">
-                    <div class="filter-option" onclick="selectSubscriptionState('mf-ss', this)" data-s="0">
+                    <div class="filter-option" onclick="selectSubscriptionState(-1, this)" data-s="0">
                         <span>הכל</span>
                         </div>
-                    <div class="filter-option" onclick="selectSubscriptionState('mf-ss', this)" data-s="1"> 
+                    <div class="filter-option" onclick="selectClientsState(StateOrder.DONE, this)" data-s="1"> 
                         <i class="fa-solid fa-toggle-on"></i>
-                        <span>פעיל</span>
+                        <span>הושלם</span>
                     </div>
-                    <div class="filter-option" onclick="selectSubscriptionState('mf-ss', this)" data-s="2"> 
+                    <div class="filter-option" onclick="selectClientsState(StateOrder.CLOSED, this)" data-s="2"> 
                         <i class="fa-solid fa-toggle-off"></i>
-                        <span>לא פעיל</span>
+                        <span>בהמתנה</span>
                     </div>
-                    <div class="filter-option" onclick="selectSubscriptionState('mf-ss', this)" data-s="4"> 
+                    <div class="filter-option" onclick="selectClientsState(StateOrder.WAIT, this)" data-s="4"> 
                         <i class="fa-solid fa-hourglass-end"></i>
-                        <span>פג בתוקף</span>
+                        <span>לא נסגר</span>
+                    </div>                    
+                    <div class="filter-option" onclick="selectClientsState(StateOrder.CANCELED, this)" data-s="4"> 
+                        <i class="fa-solid fa-hourglass-end"></i>
+                        <span>בוטל</span>
                     </div>
+
                 </div>
             </div>
             <div class="action-search">

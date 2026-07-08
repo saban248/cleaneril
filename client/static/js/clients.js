@@ -169,7 +169,8 @@ function doSearchClientsLocal(){
         const name = order.fullname.toLowerCase().includes(value);
         const date = dateFloatToYMD(order.date).includes(value);
         const cid = order.client_id.toLowerCase() == value;
-        if ((value == ''||phone||name||date||cid) && c_runtime.state_client_selected&order.stat){
+        const stat = parseInt(child.dataset.stat)&c_runtime.state_client_selected
+        if ((value == ''||phone||name||date||cid) && stat){
             document.getElementById(order_id).classList.remove("hide")
         }
         else{
@@ -186,9 +187,10 @@ function sortedClientsByState(){
         else{
             child.classList.add("hide")
         }
-    }
-    
+    } 
 }
+
+
 function selectClientsState(t){
     updateMenuActionClientsSorted(t, t.dataset.s)
 }
@@ -207,7 +209,7 @@ function updateMenuActionClientsSorted(t, state, cache = true){
     if (!cache)return
 
     updateStateClientSetting(c_runtime.state_client_selected)
-    sortedClientsByState()
+    doSearchClientsLocal()
 }
 
 function updateMACSOnLoad(cache = true){
@@ -230,14 +232,6 @@ function updateStateClientSetting(state){
     c_runtime.state_client_selected = state
 }
 
-
-function updateCalanderClient(cc){
-    const params = new URLSearchParams(window.location.search);
-    params.set("c", cc)
-    window.history.replaceState({}, "", window.location.pathname + "?" + params.toString());
-    ManagerCache.setClientsCalender(cc)
-    location.reload()
-}
 
 
 const menuItemsStateClients = [
@@ -659,7 +653,7 @@ function loadListClientsHtml(){
         const el = createOrderItem(order.client_id, order);
         parent.appendChild(el);
     });
-    sortedClientsByState()
+    doSearchClientsLocal()
 }
 function createOrderItem(client_id, order, actions = true, callback) {
     const div = document.createElement("div");
