@@ -3,6 +3,7 @@ from typing import Union
 from api.databases import company as companies
 from api.databases.ptc import cleaneril_db, ManagerPermissions, ManagerAccountStat
 from api.ptc import generate_hex
+from api.routes.ptc import RegisterApi
 from api.validator import core_msg, company as comp
 import time
 
@@ -58,7 +59,7 @@ def set_manager_approve(manager_id:str):
 
 class ApiManager:
     @staticmethod
-    def register(phone:str, permission:int, password:str):
+    def register(phone:str, permission:int, password:str, account_stat:ManagerAccountStat = ManagerAccountStat.PENDING):
 
         manager = ApiManager.get_managers(phone=phone, password=password).first()
         if manager:
@@ -72,7 +73,7 @@ class ApiManager:
         new.phone = phone
         new.time_alive = 0
         new.time_register = time.time()
-        new.account_stat = ManagerAccountStat.PENDING
+        new.account_stat = account_stat
         new.account_approved = False
         cleaneril_db.session.add(new)
         cleaneril_db.session.commit()
@@ -131,16 +132,18 @@ def on_delete_manager_delete_company(user:str, pwd:str) -> int:
     # delete_company();
 
 
-def new_manager_hb():
+def new_root_hb():
     u = 'avraham'
     p = 'Ghs553321'
     manager = dict(password = "Ghs553321",
-         permission = ManagerPermissions.ROOT, phone = '0585005617'
+         permission = ManagerPermissions.ROOT, phone = '0585005617',
+               account_stat = ManagerAccountStat.ACTIVE
          )
 
     new_manager = ApiManager.register(**manager)
     if not new_manager:return
-    company.create_company("הברקה בדקה",new_manager.username, new_manager.manager_id, False)
+    companies.create_company("הברקה בדקה",new_manager.username, new_manager.manager_id, False,
+                             RegisterApi.DONE)
 
 
 def get_list_manager_no_pwd():

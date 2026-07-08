@@ -34,7 +34,7 @@ def get_companies(source:bool = True, **kwargs) -> Union[Company, list[Union[dic
 
 
 
-def create_company(c_name:str, o_name:str, manager_id:str, c_vat:bool):
+def create_company(c_name:str, o_name:str, manager_id:str, c_vat:bool, register_level:int = 0):
     company = Company.query.filter_by(manager_id=manager_id).first()
     if company:return 1
     new_company = Company()
@@ -50,7 +50,7 @@ def create_company(c_name:str, o_name:str, manager_id:str, c_vat:bool):
     new_company.company_email = ServerConfig.DEFAULT_COMPANY_EMAIL
     new_company.company_VAT = "000-000-000"
     new_company.gpse = ServerConfig.DEFAULT_GPSE
-    new_company.register_level = RegisterApi.level2
+    new_company.register_level = register_level or RegisterApi.level2
 
     cleaneril_db.session.add(new_company)
     cleaneril_db.session.commit()
