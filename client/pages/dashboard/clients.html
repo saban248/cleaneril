@@ -8,24 +8,29 @@
             <div class="create-card" onclick="initSelectOrderTypeToCreate()">
                <i class="fa-solid fa-circle-plus"></i>
             </div>
-            <div class="action-client no-desk" onclick="openMenuStateClients(this)">
-                <i class="fa-solid fa-filter"></i>
-            </div>
-            <div class="action-client ac1 no-mobile" onclick="selectClientsState(this)" data-s="8">
-                הושלם
-                <span class="count-stat"></span>
-            </div>
-            <div class="action-client ac2 no-mobile" onclick="selectClientsState(this)" data-s="2">
-                בהמתנה
-                <span class="count-stat"></span>
-            </div>
-            <div class="action-client ac3 no-mobile" onclick="selectClientsState(this)" data-s="1">
-                לא נסגר
-                <span class="count-stat"></span>
-            </div>
-            <div class="action-client ac4 no-mobile" onclick="selectClientsState(this)" data-s="4">
-                בוטל
-                <span class="count-stat"></span>
+            <div class="filter-item">
+                <span class="filter-label">
+                    <i class="fa-solid fa-filter"></i>
+                    מנוי 
+                </span>
+                <span class="viewFilterSelected" id="viewSubscriptionStat" onclick="switchFilterOptions('mf-ss')">הכל</span>
+                <div class="filter-options" id="mf-ss">
+                    <div class="filter-option" onclick="selectSubscriptionState('mf-ss', this)" data-s="0">
+                        <span>הכל</span>
+                        </div>
+                    <div class="filter-option" onclick="selectSubscriptionState('mf-ss', this)" data-s="1"> 
+                        <i class="fa-solid fa-toggle-on"></i>
+                        <span>פעיל</span>
+                    </div>
+                    <div class="filter-option" onclick="selectSubscriptionState('mf-ss', this)" data-s="2"> 
+                        <i class="fa-solid fa-toggle-off"></i>
+                        <span>לא פעיל</span>
+                    </div>
+                    <div class="filter-option" onclick="selectSubscriptionState('mf-ss', this)" data-s="4"> 
+                        <i class="fa-solid fa-hourglass-end"></i>
+                        <span>פג בתוקף</span>
+                    </div>
+                </div>
             </div>
             <div class="action-search">
                 <i class="fa-solid fa-circle-xmark" style="display: none;" onclick="closeSearchClients(this)"></i>
