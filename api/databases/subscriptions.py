@@ -31,7 +31,6 @@ class ManagerSubscription(cleaneril_db.Model):
     reports_features = cleaneril_db.Column(cleaneril_db.BigInteger, default=0)
 
 
-
 def get_subscriptions(source:bool = True, **kwargs):
     return get_columns(ManagerSubscription, source, **kwargs)
 

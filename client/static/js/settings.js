@@ -12,6 +12,10 @@ function setLogo() {
     input.click();
 }
 
+const c_settings = {
+
+}
+
 /**
  * Create an edit modal for inline editing
  */
@@ -53,6 +57,26 @@ function createEditModal(field, currentValue, title) {
     });
 }
 
+function setTagSubscription(){
+    const logoCompanyTag = document.getElementById("logoCompanyTag");
+    const plan = c_runtime.subscription?.subscription_plan || UserAccountSubscription.FREE;
+    const planName = getUserAccountSubscriptionTextEnglish(plan);
+    logoCompanyTag.textContent = planName;
+    logoCompanyTag.classList.add(planName.toLocaleLowerCase())
+
+    const companyVerified = document.getElementById("companyVerified");
+    const companyUnverified = document.getElementById("companyUnverified");
+    if (c_runtime.company.company_approved && c_runtime.manager.account_approved){
+        companyVerified.classList.add("show")
+    }
+    else{
+        companyUnverified.classList.add("show")
+    }
+
+}
+function onLoadSetttings(){
+    setTagSubscription()    
+}
 /**
  * Create a selector modal for tax status
  */
@@ -386,4 +410,10 @@ function setupEditHandlers() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", setupEditHandlers);
+document.addEventListener("DOMContentLoaded", async function () {
+    await fetchMyManager();
+    await fetchMyCompany();
+    onLoadSetttings()
+    setupEditHandlers()
+
+});

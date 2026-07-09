@@ -51,6 +51,7 @@ def create_company(c_name:str, o_name:str, manager_id:str, c_vat:bool, register_
     new_company.company_VAT = "000-000-000"
     new_company.gpse = ServerConfig.DEFAULT_GPSE
     new_company.register_level = register_level or RegisterApi.level2
+    new_company.company_approved = False
 
     cleaneril_db.session.add(new_company)
     cleaneril_db.session.commit()

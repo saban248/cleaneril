@@ -234,6 +234,9 @@ class ApiCall(IntFlag):
     list_managers   = 1<<26
     list_companies = 1<<27
     alive           = 1<<28
+    my_subscription = 1<<29
+    my_company      = 1<<30
+    my_manager      = 31
 
 
 class ReportsApi(IntFlag):

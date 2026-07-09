@@ -186,6 +186,14 @@ def get_api_action(**breq) -> dict:
             update_time_alive(manager_id)
             return SJson.auto_code(__success__)
 
+        case ApiCall.my_subscription:
+            subscription = subscriptions.get_subscriptions(False, manager_id=manager_id)
+            return SJson.auto_code(__success__, **{"sub":subscription})
+        case ApiCall.my_company:
+            return SJson.auto_code(__success__, **{"company":ShortSession.company()})
+        case ApiCall.my_manager:
+            return SJson.auto_code(__success__, **{"manager":ShortSession.manager()})
+
     return SJson.auto_code(__success__)
 
 

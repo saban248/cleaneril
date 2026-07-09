@@ -274,7 +274,10 @@ const ApiCall = {
     permissions:1<<25,
     list_managers:1<<26,
     list_companies:1<<27,
-    alive:1<<28
+    alive:1<<28,
+    my_subscription:1<<29,
+    my_company:1<<30,
+    my_manager:31
 }
 
 const ReportsApi = {
@@ -399,6 +402,11 @@ const UserAccountSubscription = {
     PREMIUM:1<<1
 }
 
+
+function getUserAccountSubscriptionTextEnglish(flag) {
+  const entry = Object.entries(UserAccountSubscription).find(([key, value]) => value === flag);
+    return entry ? entry[0] : '-';
+}
 
 function getUserAccountSubscriptionIconText(flag){
     switch (flag) {

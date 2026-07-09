@@ -3,6 +3,7 @@ import os
 import markdown
 from flask import request, render_template, redirect, url_for
 
+from api.databases import subscriptions
 from api.databases.crads import ApiCards
 from api.databases.employee import ApiEmployee
 from api.databases.orders import CountOfOrderByStat
@@ -42,6 +43,7 @@ def dashboard():
     company = ShortSession.company()
     manager_id = manager["manager_id"]
     workers = ApiEmployee.get_employees(manager_id=manager_id).all()
+    subscription = subscriptions.get_subscriptions(manager_id=manager_id).first()
     # count_stat_orders
     cso = CountOfOrderByStat()
     return render_template(Pages.dashboard.html,

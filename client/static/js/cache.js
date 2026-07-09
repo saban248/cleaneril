@@ -1,65 +1,53 @@
 const KEYS = {
-    dregister:1<<0
+    dregister:1,
+    exist:2,
+    main_page:3,
+    current_page:4,
+    funds_charts:5,
+    order_filter_stat:6
 }
 
 class ManagerCache{
 
     static create_cache(){
         if (ManagerCache.exist())return;
-            localStorage.setItem("exist",'1')
+            localStorage.setItem(KEYS.exist,'1')
     }
     static managerPage(){
-        const page =  localStorage.getItem("MANAGER_PAGE")
+        const page =  localStorage.getItem(KEYS.current_page)
         if (!page)return -1;
         return parseInt(page)
     }
     static setManagerPage(tab){
         if (!ManagerCache.exist())return
-        localStorage.setItem("MANAGER_PAGE", tab);
+        localStorage.setItem(KEYS.current_page, tab);
     }
     static setFundsChartsYear(year){
-        const key = "FUNDS_CHARTS";
-        if (!localStorage.getItem(key)){
-            localStorage.setItem(key, "{}")
+        if (!localStorage.getItem(KEYS.funds_charts)){
+            localStorage.setItem(KEYS.funds_charts, "{}")
         }
-        const funds_charts = localStorage.getItem(key)
+        const funds_charts = localStorage.getItem(KEYS.funds_charts)
         const data = JSON.parse(funds_charts)
         data.year = year
-        localStorage.setItem(key, JSON.stringify(data))
+        localStorage.setItem(KEYS.current_page, JSON.stringify(data))
         
     }
     static getFundsChartsYear(){
-        const key = "FUNDS_CHARTS";
-        const data = localStorage.getItem(key)
+        const data = localStorage.getItem(KEYS.funds_charts)
         if (data == undefined || data == '{}'){return 2026}
         return JSON.parse(data).year
     }
     static setClientsSortedState(state){
-        const key = "state_client"
-        localStorage.setItem(key, state)
+        localStorage.setItem(KEYS.order_filter_stat, state)
     }
     static getClientsSortedState(){
-        const key = "state_client"
-        const data = localStorage.getItem(key)
-        if (data == undefined || data == null)return 0
+        const data = localStorage.getItem(KEYS.order_filter_stat)
+        if (data == undefined || data == null)return StateOrder.CANCELED|StateOrder.CLOSED|StateOrder.WAIT|StateOrder.DONE
         return parseInt(data, 10)
-    }
-    static setClientsCalender(c){
-        const key = "calender_client"
-        localStorage.setItem(key, c)
-
-    }
-    static getClientsCalender(){
-        const key = "calender_client"
-        const data = localStorage.getItem(key)
-        if (data == null){
-            return CalanderClients.FOREVER
-        }
-        return data
     }
 
     static exist(){
-        return Boolean(localStorage.getItem("exist"));
+        return Boolean(localStorage.getItem(KEYS.exist));
     }
     static createRegsiterHistory(){
         const data = {}

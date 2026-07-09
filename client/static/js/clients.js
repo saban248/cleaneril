@@ -213,7 +213,7 @@ function updateOrderStatSorted(t, stat, cache = true){
     const viewOrderStatFilter = document.getElementById("viewOrderStatFilter");
     viewOrderStatFilter.textContent = `נבחר (${c_runtime.state_client_selected.toString(2).replace(/0/g, '').length})`;
     if (cache){
-        updateStateClientSetting(c_runtime.state_client_selected)
+        updateOrderStatParamsAndCache(c_runtime.state_client_selected)
     }
     doSearchClientsLocal()
 }
@@ -229,7 +229,7 @@ function updateMACSOnLoad(cache = true){
 
 }
 
-function updateStateClientSetting(state){
+function updateOrderStatParamsAndCache(state){
     const params = new URLSearchParams(window.location.search);
     params.set("s", state)
     window.history.replaceState({}, "", window.location.pathname + "?" + params.toString());
@@ -556,13 +556,12 @@ async function fetchWorkers(){
 
 document.addEventListener("DOMContentLoaded", function () {
     const params = new URLSearchParams(window.location.search);
-    const state = params.get("s")
-    const calender = params.get("c")
+    const state = parseInt(params.get("s"))
     if (state){
-        updateStateClientSetting(state, ManagerCache.getClientsCalender())
+        updateOrderStatParamsAndCache(state)
     }
     else{
-        updateStateClientSetting(ManagerCache.getClientsSortedState())
+        updateOrderStatParamsAndCache(ManagerCache.getClientsSortedState())
     }
     updateMACSOnLoad(false)
 

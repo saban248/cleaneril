@@ -106,12 +106,12 @@ async function apiRequest(method, url, body = null) {
 
 
 async function apiGet(url) {
-    return apiRequest("GET", url);
+    return await apiRequest("GET", url);
 }
 
 
 async function apiPost(url, data) {
-    return apiRequest("POST", url, data);
+    return await apiRequest("POST", url, data);
 }
 
 
