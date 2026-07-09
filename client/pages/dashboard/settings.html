@@ -28,7 +28,7 @@
                 <h4 class="settings-section-title">מידע העסק</h4>
                 
                 <!-- Company Name -->
-                <div class="settings-item" onclick="editNameCompany()">
+                <div class="settings-item" onclick="editCompanyName()">
                     <div class="settings-item-left">
                         <i class="fa-solid fa-briefcase settings-item-icon"></i>
                         <div class="settings-item-text">
@@ -37,11 +37,10 @@
                         </div>
                     </div>
                     <i class="fa-solid fa-chevron-left settings-chevron"></i>
-                    <input placeholder="שם העסק" value="{{company.company_name}}" class="input-setting input-name-company" type="hidden" maxlength="20" id="nameCompany">
                 </div>
 
                 <!-- Company Description -->
-                <div class="settings-item" onclick="editDescCompany(this)">
+                <div class="settings-item" onclick="editCompanyDesciption()">
                     <div class="settings-item-left">
                         <i class="fa-solid fa-file-text settings-item-icon"></i>
                         <div class="settings-item-text">
@@ -54,7 +53,7 @@
                 </div>
 
                 <!-- Company Phone -->
-                <div class="settings-item" onclick="editPhoneCompany(this)">
+                <div class="settings-item" onclick="editCompanyPhone()">
                     <div class="settings-item-left">
                         <i class="fa-solid fa-phone settings-item-icon"></i>
                         <div class="settings-item-text">
@@ -67,7 +66,7 @@
                 </div>
 
                 <!-- Company Email -->
-                <div class="settings-item" onclick="editEmailCompany(this)">
+                <div class="settings-item" onclick="editCompanyEMail()">
                     <div class="settings-item-left">
                         <i class="fa-solid fa-envelope settings-item-icon"></i>
                         <div class="settings-item-text">
@@ -80,7 +79,7 @@
                 </div>
 
                 <!-- VAT Number -->
-                <div class="settings-item" onclick="editVATCompany(this)">
+                <div class="settings-item" onclick="editCompanyVAT()">
                     <div class="settings-item-left">
                         <i class="fa-solid fa-receipt settings-item-icon"></i>
                         <div class="settings-item-text">
@@ -120,7 +119,7 @@
                 </div>
 
                 <!-- Profit Share -->
-                <div class="settings-item" onclick="editGPSECompany(this)">
+                <div class="settings-item" onclick="editCompanyGPSE(this)">
                     <div class="settings-item-left">
                         <i class="fa-solid fa-percent settings-item-icon"></i>
                         <div class="settings-item-text">
@@ -154,4 +153,19 @@
             </div>
         </div>
     </div>
+</div>
+<div class="settings-edit-modal" id="settingsEditModal">
+    <div class="settings-modal-overlay"></div>
+        <div class="settings-modal-content">
+            <div class="settings-modal-header">
+                <h5 id="emsTitle">${title}</h5>
+                <i class="fa-solid fa-times" onclick="closeEditModal()"></i>
+            </div>
+            <input type="text" class="settings-modal-input" value="${currentValue}" id="emsCurrentValue" autocomplete="off">
+            <input type="hidden" class="settings-modal-input" id="emsLastValue" autocomplete="off">
+            <div class="settings-modal-footer">
+                <button class="settings-btn-cancel" onclick="closeEditModal()">ביטול</button>
+                <button class="settings-btn-save" onclick="saveEditField('${field}')">שמור</button>
+            </div>
+        </div>
 </div>

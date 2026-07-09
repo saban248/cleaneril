@@ -182,6 +182,7 @@
 /* Edit Modal Styles */
 .settings-edit-modal {
     animation: slideUp 0.3s ease-out;
+    display: none;
 }
 
 @keyframes slideUp {

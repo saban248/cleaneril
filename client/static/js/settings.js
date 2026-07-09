@@ -13,48 +13,7 @@ function setLogo() {
 }
 
 const c_settings = {
-
-}
-
-/**
- * Create an edit modal for inline editing
- */
-function createEditModal(field, currentValue, title) {
-    // Remove existing modal if any
-    const existingModal = document.querySelector('.settings-edit-modal');
-    if (existingModal) existingModal.remove();
-
-    const modal = document.createElement('div');
-    modal.className = 'settings-edit-modal';
-    modal.innerHTML = `
-        <div class="settings-modal-overlay"></div>
-        <div class="settings-modal-content">
-            <div class="settings-modal-header">
-                <h5>${title}</h5>
-                <i class="fa-solid fa-times" onclick="closeEditModal()"></i>
-            </div>
-            <input type="text" class="settings-modal-input" value="${currentValue}" id="modalInput" autocomplete="off">
-            <div class="settings-modal-footer">
-                <button class="settings-btn-cancel" onclick="closeEditModal()">ביטול</button>
-                <button class="settings-btn-save" onclick="saveEditField('${field}')">שמור</button>
-            </div>
-        </div>
-    `;
     
-    document.body.appendChild(modal);
-    editingField = field;
-    
-    const input = document.getElementById('modalInput');
-    setTimeout(() => {
-        input.focus();
-        input.select();
-    }, 100);
-    
-    // Save on Enter
-    input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') saveEditField(field);
-        if (e.key === 'Escape') closeEditModal();
-    });
 }
 
 function setTagSubscription(){
@@ -77,6 +36,37 @@ function setTagSubscription(){
 function onLoadSetttings(){
     setTagSubscription()    
 }
+
+/**
+ * Create an edit modal for inline editing
+ */
+function createEditModal(title, currentValue) {
+    // Remove existing modal if any
+    const modal = document.getElementById("settingsEditModal");
+    const elTitle = document.getElementById("emsTitle");
+    const lastValue = document.getElementById("emsLastValue");
+    const elCurrentValue = document.getElementById("emsCurrentValue");
+    elTitle.textContent = title
+    elCurrentValue.value = currentValue
+    modal.classList.add("show")
+        setTimeout(() => {
+        elCurrentValue.focus();
+        elCurrentValue.select();
+    }, 100);
+    
+    // Save on Enter
+    elCurrentValue.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') saveEditField(field);
+        if (e.key === 'Escape') closeEditModal();
+    });
+}
+
+function editCompanyName() {createEditModal("עדכן שם העסק", c_runtime.company.company_name);}
+function editCompanyDesciption(){createEditModal("עדכן תיאור לעסק", c_runtime.company.company_description)}
+function editCompanyPhone(){createEditModal("עדכן פלאפון עסק", c_runtime.company.company_phone)}
+function editCompanyEMail(){createEditModal("עדכן מייל ", c_runtime.company.company_email)}
+function editCompanyVAT(){createEditModal("עדכן מספר עוסק", c_runtime.company.company_VAT)}
+function editCompanyGPSE(){createEditModal("הגדרת חלוקת רווחים לעיסקה", c_runtime.company.gpse)}
 /**
  * Create a selector modal for tax status
  */
@@ -124,12 +114,10 @@ function createTaxStatusModal(currentValue, title) {
 }
 
 function closeEditModal() {
-    const modal = document.querySelector('.settings-edit-modal');
-    if (modal) {
-        modal.style.animation = 'slideDown 0.3s ease-out reverse';
-        setTimeout(() => modal.remove(), 300);
-    }
-    editingField = null;
+    const modal = document.querySelector('settingsEditModal');
+    modal.style.animation = 'slideDown 0.3s ease-out reverse';
+    setTimeout(() => modal.classList.remove("show"), 300);
+    
 }
 
 /**
@@ -320,66 +308,6 @@ function toggleShowIdOnOrder() {
 function setupEditHandlers() {
     const settingsPage = document.getElementById("SETTINGS");
     if (!settingsPage) return;
-
-    // Company Name
-    const nameItem = settingsPage.querySelector('[onclick="editNameCompany()"]');
-    if (nameItem) {
-        nameItem.onclick = () => {
-            const value = document.getElementById('nameCompanyView').textContent;
-            createEditModal('company_name', value, 'עדכן שם העסק');
-        };
-    }
-
-    // Company Description
-    settingsPage.querySelectorAll('[onclick="editDescCompany(this)"]').forEach((el, idx) => {
-        if (idx === 0) {
-            el.onclick = () => {
-                const value = document.getElementById('descCompanyView').textContent;
-                createEditModal('company_description', value, 'עדכן תיאור');
-            };
-        }
-    });
-
-    // Phone
-    const phoneItem = settingsPage.querySelector('[onclick="editPhoneCompany(this)"]');
-    if (phoneItem) {
-        phoneItem.onclick = () => {
-            const value = document.getElementById('phoneCompanyView').textContent;
-            createEditModal('company_phone', value, 'עדכן טלפון');
-        };
-    }
-
-    // Email
-    const emailItem = settingsPage.querySelector('[onclick="editEmailCompany(this)"]');
-    if (emailItem) {
-        emailItem.onclick = () => {
-            const value = document.getElementById('emailCompanyView').textContent;
-            createEditModal('company_email', value, 'עדכן אימייל');
-        };
-    }
-
-    // VAT
-    const vatItem = settingsPage.querySelector('[onclick="editVATCompany(this)"]');
-    if (vatItem) {
-        vatItem.onclick = () => {
-            const value = document.getElementById('VATCompanyView').textContent;
-            createEditModal('company_vat', value, 'עדכן מספר עוסק');
-        };
-    }
-
-    // GPSE
-    const gpseItem = settingsPage.querySelector('[onclick="editGPSECompany(this)"]');
-    if (gpseItem) {
-        gpseItem.onclick = () => {
-            const element = document.getElementById('GPSECompanyView');
-            if (!element) {
-                showToast('שגיאה בטעינת הנתונים', ToastStat.ERROR);
-                return;
-            }
-            const value = element.textContent.replace('%', '').trim();
-            createEditModal('gpse', value, 'עדכן חלוקת רווח');
-        };
-    }
 
     // Logo upload
     const logoInput = document.getElementById("setLogo");
