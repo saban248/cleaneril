@@ -27,6 +27,7 @@ class Company(cleaneril_db.Model):
     gpse = cleaneril_db.Column(cleaneril_db.Integer, nullable=True, default=50)
     register_level = cleaneril_db.Column(cleaneril_db.Integer, nullable=True, default=-1)
     company_approved = cleaneril_db.Column(cleaneril_db.Boolean, nullable=False, default=False)
+    show_vat_code_order = cleaneril_db.Column(cleaneril_db.Boolean, nullable=False, default=False)
 
 
 
@@ -53,6 +54,7 @@ def create_company(c_name:str, o_name:str, manager_id:str, c_vat:int, register_l
     new_company.gpse = ServerConfig.DEFAULT_GPSE
     new_company.register_level = register_level or RegisterApi.level2
     new_company.company_approved = False
+    new_company.show_vat_code_order = False#default
 
     cleaneril_db.session.add(new_company)
     cleaneril_db.session.commit()
@@ -62,7 +64,7 @@ def create_company(c_name:str, o_name:str, manager_id:str, c_vat:int, register_l
 
 def update_company_details(manager_id:str, c_name:str = None, o_name:str = None, c_vat:int = None,
                            c_desc:str = None, c_phone:str = None, o_phone:str = None, c_email:str = None, c_vat_code:str = None,
-                           c_gpse:int = None, r_level:int = -1):
+                           c_gpse:int = None, r_level:int = -1, show_vat_code_order:bool = False):
     company:Company = get_companies(manager_id=manager_id).first()
     if not company:return core_msg.ServerCode.General.something_wrong
     if c_name:
@@ -85,6 +87,8 @@ def update_company_details(manager_id:str, c_name:str = None, o_name:str = None,
         company.gpse = c_gpse
     if r_level and not r_level == -1:
         company.register_level = r_level
+    if show_vat_code_order is not None:
+        company.show_vat_code_order = show_vat_code_order
 
     cleaneril_db.session.commit()
     return core_msg.ServerCode.success

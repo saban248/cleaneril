@@ -231,6 +231,8 @@ class AccountAppSettings:
     c_phone:str     = None
     c_owner_phone:str     = None
     c_gpse:int      = None
+    # show vat code in order
+    c_show_vcio:bool = None
 
     def build(self, **data):
         struct_builder(self,**data)

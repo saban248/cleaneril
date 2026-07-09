@@ -9,7 +9,8 @@ const c_settings = {
         c_vat_code: null,
         c_phone: null,
         c_owner_phone: null,
-        c_gpse: null
+        c_gpse: null,
+        c_show_vcio:null
     }, // setting api data
     vat_company_selected:null
 
@@ -37,11 +38,19 @@ function setTagSubscription(){
     }
 
 }
+function setShowVatCode(){
+    const showVatCodeView = document.getElementById("showVatCodeView");
+    const showVatCodeOnOrder = document.getElementById("showVatCodeOnOrder");
+    showVatCodeView.textContent = c_runtime.company.show_vat_code_order?"מוצג":"לא מוצג"
+    toggleShowIdOnOrder()
+}
 function onLoadSetttings(){
-    setTagSubscription()    
+    setTagSubscription() 
+    setShowVatCode()   
     c_settings.vat_company_selected = c_runtime.company.vat_company
     const taxTypeView = document.getElementById('taxTypeView');
     taxTypeView.textContent = getCompanyIsVatText(c_runtime.company.vat_company)
+
 }
 
 /**
@@ -82,7 +91,7 @@ function createEditModal(title, currentValue, sad, {content = 0} = {}) {
     }
     // Save on Enter
     elCurrentValue.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') saveEdit();
+        if (e.key === 'Enter') saveManagerSettings();
         if (e.key === 'Escape') closeEditModal();
     });
 }
@@ -113,13 +122,14 @@ function editCompanyGPSE(){
     createEditModal("הגדרת חלוקת רווחים לעיסקה", c_runtime.company.gpse, data)
 }
 
-async function saveManagerSettings(sad){
+async function saveManagerSettings(sad, callback = null){
     const emsSave = document.getElementById("emsSave");
     emsSave.classList.add("loading")
 
     const data = {action:ApiCall.manager_settings, ...sad}
     const res = await apiPost(ApiRoute.api, data);
     const toast = showToast("מגדיר...");
+    callback?callback(res):null
     if (!res.success){
         showToast(res.notice, ToastStat.ERROR, toast);
     }else{
@@ -182,36 +192,22 @@ function editVATOrNot() {
     createTaxStatusModal('בחר סוג עוסק');
 }
 
+function editShowVatCodeOnOrder(){
+    const showVatCodeOnOrder = document.getElementById("showVatCodeOnOrder")
+    const call = () => ({c_show_vcio:showVatCodeOnOrder.checked})
+    const onFailed = (res) =>{
+        if (res.success)return
+        toggleShowIdOnOrder()
+    }
+    saveManagerSettings(call(), onFailed)
+}
 /**
  * Toggle show ID on order
  */
 function toggleShowIdOnOrder() {
-    const checkbox = document.getElementById('showIdOnOrder');
-    if (!checkbox) return;
+    const showVatCodeOnOrder = document.getElementById('showVatCodeOnOrder');
+    showVatCodeOnOrder.checked = c_runtime.company.show_vat_code_order
 
-    const isChecked = checkbox.checked;
-    const toast = showToast("מעבד...");
-
-    const apiData = {
-        action: ApiCall.conf_company,
-        c_show_id_on_order: isChecked ? 1 : 0
-    };
-
-    apiPost(ApiRoute.api, apiData)
-        .then(res => {
-            if (!res.success) {
-                showToast(res.notice || 'שגיאה בשמירה', ToastStat.ERROR, toast);
-                checkbox.checked = !isChecked;
-                return;
-            }
-
-            showToast("עודכן בהצלחה!", ToastStat.DONE, toast);
-        })
-        .catch(err => {
-            console.error('Error:', err);
-            showToast('שגיאת תקשורת', ToastStat.ERROR, toast);
-            checkbox.checked = !isChecked;
-        });
 }
 function setupEditHandlers() {
     const settingsPage = document.getElementById("SETTINGS");

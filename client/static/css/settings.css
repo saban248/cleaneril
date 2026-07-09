@@ -285,7 +285,7 @@
 .settings-btn-save:active {
     transform: scale(0.98);
 }
-.settings-btn-save.loading{
+.settings-btn-save.loading, .toggle-input.loading{
     pointer-events: none;    /* Blocks all clicks, hovers, and events */
     cursor: not-allowed;    /* Shows the stop/disabled cursor */
     opacity: 0.6;
