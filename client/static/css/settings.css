@@ -285,6 +285,41 @@
 .settings-btn-save:active {
     transform: scale(0.98);
 }
+.settings-btn-save.loading{
+    pointer-events: none;    /* Blocks all clicks, hovers, and events */
+    cursor: not-allowed;    /* Shows the stop/disabled cursor */
+    opacity: 0.6;
+    animation: shadow-pulse 1.5s infinite ease-in-out, border-spin 3s linear infinite;
+    background-image: linear-gradient(#3b82f6, #3b82f6), linear-gradient(90deg, #3b82f6, #60a5fa, #93c5fd, #3b82f6);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    border: 3px solid transparent;
+    background-size: 200% 100%
+}
+
+@keyframes border-spin {
+  0% {
+    background-position: 0% 0%, 0% 0%;
+  }
+  100% {
+    background-position: 0% 0%, -200% 0%;
+  }
+}
+@keyframes shadow-pulse {
+  0% {
+    /* Tight, darker glow start */
+    box-shadow: 0 0 0 0px rgba(59, 130, 246, 0.7);
+  }
+  70% {
+    /* Expanding, fading light glow */
+    box-shadow: 0 0 0 12px rgba(59, 130, 246, 0);
+  }
+  100% {
+    /* Reset with no glow */
+    box-shadow: 0 0 0 0px rgba(59, 130, 246, 0);
+  }
+}
+
 
 /* Tax Status Options */
 .settings-tax-options {

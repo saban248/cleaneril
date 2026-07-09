@@ -1,20 +1,22 @@
+const c_settings = {
+    max_size_logo:5*(1024*1024),
+    sad:{
+        c_name: null,
+        c_desc: null,
+        c_owner: null,
+        c_email: null,
+        c_vat: null,
+        c_vat_code: null,
+        c_phone: null,
+        o_phone: null,
+        c_gpse: null
+    }, // setting api data
 
-/**
- * Settings Page - Instagram-style Design
- * Enhanced with smooth animations and better UX
- */
-
-let editingField = null;
-let selectedTaxStatus = null;
+}
 
 function setLogo() {
     const input = document.getElementById("setLogo");
     input.click();
-}
-
-const c_settings = {
-    max_size_logo:5*(1024*1024),
-    sad:{} // setting api data
 }
 
 function setTagSubscription(){
@@ -41,7 +43,7 @@ function onLoadSetttings(){
 /**
  * Create an edit modal for inline editing
  */
-function createEditModal(title, currentValue, {content = 0} = {}) {
+function createEditModal(title, currentValue, keySad, {content = 0} = {}) {
     // Remove existing modal if any
     const settingsContentModal = document.getElementById("settingsContentModal")
     const settingsDefaultContentModal = document.getElementById("settingsDefaultContentModal");
@@ -49,6 +51,7 @@ function createEditModal(title, currentValue, {content = 0} = {}) {
     const elTitle = document.getElementById("emsTitle");
     const lastValue = document.getElementById("emsLastValue");
     const elCurrentValue = document.getElementById("emsCurrentValue");
+    const emsSave = document.getElementById("emsSave");
     elTitle.textContent = title
     const h = (e) => {e.classList.add("hide");e.classList.remove("show")}
     const s = (e) => {e.classList.add("show");e.classList.remove("hide")}
@@ -69,23 +72,43 @@ function createEditModal(title, currentValue, {content = 0} = {}) {
         elCurrentValue.select();
     }, 100);
     
+    emsSave.onclick = () => {
+        const d = {}
+        d[keySad] = elCurrentValue.value
+        saveManagerSettings(d)
+    }
     // Save on Enter
     elCurrentValue.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') saveEdit(field);
+        if (e.key === 'Enter') saveEdit();
         if (e.key === 'Escape') closeEditModal();
     });
 }
 
-function editCompanyName() {createEditModal("עדכן שם העסק", c_runtime.company.company_name);}
+function editCompanyName() {
+    createEditModal("עדכן שם העסק", c_runtime.company.company_name, 'c_name');
+}
 function editCompanyDesciption(){createEditModal("עדכן תיאור לעסק", c_runtime.company.company_description)}
 function editCompanyPhone(){createEditModal("עדכן פלאפון עסק", c_runtime.company.company_phone)}
 function editCompanyEMail(){createEditModal("עדכן מייל ", c_runtime.company.company_email)}
 function editCompanyVAT(){createEditModal("עדכן מספר עוסק", c_runtime.company.company_VAT)}
 function editCompanyGPSE(){createEditModal("הגדרת חלוקת רווחים לעיסקה", c_runtime.company.gpse)}
 
-async function saveEdit(){
-    const data = {action:ApiCall}
-    const res = 
+async function saveManagerSettings(sad){
+    const emsSave = document.getElementById("emsSave");
+    emsSave.classList.add("loading")
+
+    const data = {action:ApiCall.manager_settings, ...sad}
+    const res = await apiPost(ApiRoute.api, data);
+    const toast = showToast("מגדיר...");
+    if (!res.success){
+        showToast(res.notice, ToastStat.ERROR, toast);
+    }else{
+        showToast(res.notice, ToastStat.DONE, toast);
+        closeEditModal()
+
+    }
+    emsSave.classList.remove('loading')
+
 }
 /**
  * Create a selector modal for tax status
@@ -110,7 +133,7 @@ function createTaxStatusModal(currentValue, title) {
             </div>
         </div>
     `;
-    createEditModal(title, c_runtime.company.vat_company, {content:html})
+    createEditModal(title, c_runtime.company.vat_company, null, {content:html})
 }
 
 function closeEditModal() {

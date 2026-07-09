@@ -221,7 +221,7 @@ class Reports:
 
 @dataclass
 class AccountAppSettings:
-    #company name
+    #company
     c_name:str        = None
     c_desc:str        = None
     c_owner:str      = None
@@ -231,7 +231,6 @@ class AccountAppSettings:
     c_phone:str     = None
     o_phone:str     = None
     c_gpse:int      = None
-    level:int       = None
 
     def build(self, **data):
         struct_builder(self,**data)

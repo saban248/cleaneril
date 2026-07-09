@@ -91,6 +91,7 @@ def get_api_action(**breq) -> dict:
 
         case ApiCall.manager_settings:
             config = cil_struct.AccountAppSettings().build(**breq)
+            sleep(4)
             code = companies.update_company_details(manager_id, config.c_name,config.c_owner, config.c_vat,
                                               config.c_desc,config.c_phone, config.o_phone, config.c_email, config.c_vat_code,
                                                       config.c_gpse)
