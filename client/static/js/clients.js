@@ -60,7 +60,7 @@ function onPublishClientShowProgress(fullname, stat, done = false){
     }
 
     fn.textContent = "עבור: "+fullname;
-    st.children[0].textContent = getStateClientText(parseInt(stat))
+    st.children[0].textContent = getOrderStatText(parseInt(stat))
     body.classList.add("hide");
     details.classList.add("hide");
     progress.classList.add("show");
@@ -193,28 +193,28 @@ function sortedClientsByState(){
 
 
 function selectClientsState(stat, t){
-    if (stat == -1){
-        updateOrderStatSorted
-    } 
     updateOrderStatSorted(t, t.dataset.s)
 
    // toggleFilterOptions('mf-cs')
 }
 
 
-function updateOrderStatSorted(t, state, cache = true){
+function updateOrderStatSorted(t, stat, cache = true){
     const cSelected = "ac-selected"
-    if (!t.classList.contains(cSelected)&& (!(state&c_runtime.state_client_selected) || !cache)){
+    if (!t.classList.contains(cSelected)&& (!(stat&c_runtime.state_client_selected) || !cache)){
         t.classList.add(cSelected)
-        c_runtime.state_client_selected |= state
+        c_runtime.state_client_selected |= stat
     }
     else{
         t.classList.remove(cSelected)
-        c_runtime.state_client_selected &= ~state
+        c_runtime.state_client_selected &= ~stat
     }
-    if (!cache)return
-
-    updateStateClientSetting(c_runtime.state_client_selected)
+    
+    const viewOrderStatFilter = document.getElementById("viewOrderStatFilter");
+    viewOrderStatFilter.textContent = `נבחר (${c_runtime.state_client_selected.toString(2).replace(/0/g, '').length})`;
+    if (cache){
+        updateStateClientSetting(c_runtime.state_client_selected)
+    }
     doSearchClientsLocal()
 }
 
@@ -689,7 +689,7 @@ function createOrderItem(client_id, order, actions = true, callback) {
                 <span>${dateFloatToYMD(order.date)} ${dateFloatToHour(order.date)}</span><br>
                 <span>${order.price -order.off_price || 0}₪ •</span>
                 <span class="client-state-text-${order.stat}">
-                    ${getStateClientText(order.stat)}
+                    ${getOrderStatText(order.stat)}
                 •</span>
                 <i class="${getCleanOrderTypeIcon(order.order_type)}"></i>
 

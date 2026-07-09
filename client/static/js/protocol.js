@@ -61,9 +61,9 @@ const StateOrder = {
     WAIT            :1<<0,
     CLOSED          :1<<1,
     CANCELED        :1<<2,
-    DONE            :1<<3
+    DONE            :1<<3,
 }
-function getStateClient(state) {
+function getOrderStat(state) {
     const result = [];
 
     for (const key in StateClient) {
@@ -76,7 +76,7 @@ function getStateClient(state) {
     }
     return result;
 }
-function getStateClientText(s){
+function getOrderStatText(s){
     if (s & StateOrder.WAIT) return "לא נסגר";
     if (s & StateOrder.CLOSED) return "בהמתנה";
     if (s & StateOrder.CANCELED) return "בוטל";

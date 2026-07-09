@@ -778,7 +778,7 @@ async function setStateCleanOrder(order_id = c_runtime.currentOrderIdView, state
             }
             await fetchOrders();
             
-            showToast(`${client.fullname} ${getStateClientText(state)}`, ToastStat.DONE, toast);
+            showToast(`${client.fullname} ${getOrderStatText(state)}`, ToastStat.DONE, toast);
             
         }
     ))

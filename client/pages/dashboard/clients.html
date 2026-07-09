@@ -11,14 +11,11 @@
             <div class="filter-item">
                 <span class="filter-label">
                     <i class="fa-solid fa-filter"></i>
-                    מנוי 
+                    סינון 
                 </span>
-                <span class="viewFilterSelected" id="viewSubscriptionStat" onclick="switchFilterOptions('mf-cs')">הכל</span>
+                <span class="viewFilterSelected" id="viewOrderStatFilter" onclick="switchFilterOptions('mf-cs')">הכל</span>
                 <div class="filter-options" id="mf-cs">
-                    <div class="filter-option" onclick="selectClientsState(-1, this)" data-s="0">
-                        <span>הכל</span>
-                        </div>
-                    <div class="filter-option" onclick="selectClientsState(StateOrder.DONE, this)" data-s="1"> 
+                    <div class="filter-option" onclick="selectClientsState(StateOrder.DONE, this)" data-s="8"> 
                        <i class="fa-solid fa-clipboard-check"></i>
                         <span>הושלם</span>
                     </div>
@@ -26,11 +23,11 @@
                         <i class="fa-solid fa-hourglass-half"></i>
                         <span>בהמתנה</span>
                     </div>
-                    <div class="filter-option" onclick="selectClientsState(StateOrder.WAIT, this)" data-s="4"> 
+                    <div class="filter-option" onclick="selectClientsState(StateOrder.WAIT, this)" data-s="1"> 
                         <i class="fa-solid fa-question ac3"></i>
                         <span>לא נסגר</span>
                     </div>                    
-                    <div class="filter-option" onclick="selectClientsState(StateOrder.CANCELED, this)" data-s="8"> 
+                    <div class="filter-option" onclick="selectClientsState(StateOrder.CANCELED, this)" data-s="4"> 
                         <i class="fa-solid fa-ban ac4"></i>
                         <span>בוטל</span>
                     </div>
