@@ -3,14 +3,15 @@ const c_settings = {
     sad:{
         c_name: null,
         c_desc: null,
-        c_owner: null,
+        c_name_owner: null,
         c_email: null,
         c_vat: null,
         c_vat_code: null,
         c_phone: null,
-        o_phone: null,
+        c_owner_phone: null,
         c_gpse: null
     }, // setting api data
+    vat_company_selected:null
 
 }
 
@@ -38,12 +39,16 @@ function setTagSubscription(){
 }
 function onLoadSetttings(){
     setTagSubscription()    
+    c_settings.vat_company_selected = c_runtime.company.vat_company
+    const taxTypeView = document.getElementById('taxTypeView');
+    taxTypeView.textContent = getCompanyIsVatText(c_runtime.company.vat_company)
 }
 
 /**
  * Create an edit modal for inline editing
  */
-function createEditModal(title, currentValue, keySad, {content = 0} = {}) {
+function emsCurrentValue(){return document.getElementById("emsCurrentValue").value}
+function createEditModal(title, currentValue, sad, {content = 0} = {}) {
     // Remove existing modal if any
     const settingsContentModal = document.getElementById("settingsContentModal")
     const settingsDefaultContentModal = document.getElementById("settingsDefaultContentModal");
@@ -71,11 +76,9 @@ function createEditModal(title, currentValue, keySad, {content = 0} = {}) {
         elCurrentValue.focus();
         elCurrentValue.select();
     }, 100);
-    
+    console.log(sad())
     emsSave.onclick = () => {
-        const d = {}
-        d[keySad] = elCurrentValue.value
-        saveManagerSettings(d)
+        saveManagerSettings(sad())
     }
     // Save on Enter
     elCurrentValue.addEventListener('keydown', (e) => {
@@ -85,13 +88,30 @@ function createEditModal(title, currentValue, keySad, {content = 0} = {}) {
 }
 
 function editCompanyName() {
-    createEditModal("עדכן שם העסק", c_runtime.company.company_name, 'c_name');
+    const data = ()=>({c_name:emsCurrentValue()})
+    createEditModal("עדכן שם העסק", c_runtime.company.company_name, data);
 }
-function editCompanyDesciption(){createEditModal("עדכן תיאור לעסק", c_runtime.company.company_description)}
-function editCompanyPhone(){createEditModal("עדכן פלאפון עסק", c_runtime.company.company_phone)}
-function editCompanyEMail(){createEditModal("עדכן מייל ", c_runtime.company.company_email)}
-function editCompanyVAT(){createEditModal("עדכן מספר עוסק", c_runtime.company.company_VAT)}
-function editCompanyGPSE(){createEditModal("הגדרת חלוקת רווחים לעיסקה", c_runtime.company.gpse)}
+function editCompanyDesciption(){
+    const data = () => ({c_desc:emsCurrentValue()})
+    createEditModal("עדכן תיאור לעסק", c_runtime.company.company_description, data)
+}
+function editCompanyPhone(){
+    const data = ()=>({c_phone:emsCurrentValue()})
+    createEditModal("עדכן פלאפון עסק", c_runtime.company.company_phone, data)
+}
+
+function editCompanyEMail(){
+    const data = ()=> ({c_email:emsCurrentValue()})
+    createEditModal("עדכן מייל ", c_runtime.company.company_email, data)
+}
+function editCompanyVAT(){
+    const data = ()=> ({c_vat_code:emsCurrentValue()})
+    createEditModal("עדכן מספר עוסק", c_runtime.company.company_VAT, data)
+}
+function editCompanyGPSE(){
+    const data = ()=> ({c_gpse:emsCurrentValue()})
+    createEditModal("הגדרת חלוקת רווחים לעיסקה", c_runtime.company.gpse, data)
+}
 
 async function saveManagerSettings(sad){
     const emsSave = document.getElementById("emsSave");
@@ -104,7 +124,7 @@ async function saveManagerSettings(sad){
         showToast(res.notice, ToastStat.ERROR, toast);
     }else{
         showToast(res.notice, ToastStat.DONE, toast);
-        closeEditModal()
+        location.reload()
 
     }
     emsSave.classList.remove('loading')
@@ -113,18 +133,21 @@ async function saveManagerSettings(sad){
 /**
  * Create a selector modal for tax status
  */
-function createTaxStatusModal(currentValue, title) {
+function createTaxStatusModal(title) {
+    const data = () => ({c_vat:c_settings.vat_company_selected})
+    const vat_company_text = getCompanyIsVatText(c_settings.vat_company_selected)
+    const patoor = c_settings.vat_company_selected == CompanyTaxType.PATOOR
     const ttitle = 'סוג תיק עוסק'
     const html = `
         <div class="settings-tax-options">
-            <div class="settings-tax-option ${currentValue === 'עוסק מורשה' ? 'active' : ''}" onclick="selectTaxStatus('עוסק מורשה', event)">
+            <div class="settings-tax-option ${!patoor ? 'active' : ''}" onclick="selectTaxStatus(${CompanyTaxType.MOORSHE}, event)">
                 <i class="fa-solid fa-check"></i>
                 <div>
                     <span class="settings-tax-title">עוסק מורשה</span>
                     <span class="settings-tax-desc">חייב בתשלום מע"מ</span>
                 </div>
             </div>
-            <div class="settings-tax-option ${currentValue === 'עוסק פטור' ? 'active' : ''}" onclick="selectTaxStatus('עוסק פטור', event)">
+            <div class="settings-tax-option ${patoor ? 'active' : ''}" onclick="selectTaxStatus(${CompanyTaxType.PATOOR}, event)">
                 <i class="fa-solid fa-check"></i>
                 <div>
                     <span class="settings-tax-title">עוסק פטור</span>
@@ -133,7 +156,7 @@ function createTaxStatusModal(currentValue, title) {
             </div>
         </div>
     `;
-    createEditModal(title, c_runtime.company.vat_company, null, {content:html})
+    createEditModal(title, c_runtime.company.vat_company, data, {content:html})
 }
 
 function closeEditModal() {
@@ -145,8 +168,8 @@ function closeEditModal() {
 /**
  * Select tax status option
  */
-function selectTaxStatus(status, e) {
-    selectedTaxStatus = status;
+function selectTaxStatus(company_vat, e) {
+    c_settings.vat_company_selected = company_vat
     const options = document.querySelectorAll('.settings-tax-option');
     options.forEach(opt => opt.classList.remove('active'));
     e.currentTarget.classList.add('active');
@@ -156,7 +179,7 @@ function selectTaxStatus(status, e) {
  * Edit tax status
  */
 function editVATOrNot() {
-    createTaxStatusModal(null, 'בחר סוג עוסק');
+    createTaxStatusModal('בחר סוג עוסק');
 }
 
 /**

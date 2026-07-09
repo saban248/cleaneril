@@ -18,7 +18,7 @@ from api.databases.manager import ApiManager, on_register_create_company, manage
     update_time_alive, get_list_manager_no_pwd
 from api.databases.orders import CleanOrder, get_clean_order_done, get_clean_order_latest
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril, ManagerPermissions, cleaneril_db, \
-    ManagerAccountStat
+    ManagerAccountStat, CompanyTaxType
 from api.general import is_logo_app_valid
 from api.ptc import special_things, SJson, ShortSession
 from api.routes import cil_struct
@@ -91,10 +91,11 @@ def get_api_action(**breq) -> dict:
 
         case ApiCall.manager_settings:
             config = cil_struct.AccountAppSettings().build(**breq)
-            sleep(4)
-            code = companies.update_company_details(manager_id, config.c_name,config.c_owner, config.c_vat,
-                                              config.c_desc,config.c_phone, config.o_phone, config.c_email, config.c_vat_code,
+            print(config)
+            code = companies.update_company_details(manager_id, config.c_name,config.c_name_owner, config.c_vat,
+                                              config.c_desc,config.c_phone, config.c_owner_phone, config.c_email, config.c_vat_code,
                                                       config.c_gpse)
+
             set_session_data_admin(ApiManager.get_managers(manager_id=manager_id).first(),
                                    companies.get_companies(manager_id=manager_id).first())
             return SJson.auto_code(code)
@@ -265,7 +266,7 @@ def get_register_action(**breq):
             manager = manager_auth(register.o_phone, register.password)
             if not manager:
                 manager = ApiManager.register(register.o_phone, -1, register.password)
-                _company = companies.create_company(null, null, manager.manager_id, False)
+                _company = companies.create_company(null, null, manager.manager_id, CompanyTaxType.PATOOR)
             else:
                 _company = companies.get_companies(manager_id=manager.manager_id).first()
             if manager:

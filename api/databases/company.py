@@ -18,7 +18,7 @@ class Company(cleaneril_db.Model):
     company_id = cleaneril_db.Column(cleaneril_db.String(32), nullable=False)
     manager_id = cleaneril_db.Column(cleaneril_db.String(32), nullable=False)
     company_description = cleaneril_db.Column(cleaneril_db.String(100), nullable=False)
-    vat_company = cleaneril_db.Column(cleaneril_db.Boolean, nullable=False, default=False)
+    vat_company = cleaneril_db.Column(cleaneril_db.Integer, nullable=False, default=False)
     owner_phone = cleaneril_db.Column(cleaneril_db.String(20), nullable=False, default=False)
     company_phone = cleaneril_db.Column(cleaneril_db.String(20), nullable=False, default=False)
     company_email = cleaneril_db.Column(cleaneril_db.String(50), nullable=False, default=False)
@@ -29,12 +29,13 @@ class Company(cleaneril_db.Model):
     company_approved = cleaneril_db.Column(cleaneril_db.Boolean, nullable=False, default=False)
 
 
+
 def get_companies(source:bool = True, **kwargs) -> Union[Company, list[Union[dict, Company]]]:
     return get_columns(Company, source, **kwargs)
 
 
 
-def create_company(c_name:str, o_name:str, manager_id:str, c_vat:bool, register_level:int = 0):
+def create_company(c_name:str, o_name:str, manager_id:str, c_vat:int, register_level:int = 0):
     company = Company.query.filter_by(manager_id=manager_id).first()
     if company:return 1
     new_company = Company()
@@ -59,7 +60,7 @@ def create_company(c_name:str, o_name:str, manager_id:str, c_vat:bool, register_
     return new_company
 
 
-def update_company_details(manager_id:str, c_name:str = None, o_name:str = None, c_vat:bool = None,
+def update_company_details(manager_id:str, c_name:str = None, o_name:str = None, c_vat:int = None,
                            c_desc:str = None, c_phone:str = None, o_phone:str = None, c_email:str = None, c_vat_code:str = None,
                            c_gpse:int = None, r_level:int = -1):
     company:Company = get_companies(manager_id=manager_id).first()
@@ -68,7 +69,7 @@ def update_company_details(manager_id:str, c_name:str = None, o_name:str = None,
         company.company_name = c_name
     if o_name:
         company.owner_fullname = o_name
-    if c_vat:
+    if c_vat is not None:
         company.vat_company = c_vat
     if c_desc:
         company.company_description = c_desc

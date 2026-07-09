@@ -504,6 +504,19 @@ const MDTabsView = {
     SETTINGS:1<<4
 }
 
+const CompanyTaxType = {
+    PATOOR:0,
+    MOORSHE:1
+}
+function getCompanyIsVatText(flag){
+    if (flag == 0){
+        return "עוסק פטור"
+    }
+    else if (flag == 1){
+        return "עוסק מורשה"
+    }
+}
+
 
 
 

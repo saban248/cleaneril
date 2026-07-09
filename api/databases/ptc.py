@@ -81,3 +81,7 @@ class ManagerAccountStat(IntFlag):
     DELETED = 1<<4
 
 
+class CompanyTaxType(IntFlag):
+    PATOOR:int = 0
+    MOORSHE:int = 1
+

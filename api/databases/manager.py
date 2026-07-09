@@ -1,7 +1,7 @@
 from datetime import time
 from typing import Union
 from api.databases import company as companies
-from api.databases.ptc import cleaneril_db, ManagerPermissions, ManagerAccountStat
+from api.databases.ptc import cleaneril_db, ManagerPermissions, ManagerAccountStat, CompanyTaxType
 from api.ptc import generate_hex
 from api.routes.ptc import RegisterApi
 from api.validator import core_msg, company as comp
@@ -123,7 +123,7 @@ def on_register_create_company(phone:str, pwd:str) -> int:
     null = 'unknown'
     new = ApiManager.register(phone, -1, pwd)
     if not new:return core_msg.ServerCode.Register.e_account_exist
-    companies.create_company(null,null,new.manager_id,False)
+    companies.create_company(null,null,new.manager_id,CompanyTaxType.PATOOR)
     return core_msg.ServerCode.success
 
 
@@ -142,7 +142,7 @@ def new_root_hb():
 
     new_manager = ApiManager.register(**manager)
     if not new_manager:return
-    companies.create_company("הברקה בדקה",new_manager.username, new_manager.manager_id, False,
+    companies.create_company("הברקה בדקה",new_manager.username, new_manager.manager_id, CompanyTaxType.PATOOR,
                              RegisterApi.DONE)
 
 
