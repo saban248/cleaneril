@@ -296,7 +296,7 @@
 .action-client:hover,
 .action-client:active,
 .action-client:focus, .ac-selected{
-    box-shadow: 0 0 11px #d5d6d8 !important;
+    border-color: #dbeafe !important;
 }
 .action-search{
     display: flex;

@@ -169,12 +169,13 @@ function doSearchClientsLocal(){
         const name = order.fullname.toLowerCase().includes(value);
         const date = dateFloatToYMD(order.date).includes(value);
         const cid = order.client_id.toLowerCase() == value;
-        const stat = parseInt(child.dataset.stat)&c_runtime.state_client_selected
+        const element = document.getElementById(order_id)
+        const stat = order.stat&c_runtime.state_client_selected
         if ((value == ''||phone||name||date||cid) && stat){
-            document.getElementById(order_id).classList.remove("hide")
+            element?.classList.remove("hide")
         }
         else{
-            document.getElementById(order_id).classList.add("hide")
+            element?.classList.add("hide")
         }
     }
 }
@@ -191,12 +192,17 @@ function sortedClientsByState(){
 }
 
 
-function selectClientsState(t){
-    updateMenuActionClientsSorted(t, t.dataset.s)
+function selectClientsState(stat, t){
+    if (stat == -1){
+        updateOrderStatSorted
+    } 
+    updateOrderStatSorted(t, t.dataset.s)
+
+   // toggleFilterOptions('mf-cs')
 }
 
 
-function updateMenuActionClientsSorted(t, state, cache = true){
+function updateOrderStatSorted(t, state, cache = true){
     const cSelected = "ac-selected"
     if (!t.classList.contains(cSelected)&& (!(state&c_runtime.state_client_selected) || !cache)){
         t.classList.add(cSelected)
@@ -213,12 +219,11 @@ function updateMenuActionClientsSorted(t, state, cache = true){
 }
 
 function updateMACSOnLoad(cache = true){
-    const parent = document.getElementById("macs").children
-    const ca = Array.from(parent);
-    for (const item of ca){
+    const parent = document.getElementById("mf-cs").children
+    for (const item of parent){
         const s = item.dataset.s
         if (c_runtime.state_client_selected&s){
-            updateMenuActionClientsSorted(item, s, cache)
+            updateOrderStatSorted(item, s, cache)
         }
     }
 
