@@ -89,8 +89,8 @@ def get_api_action(**breq) -> dict:
         case ApiCall.api_reports:
             return get_app_reports_api(**breq)
 
-        case ApiCall.conf_company:
-            config = cil_struct.Company().build(**breq)
+        case ApiCall.manager_settings:
+            config = cil_struct.AccountAppSettings().build(**breq)
             code = companies.update_company_details(manager_id, config.c_name,config.c_owner, config.c_vat,
                                               config.c_desc,config.c_phone, config.o_phone, config.c_email, config.c_vat_code,
                                                       config.c_gpse)

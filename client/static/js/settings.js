@@ -13,7 +13,8 @@ function setLogo() {
 }
 
 const c_settings = {
-    
+    max_size_logo:5*(1024*1024),
+    sad:{} // setting api data
 }
 
 function setTagSubscription(){
@@ -40,14 +41,28 @@ function onLoadSetttings(){
 /**
  * Create an edit modal for inline editing
  */
-function createEditModal(title, currentValue) {
+function createEditModal(title, currentValue, {content = 0} = {}) {
     // Remove existing modal if any
+    const settingsContentModal = document.getElementById("settingsContentModal")
+    const settingsDefaultContentModal = document.getElementById("settingsDefaultContentModal");
     const modal = document.getElementById("settingsEditModal");
     const elTitle = document.getElementById("emsTitle");
     const lastValue = document.getElementById("emsLastValue");
     const elCurrentValue = document.getElementById("emsCurrentValue");
     elTitle.textContent = title
+    const h = (e) => {e.classList.add("hide");e.classList.remove("show")}
+    const s = (e) => {e.classList.add("show");e.classList.remove("hide")}
+    if (content){
+        settingsContentModal.innerHTML = content;
+        h(settingsDefaultContentModal)
+        s(settingsContentModal)
+    }
+    else{
+        s(settingsDefaultContentModal)
+        h(settingsContentModal)
+    }
     elCurrentValue.value = currentValue
+
     modal.classList.add("show")
         setTimeout(() => {
         elCurrentValue.focus();
@@ -56,7 +71,7 @@ function createEditModal(title, currentValue) {
     
     // Save on Enter
     elCurrentValue.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') saveEditField(field);
+        if (e.key === 'Enter') saveEdit(field);
         if (e.key === 'Escape') closeEditModal();
     });
 }
@@ -67,142 +82,41 @@ function editCompanyPhone(){createEditModal("עדכן פלאפון עסק", c_ru
 function editCompanyEMail(){createEditModal("עדכן מייל ", c_runtime.company.company_email)}
 function editCompanyVAT(){createEditModal("עדכן מספר עוסק", c_runtime.company.company_VAT)}
 function editCompanyGPSE(){createEditModal("הגדרת חלוקת רווחים לעיסקה", c_runtime.company.gpse)}
+
+async function saveEdit(){
+    const data = {action:ApiCall}
+    const res = 
+}
 /**
  * Create a selector modal for tax status
  */
 function createTaxStatusModal(currentValue, title) {
-    // Remove existing modal if any
-    const existingModal = document.querySelector('.settings-edit-modal');
-    if (existingModal) existingModal.remove();
-
-    selectedTaxStatus = currentValue;
-
-    const modal = document.createElement('div');
-    modal.className = 'settings-edit-modal';
-    modal.innerHTML = `
-        <div class="settings-modal-overlay"></div>
-        <div class="settings-modal-content">
-            <div class="settings-modal-header">
-                <h5>${title}</h5>
-                <i class="fa-solid fa-times" onclick="closeEditModal()"></i>
-            </div>
-            <div class="settings-tax-options">
-                <div class="settings-tax-option ${currentValue === 'עוסק מורשה' ? 'active' : ''}" onclick="selectTaxStatus('עוסק מורשה', event)">
-                    <i class="fa-solid fa-check"></i>
-                    <div>
-                        <span class="settings-tax-title">עוסק מורשה</span>
-                        <span class="settings-tax-desc">חייב בתשלום מס</span>
-                    </div>
-                </div>
-                <div class="settings-tax-option ${currentValue === 'עוסק פטור' ? 'active' : ''}" onclick="selectTaxStatus('עוסק פטור', event)">
-                    <i class="fa-solid fa-check"></i>
-                    <div>
-                        <span class="settings-tax-title">עוסק פטור</span>
-                        <span class="settings-tax-desc">פטור ממס הוספה</span>
-                    </div>
+    const ttitle = 'סוג תיק עוסק'
+    const html = `
+        <div class="settings-tax-options">
+            <div class="settings-tax-option ${currentValue === 'עוסק מורשה' ? 'active' : ''}" onclick="selectTaxStatus('עוסק מורשה', event)">
+                <i class="fa-solid fa-check"></i>
+                <div>
+                    <span class="settings-tax-title">עוסק מורשה</span>
+                    <span class="settings-tax-desc">חייב בתשלום מע"מ</span>
                 </div>
             </div>
-            <div class="settings-modal-footer">
-                <button class="settings-btn-cancel" onclick="closeEditModal()">ביטול</button>
-                <button class="settings-btn-save" onclick="saveTaxStatus()">שמור</button>
+            <div class="settings-tax-option ${currentValue === 'עוסק פטור' ? 'active' : ''}" onclick="selectTaxStatus('עוסק פטור', event)">
+                <i class="fa-solid fa-check"></i>
+                <div>
+                    <span class="settings-tax-title">עוסק פטור</span>
+                    <span class="settings-tax-desc">פטור ממע"מ</span>
+                </div>
             </div>
         </div>
     `;
-    
-    document.body.appendChild(modal);
-    editingField = 'tax_status';
+    createEditModal(title, c_runtime.company.vat_company, {content:html})
 }
 
 function closeEditModal() {
-    const modal = document.querySelector('settingsEditModal');
-    modal.style.animation = 'slideDown 0.3s ease-out reverse';
-    setTimeout(() => modal.classList.remove("show"), 300);
+    const modal = document.getElementById('settingsEditModal');
+    modal.classList.remove("show")
     
-}
-
-/**
- * Save edited field
- */
-function saveEditField(field) {
-    const input = document.getElementById('modalInput');
-    if (!input) return;
-
-    const value = input.value.trim();
-
-    // Validate based on field type
-    if (!validateField(field, value)) {
-        showToast('ערך לא חוקי', ToastStat.ERROR);
-        input.focus();
-        return;
-    }
-
-    closeEditModal();
-    const toast = showToast("מעבד...");
-
-    const apiData = {
-        action: ApiCall.conf_company,
-        ...getFieldApiData(field, value)
-    };
-
-    apiPost(ApiRoute.api, apiData)
-        .then(res => {
-            if (!res.success) {
-                showToast(res.notice || 'שגיאה בשמירה', ToastStat.ERROR, toast);
-                return;
-            }
-
-            // Update display
-            updateFieldDisplay(field, value);
-            showToast("עודכן בהצלחה!", ToastStat.DONE, toast);
-        })
-        .catch(err => {
-            console.error('Error:', err);
-            showToast('שגיאת תקשורת', ToastStat.ERROR, toast);
-        });
-}
-
-/**
- * Update field display value
- */
-function updateFieldDisplay(field, value) {
-    const fieldMap = {
-        'company_name': 'nameCompanyView',
-        'company_description': 'descCompanyView',
-        'company_phone': 'phoneCompanyView',
-        'company_email': 'emailCompanyView',
-        'company_vat': 'VATCompanyView',
-        'gpse': 'GPSECompanyView',
-        'tax_status': 'taxStatusView'
-    };
-
-    const viewId = fieldMap[field];
-    if (viewId) {
-        const element = document.getElementById(viewId);
-        if (element) {
-            element.textContent = field === 'gpse' ? value + '%' : value;
-        } else {
-            console.warn(`Element with ID ${viewId} not found`);
-        }
-    }
-}
-
-/**
- * Get field validation rules
- */
-function validateField(field, value) {
-    const rules = {
-        company_name: () => value.length > 0 && value.length <= 20,
-        company_description: () => value.length <= 50,
-        company_phone: () => /^[\d\s\-+()]*$/.test(value),
-        company_email: () => !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
-        company_vat: () => value.length >= 0,
-        gpse: () => {
-            const num = parseInt(value);
-            return !isNaN(num) && num >= 0 && num <= 100;
-        }
-    };
-
-    return rules[field] ? rules[field]() : true;
 }
 
 /**
@@ -216,62 +130,10 @@ function selectTaxStatus(status, e) {
 }
 
 /**
- * Save tax status
- */
-function saveTaxStatus() {
-    if (!selectedTaxStatus) {
-        showToast('בחר סוג עוסק', ToastStat.ERROR);
-        return;
-    }
-    
-    closeEditModal();
-    const toast = showToast("מעבד...");
-
-    const apiData = {
-        action: ApiCall.conf_company,
-        c_tax_status: selectedTaxStatus
-    };
-
-    apiPost(ApiRoute.api, apiData)
-        .then(res => {
-            if (!res.success) {
-                showToast(res.notice || 'שגיאה בשמירה', ToastStat.ERROR, toast);
-                return;
-            }
-
-            updateFieldDisplay('tax_status', selectedTaxStatus);
-            showToast("עודכן בהצלחה!", ToastStat.DONE, toast);
-        })
-        .catch(err => {
-            console.error('Error:', err);
-            showToast('שגיאת תקשורת', ToastStat.ERROR, toast);
-        });
-}
-function getFieldApiData(field, value) {
-    const map = {
-        company_name: { c_name: value },
-        company_description: { c_desc: value },
-        company_phone: { c_phone: value },
-        company_email: { c_email: value },
-        company_vat: { c_vat_code: value },
-        gpse: { c_gpse: value.replace(/\D+/g, '') },
-        tax_status: { c_tax_status: value }
-    };
-
-    return map[field] || {};
-}
-
-/**
  * Edit tax status
  */
-function editTaxStatus() {
-    const element = document.getElementById('taxStatusView');
-    if (!element) {
-        showToast('שגיאה בטעינת הנתונים', ToastStat.ERROR);
-        return;
-    }
-    const value = element.textContent.trim();
-    createTaxStatusModal(value, 'בחר סוג עוסק');
+function editVATOrNot() {
+    createTaxStatusModal(null, 'בחר סוג עוסק');
 }
 
 /**
@@ -321,7 +183,7 @@ function setupEditHandlers() {
                 return;
             }
 
-            if (file.size > 5 * 1024 * 1024) {
+            if (file.size > c_settings.max_size_logo) {
                 showToast('גודל הקובץ גדול מדי', ToastStat.ERROR);
                 return;
             }

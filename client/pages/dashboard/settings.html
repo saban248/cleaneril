@@ -49,7 +49,6 @@
                         </div>
                     </div>
                     <i class="fa-solid fa-chevron-left settings-chevron"></i>
-                    <input placeholder="תיאור לעסק" value="{{company.company_description}}" class="input-setting input-desc-company" type="hidden" maxlength="30" id="descCompany">
                 </div>
 
                 <!-- Company Phone -->
@@ -62,7 +61,6 @@
                         </div>
                     </div>
                     <i class="fa-solid fa-chevron-left settings-chevron"></i>
-                    <input placeholder="מספר טלפון לעסק" value="{{company.company_phone}}" class="input-setting input-desc-company" type="hidden" maxlength="30" id="phoneCompany">
                 </div>
 
                 <!-- Company Email -->
@@ -75,7 +73,6 @@
                         </div>
                     </div>
                     <i class="fa-solid fa-chevron-left settings-chevron"></i>
-                    <input placeholder="מספר אימייל לעסק" value="{{company.company_email}}" class="input-setting input-desc-company" type="hidden" maxlength="30" id="emailCompany">
                 </div>
 
                 <!-- VAT Number -->
@@ -88,11 +85,10 @@
                         </div>
                     </div>
                     <i class="fa-solid fa-chevron-left settings-chevron"></i>
-                    <input placeholder="מספר עוסק פטור/מורשה" value="{{company.company_VAT}}" class="input-setting input-desc-company" type="hidden" maxlength="30" id="VATCompany">
                 </div>
 
                 <!-- Tax Status -->
-                <div class="settings-item" onclick="editTaxStatus()">
+                <div class="settings-item" onclick="editVATOrNot()">
                     <div class="settings-item-left">
                         <i class="fa-solid fa-landmark settings-item-icon"></i>
                         <div class="settings-item-text">
@@ -108,15 +104,6 @@
             <!-- Employee Management Section -->
             <div class="settings-section">
                 <h4 class="settings-section-title">עובדים</h4>
-                
-                <!-- Add Employee -->
-                <div class="settings-item" onclick="createClient()">
-                    <div class="settings-item-left">
-                        <i class="fa-solid fa-user-plus settings-item-icon"></i>
-                        <span class="settings-label">הוסף עובד או קבלן</span>
-                    </div>
-                    <i class="fa-solid fa-chevron-left settings-chevron"></i>
-                </div>
 
                 <!-- Profit Share -->
                 <div class="settings-item" onclick="editCompanyGPSE(this)">
@@ -161,11 +148,14 @@
                 <h5 id="emsTitle">${title}</h5>
                 <i class="fa-solid fa-times" onclick="closeEditModal()"></i>
             </div>
-            <input type="text" class="settings-modal-input" value="${currentValue}" id="emsCurrentValue" autocomplete="off">
+            <div id="settingsContentModal"></div>
+            <div id="settingsDefaultContentModal">
+                <input type="text" class="settings-modal-input" value="${currentValue}" id="emsCurrentValue" autocomplete="off">
+            </div>
             <input type="hidden" class="settings-modal-input" id="emsLastValue" autocomplete="off">
             <div class="settings-modal-footer">
                 <button class="settings-btn-cancel" onclick="closeEditModal()">ביטול</button>
-                <button class="settings-btn-save" onclick="saveEditField('${field}')">שמור</button>
+                <button class="settings-btn-save" onclick="saveEdit()">שמור</button>
             </div>
         </div>
 </div>

@@ -220,7 +220,7 @@ class Reports:
 
 
 @dataclass
-class Company:
+class AccountAppSettings:
     #company name
     c_name:str        = None
     c_desc:str        = None

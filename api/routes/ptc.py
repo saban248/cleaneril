@@ -215,7 +215,7 @@ class ApiCall(IntFlag):
     client_view = 1<<7
     order_stat = 1 << 8
     api_reports = 1<<9
-    conf_company = 1<<10
+    manager_settings = 1 << 10
     order_workers = 1 << 11
     worker_editor = 1<<12
     worker_view = 1<<13
