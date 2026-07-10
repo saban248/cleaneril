@@ -1,13 +1,13 @@
 export const marketplaceTabs = {
-    MARKETPLACE: "marketplace",
-    PARTNERS: "partners",
-    INSIGHTS: "insights"
+    MARKETPLACE: 1<<0,
+    PARTNERS: 1<<1,
+    TRADES: 1<<2
 };
 
 export const networkModuleRegistry = [
     { key: marketplaceTabs.MARKETPLACE, label: "Marketplace", enabled: true },
     { key: marketplaceTabs.PARTNERS, label: "Business directory", enabled: true },
-    { key: marketplaceTabs.INSIGHTS, label: "Market analytics", enabled: true },
+    { key: marketplaceTabs.TRADES, label: "Market analytics", enabled: true },
     { key: "live_activity", label: "Live activity", enabled: false },
     { key: "direct_messaging", label: "Direct messaging", enabled: false },
     { key: "partnership_requests", label: "Partnership requests", enabled: false },
@@ -21,16 +21,17 @@ export const networkModuleRegistry = [
 ];
 
 const tabItems = [
-    { key: marketplaceTabs.MARKETPLACE, label: "Opportunities" },
-    { key: marketplaceTabs.PARTNERS, label: "Verified Businesses" },
-    { key: marketplaceTabs.INSIGHTS, label: "Industry Intelligence" }
+    { key: marketplaceTabs.MARKETPLACE, label: "שיתוף עבודות" },
+    { key: marketplaceTabs.PARTNERS, label: "שותפים קרובים" },
+    { key: marketplaceTabs.TRADES, label: "תנועות וסחר " }
 ];
 
 export function renderMarketplaceTabs(activeTab) {
+    
     return `
         <div class="reports-tabs marketplace-tabs">
             ${tabItems.map((tab) => `
-                <span class="reports-tab marketplace-tab ${activeTab === tab.key ? "selected" : ""}" data-marketplace-tab="${tab.key}">
+                <span class="reports-tab marketplace-tab ${parseInt(activeTab) === tab.key ? "selected" : ""}" data-marketplace-tab="${tab.key}">
                     ${tab.label}
                 </span>
             `).join("")}

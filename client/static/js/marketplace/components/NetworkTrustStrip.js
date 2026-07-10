@@ -1,4 +1,5 @@
 export function renderNetworkTrustStrip(partners) {
+    return '';
     const verifiedPartners = partners.filter((partner) => partner.verified).slice(0, 3);
 
     return `

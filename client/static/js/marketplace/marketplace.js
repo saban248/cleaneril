@@ -118,7 +118,6 @@ class MarketplacePage {
     render(activeFilter) {
         const filteredJobs = this.state.jobs.filter((job) => matchesFilters(job, this.state.filters));
         const selectedJob = this.state.jobs.find((job) => job.id === this.state.selectedJobId) || null;
-
         this.root.innerHTML = `
             ${renderMarketplaceTabs(this.state.activeTab)}
             ${renderNetworkTrustStrip(this.state.partners)}
@@ -133,17 +132,18 @@ class MarketplacePage {
     }
 
     afterRender() {
-        if (this.state.activeTab === marketplaceTabs.MARKETPLACE && (this.state.mapExpanded || !isCompactViewport())) {
+        if (this.state.activeTab === marketplaceTabs.MARKETPLACE.toString() && (this.state.mapExpanded || !isCompactViewport())) {
             initLiveNetworkMap(this.state.mapJobs);
         }
     }
 
     renderActiveTab(filteredJobs) {
-        if (this.state.activeTab === marketplaceTabs.PARTNERS) {
+
+        if (this.state.activeTab === marketplaceTabs.PARTNERS.toString()) {
             return renderPartnersDirectory(this.state.partners);
         }
 
-        if (this.state.activeTab === marketplaceTabs.INSIGHTS) {
+        if (this.state.activeTab === marketplaceTabs.TRADES.toString()) {
             return renderMarketInsights(this.state.insights);
         }
 
