@@ -2,6 +2,7 @@ import {
     marketplaceEvents,
     marketplaceJobs,
     marketplaceInsights,
+    liveNetworkMapJobs,
     networkPulse,
     marketplacePartners,
     marketplaceStats
@@ -11,6 +12,7 @@ import { renderMarketplaceStats } from "./components/MarketplaceStats.js";
 import { renderLiveHeader } from "./components/LiveHeader.js";
 import { renderNetworkPulse } from "./components/NetworkPulse.js";
 import { renderNetworkTrustStrip } from "./components/NetworkTrustStrip.js";
+import { initLiveNetworkMap, renderLiveNetworkMap } from "./components/LiveNetworkMap.js";
 import { renderJobFilters } from "./components/JobFilters.js";
 import { renderJobList } from "./components/JobList.js";
 import { bindJobCardActions } from "./components/JobCard.js";
@@ -29,6 +31,10 @@ const defaultFilters = {
     minPrice: null,
     maxPrice: null
 };
+
+function isCompactViewport() {
+    return window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
+}
 
 function matchesFilters(job, filters) {
     const query = filters.search.trim().toLowerCase();
@@ -61,9 +67,12 @@ class MarketplacePage {
             partners: marketplacePartners,
             events: marketplaceEvents,
             insights: marketplaceInsights,
+            mapJobs: liveNetworkMapJobs,
             pulse: networkPulse,
             stats: { ...marketplaceStats },
             filters: { ...defaultFilters },
+            filtersExpanded: !(window.matchMedia && window.matchMedia("(max-width: 520px)").matches),
+            mapExpanded: !(window.matchMedia && window.matchMedia("(max-width: 520px)").matches),
             activeTab: marketplaceTabs.MARKETPLACE,
             selectedJobId: null
         };
@@ -119,7 +128,14 @@ class MarketplacePage {
         `;
 
         this.bindEvents();
+        this.afterRender();
         this.restoreFilterFocus(activeFilter);
+    }
+
+    afterRender() {
+        if (this.state.activeTab === marketplaceTabs.MARKETPLACE && (this.state.mapExpanded || !isCompactViewport())) {
+            initLiveNetworkMap(this.state.mapJobs);
+        }
     }
 
     renderActiveTab(filteredJobs) {
@@ -140,13 +156,15 @@ class MarketplacePage {
 
             ${renderNetworkPulse(this.state.pulse)}
 
+            ${renderLiveNetworkMap(this.state.mapJobs, this.state.mapExpanded)}
+
             <div class="marketplace-live-grid">
                 <section class="marketplace-section">
                     <div class="marketplace-section-head">
                         <h3>הזדמנויות לשיתוף פעולה</h3>
                         <span class="marketplace-section-subtitle">${filteredJobs.length} הזדמנויות פעילות בין עסקים מאומתים</span>
                     </div>
-                    ${renderJobFilters(this.state.filters)}
+                    ${renderJobFilters(this.state.filters, this.state.filtersExpanded)}
                     ${renderJobList(filteredJobs)}
                 </section>
 
@@ -190,8 +208,40 @@ class MarketplacePage {
             input.addEventListener("input", () => this.handleFilterInput(input));
         });
 
+        this.root.querySelectorAll("[data-marketplace-filter-panel]").forEach((panel) => {
+            panel.addEventListener("toggle", () => {
+                this.state.filtersExpanded = panel.open;
+            });
+        });
+
+        this.root.querySelectorAll("[data-marketplace-map-toggle]").forEach((button) => {
+            button.addEventListener("click", () => {
+                this.state.mapExpanded = !this.state.mapExpanded;
+                this.render();
+            });
+        });
+
         bindJobCardActions(this.root, this.actions);
         bindJobDetailsModal(this.root, this.actions);
+
+        this.root.querySelectorAll("#networkLiveMap").forEach((mapElement) => {
+            mapElement.addEventListener("network-map-job-action", (event) => {
+                this.handleMapJobAction(event.detail);
+            });
+        });
+    }
+
+    handleMapJobAction(detail) {
+        if (!detail?.linkedJobId) return;
+
+        if (detail.action === "details") {
+            this.state.selectedJobId = detail.linkedJobId;
+            this.render();
+        }
+
+        if (detail.action === "request") {
+            this.actions.onRequestJob(detail.linkedJobId);
+        }
     }
 
     handleFilterInput(input) {
