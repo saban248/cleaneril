@@ -23,8 +23,8 @@ export function renderMarketInsights(insights) {
     return `
         <section class="marketplace-section">
             <div class="marketplace-section-head">
-                <h3>Market Insights</h3>
-                <span class="marketplace-section-subtitle">Mock analytics data, ready for future APIs</span>
+                <h3>Industry Intelligence</h3>
+                <span class="marketplace-section-subtitle">תמונת שוק עסקית למנהלים: מחירים, ביקוש, אזורים ופעילות ענפית</span>
             </div>
 
             <div class="marketplace-insights-grid">
@@ -84,7 +84,7 @@ export function renderMarketInsights(insights) {
                 </div>
 
                 <div class="marketplace-insight-panel marketplace-insight-wide">
-                    <h4>Marketplace Activity</h4>
+                    <h4>Network Activity</h4>
                     <div class="marketplace-activity-metrics">
                         ${activityItems.map(([label, value]) => `
                             <div class="marketplace-activity-metric">

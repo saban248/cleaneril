@@ -30,6 +30,36 @@ export const marketplaceStats = {
     nearbyOpportunities: 12
 };
 
+export const networkPulse = {
+    recentJobs: [
+        { title: "Sofa Cleaning", city: "פתח תקווה", time: "7 דקות", value: "₪680" },
+        { title: "AC Cleaning", city: "רמת גן", time: "14 דקות", value: "₪450" },
+        { title: "Move-out Cleaning", city: "ראשון לציון", time: "3 דקות", value: "₪1,200" }
+    ],
+    onlineManagers: [
+        { businessName: "נקי בעיר", city: "פתח תקווה", status: "זמין עכשיו" },
+        { businessName: "ברק שירותים", city: "רמת גן", status: "בודק הזדמנויות" },
+        { businessName: "צוות נקי", city: "ראשון לציון", status: "קיבל בקשה" }
+    ],
+    verifiedCompanies: [
+        { businessName: "קלין צפון", city: "חיפה", time: "אומת לפני 18 דקות" },
+        { businessName: "פרש הום", city: "ירושלים", time: "אומת היום" }
+    ],
+    completedCollaborations: [
+        { from: "ברק שירותים", to: "נקי בעיר", service: "AC Cleaning", time: "לפני 11 דקות" },
+        { from: "צוות נקי", to: "קלין פרו", service: "Carpet Cleaning", time: "לפני 24 דקות" }
+    ],
+    counters: [
+        { label: "בקשות פעילות", value: 19 },
+        { label: "עסקים זמינים", value: 86 },
+        { label: "שיתופי פעולה היום", value: 143 }
+    ],
+    achievements: [
+        { businessName: "נקי בעיר", text: "הגיע ל-34 שיתופי פעולה ברשת" },
+        { businessName: "צוות נקי", text: "ממוצע תגובה של 8 דקות השבוע" }
+    ]
+};
+
 export const marketplaceJobs = [
     {
         id: "job-1001",
@@ -54,7 +84,11 @@ export const marketplaceJobs = [
             completedMarketplaceJobs: 34,
             availability: "זמין עכשיו",
             lastSeen: "פעיל לפני דקה",
-            trustLabel: "34 עבודות Marketplace"
+            responseTime: "8 דקות",
+            successRate: "97%",
+            professionalLevel: "Premium Partner",
+            satisfactionScore: "4.9/5",
+            trustLabel: "34 שיתופי פעולה ברשת"
         },
         status: "new",
         pulse: "new",
@@ -89,7 +123,11 @@ export const marketplaceJobs = [
             completedMarketplaceJobs: 28,
             availability: "זמין להצעות",
             lastSeen: "פעיל לפני 4 דקות",
-            trustLabel: "28 עבודות Marketplace"
+            responseTime: "11 דקות",
+            successRate: "94%",
+            professionalLevel: "Verified Pro",
+            satisfactionScore: "4.8/5",
+            trustLabel: "28 שיתופי פעולה ברשת"
         },
         status: "waiting",
         pulse: "watching",
@@ -124,7 +162,11 @@ export const marketplaceJobs = [
             completedMarketplaceJobs: 19,
             availability: "ממתין לאישור",
             lastSeen: "פעיל לפני 9 דקות",
-            trustLabel: "19 עבודות Marketplace"
+            responseTime: "19 דקות",
+            successRate: "89%",
+            professionalLevel: "Network Member",
+            satisfactionScore: "4.6/5",
+            trustLabel: "19 שיתופי פעולה ברשת"
         },
         status: "new",
         pulse: "updated",
@@ -159,7 +201,11 @@ export const marketplaceJobs = [
             completedMarketplaceJobs: 41,
             availability: "זמין עכשיו",
             lastSeen: "פעיל עכשיו",
-            trustLabel: "41 עבודות Marketplace"
+            responseTime: "6 דקות",
+            successRate: "98%",
+            professionalLevel: "Premium Partner",
+            satisfactionScore: "5.0/5",
+            trustLabel: "41 שיתופי פעולה ברשת"
         },
         status: "requested",
         pulse: "hot",
@@ -187,6 +233,10 @@ export const marketplacePartners = [
         completedMarketplaceJobs: 34,
         lastSeen: "פעיל לפני דקה",
         availability: "זמין לקבלת עבודות",
+        responseTime: "8 דקות",
+        successRate: "97%",
+        professionalLevel: "Premium Partner",
+        satisfactionScore: "4.9/5",
         services: ["upholstery", "carpet"],
         location: "פתח תקווה",
         city: "פתח תקווה",
@@ -206,6 +256,10 @@ export const marketplacePartners = [
         completedMarketplaceJobs: 28,
         lastSeen: "פעיל לפני 3 דקות",
         availability: "זמין להצעות קרובות",
+        responseTime: "11 דקות",
+        successRate: "94%",
+        professionalLevel: "Verified Pro",
+        satisfactionScore: "4.8/5",
         services: ["airConditioner", "general"],
         location: "רמת גן",
         city: "רמת גן",
@@ -225,6 +279,10 @@ export const marketplacePartners = [
         completedMarketplaceJobs: 19,
         lastSeen: "פעיל היום",
         availability: "לא מחובר כרגע",
+        responseTime: "19 דקות",
+        successRate: "89%",
+        professionalLevel: "Network Member",
+        satisfactionScore: "4.6/5",
         services: ["carpet", "upholstery", "general"],
         location: "הרצליה",
         city: "הרצליה",
@@ -276,31 +334,31 @@ export const marketplaceEvents = [
     {
         id: "event-1",
         type: "job_created",
-        title: "עבודה חדשה בפתח תקווה",
-        text: "נקי בעיר פרסם ניקוי ריפודים",
+        title: "הזדמנות חדשה בפתח תקווה",
+        text: "נקי בעיר פתח שיתוף פעולה לניקוי ריפודים",
         time: "עכשיו",
         targetJobId: "job-1001"
     },
     {
         id: "event-2",
         type: "manager_joined",
-        title: "מנהל הצטרף לרשת",
-        text: "ברק שירותים זמין לעבודות מזגנים",
+        title: "עסק מאומת פעיל ברשת",
+        text: "ברק שירותים זמין לשיתופי פעולה במזגנים",
         time: "לפני 2 דקות"
     },
     {
         id: "event-3",
         type: "job_updated",
-        title: "מחיר עבודה עודכן",
-        text: "שטיח סלון גדול עודכן ל-520 ₪",
+        title: "נתוני הזדמנות עודכנו",
+        text: "שיתוף פעולה לשטיח סלון עודכן ל-520 ₪",
         time: "לפני 9 דקות",
         targetJobId: "job-1003"
     },
     {
         id: "event-4",
         type: "job_taken",
-        title: "עבודה נלקחה",
-        text: "צוות נקי קיבל בקשה לעבודה בראשון לציון",
+        title: "שיתוף פעולה התקדם",
+        text: "צוות נקי קיבל בקשה להזדמנות בראשון לציון",
         time: "לפני 12 דקות",
         targetJobId: "job-1004"
     },

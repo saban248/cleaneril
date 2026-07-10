@@ -2,18 +2,19 @@ export function renderLiveHeader(state) {
     return `
         <section class="marketplace-live-header">
             <div>
+                <span class="marketplace-network-eyebrow">Network Operations Center</span>
                 <div class="marketplace-live-title">
                     <span class="marketplace-live-dot"></span>
-                    <span>רשת פעילה עכשיו</span>
+                    <span>רשת בעלי העסקים פעילה עכשיו</span>
                 </div>
                 <p>
-                    עבודות, בקשות ומנהלים מאומתים מופיעים כאן כזרם פעילות. בהמשך הממשק הזה יתחבר לאירועי שרת או WebSocket.
+                    כמו מרכז עבודה מקצועי לענף הניקיון: עסקים מאומתים משתפים פעולה, מעבירים עבודות ומגיבים להזדמנויות בזמן אמת.
                 </p>
             </div>
             <div class="marketplace-live-metrics">
-                <span><strong>${state.jobs.filter((job) => ["new", "waiting", "requested"].includes(job.status)).length}</strong> פתוחות</span>
-                <span><strong>${state.jobs.reduce((sum, job) => sum + job.requests, 0)}</strong> בקשות</span>
-                <span><strong>${state.partners.filter((partner) => partner.online).length}</strong> אונליין</span>
+                <span><strong>${state.jobs.filter((job) => ["new", "waiting", "requested"].includes(job.status)).length}</strong> הזדמנויות פתוחות</span>
+                <span><strong>${state.jobs.reduce((sum, job) => sum + job.requests, 0)}</strong> בקשות שיתוף</span>
+                <span><strong>${state.partners.filter((partner) => partner.online).length}</strong> עסקים זמינים</span>
             </div>
         </section>
     `;

@@ -15,10 +15,14 @@ export function renderPartnerCard(partner) {
                 <div class="marketplace-partner-meta">
                     <span><i class="fa-solid fa-star"></i> ${partner.rating}</span>
                     <span><i class="fa-solid fa-shield-halved"></i> Trust ${partner.trustScore}</span>
-                    <span><i class="fa-solid fa-circle-check"></i> ${partner.completedMarketplaceJobs} Marketplace jobs</span>
+                    <span><i class="fa-solid fa-circle-check"></i> ${partner.completedMarketplaceJobs} network jobs</span>
+                    <span><i class="fa-solid fa-chart-line"></i> ${partner.successRate}</span>
+                    <span><i class="fa-solid fa-award"></i> ${partner.professionalLevel}</span>
                     <span><i class="fa-solid fa-location-dot"></i> ${partner.location}</span>
                 </div>
                 <div class="marketplace-trust-badges">
+                    <span><i class="fa-solid fa-face-smile"></i> ${partner.satisfactionScore}</span>
+                    <span><i class="fa-regular fa-clock"></i> responds in ${partner.responseTime}</span>
                     <span><i class="fa-solid fa-signal"></i> ${partner.availability}</span>
                     <span><i class="fa-regular fa-clock"></i> ${partner.lastSeen}</span>
                 </div>

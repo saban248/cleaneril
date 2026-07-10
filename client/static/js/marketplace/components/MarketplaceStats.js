@@ -1,8 +1,8 @@
 const statItems = [
-    { key: "activeJobs", label: "active jobs", icon: "fa-solid fa-briefcase" },
-    { key: "jobsExchangedToday", label: "jobs exchanged today", icon: "fa-solid fa-right-left" },
-    { key: "verifiedManagersOnline", label: "verified managers", icon: "fa-solid fa-user-check" },
-    { key: "nearbyOpportunities", label: "opportunities nearby", icon: "fa-solid fa-location-dot" }
+    { key: "activeJobs", label: "open business opportunities", icon: "fa-solid fa-briefcase" },
+    { key: "jobsExchangedToday", label: "collaborations today", icon: "fa-solid fa-right-left" },
+    { key: "verifiedManagersOnline", label: "verified businesses active", icon: "fa-solid fa-user-check" },
+    { key: "nearbyOpportunities", label: "nearby trusted opportunities", icon: "fa-solid fa-location-dot" }
 ];
 
 export function renderMarketplaceStats(stats) {

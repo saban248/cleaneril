@@ -4,10 +4,26 @@ export const marketplaceTabs = {
     INSIGHTS: "insights"
 };
 
+export const networkModuleRegistry = [
+    { key: marketplaceTabs.MARKETPLACE, label: "Marketplace", enabled: true },
+    { key: marketplaceTabs.PARTNERS, label: "Business directory", enabled: true },
+    { key: marketplaceTabs.INSIGHTS, label: "Market analytics", enabled: true },
+    { key: "live_activity", label: "Live activity", enabled: false },
+    { key: "direct_messaging", label: "Direct messaging", enabled: false },
+    { key: "partnership_requests", label: "Partnership requests", enabled: false },
+    { key: "equipment_sharing", label: "Equipment sharing", enabled: false },
+    { key: "supplier_directory", label: "Supplier directory", enabled: false },
+    { key: "business_recommendations", label: "Business recommendations", enabled: false },
+    { key: "community_discussions", label: "Community discussions", enabled: false },
+    { key: "events_training", label: "Events and training", enabled: false },
+    { key: "certifications", label: "Certifications", enabled: false },
+    { key: "industry_news", label: "Industry news", enabled: false }
+];
+
 const tabItems = [
-    { key: marketplaceTabs.MARKETPLACE, label: "Marketplace" },
-    { key: marketplaceTabs.PARTNERS, label: "Partners" },
-    { key: marketplaceTabs.INSIGHTS, label: "Market Insights" }
+    { key: marketplaceTabs.MARKETPLACE, label: "Opportunities" },
+    { key: marketplaceTabs.PARTNERS, label: "Verified Businesses" },
+    { key: marketplaceTabs.INSIGHTS, label: "Industry Intelligence" }
 ];
 
 export function renderMarketplaceTabs(activeTab) {

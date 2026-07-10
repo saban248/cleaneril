@@ -2,12 +2,15 @@ import {
     marketplaceEvents,
     marketplaceJobs,
     marketplaceInsights,
+    networkPulse,
     marketplacePartners,
     marketplaceStats
 } from "./mock-data.js";
 import { marketplaceTabs, renderMarketplaceTabs } from "./components/MarketplaceTabs.js";
 import { renderMarketplaceStats } from "./components/MarketplaceStats.js";
 import { renderLiveHeader } from "./components/LiveHeader.js";
+import { renderNetworkPulse } from "./components/NetworkPulse.js";
+import { renderNetworkTrustStrip } from "./components/NetworkTrustStrip.js";
 import { renderJobFilters } from "./components/JobFilters.js";
 import { renderJobList } from "./components/JobList.js";
 import { bindJobCardActions } from "./components/JobCard.js";
@@ -58,6 +61,7 @@ class MarketplacePage {
             partners: marketplacePartners,
             events: marketplaceEvents,
             insights: marketplaceInsights,
+            pulse: networkPulse,
             stats: { ...marketplaceStats },
             filters: { ...defaultFilters },
             activeTab: marketplaceTabs.MARKETPLACE,
@@ -108,6 +112,7 @@ class MarketplacePage {
 
         this.root.innerHTML = `
             ${renderMarketplaceTabs(this.state.activeTab)}
+            ${renderNetworkTrustStrip(this.state.partners)}
             ${this.renderActiveTab(filteredJobs)}
 
             ${renderJobDetailsModal(selectedJob)}
@@ -133,11 +138,13 @@ class MarketplacePage {
                 ${renderMarketplaceStats(this.state.stats)}
             </section>
 
+            ${renderNetworkPulse(this.state.pulse)}
+
             <div class="marketplace-live-grid">
                 <section class="marketplace-section">
                     <div class="marketplace-section-head">
-                        <h3>הזדמנויות חיות</h3>
-                        <span class="marketplace-section-subtitle">${filteredJobs.length} עבודות ברשת</span>
+                        <h3>הזדמנויות לשיתוף פעולה</h3>
+                        <span class="marketplace-section-subtitle">${filteredJobs.length} הזדמנויות פעילות בין עסקים מאומתים</span>
                     </div>
                     ${renderJobFilters(this.state.filters)}
                     ${renderJobList(filteredJobs)}
@@ -145,13 +152,13 @@ class MarketplacePage {
 
                 <aside class="marketplace-section marketplace-live-sidebar">
                     <div class="marketplace-section-head">
-                        <h3>פיד פעילות</h3>
-                        <span class="marketplace-section-subtitle">מוכן לאירועי שרת</span>
+                        <h3>עדכוני רשת עסקיים</h3>
+                        <span class="marketplace-section-subtitle">פעילות מקצועית של עסקים, עבודות ושיתופי פעולה</span>
                     </div>
                     ${renderActivityFeed(this.state.events)}
 
                     <div class="marketplace-section-head">
-                        <h3>מצבי אירוע עתידיים</h3>
+                        <h3>אותות רשת חיים</h3>
                     </div>
                     ${renderEventReadyStates()}
                 </aside>
@@ -159,8 +166,8 @@ class MarketplacePage {
 
             <section class="marketplace-section">
                 <div class="marketplace-section-head">
-                    <h3>מנהלים ושותפים מאומתים</h3>
-                    <span class="marketplace-section-subtitle">קהילה מקצועית להחלפת עבודות</span>
+                    <h3>עסקים מאומתים ברשת</h3>
+                    <span class="marketplace-section-subtitle">בעלי עסקים פעילים שמייצרים אמון, זמינות ושיתופי פעולה</span>
                 </div>
                 <div class="marketplace-partners">
                     ${this.state.partners.map(renderPartnerCard).join("")}

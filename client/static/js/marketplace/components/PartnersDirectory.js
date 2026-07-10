@@ -4,8 +4,8 @@ export function renderPartnersDirectory(partners) {
     return `
         <section class="marketplace-section">
             <div class="marketplace-section-head">
-                <h3>שותפים מקצועיים</h3>
-                <span class="marketplace-section-subtitle">מוכן למועדפים, חסימה, הזמנה, צ'אט והיסטוריית שיתופי פעולה</span>
+                <h3>ספריית עסקים מאומתים</h3>
+                <span class="marketplace-section-subtitle">רשת מקצועית של בעלי עסקים לניקיון, שיתוף עבודות והיכרות עסקית</span>
             </div>
             <div class="marketplace-partner-directory">
                 ${partners.map((partner) => `
@@ -25,7 +25,11 @@ export function renderPartnersDirectory(partners) {
                                 <span><i class="fa-solid fa-location-dot"></i>${partner.city}</span>
                                 <span><i class="fa-solid fa-star"></i>${partner.rating}</span>
                                 <span><i class="fa-solid fa-shield-halved"></i>Trust ${partner.trustScore}</span>
-                                <span><i class="fa-solid fa-circle-check"></i>${partner.completedMarketplaceJobs} עבודות Marketplace</span>
+                                <span><i class="fa-solid fa-circle-check"></i>${partner.completedMarketplaceJobs} שיתופי פעולה ברשת</span>
+                                <span><i class="fa-solid fa-chart-line"></i>${partner.successRate} success</span>
+                                <span><i class="fa-solid fa-award"></i>${partner.professionalLevel}</span>
+                                <span><i class="fa-solid fa-face-smile"></i>${partner.satisfactionScore}</span>
+                                <span><i class="fa-regular fa-clock"></i>Response ${partner.responseTime}</span>
                                 <span><i class="fa-regular fa-calendar"></i>הצטרף ${partner.joinDate}</span>
                                 <span><i class="fa-regular fa-clock"></i>${partner.lastSeen}</span>
                                 <span><i class="fa-solid fa-signal"></i>${partner.availability}</span>

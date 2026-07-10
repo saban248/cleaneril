@@ -51,7 +51,11 @@ export function renderJobCard(job) {
                             <span><i class="fa-solid fa-star"></i> ${manager.rating} · ${manager.trustLabel}</span>
                             <div class="marketplace-trust-badges">
                                 <span><i class="fa-solid fa-shield-halved"></i> Trust ${manager.trustScore}</span>
-                                <span><i class="fa-solid fa-briefcase"></i> ${manager.completedMarketplaceJobs} completed</span>
+                                <span><i class="fa-solid fa-briefcase"></i> ${manager.completedMarketplaceJobs} network jobs</span>
+                                <span><i class="fa-solid fa-chart-line"></i> ${manager.successRate}</span>
+                                <span><i class="fa-solid fa-award"></i> ${manager.professionalLevel}</span>
+                                <span><i class="fa-solid fa-face-smile"></i> ${manager.satisfactionScore}</span>
+                                <span><i class="fa-regular fa-clock"></i> responds in ${manager.responseTime}</span>
                                 <span><i class="fa-solid fa-signal"></i> ${manager.availability}</span>
                                 <span><i class="fa-regular fa-clock"></i> ${manager.lastSeen}</span>
                             </div>
