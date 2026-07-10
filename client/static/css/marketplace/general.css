@@ -1,0 +1,26 @@
+.icon-marketplace svg path,
+.icon-marketplace svg circle,
+.icon-marketplace svg rect,
+.icon-marketplace svg polygon {
+    fill: currentColor;
+    stroke: currentColor;
+}
+
+
+.icon-marketplace {
+    position: relative;
+    animation: borderAround 3s infinite  ease-in;
+    border: 1px solid #b5b5b5;
+}
+
+@keyframes borderAround {
+    0%{
+        outline: 1px solid #dcdcdc;
+    }
+    50%{
+        outline: 6px solid #ebf6f2;
+    }
+    100%{
+        outline: 6px solid #ffffff;
+    }
+}

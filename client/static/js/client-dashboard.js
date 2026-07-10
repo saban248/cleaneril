@@ -100,7 +100,6 @@ async function fetchClientOrder(order_id = c_runtime.currentOrderIdView, api_act
     if (!order_id && !c_clients.new_order){return}
     const toast = showToast("מעבד...");
     data = {action:api_action, oi:order_id, ...dany}
-    console.log(data)
     return await new Promise((reslove) => apiPost(ApiRoute.api, data).then(
         (res) => {
             if (!res.success){

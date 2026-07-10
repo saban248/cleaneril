@@ -220,7 +220,6 @@ function switchPageManager(page){
     var last_page = ManagerCache.managerPage();
     if (last_page == -1){
         last_page = PageManager.CLIENTS
-        CONFIG.CURRENT_PAGE = last_page;
     }
 
     const lp = document.getElementById(getPageManager(last_page));
@@ -230,7 +229,6 @@ function switchPageManager(page){
     if (!_page_)return
     _page_.classList.add("show")
     ManagerCache.setManagerPage(page)
-    CONFIG.CURRENT_PAGE = page;
 }
 
 

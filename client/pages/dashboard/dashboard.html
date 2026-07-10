@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="/static/css/reports.css">
     <link rel="stylesheet" href="/static/css/subscription.css">
     <link rel="stylesheet" href="/static/css/sub-dashboard.css">
+    <link rel="stylesheet" href="/static/css/marketplace/general.css">
+    <link rel="stylesheet" href="/static/css/marketplace/marketplace.css">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
@@ -58,6 +60,7 @@
         {% include "dashboard/calendar.html" %}
         {% include "dashboard/invoice/invoices.html" %}
         {% include "dashboard/subscription/subscription.html" %}
+        {% include "dashboard/marketplace/marketplace.html" %}
 
     </div>
         <div class="dashboard-menu">
@@ -71,6 +74,11 @@
                     {% include "icon/close.svg" %}
                 </i>
                 <div id="generalMenu" class="menu-master"></div>
+            </div>
+            <div class="menu-item icon-marketplace" onclick="switchPageManager(PageManager.MARKETPLACE)">
+                <i class="icon icon-24 ">
+                    {% include "icon/connects.svg" %}
+                </i>
             </div>
             <div class="menu-item" onclick="switchPageManager(PageManager.CLIENTS)">
                 <i class="icon icon-24">
@@ -131,6 +139,7 @@
 <script src="/static/js/cleaneril-chart.js"></script>
 <script src="/static/js/subscription.js"></script>
 <script src="/static/js/sub-dashboard.js"></script>
-
+<script type="module" src="/static/js/marketplace/marketplace.js"></script>
+<script type="module" src="/static/js/marketplace/mock-data.js"></script>
 
 </html>

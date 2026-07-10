@@ -187,7 +187,9 @@ const PageManager = {
     CALENDAR:1<<7,
     INVOICES:1<<8,
     WSHARE:1<<9,
-    SUBSCRIPTIONS:1<<10
+    SUBSCRIPTIONS:1<<10,
+    MARKETPLACE:1<<11,
+    MAIN:1<<12
 
 }
 
