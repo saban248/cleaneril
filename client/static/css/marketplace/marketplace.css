@@ -167,18 +167,6 @@
     grid-template-columns: 40px 1fr;
     column-gap: 10px;
     align-items: center;
-    position: relative;
-    overflow: hidden;
-}
-
-.marketplace-stat-card::before{
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    height: 3px;
-    background: #638390;
 }
 
 .marketplace-stat-card i{
@@ -190,6 +178,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    border: 1px solid #4a55689c;
     box-shadow: 0 0 11px #ebebeb;
 }
 

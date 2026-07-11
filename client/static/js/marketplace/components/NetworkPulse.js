@@ -1,4 +1,5 @@
 export function renderNetworkPulse(pulse) {
+    return '';
     return `
         <section class="marketplace-network-pulse">
             <div class="marketplace-pulse-column">

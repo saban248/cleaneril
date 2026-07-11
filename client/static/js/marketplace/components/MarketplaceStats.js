@@ -1,7 +1,7 @@
 const statItems = [
     { key: "jobsExchangedToday", label: "שיתופים היום", icon: "fa-solid fa-right-left", style:{color:'#32c3e3'}},
-    { key: "verifiedManagersOnline", label: "verified businesses active", icon: "fa-solid fa-user-check", style:{color:'#337249', background:null}},
-    { key: "nearbyOpportunities", label: "nearby trusted opportunities", icon: "fa-solid fa-location-dot", style:{color:'#6d21af'}}
+    { key: "verifiedManagersOnline", label: "לקוחות משותפים שהושלמו", icon: "fa-solid fa-handshake", style:{color:'#337249', background:null}},
+    { key: "nearbyOpportunities", label: "שיתופים פתוחים", icon: "fa-solid fa-hand-fist", style:{color:'#6d21af'}}
 ];
 
 export function renderMarketplaceStats(stats) {
