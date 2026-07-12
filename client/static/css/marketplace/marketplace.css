@@ -375,7 +375,7 @@
 }
 
 .marketplace-map-sync-state::after{
-    content: "Privacy-safe";
+    content: "CleanerIL";
     border-right: 1px solid #dfe5ea;
     padding-right: 7px;
     margin-right: 2px;
@@ -589,6 +589,10 @@
     display: flex;
     flex-direction: column;
     row-gap: 8px;
+    column-gap: 8px;
+    overflow-y: scroll;
+    max-height: 420px;
+
 }
 
 .marketplace-map-list-item{
@@ -598,11 +602,23 @@
     padding: 10px;
     cursor: pointer;
     transition: 180ms all;
+    display: flex;
+    column-gap: 8px;
 }
 
 .marketplace-map-list-item:hover{
     border-color: #638390;
     background: #fff;
+}
+
+.marketplace-map-list-header img{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.marketplace-map-list-content{
+    flex:1;
 }
 
 .marketplace-map-list-item strong,
@@ -1776,15 +1792,11 @@
         margin-right: 6px;
     }
 
-    .marketplace-live-title,
     .marketplace-job-title,
     .marketplace-partner-top{
         align-items: flex-start;
     }
 
-    .marketplace-live-title{
-        flex-direction: column;
-    }
 
     .marketplace-live-title h1{
         font-size: 1.25rem;

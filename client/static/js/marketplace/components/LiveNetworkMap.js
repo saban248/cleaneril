@@ -142,14 +142,13 @@ export function renderLiveNetworkMap(jobs, mapExpanded = true) {
         <section class="marketplace-section marketplace-map-section ${mapExpanded ? "" : "marketplace-map-section-collapsed"}">
             <div class="marketplace-section-head">
                 <div>
-                    <h3>Live Network Map</h3>
+                    <h3>מפת שיתוף בזמן אמת</h3>
                     <span class="marketplace-section-subtitle">
-                        Approximate service areas only. Exact customer details stay private.
+                        אזורי שירות משוערים בלבד. פרטי הלקוחות המדויקים נשמרים חסויים.
                     </span>
                 </div>
                 <span class="marketplace-map-sync-state">
-                    <i class="fa-solid fa-signal"></i>
-                    Mock live view - ${jobs.length} active locations
+                    ${jobs.length} מקומות פעילים 
                 </span>
             </div>
             <button class="marketplace-map-mobile-toggle" type="button" data-marketplace-map-toggle aria-expanded="${mapExpanded ? "true" : "false"}">
@@ -160,19 +159,19 @@ export function renderLiveNetworkMap(jobs, mapExpanded = true) {
                 <div class="marketplace-map-counters">
                     <div>
                         <strong>${counters.activeJobs}</strong>
-                        <span>active shared jobs</span>
+                        <span>עבודות פתוחות</span>
                     </div>
                     <div>
                         <strong>${counters.newJobs}</strong>
-                        <span>newly published</span>
+                        <span>נפתח עכשיו</span>
                     </div>
                     <div>
                         <strong>${counters.verifiedManagers}</strong>
-                        <span>verified managers</span>
+                        <span>עסקים שונים</span>
                     </div>
                     <div>
                         <strong>${counters.serviceAreas}</strong>
-                        <span>live service areas</span>
+                        <span>שיתוף שהושלם</span>
                     </div>
                 </div>
                 <div class="marketplace-map-layout">
@@ -180,11 +179,16 @@ export function renderLiveNetworkMap(jobs, mapExpanded = true) {
                         <div id="networkLiveMap"></div>
                     </div>
                     <div class="marketplace-map-list">
-                        ${jobs.slice(0, 5).map((job) => `
+                        ${jobs.slice(0, 8).map((job) => `
                             <div class="marketplace-map-list-item" data-network-map-job="${job.id}">
-                                <strong>${job.serviceName}</strong>
-                                <span>${job.areaLabel || job.city} - ${job.value} - ${job.activity}</span>
-                                <small>${job.manager} - Trust ${job.trustScore}</small>
+                                <div class="marketplace-map-list-header">
+                                    <img src="/static/images/logo/default_logo.png">
+                                </div>
+                                <div class="marketplace-map-list-content">
+                                    <strong>${job.serviceName}</strong>
+                                    <span>${job.areaLabel || job.city} - ${job.value} - ${job.activity}</span>
+                                    <small>${job.manager} - Trust ${job.trustScore}</small>
+                                </div>
                             </div>
                         `).join("")}
                     </div>
