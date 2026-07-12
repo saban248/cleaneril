@@ -622,7 +622,6 @@
 }
 
 .marketplace-map-list-item strong,
-.marketplace-map-list-item span,
 .marketplace-map-list-item small{
     display: block;
 }
@@ -638,6 +637,9 @@
     margin-top: 4px;
 }
 
+.marketplace-map-list-content span.mmlc-activity{
+    color: #18a360;
+}
 .marketplace-map-list-item small{
     color: #66717c;
     font-size: 11px;

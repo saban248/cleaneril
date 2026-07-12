@@ -132,7 +132,7 @@ class MarketplacePage {
     }
 
     afterRender() {
-        if (this.state.activeTab === marketplaceTabs.MARKETPLACE.toString() && (this.state.mapExpanded || !isCompactViewport())) {
+        if (this.state.activeTab == marketplaceTabs.MARKETPLACE.toString()) {
             initLiveNetworkMap(this.state.mapJobs);
         }
     }

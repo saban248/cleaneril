@@ -186,7 +186,10 @@ export function renderLiveNetworkMap(jobs, mapExpanded = true) {
                                 </div>
                                 <div class="marketplace-map-list-content">
                                     <strong>${job.serviceName}</strong>
-                                    <span>${job.areaLabel || job.city} - ${job.value} - ${job.activity}</span>
+                                    <span>${job.areaLabel || job.city} - 
+                                        <span>${job.value}</span> - 
+                                        <span class='mmlc-activity'>${job.activity}</span>
+                                    </span>
                                     <small>${job.manager} - Trust ${job.trustScore}</small>
                                 </div>
                             </div>
@@ -218,7 +221,8 @@ export function initLiveNetworkMap(jobs) {
     renderMapMarkers(jobs);
     bindMapListItems(jobs);
     bindMapPopupActions(container);
-    setTimeout(() => liveNetworkMap?.invalidateSize(), 80);
+    setInterval(() => liveNetworkMap?.invalidateSize(), 1500);
+    
 }
 
 function renderMapMarkers(jobs) {
@@ -226,25 +230,22 @@ function renderMapMarkers(jobs) {
 
     liveNetworkLayer.clearLayers();
     liveNetworkMarkersByJobId = {};
-
-    getClusterGroups(jobs).forEach((group) => {
-        const isCluster = group.type === "cluster";
-        const marker = L.marker(group.coordinates, {
-            icon: isCluster ? createClusterIcon(group.jobs.length) : createMarkerIcon(group.jobs[0])
+    jobs.forEach((job) => {
+        console.log(job)
+        const marker = L.marker(job.approximateCoordinates, {
+            icon: createMarkerIcon(job)
         })
-            .bindPopup(isCluster ? renderClusterPopup(group.jobs) : renderPopup(group.jobs[0]), {
+            .bindPopup(renderPopup(job), {
                 className: "custom-popup marketplace-network-map-popup",
                 closeButton: false,
-                maxWidth: isCluster ? 240 : 210
+                maxWidth: 210
             })
             .addTo(liveNetworkLayer);
 
         marker.on("mouseover", () => marker.openPopup());
         marker.on("click", () => marker.openPopup());
 
-        group.jobs.forEach((job) => {
-            liveNetworkMarkersByJobId[job.id] = marker;
-        });
+        liveNetworkMarkersByJobId[job.id] = marker;
     });
 }
 
