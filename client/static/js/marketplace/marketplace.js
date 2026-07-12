@@ -21,6 +21,7 @@ import { renderPartnerCard } from "./components/PartnerCard.js";
 import { renderPartnersDirectory } from "./components/PartnersDirectory.js";
 import { renderMarketInsights } from "./components/MarketInsights.js";
 import { renderJobDetailsModal, bindJobDetailsModal } from "./components/JobDetailsModal.js";
+import { c_marketplace } from "./protocol.js";
 
 const defaultFilters = {
     search: "",
@@ -63,7 +64,7 @@ class MarketplacePage {
     constructor(root) {
         this.root = root;
         this.state = {
-            jobs: marketplaceJobs,
+            jobs: c_marketplace.jobs,
             partners: marketplacePartners,
             events: marketplaceEvents,
             insights: marketplaceInsights,
