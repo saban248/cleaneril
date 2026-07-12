@@ -127,6 +127,7 @@ class RouteApi(RoutePagesBase):
     register = 1<<3
     logout   = 1<<4
     subscription = 1<<5
+    marketplace = 1<<6
 
 
 class RegisterApi(IntFlag):

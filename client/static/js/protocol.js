@@ -223,7 +223,8 @@ const ApiRoute = {
     upImage:"up_image",
     register: "register",
     logout:"logout",
-    subs:"subscription"
+    subs:"subscription",
+    marketplace:'marketplace'
 }
 const RegisterApi = {
     level0:1<<5,

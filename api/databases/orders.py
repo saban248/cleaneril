@@ -34,6 +34,8 @@ class CleanOrder(cleaneril_db.Model):
     payment_type = cleaneril_db.Column(cleaneril_db.Integer, nullable=False)
     payment_notes = cleaneril_db.Column(cleaneril_db.String, nullable=False)
     order_type = cleaneril_db.Column(cleaneril_db.Integer, nullable=False)
+    marketplace_shared = cleaneril_db.Column(cleaneril_db.Boolean, nullable=False)
+
 
 
 

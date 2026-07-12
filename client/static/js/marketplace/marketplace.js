@@ -6,7 +6,7 @@ import {
     networkPulse,
     marketplacePartners,
     marketplaceStats
-} from "./mock-data.js";
+} from "./protocol.js";
 import { marketplaceTabs, renderMarketplaceTabs } from "./components/MarketplaceTabs.js";
 import { renderMarketplaceStats } from "./components/MarketplaceStats.js";
 import { renderLiveHeader } from "./components/LiveHeader.js";

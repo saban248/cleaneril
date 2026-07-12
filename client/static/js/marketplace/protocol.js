@@ -1,3 +1,47 @@
+const c_marketplace = {
+    jobs:[]
+}
+
+
+
+export const MPCleaningTypes = {
+    GENERAL: 0,
+    UPHOLSTERY: 1 << 0,        // ריפודים
+    AIR_CONDITIONER: 1 << 1,   // מזגנים
+    CARPETS: 1 << 2,           // שטיחים
+    WINDOWS: 1 << 3,           // חלונות
+    FLOORS: 1 << 4,            // רצפות
+    POST_RENOVATION: 1 << 6,   // ניקיון לאחר שיפוץ
+    OFFICE: 1 << 7             // ניקיון משרדים
+};
+
+
+export function mpCleaningTypesText(value) {
+    if (value === MPCleaningTypes.GENERAL) {
+        return "כללי";
+    }
+
+    const result = [];
+
+    const types = [
+        [MPCleaningTypes.UPHOLSTERY, "ריפודים"],
+        [MPCleaningTypes.AIR_CONDITIONER, "מזגנים"],
+        [MPCleaningTypes.CARPETS, "שטיחים"],
+        [MPCleaningTypes.WINDOWS, "חלונות"],
+        [MPCleaningTypes.FLOORS, "רצפות"],
+        [MPCleaningTypes.POST_RENOVATION, "ניקיון לאחר שיפוץ"],
+        [MPCleaningTypes.OFFICE, "ניקיון משרדים"]
+    ];
+
+    for (const [flag, text] of types) {
+        if ((value & flag) !== 0) {
+            result.push(text);
+        }
+    }
+    return result.length==1?result[0]:result;
+}
+
+
 export const serviceCategoryLabels = {
     upholstery: "ניקוי ריפודים",
     airConditioner: "ניקוי מזגנים",
@@ -563,3 +607,4 @@ export const marketplaceEvents = [
         time: "לפני 18 דקות"
     }
 ];
+

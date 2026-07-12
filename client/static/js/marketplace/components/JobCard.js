@@ -1,4 +1,4 @@
-import { serviceCategoryLabels, statusLabels } from "../mock-data.js";
+import { serviceCategoryLabels, statusLabels } from "../protocol.js";
 
 function formatCurrency(value) {
     return `${value.toLocaleString("he-IL")} ₪`;

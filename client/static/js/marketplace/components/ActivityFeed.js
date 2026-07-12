@@ -1,4 +1,4 @@
-import { eventLabels } from "../mock-data.js";
+import { eventLabels } from "../protocol.js";
 
 export function renderActivityFeed(events) {
     return `

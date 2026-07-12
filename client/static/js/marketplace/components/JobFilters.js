@@ -1,4 +1,4 @@
-import { serviceCategoryLabels } from "../mock-data.js";
+import { serviceCategoryLabels } from "../protocol.js";
 
 const distanceOptions = [
     { value: "all", label: "הכל" },

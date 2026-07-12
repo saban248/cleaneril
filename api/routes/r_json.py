@@ -5,6 +5,7 @@ from api import cardcom
 from api.api_action import get_api_action, api_upload_file, get_register_action, get_subscription_api
 from api.databases.manager import manager_auth, update_time_alive
 from api.databases.ptc import cleaneril, ManagerAccountStat, cleaneril_db
+from api.marketplace.api import get_marketplace_api
 from api.ptc import ShortSession, SJson, get_dictionary_http
 from api.routes import cil_struct
 from api.routes.general import set_session_data_admin
@@ -65,6 +66,15 @@ def subscription():
 
     breq = get_dictionary_http(request)
     get_ac = get_subscription_api(**breq)
+    return get_ac
+
+
+@cleaneril.route(RouteApi.marketplace.path, methods=["POST"])
+def marketplace():
+    if not ShortSession.is_admin_active():
+        return SJson.auto_code(core_msg.ServerCode.General.access_denied)
+    breq = get_dictionary_http(request)
+    get_ac = get_marketplace_api(**breq)
     return get_ac
 
 
