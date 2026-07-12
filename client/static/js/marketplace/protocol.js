@@ -1,4 +1,4 @@
-const c_marketplace = {
+export const c_marketplace = {
     jobs:[]
 }
 

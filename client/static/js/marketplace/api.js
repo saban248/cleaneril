@@ -1,3 +1,6 @@
+import {c_marketplace} from './protocol.js'
+
+
 
 const MarketplaceApiCall = {
     listJobs:1
@@ -12,8 +15,6 @@ async function fetchJobs(){
         showToast(res.notice, ToastStat.ERROR)
         return res
     }
-
-    const c_marketplace = {}
     c_marketplace.jobs = res.jobs;
     return res
 }
