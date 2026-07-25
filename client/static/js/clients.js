@@ -1,6 +1,8 @@
 
 
-
+const magicWordSearchOrder = [
+    'הנחה', 'קבלה', 'לקוח חוזר'
+]
 
 function mainSyncTotalPrice(element){
     let currentValue = element.value;
@@ -171,7 +173,10 @@ function doSearchClientsLocal(){
         const cid = order.client_id.toLowerCase() == value;
         const element = document.getElementById(order_id)
         const stat = order.stat&c_runtime.state_client_selected
-        if ((value == ''||phone||name||date||cid) && stat){
+        const MWOffPrice = value.includes(magicWordSearchOrder[0]) && order.off_price
+        const MWReceipt = value.includes(magicWordSearchOrder[1]) && get_receipt_by_order_id(order.order_id)
+        // const MWClientRepeat = value.includes(magicWordSearchOrder[2] && get_)
+        if ((value == ''||phone||name||date||cid||MWOffPrice||MWReceipt) && stat){
             element?.classList.remove("hide")
         }
         else{
