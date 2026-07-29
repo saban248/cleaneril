@@ -39,8 +39,8 @@
 
 
 .avatar {
-  width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: #d1d1d1;
   display: flex;
@@ -60,14 +60,9 @@
   flex: 1;
   display: grid;
   grid-template-columns: 1fr;
+  font-size: 13px !important;
 }
 
-.content > div > .top {
-  display: flex;
-  justify-content: right;
-  column-gap: 10px;
-  font-weight: bold;
-}
 
 .top > .name{
     font-weight: bold;
@@ -79,11 +74,11 @@
   font-weight: lighter !important;
 }
 .top > .phone {
-    font-size: 15px;
+    font-size: 12px;
 }
 
 .bottom {
-  font-size: 13px;
+  font-size: 12px !important;
   color: #999;
 }
 

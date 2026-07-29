@@ -145,7 +145,8 @@ function createListClientOrders(){
 
     deleteChildren()
     for (let order of c_runtime.orders){
-        if (order.client_id != c_runtime.currentClientIdView){
+        const currentOrder = get_order_by_order_id(c_runtime.currentOrderIdView)
+        if (cleanPhoneJustNumbers(order.phone) != cleanPhoneJustNumbers(currentOrder.phone)){
             continue;
         }
 
