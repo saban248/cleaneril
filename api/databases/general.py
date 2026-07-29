@@ -40,3 +40,4 @@ def delete_column(table:cleaneril_db.Model, column):
     if not column:return
     cleaneril_db.session.delete(column)
     cleaneril_db.session.commit()
+

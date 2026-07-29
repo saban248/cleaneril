@@ -61,6 +61,10 @@ class ServerCode:
     class Receipt:
         receipt_exist               = 9
         receipt_create_problem      = 12
+    class Orders:
+        order_exist = 15
+        order_create_problem = 16
+        order_duplicate_not_exist = 17
 
 
 

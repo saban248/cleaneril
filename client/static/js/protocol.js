@@ -280,7 +280,8 @@ const ApiCall = {
     alive:1<<28,
     my_subscription:1<<29,
     my_company:1<<30,
-    my_manager:31
+    my_manager:31,
+    duplicate_order:33
 }
 
 const ReportsApi = {

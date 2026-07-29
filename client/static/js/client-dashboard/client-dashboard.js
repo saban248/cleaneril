@@ -68,7 +68,6 @@ async function openClientDashbaord(client_id = c_runtime.currentClientIdView, or
     c_runtime.currentOrderIdView = order_id;
     showClientDashboard()
     await fetchClientDashboard(client_id)
-    
 
     c_clients.enterCard = true;
     switchViewClientDashboard(clientCardsView.ORDER, fetch)
@@ -129,9 +128,12 @@ function createListClientOrders(){
             }
         });
     }
-    const currentOrder = c_runtime.orders.find(c=> c.order_id == c_runtime.currentOrderIdView);
+    let currentOrder = c_runtime.orders.find(c=> c.order_id == c_runtime.currentOrderIdView);
+    if (!currentOrder && c_runtime.currentClientIdView){
+        currentOrder = c_runtime.orders.filter( o => o.client_id == c_runtime.currentClientIdView)?.[0]
+    }
     const icon = document.getElementById('iel-orders');
-    if (!c_runtime.orders || !currentOrder){
+    if (!c_runtime.orders||!currentOrder){
         if (!icon)return
         icon.style.display = 'block'
         parent.classList.add("icon-empty-list")
@@ -145,7 +147,6 @@ function createListClientOrders(){
 
     deleteChildren()
     for (let order of c_runtime.orders){
-        const currentOrder = get_order_by_order_id(c_runtime.currentOrderIdView)
         if (cleanPhoneJustNumbers(order.phone) != cleanPhoneJustNumbers(currentOrder.phone)){
             continue;
         }
@@ -264,6 +265,7 @@ async function switchViewClientDashboard(v = c_clients.currentCard, fetch = true
                 showClientOrders()
             }
             if (!back && c_clients.enterCard){
+                
                 showClientOrder(c_runtime.currentOrderIdView, fetch)
             }
             hideClientReceipts()
@@ -567,28 +569,6 @@ function shareReceiptToClientAsPhoto(iid = c_runtime.currentInvoiceIdView){
 
 }
 
-async function deleteOrder(order_id = c_runtime.currentOrderIdView, callback){
-    const ok = await showAsk({msg:message.WdeleteOrder})
-    if (!ok){return false}
-    if (!order_id){
-        showToast("בחר הזמנה כדי למחוק", ToastStat.ERROR)
-        return true
-    }
-    data = {oi:order_id, action:ApiCall.order_delete}
-    return await new Promise((reslove) => apiPost(ApiRoute.api,data).then(
-        async (res) =>{
-            if (!res.success || res.deleted){
-                showToast(res.notice, ToastStat.DONE);
-                return false
-            }
-            await fetchOrders()
-            createListClientOrders()
-            callback?callback():null
-            c_runtime.currentOrderIdView = null
-            reslove(true)
-        }
-    ))
-}
 
 async function initSelectOrderTypeToCreate(){
     c_clients.new_order = true;
@@ -743,14 +723,6 @@ async function deleteReceiptFromDashbaord(receipt_id = c_runtime.currentInvoiceI
         removeOrderReceiptImg();
     }
     await deleteReceipt(receipt_id, success)
-}
-
-async function deleteOrderFromDashhbaord(order_id = c_runtime.currentOrderIdView) {
-    const success = ()=>{
-        switchClientCardAction(c_clients.currentCard, false, true)
-        createListClientOrders()
-    }
-    await deleteOrder(order_id, success)
 }
 
 async function createReceiptFromDashbaord() {

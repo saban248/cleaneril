@@ -195,6 +195,15 @@ def get_api_action(**breq) -> dict:
         case ApiCall.my_manager:
             return SJson.auto_code(__success__, **{"manager":ShortSession.manager()})
 
+        case ApiCall.duplicate_clean_order:
+            order = cil_struct.CleanOrder().build(**breq)
+            print(breq, order)
+            duplicate = orders.duplicate_clean_order(manager_id, order.client_id, order.oi)
+            if duplicate is None:
+                return SJson.auto_code(core_msg.ServerCode.Orders.order_duplicate_not_exist)
+            return SJson.auto_code(__success__, **{"order_id":duplicate.order_id})
+
+
     return SJson.auto_code(__success__)
 
 

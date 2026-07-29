@@ -1,6 +1,6 @@
 import time
 
-from sqlalchemy import JSON
+from sqlalchemy import JSON, inspect
 
 from api.databases.general import get_columns, get_latest_columns, delete_column
 from api.databases.ptc import cleaneril_db, StateOrder
@@ -126,6 +126,22 @@ def create_clean_order(manager_id:str, client_id:str, response, update:bool = Fa
     cleaneril_db.session.add(order)
     cleaneril_db.session.commit()
     return order
+
+
+def duplicate_clean_order(manager_id:str, client_id:str, order_id:str):
+    original = get_clean_orders(manager_id=manager_id, client_id=client_id, order_id=order_id).first()
+    if not original:
+        return None
+
+    copy = CleanOrder(**{ c.name: getattr(original, c.name) for c in CleanOrder.__table__.columns if c.name != "key"
+                          and  c.name != 'order_id'})
+    copy.order_id = generate_hex(16)
+    copy.date = time.time()
+    cleaneril_db.session.add(copy)
+    cleaneril_db.session.commit()
+    return copy
+
+
 
 def update_clean_order(manager_id:str, client_id:str, response):
     return create_clean_order(manager_id, client_id, response, True)

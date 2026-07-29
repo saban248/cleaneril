@@ -238,6 +238,7 @@ class ApiCall(IntFlag):
     my_subscription = 1<<29
     my_company      = 1<<30
     my_manager      = 31
+    duplicate_clean_order = 33
 
 
 class ReportsApi(IntFlag):

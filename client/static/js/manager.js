@@ -24,6 +24,7 @@ const c_runtime = {
     currentManagerIdView:null
 }
 
+
 async function fetchPermissions(){
     const permissions = c_runtime.currentUPermission;
     if (permissions)return permissions;

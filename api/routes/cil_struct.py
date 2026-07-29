@@ -105,7 +105,7 @@ class Client:
 
 @dataclass
 class CleanOrder:
-    client_id           = None
+    client_id:str           = None
     oi:str              = None
     s:StateOrder       = None
     phone:str               = None
@@ -188,8 +188,6 @@ class CleanOrder:
         if not self.workers:
             self.workers = []
         self.get_full_price()
-
-
         return self
 
     def get_full_price(self):
