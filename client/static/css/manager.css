@@ -856,6 +856,7 @@
     transition: 0.25s ease;
     z-index: 100000;
     display: none;
+    font-size: 12px !important;
 }
 .client-menu-action.show, .year-funds-menu.show, .calander-clients-menu.show{
     opacity: 1;
@@ -865,12 +866,12 @@
 }
 .cma{
     display: grid;
-    border: 1px solid #ddd;
+    border: 1px solid #efefef;
     border-radius: 2px;
     cursor: pointer;
     column-gap: 10px;
     grid-template-columns: 1fr 3fr;
-    font-size: 14px;
+    font-size: 12px;
 }
 .cma> .cma1{
     padding: 8px;
