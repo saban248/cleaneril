@@ -239,6 +239,7 @@ class ApiCall(IntFlag):
     my_company      = 1<<30
     my_manager      = 31
     duplicate_clean_order = 33
+    client_reports = 34
 
 
 class ReportsApi(IntFlag):

@@ -1,3 +1,26 @@
+
+
+async function fetchClientReports(clientId) {
+    if (!clientId){
+        clientId = c_runtime.currentClientIdView;
+    }
+    const data = {action:ApiCall.client_reports, client_id:clientId}
+    await apiPost(ApiRoute.api, data).then(
+        (res) =>{
+            if (!res.success){
+                showToast(res.notice,ToastStat.ERROR);
+                return
+            }
+
+            console.log(res.reports)
+        }
+    )
+    
+}
+
+
+
+
 function reportEscapeHtml(value){
     return String(value ?? "").replace(/[&<>"']/g, function(char){
         return {

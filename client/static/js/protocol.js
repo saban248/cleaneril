@@ -281,7 +281,8 @@ const ApiCall = {
     my_subscription:1<<29,
     my_company:1<<30,
     my_manager:31,
-    duplicate_order:33
+    duplicate_order:33,
+    client_reports:34
 }
 
 const ReportsApi = {

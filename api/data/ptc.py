@@ -33,10 +33,25 @@ class GraphOrders:
     average_client_repeat_percent:float = None
 
 
+@dataclass
+class ClientReports:
+    wait:int        = None
+    canceled:int    = None
+    closed:int      = None
+    done:int        = None
+    place:int       = None
+    funds:int       = None
+    income:int      = None
+    off_price:int   = None
+    expenses:int    = None
+
+
+
+
 class AnalyticsData:
 
     def __init__(self, manager_id:str, date_from:float = None, date_to:float = None, cache:bool = True):
-        self.__mid = manager_id
+        self.mid = manager_id
         self.__df = date_from or 0
         self.__dt = date_to or time.time()
         self.__cache = cache
@@ -44,7 +59,7 @@ class AnalyticsData:
         self.__od = None
 
     def __get_clean_orders_by_stat(self, stat:StateOrder):
-        _orders = orders.get_clean_order_by_date(self.__mid, self.__df, self.__dt, stat=stat)
+        _orders = orders.get_clean_order_by_date(self.mid, self.__df, self.__dt, stat=stat)
         return _orders
 
     def orders_done(self):
@@ -53,7 +68,7 @@ class AnalyticsData:
         return self.__od
 
     def orders_done_count_ever(self):
-        return len(orders.get_clean_order_by_date(self.__mid, 0, time.time(),stat=StateOrder.DONE))
+        return len(orders.get_clean_order_by_date(self.mid, 0, time.time(), stat=StateOrder.DONE))
 
     def orders_wait(self):
         return self.__get_clean_orders_by_stat(StateOrder.WAIT)
@@ -65,7 +80,7 @@ class AnalyticsData:
         return len(self.orders_canceled())
 
     def orders_canceled_count_ever(self):
-        return len(orders.get_clean_order_by_date(self.__mid, 0, time.time(), stat=StateOrder.CANCELED))
+        return len(orders.get_clean_order_by_date(self.mid, 0, time.time(), stat=StateOrder.CANCELED))
 
     def orders_closed(self):
         return self.__get_clean_orders_by_stat(StateOrder.CLOSED)
@@ -73,7 +88,7 @@ class AnalyticsData:
     def get_orders_done_by_year(self, year:int):
         start = datetime(year, 1, 1, tzinfo=timezone.utc).timestamp()
         end = datetime(year + 1, 1, 1, tzinfo=timezone.utc).timestamp()
-        return orders.get_clean_order_by_date(self.__mid, start, end, False, stat=StateOrder.DONE)
+        return orders.get_clean_order_by_date(self.mid, start, end, False, stat=StateOrder.DONE)
 
     def income(self):
         income = 0
@@ -84,7 +99,7 @@ class AnalyticsData:
 
     def income_ever(self):
         income = 0
-        _orders = orders.get_clean_order_by_date(self.__mid, 0, time.time(), stat=StateOrder.DONE)
+        _orders = orders.get_clean_order_by_date(self.mid, 0, time.time(), stat=StateOrder.DONE)
         for order in _orders:
             income += (order.price - order.off_price)
         return income
@@ -105,7 +120,7 @@ class AnalyticsData:
 
     def expenses_ever(self):
         expenses = 0
-        _orders = orders.get_clean_order_by_date(self.__mid, 0, time.time(), stat=StateOrder.DONE)
+        _orders = orders.get_clean_order_by_date(self.mid, 0, time.time(), stat=StateOrder.DONE)
         for order in _orders:
             expenses += order.expense
 
@@ -132,7 +147,7 @@ class AnalyticsData:
 
     def get_average_income_orders_month(self, year:int, month:int):
         df, dt = get_month_range_by_ym(year, month)
-        _orders = orders.get_clean_order_by_date(self.__mid, df, dt, False, stat=StateOrder.DONE)
+        _orders = orders.get_clean_order_by_date(self.mid, df, dt, False, stat=StateOrder.DONE)
         income = 0
         length_orders = 0
         for order in _orders:
@@ -144,7 +159,7 @@ class AnalyticsData:
 
     def get_average_expense_orders_month(self, year:int, month:int):
         df, dt = get_month_range_by_ym(year, month)
-        _orders = orders.get_clean_order_by_date(self.__mid, df, dt, False, stat=StateOrder.DONE)
+        _orders = orders.get_clean_order_by_date(self.mid, df, dt, False, stat=StateOrder.DONE)
         expense = 0
         length_orders = 0
         for order in _orders:
@@ -174,7 +189,7 @@ class AnalyticsData:
         end = datetime(year + 1, 1, 1, tzinfo=timezone.utc).timestamp()
         data = []
         _orders = CleanOrder.query.filter(
-            CleanOrder.manager_id == self.__mid,
+            CleanOrder.manager_id == self.mid,
             CleanOrder.date >= start,
             CleanOrder.date <= end,
             CleanOrder.stat.in_([
@@ -194,7 +209,7 @@ class AnalyticsData:
 
 
     def count_items_clean_orders_ever(self):
-        _orders = orders.get_clean_order_by_date(self.__mid, 0, time.time(), stat=StateOrder.DONE)
+        _orders = orders.get_clean_order_by_date(self.mid, 0, time.time(), stat=StateOrder.DONE)
         items = 0
         for order in _orders:
             items += len(order.items)
@@ -213,24 +228,24 @@ class AnalyticsData:
         return len(self.orders_done())
 
     def count_orders_done_ever(self):
-        _orders = orders.get_clean_order_by_date(self.__mid, 0 , time.time(),stat=StateOrder.DONE)
+        _orders = orders.get_clean_order_by_date(self.mid, 0, time.time(), stat=StateOrder.DONE)
         return len(_orders)
 
     def count_client_repeated_ever(self):
-        _clients = clients.get_clients(manager_id=self.__mid).all()
+        _clients = clients.get_clients(manager_id=self.mid).all()
         repeat = 0
         for client in _clients:
-            repeat += len(orders.get_clean_order_by_date(self.__mid, 0, time.time(),
-                                                      stat=StateOrder.DONE, client_id=client.client_id))
+            repeat += len(orders.get_clean_order_by_date(self.mid, 0, time.time(),
+                                                         stat=StateOrder.DONE, client_id=client.client_id))
 
         return repeat
 
     def count_client_repeated(self):
-        _clients = clients.get_clients(manager_id=self.__mid).all()
+        _clients = clients.get_clients(manager_id=self.mid).all()
         repeat = 0
         for client in _clients:
-            __repeat__ = len(orders.get_clean_order_by_date(self.__mid, self.__df, self.__dt,
-                                                         stat=StateOrder.DONE,client_id=client.client_id))
+            __repeat__ = len(orders.get_clean_order_by_date(self.mid, self.__df, self.__dt,
+                                                            stat=StateOrder.DONE, client_id=client.client_id))
             if __repeat__ >= 2:
                 repeat+=(__repeat__-1)
 

@@ -1,12 +1,11 @@
 import base64
 import os
-from time import sleep
 
-import magic
 from flask import render_template
 
 import api.databases.company as companies
-from api.data.ptc import AnalyticsData
+from api.data.orders import DataOrders
+from api.data.ptc import AnalyticsData, ClientReports
 from api.databases import invoice, manager as managers, subscriptions
 from api.databases import orders, clients
 from api.databases.bridge import on_create_order_create_client
@@ -14,9 +13,9 @@ from api.databases.clients import ClientProfile
 from api.databases.crads import ApiCards, Cards
 from api.databases.employee import ApiEmployee, Employee
 from api.databases.general import get_columns_no_instance
-from api.databases.manager import ApiManager, on_register_create_company, manager_exist, manager_auth, \
+from api.databases.manager import ApiManager, manager_auth, \
     update_time_alive, get_list_manager_no_pwd
-from api.databases.orders import CleanOrder, get_clean_order_done, get_clean_order_latest
+from api.databases.orders import CleanOrder
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril, ManagerPermissions, cleaneril_db, \
     ManagerAccountStat, CompanyTaxType
 from api.general import is_logo_app_valid
@@ -26,8 +25,6 @@ from api.routes.cil_struct import ReportsDataAnalyze
 from api.routes.general import set_session_data_admin
 from api.routes.ptc import Pages, ApiCall, ApiUploadFile, RegisterApi, ReportsApi, SubscriptionApi, SubscriptionStat
 from api.validator import core_msg, company
-
-
 
 
 def get_api_action(**breq) -> dict:
@@ -197,12 +194,19 @@ def get_api_action(**breq) -> dict:
 
         case ApiCall.duplicate_clean_order:
             order = cil_struct.CleanOrder().build(**breq)
-            print(breq, order)
             duplicate = orders.duplicate_clean_order(manager_id, order.client_id, order.oi)
             if duplicate is None:
                 return SJson.auto_code(core_msg.ServerCode.Orders.order_duplicate_not_exist)
             return SJson.auto_code(__success__, **{"order_id":duplicate.order_id})
+        case ApiCall.client_reports:
+            order = cil_struct.CleanOrder().build(**breq)
+            ana = DataOrders(order.client_id, manager_id)
 
+            packet = ClientReports(len(ana.wait_client()), len(ana.cancel_client()), len(ana.closed_client()), len(ana.done_client()),
+                                   ana.get_place_client(), ana.get_total_funds_client(), ana.get_total_income_client(),
+                                   ana.get_total_off_price_client(), ana.get_total_expenses_client())
+
+            return SJson.auto_code(__success__, **{"reports":packet})
 
     return SJson.auto_code(__success__)
 
