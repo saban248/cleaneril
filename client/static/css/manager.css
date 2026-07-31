@@ -605,11 +605,7 @@
 
 .client-report{
     direction: rtl;
-    display: flex;
-    flex-direction: column;
     row-gap: 14px;
-    width: 100%;
-    box-sizing: border-box;
 }
 .client-report-profile{
     display: flex;
@@ -620,20 +616,23 @@
 }
 .client-report-profile-head{
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     column-gap: 12px;
 }
 .client-report-avatar{
-    width: 74px;
-    height: 74px;
+    width: 75px !important;
+    height: 75px !important;
     margin-left: 0;
     font-size: 1.85rem;
     font-weight: bold;
     color: #fff;
     background: #638390 !important;
     border: 1px solid #353318;
-    box-shadow: 3px 10px 11px 0 #d3d3d3;
+    box-shadow: 0 0 11px #d3d3d3;
     flex-shrink: 0;
+    z-index: -1;
 }
 .client-report-title{
     display: flex;
@@ -784,9 +783,7 @@
     .client-report-grid{
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .client-report-profile-head{
-        align-items: flex-start;
-    }
+
     .client-report-total{
         flex-direction: column;
         align-items: flex-start;
