@@ -602,6 +602,202 @@
 .client-details.hide{
     display: none;
 }
+
+.client-report{
+    direction: rtl;
+    display: flex;
+    flex-direction: column;
+    row-gap: 14px;
+    width: 100%;
+    box-sizing: border-box;
+}
+.client-report-profile{
+    display: flex;
+    flex-direction: column;
+    row-gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #ddddddc4;
+}
+.client-report-profile-head{
+    display: flex;
+    align-items: center;
+    column-gap: 12px;
+}
+.client-report-avatar{
+    width: 74px;
+    height: 74px;
+    margin-left: 0;
+    font-size: 1.85rem;
+    font-weight: bold;
+    color: #fff;
+    background: #638390 !important;
+    border: 1px solid #353318;
+    box-shadow: 3px 10px 11px 0 #d3d3d3;
+    flex-shrink: 0;
+}
+.client-report-title{
+    display: flex;
+    flex-direction: column;
+    row-gap: 2px;
+    min-width: 0;
+}
+.client-report-title>span{
+    font-size: .75rem;
+    color: #5f6060;
+}
+.client-report-title>strong{
+    color: #313131;
+    font-size: 1.45rem;
+    line-height: 1.2;
+}
+.client-report-title>small{
+    color: #5f6060;
+    font-size: .75rem;
+}
+.client-report-total{
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fbfbfb;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+.client-report-total>span{
+    font-size: .78rem;
+    color: #5f6060;
+}
+.client-report-total>strong{
+    font-size: 1.7rem;
+    color: #313131;
+}
+.client-report-grid{
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+}
+.client-report-stat{
+    border: 1px solid #e8ebef;
+    border-radius: 8px;
+    padding: 10px;
+    background: #fff;
+    min-height: 62px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 4px;
+}
+.client-report-stat>span{
+    color: #5f6060;
+    font-size: .68rem;
+}
+.client-report-stat>strong{
+    color: #313131;
+    font-size: 1.1rem;
+}
+.client-report-section{
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+}
+.client-report-section-head{
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 10px;
+    border-bottom: 1px solid #eeeeee;
+    padding-bottom: 8px;
+}
+.client-report-section-head>span{
+    font-weight: bold;
+    color: #313131;
+}
+.client-report-section-head>small{
+    color: #5f6060;
+    font-size: .68rem;
+}
+.client-report-events{
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+}
+.client-report-event{
+    border: 1px solid #e8ebef;
+    border-radius: 8px;
+    padding: 9px;
+    display: grid;
+    grid-template-columns: 34px 1fr auto;
+    column-gap: 8px;
+    align-items: center;
+    background: #fff;
+}
+.client-report-event-icon{
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #f3f5f7;
+    color: #638390;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.client-report-event-receipt .client-report-event-icon{
+    color: #5fbb98;
+}
+.client-report-event-content{
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    row-gap: 2px;
+}
+.client-report-event-content>strong{
+    color: #313131;
+    font-size: .82rem;
+}
+.client-report-event-content>span,
+.client-report-event-content>small{
+    color: #5f6060;
+    font-size: .68rem;
+}
+.client-report-event-amount{
+    color: #313131;
+    font-weight: bold;
+    font-size: .86rem;
+    white-space: nowrap;
+}
+.client-report-empty{
+    min-height: 120px;
+    border: 1px dashed #d6d6d6;
+    border-radius: 8px;
+    color: #5f6060;
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: .82rem;
+}
+
+@media (max-width: 768px){
+    .client-report-grid{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .client-report-profile-head{
+        align-items: flex-start;
+    }
+    .client-report-total{
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .client-report-event{
+        grid-template-columns: 34px 1fr;
+    }
+    .client-report-event-amount{
+        grid-column: 2;
+    }
+}
 .s-item-name{
     font-size: .8rem;
     color:#313131;

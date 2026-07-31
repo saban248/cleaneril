@@ -270,6 +270,7 @@ async function switchViewClientDashboard(v = c_clients.currentCard, fetch = true
             }
             hideClientReceipts()
             hideClientReceipt()
+            hideClientReports()
             break
         case clientCardsView.RECEIPT:
             showClientReceipts()
@@ -278,7 +279,16 @@ async function switchViewClientDashboard(v = c_clients.currentCard, fetch = true
             }
             hideClientOrder()
             hideClientOrders()
-            break       
+            hideClientReports()
+            break
+        case clientCardsView.REPORTS:
+            showClientReports()
+
+            hideClientOrder()
+            hideClientOrders()
+            hideClientReceipt()
+            hideClientReceipts()
+            break
     }
     const lastBtnView = document.getElementById(`cdv${c_clients.currentCard}`)
     const currentBtnView = document.getElementById(`cdv${v}`)
@@ -470,6 +480,19 @@ function hideClientReceipts(){
     const parent = document.getElementById("the-client-receipts");
     parent?.classList.remove("show")
 
+}
+
+function hideClientReports(){
+    const parent = document.getElementById("client-reports")
+    parent.classList.remove("show")
+}
+
+function showClientReports(){
+    const parent = document.getElementById("client-reports")
+    if (typeof renderClientSummaryReport === "function"){
+        renderClientSummaryReport()
+    }
+    parent.classList.add("show")
 }
 
 function editReceiptOrder(){

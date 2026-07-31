@@ -274,7 +274,7 @@
     background: rgb(67, 27, 35);
 }
 
-#the-client-orders, #the-client-receipts{
+#the-client-orders, #the-client-receipts, #client-reports{
   position: absolute; /* או fixed אם זה menu */
   transform: scale(0);
   transform-origin: top right;
@@ -286,7 +286,7 @@
   border-color: #ebebeb !important;
 }
 
-#the-client-orders.show, #the-client-receipts.show{
+#the-client-orders.show, #the-client-receipts.show, #client-reports.show{
     position: static;
     transform: scale(1);
     opacity: 1;
