@@ -35,7 +35,7 @@ function reportEscapeHtml(value){
 
 function reportMoney(value){
     const amount = Number(value || 0);
-    return `${amount.toLocaleString("he-IL")}₪`;
+    return `${amount.toLocaleString("he-IL")}`;
 }
 
 function reportDate(value){
@@ -161,6 +161,7 @@ function renderClientSummaryReport(){
                 </div>
                 <div class="client-report-event-content">
                     <strong>${reportEscapeHtml(event.title)}</strong>
+                    
                     <span>${reportEscapeHtml(event.text)}</span>
                     <small>${reportDate(event.date)}</small>
                 </div>
@@ -175,14 +176,19 @@ function renderClientSummaryReport(){
                 <div class="client-report-profile-head">
                     <div class="avatar client-report-avatar">${reportEscapeHtml(clientInitial)}</div>
                     <div class="client-report-title">
-                        <span>פרופיל דו"ח סיכום לקוח</span>
                         <strong>${reportEscapeHtml(clientName)}</strong>
+                    </div>
+                    <div class="crt-info">
                         <small>${reportEscapeHtml(primaryOrder.phone || "")}</small>
+                        <i class="fa-solid fa-phone"></i>
                     </div>
                 </div>
                 <div class="client-report-total">
-                    <span>סכום כל העסקאות של הלקוח</span>
-                    <strong>${reportMoney(totalDeals)}</strong>
+                    <span>סך הכנסות </span>
+                    <div>
+                        <span class="rtf-number" id="fundsTotalIncome">${reportMoney(totalDeals)}</span>
+                        <span class="rtf-shekel-ion">₪</span>
+                    </div>
                 </div>
             </div>
 

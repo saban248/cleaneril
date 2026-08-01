@@ -619,9 +619,15 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    column-gap: 12px;
+    row-gap: 5px;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.08) 3px, transparent 3px),
+        radial-gradient(circle at 80% 70%, rgba(255,255,255,.06) 2px, transparent 2px),
+        radial-gradient(circle at 60% 30%, rgba(0,0,0,.03) 2px, transparent 2px),
+        linear-gradient(#dbe8f1, #dbeef1);
 }
 .client-report-avatar{
+    margin-top: 5px;
     width: 75px !important;
     height: 75px !important;
     margin-left: 0;
@@ -630,38 +636,55 @@
     color: #fff;
     background: #638390 !important;
     border: 1px solid #353318;
-    box-shadow: 0 0 11px #d3d3d3;
+    box-shadow: 0 0 11px #d3d3d3 !important;
     flex-shrink: 0;
-    z-index: -1;
 }
 .client-report-title{
     display: flex;
     flex-direction: column;
     row-gap: 2px;
-    min-width: 0;
+    text-align: right;
 }
-.client-report-title>span{
-    font-size: .75rem;
+.crt-info{
+    font-size: 12px;
     color: #5f6060;
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+    background: #f9fffd;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    padding: 5px;
+    box-shadow: 3px 4px 5px #cddef2;
 }
+.crt-info>i{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid #c0c0c0;
+    font-size: 10px !important;
+    padding: 2px;
+    text-align: center;
+    cursor: pointer;
+}
+
+
 .client-report-title>strong{
     color: #313131;
     font-size: 1.45rem;
     line-height: 1.2;
 }
-.client-report-title>small{
-    color: #5f6060;
-    font-size: .75rem;
-}
+
 .client-report-total{
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     background: #fbfbfb;
-    padding: 12px;
+    padding: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 12px;
+    flex-direction: column;
+    gap: 1px;
 }
 .client-report-total>span{
     font-size: .78rem;
