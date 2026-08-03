@@ -45,6 +45,84 @@ function reportDate(value){
     return `${dateFloatToYMD(value)} ${dateFloatToHour(value)}`;
 }
 
+function getClientReportCoordinates(order){
+    if (!order){
+        return null;
+    }
+
+    let coordinates = order.coordinates || order.coordinate;
+    if (!coordinates){
+        return null;
+    }
+
+    if (typeof coordinates == "string"){
+        try {
+            coordinates = JSON.parse(coordinates);
+        } catch (err) {
+            return null;
+        }
+    }
+
+    if (!Array.isArray(coordinates) || coordinates.length < 2){
+        return null;
+    }
+
+    const lat = parseFloat(coordinates[0]);
+    const lng = parseFloat(coordinates[1]);
+    if (Number.isNaN(lat) || Number.isNaN(lng)){
+        return null;
+    }
+
+    return [lat, lng];
+}
+
+async function renderClientReportProfileMap(order){
+    const mapEl = document.getElementById("clientReportProfileMap");
+    if (!mapEl || typeof L == "undefined"){
+        return;
+    }
+
+    let coordinates = getClientReportCoordinates(order);
+    if (!coordinates && order?.address){
+        coordinates = await geocodeAddressOSM(order.address);
+    }
+    if (!coordinates){
+        mapEl.classList.add("hide");
+        return;
+    }
+
+    if (c_runtime.clientReportProfileMap){
+        c_runtime.clientReportProfileMap.remove();
+        c_runtime.clientReportProfileMap = null;
+    }
+
+    const map = L.map(mapEl, {
+        zoomControl: false,
+        attributionControl: false,
+        dragging: false,
+        scrollWheelZoom: false,
+        doubleClickZoom: false,
+        boxZoom: false,
+        keyboard: false,
+        tap: false
+    }).setView(coordinates, 12);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 20
+    }).addTo(map);
+
+    L.circleMarker(coordinates, {
+        radius: 8,
+        color: "#ffffff",
+        weight: 3,
+        fillColor: "#ef4444",
+        fillOpacity: 1
+    }).addTo(map);
+
+    c_runtime.clientReportProfileMap = map;
+    setTimeout(() => map.invalidateSize(), 1000);
+}
+
 function reportOrderTotal(order){
     if (!order){
         return 0;
@@ -174,6 +252,7 @@ function renderClientSummaryReport(){
         <div class="client-report">
             <div class="client-report-profile">
                 <div class="client-report-profile-head">
+                    <div class="client-report-map-bg" id="clientReportProfileMap"></div>
                     <div class="avatar client-report-avatar">${reportEscapeHtml(clientInitial)}</div>
                     <div class="client-report-title">
                         <strong>${reportEscapeHtml(clientName)}</strong>
@@ -184,10 +263,12 @@ function renderClientSummaryReport(){
                     </div>
                 </div>
                 <div class="client-report-total">
-                    <span>סך הכנסות </span>
                     <div>
-                        <span class="rtf-number" id="fundsTotalIncome">${reportMoney(totalDeals)}</span>
-                        <span class="rtf-shekel-ion">₪</span>
+                        <span>סך הכנסות </span>
+                        <div>
+                            <span class="rtf-number" id="fundsTotalIncome">${reportMoney(totalDeals)}</span>
+                            <span class="rtf-shekel-ion">₪</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -238,4 +319,6 @@ function renderClientSummaryReport(){
             </div>
         </div>
     `;
+
+    renderClientReportProfileMap(primaryOrder);
 }

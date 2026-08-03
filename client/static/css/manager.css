@@ -615,16 +615,36 @@
     border-bottom: 1px solid #ddddddc4;
 }
 .client-report-profile-head{
+    position: relative;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     row-gap: 5px;
     background:
         radial-gradient(circle at 20% 20%, rgba(255,255,255,.08) 3px, transparent 3px),
         radial-gradient(circle at 80% 70%, rgba(255,255,255,.06) 2px, transparent 2px),
         radial-gradient(circle at 60% 30%, rgba(0,0,0,.03) 2px, transparent 2px),
         linear-gradient(#dbe8f1, #dbeef1);
+}
+.client-report-profile-head::after{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,.22), rgba(219,238,241,.78));
+    z-index: 1;
+    pointer-events: none;
+}
+.client-report-map-bg{
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    filter: saturate(.8) contrast(.95);
+}
+.client-report-profile-head > *:not(.client-report-map-bg){
+    position: relative;
+    z-index: 2;
 }
 .client-report-avatar{
     margin-top: 5px;
