@@ -1,7 +1,7 @@
 import os
 
 import markdown
-from flask import request, render_template, redirect, url_for
+from flask import request, render_template, redirect, url_for, abort, send_from_directory
 
 from api.databases import subscriptions
 from api.databases.crads import ApiCards
@@ -76,3 +76,13 @@ def terms_of_services():
     )
 
     return render_template(Pages.terms.html, terms=html)
+
+
+@cleaneril.route("/icons/<path:filename>")
+def icons(filename:str):
+    if "/" in filename or "\\" in filename:
+        abort(404)
+    if not filename.endswith(".svg"):
+        abort(404)
+
+    return send_from_directory(ServerConfig.ICONS_FOLDER, filename)

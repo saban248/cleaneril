@@ -327,3 +327,8 @@ window.open(url,"_blank");
 }
 
 
+
+
+async function icon(name) {
+    return await fetch(`/icons/${name}.svg`).then(r => r.text());
+}

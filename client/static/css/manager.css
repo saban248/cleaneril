@@ -610,16 +610,16 @@
 .client-report-profile{
     display: flex;
     flex-direction: column;
-    row-gap: 12px;
     padding-bottom: 12px;
-    border-bottom: 1px solid #ddddddc4;
 }
 .client-report-profile-head{
     position: relative;
     overflow: hidden;
     display: flex;
+    min-height: 190px;
     flex-direction: column;
     align-items: center;
+    justify-content: space-between;
     row-gap: 5px;
     background:
         radial-gradient(circle at 20% 20%, rgba(255,255,255,.08) 3px, transparent 3px),
@@ -663,7 +663,7 @@
     display: flex;
     flex-direction: column;
     row-gap: 2px;
-    text-align: right;
+    text-align: center;
 }
 .crt-info{
     font-size: 12px;
@@ -697,44 +697,59 @@
 
 .client-report-total{
     border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    background: #fbfbfb;
+    background: #fdfffc;
     padding: 10px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    flex-direction: column;
+    align-items: end;
+    flex-direction: row;
     gap: 1px;
 }
-.client-report-total>span{
+.client-report-total>div>span{
     font-size: .78rem;
-    color: #5f6060;
+    color: #626262;
 }
 .client-report-total>strong{
-    font-size: 1.7rem;
+    font-size: 1.4rem;
     color: #313131;
 }
 .client-report-grid{
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
 }
+
+.client-report-grid .income{
+    background: #edffee;
+    color: #1d8122;
+}
+.client-report-grid .expense{
+    background: #fff1f1;
+    color: #c00c0c;
+}
+
 .client-report-stat{
     border: 1px solid #e8ebef;
     border-radius: 8px;
     padding: 10px;
     background: #fff;
-    min-height: 62px;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex-direction: row;
+    justify-content: space-between;
     row-gap: 4px;
 }
-.client-report-stat>span{
-    color: #5f6060;
-    font-size: .68rem;
+.client-report-stat>div{
+    flex:1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    row-gap:5px;
 }
-.client-report-stat>strong{
+.client-report-stat>div>span{
+    color: #5f6060;
+    font-size: .58rem;
+}
+.client-report-stat>div>strong{
     color: #313131;
     font-size: 1.1rem;
 }
@@ -828,8 +843,6 @@
     }
 
     .client-report-total{
-        flex-direction: column;
-        align-items: flex-start;
     }
     .client-report-event{
         grid-template-columns: 34px 1fr;

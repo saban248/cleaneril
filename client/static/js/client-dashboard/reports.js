@@ -199,7 +199,7 @@ function buildClientReportEvents(orders, receipts){
     });
 }
 
-function renderClientSummaryReport(){
+async function renderClientSummaryReport(){
     const parent = document.getElementById("client-reports");
     if (!parent){
         return;
@@ -253,9 +253,11 @@ function renderClientSummaryReport(){
             <div class="client-report-profile">
                 <div class="client-report-profile-head">
                     <div class="client-report-map-bg" id="clientReportProfileMap"></div>
-                    <div class="avatar client-report-avatar">${reportEscapeHtml(clientInitial)}</div>
-                    <div class="client-report-title">
-                        <strong>${reportEscapeHtml(clientName)}</strong>
+                    <div>
+                        <div class="avatar client-report-avatar">${reportEscapeHtml(clientInitial)}</div>
+                        <div class="client-report-title">
+                            <strong>${reportEscapeHtml(clientName)}</strong>
+                        </div>
                     </div>
                     <div class="crt-info">
                         <small>${reportEscapeHtml(primaryOrder.phone || "")}</small>
@@ -264,47 +266,74 @@ function renderClientSummaryReport(){
                 </div>
                 <div class="client-report-total">
                     <div>
-                        <span>סך הכנסות </span>
+                        <span>סך הכנסות אחרי הוצאות</span>
                         <div>
                             <span class="rtf-number" id="fundsTotalIncome">${reportMoney(totalDeals)}</span>
                             <span class="rtf-shekel-ion">₪</span>
                         </div>
                     </div>
+                    <i class="icon icon-64">
+                        ${await icon("indicator")}
+                    </i>
                 </div>
             </div>
 
             <div class="client-report-grid">
                 <div class="client-report-stat">
-                    <span>כסף שנכנס</span>
-                    <strong>${reportMoney(receivedMoney)}</strong>
+                    <div>
+                        <span>כסף שנכנס</span>
+                        <strong class='income'>${reportMoney(receivedMoney)}+</strong>
+                    </div>
+                    <i class='icon icon-32'>${await icon("money")}</i>
                 </div>
                 <div class="client-report-stat">
-                    <span>יתרה פתוחה</span>
-                    <strong>${reportMoney(openBalance)}</strong>
+                    <div>
+                        <span>יתרה פתוחה</span>
+                        <strong class='income'>${reportMoney(openBalance)}+</strong>
+                    </div>
+                    <i class='icon icon-32'>${await icon("alarm")}</i>
                 </div>
                 <div class="client-report-stat">
-                    <span>מספר עסקאות</span>
-                    <strong>${orders.length}</strong>
+                    <div>
+                        <span>ממוצע להזמנה</span>
+                        <strong class='income'>${reportMoney(averageDeal)}+</strong>
+                    </div>
+                    <i class='icon icon-32'>${await icon("graph-color")}</i>
                 </div>
                 <div class="client-report-stat">
-                    <span>ממוצע עסקה</span>
-                    <strong>${reportMoney(averageDeal)}</strong>
+                    <div>
+                        <span>הנחות</span>
+                        <strong class='expense'>${reportMoney(totalDiscounts)}-</strong>
+                    </div>
+                    <i class='icon icon-32'>${await icon("discount")}</i>
                 </div>
                 <div class="client-report-stat">
-                    <span>הושלמו</span>
-                    <strong>${getClientReportStatCount(orders, StateOrder.DONE)}</strong>
+                    <div>
+                        <span>הזמנות</span>
+                        <strong class=''>${orders.length}</strong>
+                    </div>
+                    <i class='icon icon-32'>${await icon("list")}</i>
                 </div>
                 <div class="client-report-stat">
-                    <span>בהמתנה</span>
-                    <strong>${getClientReportStatCount(orders, StateOrder.CLOSED)}</strong>
+                    <div>
+                        <span>השולמו</span>
+                        <strong class=''>${getClientReportStatCount(orders, StateOrder.DONE)}</strong>
+                    </div>
+                    <i class='icon icon-32'>${await icon("num1")}</i>
                 </div>
                 <div class="client-report-stat">
-                    <span>לא נסגרו</span>
-                    <strong>${getClientReportStatCount(orders, StateOrder.WAIT)}</strong>
+                    <div>
+                        <span>בהמתנה</span>
+                        <strong class=''>${getClientReportStatCount(orders, StateOrder.CLOSED)}</strong>
+                    </div>
+                    <i class='icon icon-32'>${await icon("calendar-color")}</i>
                 </div>
                 <div class="client-report-stat">
-                    <span>הנחות</span>
-                    <strong>${reportMoney(totalDiscounts)}</strong>
+                    <div>
+                        <span>לא נסגרו</span>
+                        <strong class=''>${getClientReportStatCount(orders, StateOrder.WAIT)}</strong>
+                    </div>
+                    <i class='icon icon-32'>${await icon("finish-register")}</i>
                 </div>
             </div>
 

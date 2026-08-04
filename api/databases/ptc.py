@@ -35,6 +35,7 @@ class ServerConfig:
     DEFAULT_COMPANY_EMAIL = "example@company.com"
     VAT_IL = 18
     APP_VERSION = 1.0
+    ICONS_FOLDER = os.path.join(os.path.join("client", "pages"), "icon")
     TWAS = 'ACe0fa1966fb1330990ed845bc647c0a14'
     TWAT = 'f79151c490651a584dec75cd630f2f3b'
     TWVSS = 'VAf7a394ea259393417219044dd804f209'
