@@ -408,9 +408,12 @@
     flex-direction: row-reverse;
     column-gap: 10px;
     row-gap: 20px;
-    flex: 1;
-    height: 90%;
-    overflow: scroll;
+    flex: none;
+    height: calc(100dvh - 74px);
+    max-height: calc(100dvh - 74px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
     background:white;
 }
 .input-card-edit{
@@ -642,6 +645,9 @@
     pointer-events: none;
     filter: saturate(.8) contrast(.95);
 }
+.client-report-map-bg *{
+    pointer-events: none !important;
+}
 .client-report-profile-head > *:not(.client-report-map-bg){
     position: relative;
     z-index: 2;
@@ -720,11 +726,11 @@
 }
 
 .client-report-grid .income{
-    background: #edffee;
+    background: #f3fff3;
     color: #1d8122;
 }
 .client-report-grid .expense{
-    background: #fff1f1;
+    background: #fff6f6;
     color: #c00c0c;
 }
 
@@ -754,6 +760,8 @@
     font-size: 1.1rem;
 }
 .client-report-section{
+    margin-top: 30px;
+    padding-top: 10px;
     display: flex;
     flex-direction: column;
     row-gap: 10px;
@@ -1169,7 +1177,18 @@
     }
     .client-card{
         width: 100%;
+        height: auto !important;
+        min-height: max-content;
+        max-height: none !important;
+        overflow: visible;
         
+    }
+    #the-client-orders.show,
+    #the-client-receipts.show,
+    #client-reports.show{
+        height: auto !important;
+        min-height: max-content;
+        max-height: none !important;
     }
     .main-cards-in-ex-pr{
         width: 100% !important;

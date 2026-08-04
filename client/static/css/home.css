@@ -434,7 +434,6 @@ body, *{
     transform: translateX(-100%);
     transition: transform 0.3s ease, opacity 0.3s ease;
     display: none;
-
     flex-direction: column;
     padding: .75rem;
     max-width: 350px;
@@ -442,7 +441,6 @@ body, *{
     backdrop-filter: blur(9px);
     -webkit-backdrop-filter: blur(9px);
     margin-bottom: 20px;
-    min-height: 80vh;
     position: relative;
     transform-origin: center;
     opacity: 1 !important;

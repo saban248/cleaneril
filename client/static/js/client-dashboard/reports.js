@@ -272,9 +272,6 @@ async function renderClientSummaryReport(){
                             <span class="rtf-shekel-ion">₪</span>
                         </div>
                     </div>
-                    <i class="icon icon-64">
-                        ${await icon("indicator")}
-                    </i>
                 </div>
             </div>
 
