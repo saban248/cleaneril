@@ -11,14 +11,11 @@ async function fetchClientReports(clientId) {
                 showToast(res.notice,ToastStat.ERROR);
                 return
             }
-
-            console.log(res.reports)
+            c_runtime.clientsReports[clientId] = res.reports;
         }
     )
     
 }
-
-
 
 
 function reportEscapeHtml(value){
@@ -99,13 +96,13 @@ async function renderClientReportProfileMap(order){
     const map = L.map(mapEl, {
         zoomControl: false,
         attributionControl: false,
-        dragging: false,
-        scrollWheelZoom: false,
-        doubleClickZoom: false,
+        dragging: true,
+        scrollWheelZoom: true,
+        doubleClickZoom: true,
         boxZoom: false,
         keyboard: false,
-        tap: false
-    }).setView(coordinates, 12);
+        tap: true
+    }).setView(coordinates, 10);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 20
@@ -139,11 +136,6 @@ function reportOrderTotal(order){
     return Math.max(0, (parseInt(order.price) || 0) - (parseInt(order.off_price) || 0));
 }
 
-function getClientReportPrimaryOrder(){
-    return c_runtime.orders.find(order => order.order_id == c_runtime.currentOrderIdView)
-        || c_runtime.orders.find(order => order.client_id == c_runtime.currentClientIdView)
-        || null;
-}
 
 function getClientReportOrders(){
     const primaryOrder = getClientReportPrimaryOrder();
@@ -204,9 +196,10 @@ async function renderClientSummaryReport(){
     if (!parent){
         return;
     }
-
-    const orders = getClientReportOrders();
-    if (!orders.length){
+    await fetchClientReports(c_runtime.currentClientIdView);
+    const data = c_runtime.clientsReports[c_runtime.currentClientIdView];
+    const order = get_order_by_order_id(c_runtime.currentOrderIdView);
+    if (!data){
         parent.innerHTML = `
             <div class="client-report-empty">
                 <i class="fa-solid fa-chart-column"></i>
@@ -216,20 +209,19 @@ async function renderClientSummaryReport(){
         return;
     }
 
-    const primaryOrder = getClientReportPrimaryOrder() || orders[0];
-    const receipts = getClientReportReceipts(orders);
-    const events = buildClientReportEvents(orders, receipts);
-    const totalDeals = orders.reduce((total, order) => total + reportOrderTotal(order), 0);
+    const receipts = [];//getClientReportReceipts(orders);
+    const events = [];//buildClientReportEvents(orders, receipts);
+    const totalDeals = []//orders.reduce((total, order) => total + reportOrderTotal(order), 0);
     const receivedMoney = receipts.reduce(function(total, receipt){
         const order = orders.find(item => item.order_id == receipt.order_id);
         return total + reportOrderTotal(order);
     }, 0);
-    const totalDiscounts = orders.reduce((total, order) => total + (parseInt(order.off_price) || 0), 0);
-    const averageDeal = orders.length ? Math.round(totalDeals / orders.length) : 0;
+    const totalDiscounts = []//orders.reduce((total, order) => total + (parseInt(order.off_price) || 0), 0);
+    const averageDeal = [];//orders.length ? Math.round(totalDeals / orders.length) : 0;
     const openBalance = Math.max(0, totalDeals - receivedMoney);
-    const lastOrder = orders.slice().sort((a, b) => (b.date || 0) - (a.date || 0))[0];
-    const clientName = primaryOrder.fullname || "לקוח";
-    const clientInitial = clientName.trim().charAt(0) || "?";
+    const lastOrder = [];//orders.slice().sort((a, b) => (b.date || 0) - (a.date || 0))[0];
+    const clientName = order.fullname || "-";
+    const clientInitial = order.fullname ? order.fullname.charAt(0).toUpperCase() : "?";
 
     const eventHtml = events.slice(0, 12).map(function(event){
         return `
@@ -260,7 +252,7 @@ async function renderClientSummaryReport(){
                         </div>
                     </div>
                     <div class="crt-info">
-                        <small>${reportEscapeHtml(primaryOrder.phone || "")}</small>
+                        <small>${reportEscapeHtml(order.phone || "")}</small>
                         <i class="fa-solid fa-phone"></i>
                     </div>
                 </div>
@@ -268,7 +260,7 @@ async function renderClientSummaryReport(){
                     <div>
                         <span>סך הכנסות אחרי הוצאות</span>
                         <div>
-                            <span class="rtf-number" id="fundsTotalIncome">${reportMoney(totalDeals)}</span>
+                            <span class="rtf-number" id="fundsTotalIncome">${reportMoney(data.income)}</span>
                             <span class="rtf-shekel-ion">₪</span>
                         </div>
                     </div>
@@ -278,57 +270,64 @@ async function renderClientSummaryReport(){
             <div class="client-report-grid">
                 <div class="client-report-stat">
                     <div>
-                        <span>כסף שנכנס</span>
-                        <strong class='income'>${reportMoney(receivedMoney)}+</strong>
+                        <span>כסף ברוטו</span>
+                        <strong class='income'>${reportMoney(data.funds)}+</strong>
                     </div>
                     <i class='icon icon-32'>${await icon("money")}</i>
                 </div>
                 <div class="client-report-stat">
                     <div>
                         <span>יתרה פתוחה</span>
-                        <strong class='income'>${reportMoney(openBalance)}+</strong>
+                        <h4 class='income'>${reportMoney(openBalance)}+</h4>
                     </div>
                     <i class='icon icon-32'>${await icon("alarm")}</i>
                 </div>
                 <div class="client-report-stat">
                     <div>
                         <span>ממוצע להזמנה</span>
-                        <strong class='income'>${reportMoney(averageDeal)}+</strong>
+                        <h4 class='income'>${reportMoney(data.ave_income)}+</h4>
                     </div>
                     <i class='icon icon-32'>${await icon("graph-color")}</i>
                 </div>
                 <div class="client-report-stat">
                     <div>
                         <span>הנחות</span>
-                        <strong class='expense'>${reportMoney(totalDiscounts)}-</strong>
+                        <h4 class='expense'>${reportMoney(data.off_price)}-</h4>
+                    </div>
+                    <i class='icon icon-32'>${await icon("discount")}</i>
+                </div>
+                <div class="client-report-stat">
+                    <div>
+                        <span>הוצאות</span>
+                        <h4 class='expense'>${reportMoney(data.expenses)}-</h4>
                     </div>
                     <i class='icon icon-32'>${await icon("discount")}</i>
                 </div>
                 <div class="client-report-stat">
                     <div>
                         <span>הזמנות</span>
-                        <strong class=''>${orders.length}</strong>
+                        <strong class=''>${data.orders_count}</strong>
                     </div>
                     <i class='icon icon-32'>${await icon("list")}</i>
                 </div>
                 <div class="client-report-stat">
                     <div>
                         <span>השולמו</span>
-                        <strong class=''>${getClientReportStatCount(orders, StateOrder.DONE)}</strong>
+                        <strong class=''>${data.done}</strong>
                     </div>
                     <i class='icon icon-32'>${await icon("num1")}</i>
                 </div>
                 <div class="client-report-stat">
                     <div>
                         <span>בהמתנה</span>
-                        <strong class=''>${getClientReportStatCount(orders, StateOrder.CLOSED)}</strong>
+                        <strong class=''>${data.closed}</strong>
                     </div>
                     <i class='icon icon-32'>${await icon("calendar-color")}</i>
                 </div>
                 <div class="client-report-stat">
                     <div>
                         <span>לא נסגרו</span>
-                        <strong class=''>${getClientReportStatCount(orders, StateOrder.WAIT)}</strong>
+                        <strong class=''>${data.wait}</strong>
                     </div>
                     <i class='icon icon-32'>${await icon("finish-register")}</i>
                 </div>
@@ -346,5 +345,5 @@ async function renderClientSummaryReport(){
         </div>
     `;
 
-    renderClientReportProfileMap(primaryOrder);
+    renderClientReportProfileMap(order);
 }

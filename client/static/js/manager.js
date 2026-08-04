@@ -21,7 +21,8 @@ const c_runtime = {
     currentInvoiceIdView:null,
     currentWorkerIdView:null,
     currentUPermission:null,
-    currentManagerIdView:null
+    currentManagerIdView:null,
+    clientsReports:{}
 }
 
 

@@ -1,4 +1,3 @@
-from api.data import funds
 from api.data.ptc import AnalyticsData
 from api.databases import orders
 from api.databases.ptc import StateOrder
@@ -23,7 +22,8 @@ class DataOrders(AnalyticsData):
         income =0
         for order in self.__orders:
             if order.stat != StateOrder.DONE: continue
-            income += (order.price-order.off_price)
+            income += order.price
+            income = (income-order.off_price)-order.expense
 
         return income
 
@@ -44,6 +44,9 @@ class DataOrders(AnalyticsData):
 
     def get_place_client(self):
         return 100
+
+    def get_average_income_orders_client(self):
+        return float(f"{self.get_total_income_client()/(self.__orders.__len__() or 1):.2f}")
 
     def wait_client(self):return list(filter(lambda x: x.stat == StateOrder.WAIT, self.__orders))
     def cancel_client(self):return list(filter(lambda x: x.stat == StateOrder.CANCELED, self.__orders))

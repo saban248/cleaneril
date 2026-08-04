@@ -503,6 +503,7 @@
     min-width: 350px;
     box-sizing: content-box !important;
     background: #fff !important;
+    min-height: 80vh;
 }
 .client-head, .worker-head{
     display: flex;
@@ -728,6 +729,7 @@
 .client-report-grid .income{
     background: #f3fff3;
     color: #1d8122;
+    font-weight: 100 !important;
 }
 .client-report-grid .expense{
     background: #fff6f6;
@@ -755,9 +757,10 @@
     color: #5f6060;
     font-size: .58rem;
 }
-.client-report-stat>div>strong{
+.client-report-stat>div>h4{
     color: #313131;
     font-size: 1.1rem;
+    font-weight: light !important;
 }
 .client-report-section{
     margin-top: 30px;

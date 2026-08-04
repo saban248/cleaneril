@@ -204,9 +204,10 @@ def get_api_action(**breq) -> dict:
 
             packet = ClientReports(len(ana.wait_client()), len(ana.cancel_client()), len(ana.closed_client()), len(ana.done_client()),
                                    ana.get_place_client(), ana.get_total_funds_client(), ana.get_total_income_client(),
-                                   ana.get_total_off_price_client(), ana.get_total_expenses_client())
+                                   ana.get_total_off_price_client(), ana.get_total_expenses_client(),0,
+                                   ana.get_average_income_orders_client())
 
-            return SJson.auto_code(__success__, **{"reports":packet})
+            return SJson.auto_code(__success__, **{"reports":packet.build()})
 
     return SJson.auto_code(__success__)
 
