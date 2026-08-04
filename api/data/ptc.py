@@ -46,6 +46,7 @@ class ClientReports:
     expenses:int    = None
     orders_count:int= None
     ave_income:float= None
+    balance:int     = None
 
     def build(self):
         self.orders_count = self.wait+self.canceled+self.closed+self.done

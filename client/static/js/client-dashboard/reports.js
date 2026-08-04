@@ -278,7 +278,7 @@ async function renderClientSummaryReport(){
                 <div class="client-report-stat">
                     <div>
                         <span>יתרה פתוחה</span>
-                        <h4 class='income'>${reportMoney(openBalance)}+</h4>
+                        <h4 class='income'>${reportMoney(data.balance)}+</h4>
                     </div>
                     <i class='icon icon-32'>${await icon("alarm")}</i>
                 </div>

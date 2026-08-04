@@ -42,6 +42,14 @@ class DataOrders(AnalyticsData):
             expenses += order.expense
         return expenses
 
+    def get_total_closed_orders_balance(self):
+        balance = 0
+        for o in self.__orders:
+            if o.stat == StateOrder.CLOSED:
+                balance += (o.price-o.off_price)
+
+        return balance
+
     def get_place_client(self):
         return 100
 
