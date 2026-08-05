@@ -62,3 +62,11 @@ async function deleteOrderFromDashhbaord(order_id = c_runtime.currentOrderIdView
     await deleteOrder(order_id, ()=>openClientDashbaord(c_runtime.currentClientIdView), true)
     
 }
+
+
+function getOrdersByClientId(clientId){
+    if (!clientId){return []}
+    return c_runtime.orders.filter(order => order.client_id == clientId)
+}
+
+

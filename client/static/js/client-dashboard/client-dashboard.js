@@ -331,7 +331,7 @@ function switchMenuActionClientCard(){
 
     const s = (element) => element.classList.remove("hide")||element.classList.add("show")
     const h = (element) => element.classList.remove("show")||element.classList.add("hide")
-    const receipt = get_receipt_by_order_id(c_runtime.currentOrderIdView);
+    const receipt = getReceiptsByOrderId(c_runtime.currentOrderIdView);
     switch (c_clients.currentCard){
         case clientCardsView.ORDER:
             if (c_clients.new_order||c_clients.order_edit){

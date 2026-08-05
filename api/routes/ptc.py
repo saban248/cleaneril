@@ -20,10 +20,36 @@ class ClientLeadFrom(IntFlag):
 
 
 class CleanOrderType(IntFlag):
-    UPHOLSTERY      = 1<<0
-    AIR_CONDITIONER = 1<<1
-    # mask
-    GENERAL         = UPHOLSTERY|AIR_CONDITIONER
+    UPHOLSTERY        = 1 << 0   # ריפודים
+    AIR_CONDITIONER   = 1 << 1   # ניקוי מזגנים
+    WINDOWS           = 1 << 2   # ניקוי חלונות
+    CARPET            = 1 << 3   # ניקוי שטיחים
+    MATTRESS          = 1 << 4   # ניקוי מזרנים
+    CURTAINS          = 1 << 5   # ניקוי וילונות
+    TILES             = 1 << 6   # ניקוי רצפות / קרצוף
+    POLISH            = 1 << 7   # פוליש
+    PRESSURE_WASH     = 1 << 8   # שטיפה בלחץ
+    SOLAR_PANELS      = 1 << 9   # ניקוי פאנלים סולאריים
+    OFFICE            = 1 << 10  # ניקיון משרדים
+    HOUSE             = 1 << 11  # ניקיון בתים
+    POST_RENOVATION   = 1 << 12  # ניקיון אחרי שיפוץ
+
+    # Mask
+    GENERAL = (
+        UPHOLSTERY
+        | AIR_CONDITIONER
+        | WINDOWS
+        | CARPET
+        | MATTRESS
+        | CURTAINS
+        | TILES
+        | POLISH
+        | PRESSURE_WASH
+        | SOLAR_PANELS
+        | OFFICE
+        | HOUSE
+        | POST_RENOVATION
+    )
 
 
 class CalenderClients(IntFlag):

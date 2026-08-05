@@ -330,48 +330,82 @@ const clientCardsView = {
     REPORTS:1<<2
 }
 
-const CleanOrderType = {
-    UPHOLSTERY:1<<0,
-    AIR_CONDITIONER:1<<1,
-    GENERAL:1<<0|1<<1
-}
+const CleanOrderType = Object.freeze({
+    UPHOLSTERY:        1 << 0,  // ריפודים
+    AIR_CONDITIONER:   1 << 1,  // ניקוי מזגנים
+    WINDOWS:           1 << 2,  // ניקוי חלונות
+    CARPET:            1 << 3,  // ניקוי שטיחים
+    MATTRESS:          1 << 4,  // ניקוי מזרנים
+    CURTAINS:          1 << 5,  // ניקוי וילונות
+    TILES:             1 << 6,  // ניקוי רצפות / קרצוף
+    POLISH:            1 << 7,  // פוליש
+    PRESSURE_WASH:     1 << 8,  // שטיפה בלחץ
+    SOLAR_PANELS:      1 << 9,  // ניקוי פאנלים סולאריים
+    OFFICE:            1 << 10, // ניקיון משרדים
+    HOUSE:             1 << 11, // ניקיון בתים
+    POST_RENOVATION:   1 << 12, // ניקיון אחרי שיפוץ
 
-function getCleanOrderTypeText(flag){
-    switch (flag) {
-        case CleanOrderType.UPHOLSTERY:
-            return "ריפודים"
-    
-        case CleanOrderType.AIR_CONDITIONER:
-            return "מזגנים"
+    // Mask
+    GENERAL:
+        (1 << 0) |
+        (1 << 1) |
+        (1 << 2) |
+        (1 << 3) |
+        (1 << 4) |
+        (1 << 5) |
+        (1 << 6) |
+        (1 << 7) |
+        (1 << 8) |
+        (1 << 9) |
+        (1 << 10) |
+        (1 << 11) |
+        (1 << 12)
+});
 
-        case CleanOrderType.GENERAL:
-            return "כללי"
-    }
-    return getCleanOrderTypeText(CleanOrderType.GENERAL)
+const CLEAN_ORDER_TYPE_TEXT = {
+    [CleanOrderType.UPHOLSTERY]: "ריפודים",
+    [CleanOrderType.AIR_CONDITIONER]: "מזגנים",
+    [CleanOrderType.WINDOWS]: "חלונות",
+    [CleanOrderType.CARPET]: "שטיחים",
+    [CleanOrderType.MATTRESS]: "מזרנים",
+    [CleanOrderType.CURTAINS]: "וילונות",
+    [CleanOrderType.TILES]: "רצפות",
+    [CleanOrderType.POLISH]: "פוליש",
+    [CleanOrderType.PRESSURE_WASH]: "שטיפה בלחץ",
+    [CleanOrderType.SOLAR_PANELS]: "פאנלים סולאריים",
+    [CleanOrderType.OFFICE]: "משרדים",
+    [CleanOrderType.HOUSE]: "בתים",
+    [CleanOrderType.POST_RENOVATION]: "אחרי שיפוץ",
+    [CleanOrderType.GENERAL]: "כללי",
+};
+
+function getCleanOrderTypeText(flag) {
+    return CLEAN_ORDER_TYPE_TEXT[flag] ?? "כללי";
 }
 
 function getCleanOrderTypeTitle(flag){
-    switch (flag) {
-        case CleanOrderType.UPHOLSTERY:
-            return "הזמנת ניקוי ריפודים"
-        case CleanOrderType.AIR_CONDITIONER:
-            return "הזמנת ניקוי מזגנים"
-        case CleanOrderType.GENERAL:
-            return "הזמנת ניקוי כללי"
-    }
-        
+    return `הזמנת ניקוי ${getCleanOrderTypeText(flag)}`
 }
 
-function getCleanOrderTypeIcon(flag){
-    switch (flag) {
-        case CleanOrderType.AIR_CONDITIONER:
-            return "fa-solid fa-fan"
-        case CleanOrderType.UPHOLSTERY:
-            return "fa-solid fa-couch"
-        case CleanOrderType.GENERAL:
-            return "fa-solid fa-soap"
-    }
-    return getCleanOrderTypeIcon(CleanOrderType.GENERAL)
+const CLEAN_ORDER_TYPE_ICON = {
+    [CleanOrderType.UPHOLSTERY]: "fa-solid fa-couch",
+    [CleanOrderType.AIR_CONDITIONER]: "fa-solid fa-fan",
+    [CleanOrderType.WINDOWS]: "fa-solid fa-window-maximize",
+    [CleanOrderType.CARPET]: "fa-solid fa-rug",
+    [CleanOrderType.MATTRESS]: "fa-solid fa-bed",
+    [CleanOrderType.CURTAINS]: "fa-solid fa-person-booth",
+    [CleanOrderType.TILES]: "fa-solid fa-border-all",
+    [CleanOrderType.POLISH]: "fa-solid fa-sparkles",
+    [CleanOrderType.PRESSURE_WASH]: "fa-solid fa-water",
+    [CleanOrderType.SOLAR_PANELS]: "fa-solid fa-solar-panel",
+    [CleanOrderType.OFFICE]: "fa-solid fa-building",
+    [CleanOrderType.HOUSE]: "fa-solid fa-house",
+    [CleanOrderType.POST_RENOVATION]: "fa-solid fa-hammer",
+    [CleanOrderType.GENERAL]: "fa-solid fa-soap",
+};
+
+function getCleanOrderTypeIcon(flag) {
+    return CLEAN_ORDER_TYPE_ICON[flag] ?? CLEAN_ORDER_TYPE_ICON[CleanOrderType.GENERAL];
 }
 
 

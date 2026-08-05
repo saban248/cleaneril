@@ -1,17 +1,33 @@
+const c_reports = {
+    clientReportsTimeout: {},
+}
 
+function timeoutDeleteClientReports(clientId, sec=300){
+    if (c_reports.clientReportsTimeout[clientId]){
+        clearTimeout(c_reports.clientReportsTimeout[clientId]);
+    }
+    c_reports.clientReportsTimeout[clientId] = setTimeout(()=>{
+        if (c_runtime.clientsReports[clientId]){
+            delete c_runtime.clientsReports[clientId];
+        }
+    }, sec*1000)
+}
 
 async function fetchClientReports(clientId) {
     if (!clientId){
         clientId = c_runtime.currentClientIdView;
     }
     const data = {action:ApiCall.client_reports, client_id:clientId}
+    const toast = showToast('מוריד...');
     await apiPost(ApiRoute.api, data).then(
         (res) =>{
             if (!res.success){
-                showToast(res.notice,ToastStat.ERROR);
+                showToast(res.notice,ToastStat.ERROR, toast);
                 return
             }
             c_runtime.clientsReports[clientId] = res.reports;
+            timeoutDeleteClientReports(clientId);
+            closeToast(toast);
         }
     )
     
@@ -158,9 +174,6 @@ function getClientReportReceipts(orders){
     });
 }
 
-function getClientReportStatCount(orders, stat){
-    return orders.filter(order => order.stat & stat).length;
-}
 
 function buildClientReportEvents(orders, receipts){
     const orderEvents = orders.map(function(order){
@@ -196,9 +209,13 @@ async function renderClientSummaryReport(){
     if (!parent){
         return;
     }
-    await fetchClientReports(c_runtime.currentClientIdView);
+    if (!c_runtime.clientsReports[c_runtime.currentClientIdView]){
+        await fetchClientReports(c_runtime.currentClientIdView);
+    }
     const data = c_runtime.clientsReports[c_runtime.currentClientIdView];
     const order = get_order_by_order_id(c_runtime.currentOrderIdView);
+    const orders = getOrdersByClientId(c_runtime.currentClientIdView);
+    const receipts = getReceiptsByOrderId(c_runtime.currentOrderIdView);
     if (!data){
         parent.innerHTML = `
             <div class="client-report-empty">
@@ -209,36 +226,25 @@ async function renderClientSummaryReport(){
         return;
     }
 
-    const receipts = [];//getClientReportReceipts(orders);
-    const events = [];//buildClientReportEvents(orders, receipts);
-    const totalDeals = []//orders.reduce((total, order) => total + reportOrderTotal(order), 0);
-    const receivedMoney = receipts.reduce(function(total, receipt){
-        const order = orders.find(item => item.order_id == receipt.order_id);
-        return total + reportOrderTotal(order);
-    }, 0);
-    const totalDiscounts = []//orders.reduce((total, order) => total + (parseInt(order.off_price) || 0), 0);
-    const averageDeal = [];//orders.length ? Math.round(totalDeals / orders.length) : 0;
-    const openBalance = Math.max(0, totalDeals - receivedMoney);
-    const lastOrder = [];//orders.slice().sort((a, b) => (b.date || 0) - (a.date || 0))[0];
     const clientName = order.fullname || "-";
     const clientInitial = order.fullname ? order.fullname.charAt(0).toUpperCase() : "?";
 
-    const eventHtml = events.slice(0, 12).map(function(event){
-        return `
-            <div class="client-report-event client-report-event-${event.type}">
-                <div class="client-report-event-icon">
-                    <i class="${event.icon}"></i>
-                </div>
-                <div class="client-report-event-content">
-                    <strong>${reportEscapeHtml(event.title)}</strong>
+    // const eventHtml = events.slice(0, 12).map(function(event){
+    //     return `
+    //         <div class="client-report-event client-report-event-${event.type}">
+    //             <div class="client-report-event-icon">
+    //                 <i class="${event.icon}"></i>
+    //             </div>
+    //             <div class="client-report-event-content">
+    //                 <strong>${reportEscapeHtml(event.title)}</strong>
                     
-                    <span>${reportEscapeHtml(event.text)}</span>
-                    <small>${reportDate(event.date)}</small>
-                </div>
-                <div class="client-report-event-amount">${reportMoney(event.amount)}</div>
-            </div>
-        `;
-    }).join("");
+    //                 <span>${reportEscapeHtml(event.text)}</span>
+    //                 <small>${reportDate(event.date)}</small>
+    //             </div>
+    //             <div class="client-report-event-amount">${reportMoney(event.amount)}</div>
+    //         </div>
+    //     `;
+    // }).join("");
 
     parent.innerHTML = `
         <div class="client-report">
@@ -336,10 +342,10 @@ async function renderClientSummaryReport(){
             <div class="client-report-section">
                 <div class="client-report-section-head">
                     <span>סיכום פעילות</span>
-                    <small>עדכון אחרון: ${reportDate(lastOrder?.date)}</small>
+                    <small>עדכון אחרון: ${reportDate(0?.date)}</small>
                 </div>
                 <div class="client-report-events">
-                    ${eventHtml || `<div class="client-report-empty">אין אירועים להצגה</div>`}
+                    ${0 || `<div class="client-report-empty">אין אירועים להצגה</div>`}
                 </div>
             </div>
         </div>
