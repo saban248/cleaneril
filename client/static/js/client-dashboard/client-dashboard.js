@@ -657,6 +657,9 @@ function onSelectClientNewOrder(order){
     document.getElementById("client-phone").value = order.phone;
     document.getElementById("client-date").value = new Date().toISOString().split("T")[0];
     document.getElementById("client-location").value = order.address;
+    document.getElementById("client-notes").value = order.notes;
+    document.getElementById("client-price").value = order.price;
+    docum
     const parent = document.getElementById("items-ordered");
     parent.replaceChildren();
     for (let [k,v] of Object.entries(order.items)){
