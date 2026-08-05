@@ -58,8 +58,7 @@ def on_create_order_create_client(order:CleanOrder):
     client:ClientProfile = None
     for c in clients.get_clients().all():
         phone = clean_phone_just_numbers(c.phone) == clean_phone_just_numbers(order.phone)
-        name = match_nums_words(1, c.fullname, order.fullname)
-        if name and phone:
+        if phone:
             client = c
             break
     if not client:
@@ -69,6 +68,14 @@ def on_create_order_create_client(order:CleanOrder):
         order.client_id = client.client_id
     cleaneril_db.session.commit()
 
+
+def fix_order_to_client():
+    for order in orders.get_clean_orders():
+        for c in clients.get_clients().all():
+            same_phone = clean_phone_just_numbers(c.phone) == clean_phone_just_numbers(order.phone)
+            if same_phone:
+                order.client_id = c.client_id
+                cleaneril_db.session.commit()
 
 def upgrade_from_clients_to_clean_order(manager_id):
     db = sqlite3.connect(ServerConfig.DB_PATH)
