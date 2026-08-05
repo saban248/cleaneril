@@ -907,6 +907,7 @@
     font-size: 1rem;
 }
 .cd-item{
+    position: relative;
     display: flex;
     flex-direction: column;
     color: #5f6060;
@@ -933,16 +934,27 @@
     display: flex;
     column-gap: 10px;
     width: 100%;
+    justify-content: space-between;
+    align-items: end;
+    padding: 10px 0 10px 0;
 }
-.ci-head>i{
-    padding: 5px;
+.cih-action{
+    display: flex;
+    column-gap: 10px;
+}
+.cih-action>i{
     border-radius: 50%;
     cursor: pointer;
+    width: 20px;
+    height: 20px;
 }
-.ci-head>i:active,
-.ci-head>i:hover{
+
+.cih-action>i:active,
+.cih-action>i:hover{
     box-shadow: 0 0 11px #ddd;
+    
 }
+
 .ci-body{
 
 }

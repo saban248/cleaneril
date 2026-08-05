@@ -652,31 +652,28 @@ async function createOrder(){
     showClientOrder(c_runtime.currentOrderIdView, false)
 }
 
-
-function searchClientNewOrder(e){
-    if (e.inputType === "deleteContentBackward"){
-        return
+function onSelectClientNewOrder(order){
+    document.getElementById("fullname").value = order.fullname
+    document.getElementById("client-phone").value = order.phone;
+    document.getElementById("client-date").value = new Date().toISOString().split("T")[0];
+    document.getElementById("client-location").value = order.address;
+    const parent = document.getElementById("items-ordered");
+    parent.replaceChildren();
+    for (let [k,v] of Object.entries(order.items)){
+        addItemClientOrder(v.name,v.price)
     }
-    const name = document.getElementById("fullname");
-    const address = document.getElementById("client-location")
-    const phone = document.getElementById("client-phone");
-    // const parent = document.getElementById("items-ordered");
-    
-    const value = name.value.toLowerCase();
+}
+function searchClientNewOrder(e){
+    const value = e.target.value.toLowerCase();
     if (value == '')return
-    const match = c_runtime.orders.find(o => o.fullname.toLowerCase().startsWith(value));
-    if (!match){return}
-    name.value  = match.fullname
-    address.value = match.address;
-    phone.value = match.phone;
-    
-    requestAnimationFrame(() => {
-        name.focus();
-        name.setSelectionRange(value.length, match.fullname.length);
-    });
-    // for (let [k,v] of Object.entries(match.items)){
-    //     addItemClientOrder(v.name,v.price)
-    // }
+
+    const orders = c_runtime.orders.filter(o => o.fullname.toLowerCase().includes(value))
+    const items = []
+    for (let order of orders.slice(0, 4)){
+            items.push({text:order.fullname, value:order.order_id, icon:"fa-solid fa-user"})
+        
+    }
+    buildFilterOptions("mf-sc",items,(orderId)=>{onSelectClientNewOrder(get_order_by_order_id(orderId))})
 
 }
 

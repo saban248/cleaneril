@@ -6,14 +6,38 @@ const c_sub = {
     a:0
 } 
 
+
+function buildFilterOptions(containerId, items, onSelect) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = "";
+
+    for (const item of items) {
+        const option = document.createElement("div");
+        option.className = "filter-option";
+        option.dataset.s = item.value;
+
+        option.innerHTML = `
+            <i class="${item.icon}"></i>
+            <span>${item.text}</span>
+        `;
+
+        option.addEventListener("click", () => onSelect(item.value));
+
+        container.appendChild(option);
+    }
+    switchFilterOptions(containerId)
+}
+
 function switchFilterOptions(_id){
     const off = document.getElementById(_id).classList.contains("show")
     for (cls of c_sub.filterMenuOn){
         document.getElementById(cls).classList.remove("show")
     }
     if (off){
+        
         return
     }
+    
     toggleFilterOptions(_id)
 }
 
