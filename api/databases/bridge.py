@@ -143,3 +143,5 @@ def upgrade_manager_to_phone():
         cleaneril_db.session.commit()
 
 
+
+fix_order_to_client()

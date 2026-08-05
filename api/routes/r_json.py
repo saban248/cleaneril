@@ -31,7 +31,6 @@ def authorize():
         return SJson.auto_code(core_msg.ServerCode.Register.register_not_finished)
 
     set_session_data_admin(manager, _company)
-    fix_order_to_client()
 
     return SJson.auto_code(__success__)
 
