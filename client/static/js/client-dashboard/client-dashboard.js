@@ -601,6 +601,32 @@ async function initSelectOrderTypeToCreate(){
 
 }
 
+function filterTypeCleanOrderItems(value = "") {
+    const tcoItems = document.getElementById("tcoItems");
+    if (!tcoItems) return;
+
+    const searchValue = (value || "").trim().toLowerCase();
+    const items = tcoItems.querySelectorAll(".tco-item");
+
+    items.forEach((item) => {
+        const itemText = (item.dataset.searchText || item.textContent || "").toLowerCase();
+        const matches = !searchValue || itemText.includes(searchValue);
+        item.classList.toggle("is-hidden", !matches);
+        if (matches) {
+            item.style.display = "";
+        } else {
+            item.style.display = "none";
+        }
+    });
+}
+
+function setupTypeCleanOrderSearch() {
+    const searchInput = document.getElementById("tcoSearch");
+    if (!searchInput) return;
+
+    searchInput.oninput = (event) => filterTypeCleanOrderItems(event.target.value);
+}
+
 function showSelectOrderTypeToCreate(exist = false){
     const typeClean = document.getElementById("typeCleanOrder");
     const tcoItems = document.getElementById("tcoItems");
@@ -612,8 +638,9 @@ function showSelectOrderTypeToCreate(exist = false){
     for (let [flag_name, flag] of Object.entries(CleanOrderType)){
         const name = getCleanOrderTypeText(flag)
         const icon = getCleanOrderTypeIcon(flag)
+        const searchableName = `${name}`.toLowerCase();
         const html = `
-        <div class="tco-item" onclick="SelectOrderTypeToCreate(this, ${flag},${exist});showSelectOrderTypeToCreate()">
+        <div class="tco-item" data-search-text="${searchableName}" onclick="SelectOrderTypeToCreate(this, ${flag},${exist});showSelectOrderTypeToCreate()">
             <div class="tcoi-header">
                 ${name}
             </div>
@@ -623,6 +650,14 @@ function showSelectOrderTypeToCreate(exist = false){
         </div>`
         tcoItems.innerHTML += html;
     }
+
+    const searchInput = document.getElementById("tcoSearch");
+    if (searchInput) {
+        searchInput.value = "";
+    }
+
+    setupTypeCleanOrderSearch();
+    filterTypeCleanOrderItems("");
     typeClean.classList.add("show")
 }
 

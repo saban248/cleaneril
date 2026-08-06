@@ -140,10 +140,16 @@
 }
 
 .settings-item-icon {
-    font-size: 18px;
-    width: 24px;
+    font-size: 15px;
     text-align: center;
     color: #0095f6;
+    width: 24px;
+    height: 24px;
+    padding: 10px;
+    text-align: center;
+    border-radius: 50%;
+    border: 1px solid #e0e0e0;
+    background: #f9f9f9;
 }
 
 .settings-item-text {

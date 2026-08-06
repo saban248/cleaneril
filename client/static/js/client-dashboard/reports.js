@@ -279,21 +279,21 @@ async function renderClientSummaryReport(){
                         <span>כסף ברוטו</span>
                         <strong class='income'>${reportMoney(data.funds)}+</strong>
                     </div>
-                    <i class='icon icon-32'>${await icon("money")}</i>
+                    <i class='icon icon-24'>${await icon("money")}</i>
                 </div>
                 <div class="client-report-stat">
                     <div>
                         <span>יתרה פתוחה</span>
                         <h4 class='income'>${reportMoney(data.balance)}+</h4>
                     </div>
-                    <i class='icon icon-32'>${await icon("alarm")}</i>
+                    <i class='icon icon-24'>${await icon("money-receive")}</i>
                 </div>
                 <div class="client-report-stat">
                     <div>
                         <span>ממוצע להזמנה</span>
                         <h4 class='income'>${reportMoney(data.ave_income)}+</h4>
                     </div>
-                    <i class='icon icon-32'>${await icon("graph-color")}</i>
+                    <i class='icon icon-24'>${await icon("graph-color")}</i>
                 </div>
                 <div class="client-report-stat">
                     <div>
@@ -307,35 +307,35 @@ async function renderClientSummaryReport(){
                         <span>הוצאות</span>
                         <h4 class='expense'>${reportMoney(data.expenses)}-</h4>
                     </div>
-                    <i class='icon icon-32'>${await icon("discount")}</i>
+                    <i class='icon icon-24'>${await icon("expense")}</i>
                 </div>
                 <div class="client-report-stat">
                     <div>
                         <span>הזמנות</span>
                         <strong class=''>${data.orders_count}</strong>
                     </div>
-                    <i class='icon icon-32'>${await icon("list")}</i>
+                    <i class='icon icon-24'>${await icon("list")}</i>
                 </div>
                 <div class="client-report-stat">
                     <div>
                         <span>השולמו</span>
                         <strong class=''>${data.done}</strong>
                     </div>
-                    <i class='icon icon-32'>${await icon("num1")}</i>
+                    <i class='icon icon-24'>${await icon("num1")}</i>
                 </div>
                 <div class="client-report-stat">
                     <div>
                         <span>בהמתנה</span>
                         <strong class=''>${data.closed}</strong>
                     </div>
-                    <i class='icon icon-32'>${await icon("calendar-color")}</i>
+                    <i class='icon icon-24'>${await icon("calendar-color")}</i>
                 </div>
                 <div class="client-report-stat">
                     <div>
                         <span>לא נסגרו</span>
                         <strong class=''>${data.wait}</strong>
                     </div>
-                    <i class='icon icon-32'>${await icon("finish-register")}</i>
+                    <i class='icon icon-24'>${await icon("finish-register")}</i>
                 </div>
             </div>
 

@@ -501,6 +501,7 @@
 .client-card, .worker-card{
     border: 1px solid #ddd !important;
     min-width: 350px;
+    max-width: 350px;
     box-sizing: content-box !important;
     background: #fff !important;
     min-height: 80vh;
