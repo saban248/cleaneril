@@ -12,6 +12,8 @@ cleaneril = Flask(FILE_NAME_DB, template_folder=os.path.join("client", "pages"),
                   static_folder=os.path.join("client", "static"))
 
 class ServerConfig:
+    DOMAIN = 'havraka-bdaka.com'
+    URL = "https://"+DOMAIN
     DEFAULT_GPSE = 50
     DEF_wNAME    = FILE_NAME_DB
     DEF_wPWD     = "?"+DEF_wNAME
@@ -39,6 +41,13 @@ class ServerConfig:
     TWAS = 'ACe0fa1966fb1330990ed845bc647c0a14'
     TWAT = 'f79151c490651a584dec75cd630f2f3b'
     TWVSS = 'VAf7a394ea259393417219044dd804f209'
+
+    google_client_id = '534064167858-548av38hqq3rnf48nifb4ckniisai7tb.apps.googleusercontent.com'
+    google_client_secret = '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'
+    google_permission_scopes = [
+        "https://www.googleapis.com/auth/adwords"
+    ]
+    google_redirect_uri = "https://havraka-bdaka.com/integrations/google/callback"
 
 
 cleaneril.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{FILE_NAME_DB}.db"

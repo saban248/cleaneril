@@ -409,6 +409,29 @@ function getCleanOrderTypeIcon(flag) {
 }
 
 
+const AppIntegration = Object.freeze({
+    GOOGLE_ADS: 1,
+    META_ADS: 2,
+    WHATSAPP_BUSINESS: 3,
+    GOOGLE_CALENDAR: 4
+});
+
+function getAppIntegrationName(provider) {
+    switch (provider) {
+        case AppIntegration.GOOGLE_ADS:
+            return "Google Ads";
+        case AppIntegration.META_ADS:
+            return "Meta Ads";
+        case AppIntegration.WHATSAPP_BUSINESS:
+            return "WhatsApp Business";
+        case AppIntegration.GOOGLE_CALENDAR:
+            return "Google Calendar";
+        default:
+            return "Unknown";
+    }
+}
+
+
 
 const subscriptionType = {
     MONTHLY:1<<0,

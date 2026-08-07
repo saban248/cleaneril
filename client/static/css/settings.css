@@ -150,7 +150,14 @@
     box-sizing: content-box;
     text-align: center;
     padding:10px;
-
+}
+.settings-item-icon.whatsapp{
+    color: #33774c;
+    border-color: #20964b;
+}
+.settings-item-icon.google{
+    color: #8c9529;
+    border-color: #975635;
 }
 
 .settings-item-text {

@@ -154,6 +154,7 @@ class RouteApi(RoutePagesBase):
     logout   = 1<<4
     subscription = 1<<5
     marketplace = 1<<6
+    integrations = 1<<7
 
 
 class RegisterApi(IntFlag):

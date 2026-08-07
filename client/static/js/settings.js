@@ -201,6 +201,22 @@ function editShowVatCodeOnOrder(){
     }
     saveManagerSettings(call(), onFailed)
 }
+
+
+function editMetaIntegration(){
+    const html = `
+        <div class="settings-meta-integration">
+            <div class="settings-meta-option" onclick="window.open('https://www.facebook.com/business/help/898185486719827?id=1205376682832142', '_blank')">
+                <i class="fa-brands fa-meta"></i>
+                <span>Meta</span>
+            </div>
+        </div>
+    `;
+    createEditModal('חיבור ל Meta', null, {}, {content:html})
+}
+
+
+
 /**
  * Toggle show ID on order
  */
