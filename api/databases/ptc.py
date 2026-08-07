@@ -47,7 +47,7 @@ class ServerConfig:
     google_permission_scopes = [
         "https://www.googleapis.com/auth/adwords"
     ]
-    google_redirect_uri = "https://havraka-bdaka.com/integrations/google/callback"
+    integration_redirect_uri = "https://havraka-bdaka.com/integrations/{flag}/callback"
 
 
 cleaneril.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{FILE_NAME_DB}.db"

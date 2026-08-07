@@ -155,6 +155,7 @@ class RouteApi(RoutePagesBase):
     subscription = 1<<5
     marketplace = 1<<6
     integrations = 1<<7
+    integrations_callback = integrations|(1<<8)
 
 
 class RegisterApi(IntFlag):
@@ -220,6 +221,7 @@ class Pages(IntFlag):
     @property
     def f_dashboard(self):
         return os.path.join(f'{self.dashboard.path}', self.html)
+
 
     def __truediv__(self, other):
         first = str()

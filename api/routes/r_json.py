@@ -6,7 +6,7 @@ from api.api_action import get_api_action, api_upload_file, get_register_action,
 from api.databases.bridge import fix_order_to_client
 from api.databases.manager import manager_auth, update_time_alive
 from api.databases.ptc import cleaneril, ManagerAccountStat, cleaneril_db
-from api.integrations.api import get_integrations_api
+from api.integrations.api import get_integrations_api, set_interactions_api
 from api.marketplace.api import get_marketplace_api
 from api.ptc import ShortSession, SJson, get_dictionary_http
 from api.routes import cil_struct
@@ -89,6 +89,15 @@ def integrations():
     get_ac = get_integrations_api(**breq)
 
     return get_ac
+
+@cleaneril.route(f"{RouteApi.integrations.path}/<int:integration>/callback", methods=["GET"])
+def integrations_callback(integration:int = 0):
+    if not ShortSession.is_admin_active():
+        return SJson.auto_code(core_msg.ServerCode.General.access_denied)
+
+    breq = get_dictionary_http(request)
+    return set_interactions_api(integration, **breq)
+
 
 
 @cleaneril.route(RouteApi.logout.path, methods=["POST"])
