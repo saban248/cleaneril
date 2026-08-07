@@ -491,7 +491,6 @@ async function showClientReports(){
     const parent = document.getElementById("client-reports")
     if (typeof renderClientSummaryReport === "function"){
         renderClientSummaryReport()
-        await fetchClientReports()
     }
     parent.classList.add("show")
 }

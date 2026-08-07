@@ -300,7 +300,7 @@ async function renderClientSummaryReport(){
                         <span>הנחות</span>
                         <h4 class='expense'>${reportMoney(data.off_price)}-</h4>
                     </div>
-                    <i class='icon icon-32'>${await icon("discount")}</i>
+                    <i class='icon icon-24'>${await icon("discount")}</i>
                 </div>
                 <div class="client-report-stat">
                     <div>
@@ -316,26 +316,31 @@ async function renderClientSummaryReport(){
                     </div>
                     <i class='icon icon-24'>${await icon("list")}</i>
                 </div>
-                <div class="client-report-stat">
-                    <div>
+                <div class="client-report-stat four">
+                    <div class="crf-stat">
                         <span>השולמו</span>
-                        <strong class=''>${data.done}</strong>
-                    </div>
-                    <i class='icon icon-24'>${await icon("num1")}</i>
-                </div>
-                <div class="client-report-stat">
-                    <div>
                         <span>בהמתנה</span>
-                        <strong class=''>${data.closed}</strong>
-                    </div>
-                    <i class='icon icon-24'>${await icon("calendar-color")}</i>
-                </div>
-                <div class="client-report-stat">
-                    <div>
                         <span>לא נסגרו</span>
-                        <strong class=''>${data.wait}</strong>
+                        <span>ביטולים</span>
                     </div>
-                    <i class='icon icon-24'>${await icon("finish-register")}</i>
+                    <div class="crf-stat">
+                        <div class="crfsi">
+                            <i class='icon icon-16'>${await icon("done")}</i>
+                            <strong class=''>${data.done}</strong>
+                        </div>
+                        <div class="crfsi">
+                            <i class='icon icon-16'>${await icon("closed")}</i>
+                            <strong class=''>${data.closed}</strong>
+                        </div>
+                        <div class="crfsi">
+                            <i class='icon icon-16'>${await icon("wait")}</i>
+                            <strong class=''>${data.wait}</strong>
+                        </div>
+                        <div class="crfsi">
+                            <i class='icon icon-16'>${await icon("cancel")}</i>
+                            <strong class=''>${data.cancel||0}</strong>
+                        </div>  
+                    </div>
                 </div>
             </div>
 

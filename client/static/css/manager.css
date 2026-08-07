@@ -764,12 +764,10 @@
 }
 
 .client-report-grid .income{
-    background: #f3fff3;
     color: #1d8122;
     font-weight: 100 !important;
 }
 .client-report-grid .expense{
-    background: #fff6f6;
     color: #c00c0c;
 }
 
@@ -782,7 +780,31 @@
     flex-direction: row;
     justify-content: space-between;
     row-gap: 4px;
+    align-items: end;
 }
+.client-report-stat.four{
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: 0 !important;
+}
+.client-report-stat>.crf-stat{
+    display:grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+
+}
+.crfsi{
+    margin-top: 5px;
+    display: flex;
+    justify-content: right;
+    column-gap: 10px;
+    align-items: center;
+}
+.crfsi:not(:last-child){
+    border-left: 1px solid #e3e5e7;
+}
+
 .client-report-stat>div{
     flex:1;
     display: flex;
