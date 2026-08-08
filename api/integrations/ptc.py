@@ -1,5 +1,8 @@
 from enum import IntFlag, auto, IntEnum
 
+GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
+GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
+
 
 class AppIntegration(IntEnum):
     GOOGLE_ADS = 1

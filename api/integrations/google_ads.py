@@ -6,14 +6,11 @@ from flask import session, abort, redirect
 
 from api.databases import integrations
 from api.databases.ptc import ServerConfig
-from api.integrations.ptc import AppIntegration
+from api.integrations.ptc import AppIntegration, GOOGLE_TOKEN_URL, GOOGLE_AUTH_URL
 import requests
 
 from api.ptc import ShortSession
 from api.validator import core_msg
-
-GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
-GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
 
 
 def build_google_oauth_url():
