@@ -66,6 +66,9 @@ class ServerCode:
         order_create_problem = 16
         order_duplicate_not_exist = 17
 
+    class Integration:
+        already_exist = 18
+
 
 
 ServerMsg = BaseServerMsg()

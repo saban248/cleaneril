@@ -53,5 +53,8 @@
     <msg code="17" lang="en"></msg>
     <msg code="17" lang="he">בעיה ביצירת העתק של ההזמנה שנבחרה</msg>
 
+    <msg code="18" lang="en"></msg>
+    <msg code="18" lang="he">חיבור לספק זה כבר קיים במערכת</msg>
+
 
 </messages>

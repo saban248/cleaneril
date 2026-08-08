@@ -224,7 +224,8 @@ const ApiRoute = {
     register: "register",
     logout:"logout",
     subs:"subscription",
-    marketplace:'marketplace'
+    marketplace:'marketplace',
+    integrations:'integrations'
 }
 const RegisterApi = {
     level0:1<<5,

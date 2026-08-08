@@ -1,4 +1,5 @@
 import binascii
+import ipaddress
 import os
 from datetime import timedelta
 from enum import IntFlag
@@ -12,6 +13,7 @@ cleaneril = Flask(FILE_NAME_DB, template_folder=os.path.join("client", "pages"),
                   static_folder=os.path.join("client", "static"))
 
 class ServerConfig:
+    DEV_MODE = True
     DOMAIN = 'havraka-bdaka.com'
     URL = "https://"+DOMAIN
     DEFAULT_GPSE = 50
@@ -44,10 +46,11 @@ class ServerConfig:
 
     google_client_id = '534064167858-548av38hqq3rnf48nifb4ckniisai7tb.apps.googleusercontent.com'
     google_client_secret = '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'
+    google_ads_developer_token = "us7K9gyGpukeN5B3CdsN4Q"
     google_permission_scopes = [
         "https://www.googleapis.com/auth/adwords"
     ]
-    integration_redirect_uri = "https://havraka-bdaka.com/integrations/{flag}/callback"
+    integration_redirect_uri = f"https://{DOMAIN if not DEV_MODE else "localhost"}/integrations/{{flag}}/callback"
 
 
 cleaneril.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{FILE_NAME_DB}.db"
@@ -58,6 +61,8 @@ cleaneril.jinja_env.auto_reload = True
 cleaneril.secret_key = binascii.hexlify(os.urandom(8)).decode()
 cleaneril_db = SQLAlchemy(cleaneril)
 migrate = Migrate(cleaneril, cleaneril_db)
+
+
 
 
 
@@ -94,4 +99,6 @@ class ManagerAccountStat(IntFlag):
 class CompanyTaxType(IntFlag):
     PATOOR:int = 0
     MOORSHE:int = 1
+
+
 

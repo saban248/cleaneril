@@ -326,6 +326,20 @@ const url="https://wa.me/972"+[39, 34, 47, 34, 39, 39, 34, 33, 38, 32].map(n=>St
 window.open(url,"_blank");
 }
 
+function onApiCall(t, done = false){
+    const icon = t.children[1]
+    if (done){
+        icon.style.display = 'none'
+        t.children[0].style.display = 'block';
+        t.disabled = false;
+    }
+    else{
+        icon.style.display = 'block';
+        t.children[0].style.display = 'none';
+        t.disabled = true;
+    }
+    
+}
 
 
 

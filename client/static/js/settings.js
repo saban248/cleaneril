@@ -57,7 +57,7 @@ function onLoadSetttings(){
  * Create an edit modal for inline editing
  */
 function emsCurrentValue(){return document.getElementById("emsCurrentValue").value}
-function createEditModal(title, currentValue, sad, {content = 0} = {}) {
+function createEditModal(title, currentValue, sad, {content = 0, save = true} = {}) {
     // Remove existing modal if any
     const settingsContentModal = document.getElementById("settingsContentModal")
     const settingsDefaultContentModal = document.getElementById("settingsDefaultContentModal");
@@ -78,6 +78,14 @@ function createEditModal(title, currentValue, sad, {content = 0} = {}) {
         s(settingsDefaultContentModal)
         h(settingsContentModal)
     }
+    if (!save){
+        h(emsSave)
+    }
+    else{
+        emsSave.onclick = () => {
+            saveManagerSettings(sad())
+    }
+    }
     elCurrentValue.value = currentValue
 
     modal.classList.add("show")
@@ -85,10 +93,6 @@ function createEditModal(title, currentValue, sad, {content = 0} = {}) {
         elCurrentValue.focus();
         elCurrentValue.select();
     }, 100);
-    console.log(sad())
-    emsSave.onclick = () => {
-        saveManagerSettings(sad())
-    }
     // Save on Enter
     elCurrentValue.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') saveManagerSettings();
@@ -203,18 +207,99 @@ function editShowVatCodeOnOrder(){
 }
 
 
-function editMetaIntegration(){
+function editIntegration({provider,provider_name, title, icon, description, url, action, note, tone}) {
     const html = `
-        <div class="settings-meta-integration">
-            <div class="settings-meta-option" onclick="window.open('https://www.facebook.com/business/help/898185486719827?id=1205376682832142', '_blank')">
-                <i class="fa-brands fa-meta"></i>
-                <span>Meta</span>
+        <div class="settings-integration settings-integration-${tone}">
+            <div class="settings-integration-intro">
+                <div class="settings-integration-icon" aria-hidden="true">
+                    <i class="${icon}"></i>
+                </div>
+                <div class="settings-integration-heading">
+                    <span class="settings-integration-title">${provider_name}</span>
+                    <span class="settings-integration-desc">${description}</span>
+                </div>
+                <span class="settings-integration-status">לא מחובר</span>
+            </div>
+            <div class="settings-integration-note">
+                <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                <span>${note}</span>
+            </div>
+            <button class="settings-integration-action" type="button" onclick="doIntegration(${provider})" id="integrationApp">
+                <span>${action}</span>
+                <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+            </button>
+            <div class="settings-integration-security">
+                <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                <span>ההרשאה מנוהלת ישירות על ידי ${provider_name}</span>
             </div>
         </div>
-    `;
-    createEditModal('חיבור ל Meta', null, {}, {content:html})
+    `
+
+    createEditModal(title, null, null, {content:html, save:false})
+    document.getElementById('emsSave').classList.add('hide')
 }
 
+function editMetaIntegration() {
+    editIntegration({
+        provider:AppIntegration.META_ADS,
+        provider_name: getAppIntegrationName(AppIntegration.META_ADS),
+        title: 'Meta',
+        icon: 'fa-brands fa-meta',
+        description: 'חיבור ל Meta Business לצורך נתוני קמפיינים',
+        url: 'https://www.facebook.com/business/help/898185486719827?id=1205376682832142',
+        action: 'פתיחת Meta Business',
+        note: 'חיבור לקבלת נתוני הוצאות פרסום, והמרות. לדיווח מדוייק למערכת',
+        tone: 'meta'
+    })
+}
+
+function editGoogleCalendarIntegration() {
+    editIntegration({
+        provider:AppIntegration.GOOGLE_CALENDAR,
+        provider_name: getAppIntegrationName(AppIntegration.GOOGLE_CALENDAR),
+        title: 'Google Calendar',
+        icon: 'fa-brands fa-google',
+        description: 'סנכרון פגישות והזמנות עם היומן העסקי שלך',
+        url: 'https://calendar.google.com/',
+        action: 'פתיחת Google Calendar',
+        note: 'החיבור מתבצע דרך חשבון Google ויאפשר סנכרון של יומן העבודה.',
+        tone: 'google'
+    })
+}
+
+function editGoogleAdsIntegration() {
+    editIntegration({
+        provider: AppIntegration.GOOGLE_ADS,
+        title: getAppIntegrationName(AppIntegration.GOOGLE_ADS),
+        icon: 'fa-brands fa-google',
+        description: 'ניהול קמפיינים ומעקב אחר תוצאות הפרסום',
+        url: 'https://ads.google.com/',
+        action: 'פתיחת Google Ads',
+        note: 'החיבור מתבצע באתר Google Ads ויאפשר לך לנהל את הקמפיינים העסקיים שלך.',
+        tone: 'google'
+    })
+}
+
+async function doIntegration(integration){
+    const btn = document.getElementById("integrationApp")
+    btn.disabled = true
+    const html = btn.innerHTML
+    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`
+
+    const data = {action:ApiCall.integration, integration:integration}
+    const toast = showToast("מאמת..")
+    await apiPost(ApiRoute.integrations, data).then(res=>{
+        if (!res.success||!res.redirect){
+            showToast(res.notice, ToastStat.ERROR, toast)
+            btn.disabled = false
+            btn.innerHTML = html
+            return
+        }
+        console.log(res)
+        window.open(res.redirect, "_blank", "noopener,noreferrer");
+
+    })
+}
 
 
 /**
