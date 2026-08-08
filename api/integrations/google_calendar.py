@@ -11,9 +11,7 @@ def build_google_calendar_oauth_url():
     session[f"stat_oauth_{AppIntegration.GOOGLE_CALENDAR}"] = state
     params = {
         "client_id": ServerConfig.google_client_id,
-        "redirect_uri": ServerConfig.integration_redirect_uri.format(
-            flag="google_calendar"
-        ),
+        "redirect_uri": ServerConfig.integration_redirect_uri.format(flag=AppIntegration.GOOGLE_CALENDAR),
         "response_type": "code",
         "scope": " ".join(ServerConfig.google_calendar_scopes),
         "access_type": "offline",

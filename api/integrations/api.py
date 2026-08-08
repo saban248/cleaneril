@@ -1,5 +1,6 @@
 
 from api.integrations.google_ads import build_google_oauth_url, google_ads_callback
+from api.integrations.google_calendar import build_google_calendar_oauth_url
 from api.integrations.ptc import AppIntegration
 from flask import session, abort, redirect
 
@@ -15,7 +16,8 @@ def get_integrations_api(**breq):
     match integration:
         case AppIntegration.GOOGLE_ADS:
             return SJson.auto_code(__success__, **{"redirect":build_google_oauth_url()})
-
+        case AppIntegration.GOOGLE_CALENDAR:
+            return SJson.auto_code(__success__, **{"redirect":build_google_calendar_oauth_url()})
     return ''
 
 def set_interactions_api(integration:int, **breq):
@@ -33,8 +35,9 @@ def set_interactions_api(integration:int, **breq):
             if error or (not code or state) or (last_state is None or last_state != state):
                 return redirect(index.format(n=error))
             __success__ = google_ads_callback(code)
-
             return redirect(index.format(n=core_msg.ServerMsg[__success__]))
+
+        case AppIntegration.GOOGLE_CALENDAR:...
 
 
     return abort(400)
