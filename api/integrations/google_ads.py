@@ -43,7 +43,6 @@ def google_ads_callback(code:str):
             ),
             "grant_type": "authorization_code",},timeout=30,
     )
-
     if not response.ok:
         return __error__
 

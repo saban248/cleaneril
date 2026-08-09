@@ -50,7 +50,7 @@ class ServerConfig:
     google_permission_scopes = [
         "https://www.googleapis.com/auth/adwords"
     ]
-    integration_redirect_uri = f"https://{DOMAIN if not DEV_MODE else 'localhost'}/integrations/{{flag}}/callback"
+    integration_redirect_uri = f"http{'s' if not DEV_MODE else ''}://{DOMAIN if not DEV_MODE else 'localhost'}/integrations/{{flag}}/callback"
 
     google_calendar_scopes = [
         "https://www.googleapis.com/auth/calendar"

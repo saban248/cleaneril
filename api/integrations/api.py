@@ -37,7 +37,13 @@ def set_interactions_api(integration:int, **breq):
             __success__ = google_ads_callback(code)
             return redirect(index.format(n=core_msg.ServerMsg[__success__]))
 
-        case AppIntegration.GOOGLE_CALENDAR:...
+        case AppIntegration.GOOGLE_CALENDAR:
+            error = breq.get("error", core_msg.ServerMsg[__error__] or str())
+            state = breq.get("state")
+            code = breq.get("code", str())
+            if error or (not code or state) or (last_state is None or last_state != state):
+                return redirect(index.format(n=error))
+            __success__ = google_ads_callback(code)
 
 
     return abort(400)
