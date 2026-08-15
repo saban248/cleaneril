@@ -346,3 +346,8 @@ function onApiCall(t, done = false){
 async function icon(name) {
     return await fetch(`/icons/${name}.svg`).then(r => r.text());
 }
+
+
+function createBoxloading(container){
+    container.innerHTML = `<div class="box-loading"></div>`
+}

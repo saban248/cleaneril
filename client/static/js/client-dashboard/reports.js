@@ -209,6 +209,7 @@ async function renderClientSummaryReport(){
     if (!parent){
         return;
     }
+    createBoxloading(parent);
     if (!c_runtime.clientsReports[c_runtime.currentClientIdView]){
         await fetchClientReports(c_runtime.currentClientIdView);
     }
