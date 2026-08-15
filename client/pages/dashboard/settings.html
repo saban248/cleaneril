@@ -181,24 +181,28 @@
                     </div>
                     <i class="fa-solid fa-chevron-left settings-chevron"></i>
                 </div>
+            </div>
         </div>
     </div>
 </div>
 <div class="settings-edit-modal" id="settingsEditModal">
     <div class="settings-modal-overlay"></div>
-        <div class="settings-modal-content">
-            <div class="settings-modal-header">
-                <h5 id="emsTitle">${title}</h5>
-                <i class="fa-solid fa-times" onclick="closeEditModal()"></i>
-            </div>
-            <div id="settingsContentModal"></div>
-            <div id="settingsDefaultContentModal">
-                <input type="text" class="settings-modal-input" value="${currentValue}" id="emsCurrentValue" autocomplete="off">
-            </div>
-            <input type="hidden" class="settings-modal-input" id="emsLastValue" autocomplete="off">
-            <div class="settings-modal-footer">
-                <button class="settings-btn-cancel" onclick="closeEditModal()">ביטול</button>
-                <button class="settings-btn-save" id="emsSave">שמור</button>
-            </div>
+    <div class="settings-modal-content">
+        <div class="settings-modal-header">
+            <h5 id="emsTitle">${title}</h5>
+            <i class="fa-solid fa-times" onclick="closeEditModal()"></i>
         </div>
+        <div id="settingsContentModal"></div>
+        <div id="settingsDefaultContentModal">
+            <input type="text" class="settings-modal-input" value="${currentValue}" id="emsCurrentValue" autocomplete="off">
+        </div>
+        <input type="hidden" class="settings-modal-input" id="emsLastValue" autocomplete="off">
+        <div class="settings-modal-footer">
+            <button class="settings-btn-cancel" onclick="closeEditModal()">ביטול</button>
+            <button class="settings-btn-save" id="emsSave">שמור</button>
+        </div>
+    </div>
 </div>
+
+
+

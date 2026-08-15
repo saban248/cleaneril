@@ -200,7 +200,6 @@ def get_api_action(**breq) -> dict:
                 return SJson.auto_code(core_msg.ServerCode.Orders.order_duplicate_not_exist)
             return SJson.auto_code(__success__, **{"order_id":duplicate.order_id})
         case ApiCall.client_reports:
-            sleep(5)
             order = cil_struct.CleanOrder().build(**breq)
             ana = DataOrders(order.client_id, manager_id)
 

@@ -276,9 +276,6 @@
 
 
 .menu-actions-clients, .menu-actions-workers, .menu-actions-subscriptions{
-    padding-top: 10px;
-    padding-bottom: 10px;
-    margin-top: 10px;
     margin-bottom: 10px;
     display: flex;
     column-gap: 5px;

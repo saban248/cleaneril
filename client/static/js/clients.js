@@ -1,3 +1,8 @@
+const clientsView = {
+    ORDERS:1<<0,
+    TIMELINE:1<<1
+}
+
 
 
 const magicWordSearchOrder = [
@@ -605,6 +610,134 @@ async function prepareOrderImage() {
 
 function shareOrderToClientAsLink(cid){
     
+}
+
+// ===== Workers Schedule Functions =====
+
+function switchClientsView(view) {
+    const ordersView = document.getElementById("listClients");
+    const scheduleView = document.getElementById("workersScheduleView");
+    const ordersTab = document.getElementById("tab-orders");
+    const scheduleTab = document.getElementById("tab-schedule");
+    
+    switch (view) {
+        case (clientsView.ORDERS):
+            ordersView.classList.remove('hide');
+            scheduleView.classList.add('hide');
+            ordersTab.classList.add('active');
+            scheduleTab.classList.remove('active');
+            break
+        case (clientsView.TIMELINE):
+            ordersView.classList.add('hide');
+            scheduleView.classList.remove('hide');
+            ordersTab.classList.remove('active');
+            scheduleTab.classList.add('active');
+            renderClientsTimeLine();
+            break
+    }
+}
+
+function formatTimeSimple(timestamp) {
+    const date = new Date(timestamp * 1000);
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+}
+
+function isOrderToday(timestamp) {
+    const orderDate = new Date(timestamp * 1000);
+    const today = new Date();
+    return orderDate.toDateString() === today.toDateString();
+}
+
+function getTodaysOrders() {return []}
+
+function getWorkerNameById(workerId) {
+    if (!c_runtime.workers) return workerId;
+    const worker = c_runtime.workers.find(w => w.employee_id === workerId);
+    return worker ? worker.username : workerId;
+}
+
+function renderClientsTimeLine() {
+    const scheduleContent = document.getElementById("scheduleContent");
+    const todaysOrders = getTodaysOrders();
+    
+    if (todaysOrders.length === 0) {
+        scheduleContent.innerHTML = `
+            <div class="schedule-empty-state">
+                <i class="fa-solid fa-calendar"></i>
+                <span>אין הזמנות היום</span>
+            </div>
+        `;
+        return;
+    }
+    
+    // Group orders by workers
+    const workerSchedules = {};
+    
+    for (let order of todaysOrders) {
+        if (!order.workers || order.workers.length === 0) {
+            // Orders with no workers
+            if (!workerSchedules['ללא עובד']) {
+                workerSchedules['ללא עובד'] = [];
+            }
+            workerSchedules['ללא עובד'].push(order);
+        } else {
+            // Add order to each assigned worker
+            for (let workerId of order.workers) {
+                const workerName = getWorkerNameById(workerId);
+                if (!workerSchedules[workerName]) {
+                    workerSchedules[workerName] = [];
+                }
+                workerSchedules[workerName].push(order);
+            }
+        }
+    }
+    
+    // Sort workers alphabetically
+    const sortedWorkers = Object.keys(workerSchedules).sort();
+    
+    // Build HTML
+    let html = '';
+    for (let workerName of sortedWorkers) {
+        const orders = workerSchedules[workerName];
+        
+        // Sort orders by time for this worker
+        orders.sort((a, b) => a.date - b.date);
+        
+        html += `
+            <div class="worker-schedule-card">
+                <div class="worker-schedule-header">
+                    <i class="fa-solid fa-user-circle"></i>
+                    <span>${workerName}</span>
+                    <span style="color: #999; font-size: 12px; font-weight: normal; margin-left: auto;">${orders.length} הזמנות</span>
+                </div>
+                <div class="worker-orders-list">
+        `;
+        
+        for (let order of orders) {
+            const timeStr = formatTimeSimple(order.date);
+            html += `
+                <div class="worker-order-item">
+                    <div class="worker-order-time">${timeStr}</div>
+                    <div class="worker-order-info">
+                        <div class="worker-order-client">${order.fullname}</div>
+                        <div class="worker-order-address">
+                            <i class="fa-solid fa-map-pin" style="font-size: 9px; margin-left: 3px;"></i>
+                            ${order.address || 'כתובת לא צוינה'}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        html += `
+                </div>
+            </div>
+        `;
+    }
+    
+    scheduleContent.innerHTML = html;
 }
 
 async function fetchClients() {

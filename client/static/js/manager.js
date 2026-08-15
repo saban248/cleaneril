@@ -219,8 +219,8 @@ function switchPageManager(page){
     if (last_page == -1){
         last_page = PageManager.CLIENTS
     }
-
     const lp = document.getElementById(getPageManager(last_page));
+    console.log(getPageManager(last_page), page, lp)
     if (lp) lp.classList.remove("show");
     console.log(lp)
 

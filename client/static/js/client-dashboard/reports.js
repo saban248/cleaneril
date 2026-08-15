@@ -334,7 +334,7 @@ async function renderClientSummaryReport(){
                             <strong class=''>${data.closed}</strong>
                         </div>
                         <div class="crfsi">
-                            <i class='icon icon-16'>${await icon("wait")}</i>
+                            <i class='icon icon-16'>${await icon("cancel")}</i>
                             <strong class=''>${data.wait}</strong>
                         </div>
                         <div class="crfsi">
