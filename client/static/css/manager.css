@@ -199,8 +199,10 @@
 
 .create-card{
     border-radius: 50%;
-    padding: 10px 12px;
+    padding: 5px;
     font-size: 1rem;
+    width: 20px;
+    height: 20px;
     background: #1a4678;
     color: white;
     cursor: pointer;
@@ -210,10 +212,9 @@
 }
 .create-card:active,
 .create-card:hover{
-    padding: 5px 7px;
-    font-size: 1.5rem;
+    outline: 10px;
     box-shadow: 0 0 11px #939393;
-    transform: scale(1.1);
+    transform: scale(1.2);
 }
 .page-body{
     margin-top: .5rem;

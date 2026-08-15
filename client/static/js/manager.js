@@ -222,6 +222,7 @@ function switchPageManager(page){
 
     const lp = document.getElementById(getPageManager(last_page));
     if (lp) lp.classList.remove("show");
+    console.log(lp)
 
     const _page_ = document.getElementById(getPageManager(page));
     if (!_page_)return
