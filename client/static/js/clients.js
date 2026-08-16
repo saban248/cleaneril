@@ -623,121 +623,128 @@ function switchClientsView(view) {
     switch (view) {
         case (clientsView.ORDERS):
             ordersView.classList.remove('hide');
-            scheduleView.classList.add('hide');
+            scheduleView.classList.remove('show');
             ordersTab.classList.add('active');
             scheduleTab.classList.remove('active');
             break
         case (clientsView.TIMELINE):
             ordersView.classList.add('hide');
-            scheduleView.classList.remove('hide');
+            scheduleView.classList.add('show');
             ordersTab.classList.remove('active');
             scheduleTab.classList.add('active');
-            renderClientsTimeLine();
+            renderTimeLine()
             break
     }
 }
 
-function formatTimeSimple(timestamp) {
-    const date = new Date(timestamp * 1000);
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    return `${hours}:${minutes}`;
+function showTimelineEmpty(){
+    const parent = document.getElementById("scheduleContentEmpty")
+    parent.classList.add("show")
+}
+function hideTimelineEmpty(){
+    const parent = document.getElementById("scheduleContentEmpty")
+    parent.classList.remove("show")
+}
+function showTimeline(){
+    const parent = document.getElementById("scheduleCTimeline")
+    parent.classList.add("show")
 }
 
-function isOrderToday(timestamp) {
-    const orderDate = new Date(timestamp * 1000);
-    const today = new Date();
-    return orderDate.toDateString() === today.toDateString();
+function getScheduleStatusName(stat){
+    switch (stat) {
+        case StateOrder.CANCELED:
+            return 'cancel'
+        case StateOrder.CLOSED:
+            return 'current'
+        case StateOrder.DONE:
+            return "done"
+    }
+    return ''
 }
 
-function getTodaysOrders() {return []}
+function getScheduleIconStatus(stat){
+    switch (stat) {
+        case StateOrder.CANCELED:
+            return 'cancel'
+        case StateOrder.CLOSED:
+            return "wait"
+        case StateOrder.DONE:
+            return "done"
+    }   
+}
+async function createScheduleCard(order) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "schedule-card-item";
 
-function getWorkerNameById(workerId) {
-    if (!c_runtime.workers) return workerId;
-    const worker = c_runtime.workers.find(w => w.employee_id === workerId);
-    return worker ? worker.username : workerId;
+    const timeEl = document.createElement("div");
+    timeEl.className = "schedule-time";
+    timeEl.textContent = dateFloatToHour(order.date);
+
+    const card = document.createElement("div");
+    card.className = `schedule-card schedule-${getScheduleStatusName(order.stat)}`;
+
+    const header = document.createElement("div");
+    header.className = "schedule-card-header";
+
+    const info = document.createElement("div");
+    info.className = "sch-info";
+
+    const name = document.createElement("span");
+    name.textContent = order.fullname;
+
+    const address = document.createElement("span");
+    address.className = "address";
+    address.textContent = order.address;
+
+    info.append(name, address);
+
+    const _icon = document.createElement("i");
+    _icon.className = "icon icon-32";
+    _icon.innerHTML = await icon(getScheduleIconStatus(order.stat));
+
+    header.append(info, _icon);
+
+    const money = document.createElement("div");
+    money.className = "sch-money";
+
+    const number = document.createElement("span");
+    number.className = "shekel-number";
+    number.textContent = order.price-order.off_price;
+
+    const shekel = document.createElement("span");
+    shekel.className = "shekel-icon";
+    shekel.textContent = "₪";
+
+    const paidType = document.createElement("span");
+    paidType.className = "payment-type";
+    paidType.textContent = getPaymentStatText(order.payment_type);
+
+    money.append(number, shekel, paidType);
+
+    const client = document.createElement("div");
+    client.className = "schedule-client";
+    client.textContent = order.phone;
+
+    card.append(header, money, client);
+    wrapper.append(timeEl, card);
+
+    return wrapper;
 }
 
-function renderClientsTimeLine() {
-    const scheduleContent = document.getElementById("scheduleContent");
-    const todaysOrders = getTodaysOrders();
-    
-    if (todaysOrders.length === 0) {
-        scheduleContent.innerHTML = `
-            <div class="schedule-empty-state">
-                <i class="fa-solid fa-calendar"></i>
-                <span>אין הזמנות היום</span>
-            </div>
-        `;
-        return;
+async function renderTimeLine(){
+    const parent = document.getElementById("scsItems")
+    const orders = c_runtime.orders.slice(2, 11)
+    if (!orders.length){
+        showTimelineEmpty();
+        return
     }
-    
-    // Group orders by workers
-    const workerSchedules = {};
-    
-    for (let order of todaysOrders) {
-        if (!order.workers || order.workers.length === 0) {
-            // Orders with no workers
-            if (!workerSchedules['ללא עובד']) {
-                workerSchedules['ללא עובד'] = [];
-            }
-            workerSchedules['ללא עובד'].push(order);
-        } else {
-            // Add order to each assigned worker
-            for (let workerId of order.workers) {
-                const workerName = getWorkerNameById(workerId);
-                if (!workerSchedules[workerName]) {
-                    workerSchedules[workerName] = [];
-                }
-                workerSchedules[workerName].push(order);
-            }
-        }
+    hideTimelineEmpty()
+    showTimeline()
+
+    for (order of orders){
+        const cardline = await createScheduleCard(order)
+        parent.appendChild(cardline)
     }
-    
-    // Sort workers alphabetically
-    const sortedWorkers = Object.keys(workerSchedules).sort();
-    
-    // Build HTML
-    let html = '';
-    for (let workerName of sortedWorkers) {
-        const orders = workerSchedules[workerName];
-        
-        // Sort orders by time for this worker
-        orders.sort((a, b) => a.date - b.date);
-        
-        html += `
-            <div class="worker-schedule-card">
-                <div class="worker-schedule-header">
-                    <i class="fa-solid fa-user-circle"></i>
-                    <span>${workerName}</span>
-                    <span style="color: #999; font-size: 12px; font-weight: normal; margin-left: auto;">${orders.length} הזמנות</span>
-                </div>
-                <div class="worker-orders-list">
-        `;
-        
-        for (let order of orders) {
-            const timeStr = formatTimeSimple(order.date);
-            html += `
-                <div class="worker-order-item">
-                    <div class="worker-order-time">${timeStr}</div>
-                    <div class="worker-order-info">
-                        <div class="worker-order-client">${order.fullname}</div>
-                        <div class="worker-order-address">
-                            <i class="fa-solid fa-map-pin" style="font-size: 9px; margin-left: 3px;"></i>
-                            ${order.address || 'כתובת לא צוינה'}
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-        
-        html += `
-                </div>
-            </div>
-        `;
-    }
-    
-    scheduleContent.innerHTML = html;
 }
 
 async function fetchClients() {

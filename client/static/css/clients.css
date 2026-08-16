@@ -535,7 +535,7 @@
 
 /* Workers Schedule */
 .workers-schedule-container {
-    display: flex;
+    display: none;
     flex-direction: column;
     border-radius: 9px;
     border: 1px solid #ddd;
@@ -548,13 +548,17 @@
     gap: 15px;
 }
 
+.workers-schedule-container.show{
+    display: flex !important;
+}
 .workers-schedule-container::-webkit-scrollbar {
     display: none;
 }
 
-.workers-schedule-container.hide {
-    display: none !important;
-}
+
+/* Timeline View */
+
+
 
 .schedule-content {
     display: grid;
@@ -562,14 +566,205 @@
     gap: 15px;
 }
 
-.schedule-empty-state {
-    display: flex;
+.schedule-empty-state{
+    display: none;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 60px 20px;
     gap: 15px;
     color: #999;
+}
+.schedule-empty-state.show{
+    display: flex !important;
+}
+
+.schedule-timeline{
+    display: none;
+    background: #fff;
+    border-radius: 12px;
+    width: 100%;
+}
+.schedule-timeline.show{
+    display: block !important;
+}
+
+.schedule-timeline-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 12px;
+    padding: 0 4px;
+}
+
+.schedule-card-slider{
+    display: flex;
+    gap: 40px;
+    padding: 0 40px;
+    overflow-x: auto;
+    direction: rtl;
+    scroll-snap-type: x proximity;
+    justify-content: center;
+    align-items: center;
+}
+
+.schedule-card-slider::-webkit-scrollbar {
+    height: 8px;
+}
+
+.schedule-card-slider::-webkit-scrollbar-thumb {
+    background: #d5dada;
+    border-radius: 10px;
+}
+
+.schedule-card-item{
+    flex: 0 0 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    scroll-snap-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.schedule-time{
+    font-size: 12px;
+    font-weight: 700;
+    color: #2d8d8f;
+    text-align: center;
+}
+
+.schedule-card{
+    position: relative;
+    width: 100%;
+    background: transparent;
+    color: black;
+    border-radius: 14px;
+    padding: 14px 12px;
+    min-height: 110px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 10px 20px rgba(45, 141, 143, 0.15);
+    border: 1px solid #75757590;
+    transform: translateX(0);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    overflow: hidden;
+}
+
+.schedule-card::before {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: 18px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.schedule-card.schedule-current{
+    background: #f8fae355;
+    color: #575c20;
+    border-color: #575c20;
+    box-shadow: 0 8px 18px rgba(123, 127, 36, 0.25);
+    animation: scheduleOutlinePulse 1.8s ease-out infinite;
+}
+
+.schedule-card.schedule-current::before {
+    border-color: rgba(255,255,255,0.95);
+    opacity: 1;
+    animation: scheduleOutlinePulse 1.8s ease-out infinite;
+}
+
+.schedule-card.schedule-done{
+    background: linear-gradient(135deg, #89fdc921 0%, #24b77521 100%);
+    color: #185b3b;
+    border-color: #185b3b;
+}
+.schedule-card.schedule-canceled{
+    background: linear-gradient(135deg, rgba(235, 161, 168, 0.293) 0%,  #ffe9e983 100%);
+    color: #912020;
+}
+.schedule-card:hover, 
+.schedule-card:active{
+    transform: translateY(-10px);
+    box-shadow: 0 12px 22px rgba(45, 141, 143, 0.2);
+    border-color: rgba(226, 226, 226, 0.9);
+}
+
+@keyframes scheduleOutlinePulse {
+    0% {
+        box-shadow:
+            0 0 0 0 rgba(158, 158, 158, 0.65),
+            0 0 12px rgba(92, 92, 92, 0.45);
+    }
+
+    70% {
+        box-shadow:
+            0 0 0 12px rgba(0, 149, 246, 0),
+            0 0 22px rgba(218, 218, 218, 0.2);
+    }
+
+    100% {
+        box-shadow:
+            0 0 0 18px rgba(0, 149, 246, 0),
+            0 0 12px rgba(0, 149, 246, 0);
+    }
+}
+
+
+.schedule-card-header{
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.sch-info{
+    display: grid;
+    grid-template-columns: 1fr;
+}
+.sch-info >span{
+    font-size: .8rem;
+}
+.sch-info > .address{
+    font-size: 9px;
+}
+.schedule-card-header > i{
+    box-shadow: 0 0 11px #0e2e1b2e;
+    border-radius: 50%;
+}
+
+.sch-money{
+    display: flex;
+    gap: 0;
+    line-height: 1;
+    align-items: baseline;
+}
+.sch-money > .shekel-number{
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: black;
+}
+.sch-money > .shekel-icon{
+    font-size: .9rem;
+}
+.sch-money > .payment-type{
+    font-size: .7rem;
+}
+.schedule-client{
+    font-size: 13px;
+    line-height: 1.4;
+    font-weight: 600;
+    position: relative;
+    z-index: 1;
+}
+
+.schedule-time {
+    position: relative;
+    z-index: 1;
 }
 
 .schedule-empty-state i {
@@ -581,75 +776,7 @@
     font-size: 14px;
 }
 
-.worker-schedule-card {
-    padding: 12px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    background: #fafafa;
-}
 
-.worker-schedule-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #7ccecf;
-    margin-bottom: 10px;
-    font-weight: 600;
-    color: #333;
-}
-
-.worker-schedule-header i {
-    color: #7ccecf;
-    font-size: 16px;
-}
-
-.worker-orders-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.worker-order-item {
-    display: flex;
-    gap: 10px;
-    padding: 8px 10px;
-    background: white;
-    border-radius: 6px;
-    border-left: 3px solid #7ccecf;
-    font-size: 12px;
-}
-
-.worker-order-time {
-    font-weight: 600;
-    color: #333;
-    min-width: 45px;
-}
-
-.worker-order-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.worker-order-client {
-    font-weight: 500;
-    color: #333;
-}
-
-.worker-order-address {
-    color: #999;
-    font-size: 11px;
-}
-
-.worker-empty-orders {
-    padding: 10px;
-    text-align: center;
-    color: #ccc;
-    font-size: 12px;
-}
-}
 .tcoi-header{
     font-size: 1.1rem;
     font-weight: bold;

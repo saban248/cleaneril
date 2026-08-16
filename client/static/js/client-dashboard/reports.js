@@ -268,7 +268,7 @@ async function renderClientSummaryReport(){
                         <span>סך הכנסות אחרי הוצאות</span>
                         <div>
                             <span class="rtf-number" id="fundsTotalIncome">${reportMoney(data.income)}</span>
-                            <span class="rtf-shekel-ion">₪</span>
+                            <span class="rtf-shekel-icon">₪</span>
                         </div>
                     </div>
                 </div>
