@@ -35,6 +35,7 @@ class CleanOrder(cleaneril_db.Model):
     payment_notes = cleaneril_db.Column(cleaneril_db.String, nullable=False)
     order_type = cleaneril_db.Column(cleaneril_db.Integer, nullable=False)
     marketplace_shared = cleaneril_db.Column(cleaneril_db.Boolean, nullable=False)
+    date_done = cleaneril_db.Column(cleaneril_db.Float, nullable=False)
 
 
 
@@ -123,6 +124,7 @@ def create_clean_order(manager_id:str, client_id:str, response, update:bool = Fa
     order.payment_notes = response.pn
     order.order_type = response.ot
     order.marketplace_shared = False
+    order.date_done = time.time() if response.s == StateOrder.DONE else 0
     cleaneril_db.session.add(order)
     cleaneril_db.session.commit()
     return order
