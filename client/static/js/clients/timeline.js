@@ -16,7 +16,7 @@ function hideTimeline(){
 }
 
 const c_timeline = {
-    selectedWorkerId: "all"
+    selectedWorkerId: null
 }
 
 function getScheduleStatusName(stat){
@@ -44,24 +44,17 @@ function getScheduleIconStatus(stat){
 
 function getOrderWorkerIds(order){
     let workers = order?.workers || [];
-    if (typeof workers == "string"){
-        try {
-            workers = JSON.parse(workers);
-        } catch (err) {
-            workers = workers.split(",");
-        }
-    }
     if (!Array.isArray(workers)){
         return [];
     }
-    return workers.map(workerId => String(workerId));
+    return workers
 }
 
 function isTimelineOrderForWorker(order){
-    if (c_timeline.selectedWorkerId == "all"){
+    if (c_timeline.selectedWorkerId == null){
         return true;
     }
-    return getOrderWorkerIds(order).includes(String(c_timeline.selectedWorkerId));
+    return getOrderWorkerIds(order).includes(c_timeline.selectedWorkerId);
 }
 
 function getTimelineOrders(){
@@ -200,6 +193,7 @@ async function createTimelineDaySection(day){
     }
     else{
         for (const order of day.orders){
+            if (order.stat & StateOrder.WAIT)continue
             list.appendChild(await createScheduleCard(order));
         }
     }
