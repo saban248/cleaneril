@@ -17,7 +17,8 @@ function hideTimeline(){
 
 const c_timeline = {
     selectedWorkerId: getCurrentManagerId(),
-    filterTimelineWorker:{}
+    filterTimelineWorker:{},
+    timelineOrders:{}
 }
 
 function getScheduleStatusName(stat){
@@ -59,7 +60,9 @@ function isTimelineOrderForWorker(day, order){
     return order.workers.includes(c_timeline.filterTimelineWorker[day])
 }
 
-function getTimelineOrders(){
+function getTimelineOrders(force = false){
+    if (c_timeline.timelineOrders && !force){return c_timeline.timelineOrders}
+    
     const orders = Array.isArray(c_runtime.orders) ? c_runtime.orders : [];
     const now = new Date();
     const days = [];
@@ -81,6 +84,7 @@ function getTimelineOrders(){
         });
         c_timeline.filterTimelineWorker[i] = getCurrentManagerId();
     }
+    c_timeline.timelineOrders = days
 
     return days;
 }
@@ -95,14 +99,8 @@ function getTimelineDateTitle(date){
 }
 
 function getTimelineSelectedWorkerName(day = 0){
-    const workers = Array.isArray(c_runtime.workers) ? c_runtime.workers : [];
-    const worker = workers.find(worker => worker == c_timeline.filterTimelineWorker[day])
-    if (worker == getCurrentManagerId()){
-        return getCurrentManagerName()
+    return getCurrentManagerName()
     }
-    return worker.username
-
-}
 
 function closeTimelineWorkerFilters(){
     document.querySelectorAll(".schedule-worker-filter .filter-options.show").forEach(menu => {
