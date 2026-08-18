@@ -96,8 +96,12 @@ function getTimelineDateTitle(date){
 
 function getTimelineSelectedWorkerName(day = 0){
     const workers = Array.isArray(c_runtime.workers) ? c_runtime.workers : [];
-    const worker = workers.find(worker => worker == c_timeline.filterTimelineWorker[day]);
-    return worker?.username || "-";
+    const worker = workers.find(worker => worker == c_timeline.filterTimelineWorker[day])
+    if (worker == getCurrentManagerId()){
+        return getCurrentManagerName()
+    }
+    return worker.username
+
 }
 
 function closeTimelineWorkerFilters(){

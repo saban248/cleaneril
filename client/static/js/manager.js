@@ -147,6 +147,10 @@ function getCurrentManagerId(){
     return c_runtime.manager.manager_id
 }
 
+function getCurrentManagerName(){
+    return "מנהל (אתה)"
+}
+
 function doLogin(t){
     onApiCall(t)
     const phone = document.getElementById('phone');
