@@ -151,6 +151,10 @@ function getCurrentManagerName(){
     return "מנהל (אתה)"
 }
 
+function getWorkerByWorkerId(wid){
+    return c_runtime.workers.find(w => w.employee_id == wid)
+}
+
 function doLogin(t){
     onApiCall(t)
     const phone = document.getElementById('phone');

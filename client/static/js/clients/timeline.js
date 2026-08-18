@@ -61,7 +61,7 @@ function isTimelineOrderForWorker(day, order){
 }
 
 function getTimelineOrders(force = false){
-    if (c_timeline.timelineOrders && !force){return c_timeline.timelineOrders}
+    if (Object.entries(c_timeline.timelineOrders).length && !force){return c_timeline.timelineOrders}
     
     const orders = Array.isArray(c_runtime.orders) ? c_runtime.orders : [];
     const now = new Date();
@@ -78,7 +78,7 @@ function getTimelineOrders(force = false){
             orders: orders
                 .filter(order => {
                     const date = Number(order.date);
-                    return date >= from && date < to && isTimelineOrderForWorker(i, order);
+                    return date >= from && date < to ;
                 })
                 .sort((a, b) => Number(a.date || 0) - Number(b.date || 0))
         });
@@ -98,9 +98,11 @@ function getTimelineDateTitle(date){
     });
 }
 
-function getTimelineSelectedWorkerName(day = 0){
-    return getCurrentManagerName()
-    }
+function getTimelineSelectedWorkerName(day){
+    const workerId = c_timeline.filterTimelineWorker[day];
+    const worker = getWorkerByWorkerId(workerId)
+    return worker?.username||"-";
+}
 
 function closeTimelineWorkerFilters(){
     document.querySelectorAll(".schedule-worker-filter .filter-options.show").forEach(menu => {
@@ -108,13 +110,13 @@ function closeTimelineWorkerFilters(){
     });
 }
 
-function createTimelineWorkerFilter(){
+function createTimelineWorkerFilter(day){
     const filter = document.createElement("div");
     filter.className = "action-search";
 
     const selected = document.createElement("span");
     selected.className = "viewFilterSelected";
-    selected.textContent = getTimelineSelectedWorkerName();
+    selected.textContent = getTimelineSelectedWorkerName(day);
     selected.onclick = (e) => {
         e.stopPropagation();
         const options = filter.querySelector(".filter-options");
@@ -128,30 +130,33 @@ function createTimelineWorkerFilter(){
     const options = document.createElement("div");
     options.className = "filter-options";
 
-    const addOption = (workerId, text, iconClass) => {
+    const addOption = (workerId, day, text, iconClass) => {
         const option = document.createElement("div");
         const iconEl = document.createElement("i");
         const textEl = document.createElement("span");
 
         option.className = "filter-option";
-        option.dataset.workerId = workerId;
+        option.dataset.wid = workerId;
+        option.dataset.day = day
         iconEl.className = iconClass;
         textEl.textContent = text;
         option.append(iconEl, textEl);
         option.onclick = (e) => {
             e.stopPropagation();
-            c_timeline.selectedWorkerId = workerId;
+            const wid = e.target.dataset.wid;
+            const d = e.target.dataset.day;
+            console.log(d, wid)
+            c_timeline.filterTimelineWorker[d] = wid;
+            textEl.textContent = getTimelineSelectedWorkerName(d);
             closeTimelineWorkerFilters();
-            renderTimeLine();
+            renderTimeLine(d);
         }
         options.appendChild(option);
     }
 
-    addOption("all", "כל העובדים", "fa-solid fa-users");
-
     const workers = Array.isArray(c_runtime.workers) ? c_runtime.workers : [];
     workers.forEach(worker => {
-        addOption(String(worker.employee_id), worker.username, "fa-solid fa-user");
+        addOption(worker.employee_id, day, worker.username, "fa-solid fa-user");
     });
 
     filter.append(selected, options);
@@ -162,8 +167,8 @@ document.addEventListener("click", () => {
     closeTimelineWorkerFilters();
 });
 
-function createTimelineWorkerFilterControl(){
-    return createTimelineWorkerFilter();
+function createTimelineWorkerFilterControl(day){
+    return createTimelineWorkerFilter(day);
 }
 
 function createTimelineEmptyDay(){
@@ -176,26 +181,29 @@ function createTimelineEmptyDay(){
     return empty;
 }
 
-async function createTimelineDaySection(day){
+async function createTimelineDaySection(day, ordersDay){
     const section = document.createElement("section");
     section.className = "schedule-day-section";
+    section.id = 'scheduleDaySection'+day
 
     const separator = document.createElement("div");
     separator.className = "schedule-day-separator";
 
     const title = document.createElement("span");
-    title.textContent = getTimelineDateTitle(day.date);
-    separator.append(title, createTimelineWorkerFilterControl());
+    title.textContent = getTimelineDateTitle(ordersDay.date);
+    separator.append(title, createTimelineWorkerFilterControl(day));
 
     const list = document.createElement("div");
     list.className = "schedule-day-list";
 
-    if (!day.orders.length){
+    if (!ordersDay.orders.length){
         list.appendChild(createTimelineEmptyDay());
     }
     else{
-        for (const order of day.orders){
+        for (const order of ordersDay.orders){
             if (order.stat & StateOrder.WAIT)continue
+            if (!order.workers.includes(c_timeline.filterTimelineWorker[day]))continue
+
             list.appendChild(await createScheduleCard(order));
         }
     }
@@ -299,17 +307,23 @@ async function createScheduleCard(order) {
     return wrapper;
 }
 
-async function renderTimeLine(){
+async function renderTimeLine(specificDay = -1){
 
     const parent = document.getElementById("scsItems")
-    parent.replaceChildren()
     const days = getTimelineOrders()
     hideTimelineEmpty()
     showTimeline()
-
-    for (const day of days){
-        parent.appendChild(await createTimelineDaySection(day))
+    if (specificDay!=-1){
+        const section = document.getElementById("scheduleDaySection"+specificDay)
+        const newSection = await createTimelineDaySection(specificDay, days[specificDay])
+        section.replaceWith(newSection)
+    }else{
+        parent.replaceChildren()
+        for (const [index, day] of days.entries()){
+            parent.appendChild(await createTimelineDaySection(index, day))
+        }
     }
-
-    parent.scrollTo({left: parent.scrollWidth, behavior: "smooth"});
+    if (specificDay!=-1){
+        parent.scrollTo({left: parent.scrollWidth, behavior: "smooth"})
+    }
 }
