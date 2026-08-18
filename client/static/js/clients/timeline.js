@@ -108,7 +108,7 @@ function closeTimelineWorkerFilters(){
 
 function createTimelineWorkerFilter(){
     const filter = document.createElement("div");
-    filter.className = "filter-item schedule-worker-filter";
+    filter.className = "action-search";
 
     const selected = document.createElement("span");
     selected.className = "viewFilterSelected";

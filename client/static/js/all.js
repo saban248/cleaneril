@@ -351,3 +351,4 @@ async function icon(name) {
 function createBoxloading(container){
     container.innerHTML = `<div class="box-loading"></div>`
 }
+
