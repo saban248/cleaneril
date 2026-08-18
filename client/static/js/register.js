@@ -242,7 +242,6 @@ function doLogo(t){
 
 function uploadImage(t, file, name, action, mid, callback) {
     if (!file)return;
-    console.log("uploadImage", file, name, action, mid)
     const reader = new FileReader();
     switch (action){
         case ApiUploadFile.CARD:

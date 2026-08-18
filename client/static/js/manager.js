@@ -142,6 +142,11 @@ function get_order_by_order_id(oid){
     return c_runtime.orders.find(o => o.order_id == oid)
 }
 
+
+function getCurrentManagerId(){
+    return c_runtime.manager.manager_id
+}
+
 function doLogin(t){
     onApiCall(t)
     const phone = document.getElementById('phone');
@@ -152,7 +157,6 @@ function doLogin(t){
         return;
     }
     const data = {phone:phone.value, password:password.value}
-    console.log("doLogin", data)
     const toast = showToast("נכנס..", ToastStat.LOAD)
 
     apiPost(ApiRoute.auth, data).then(
@@ -220,9 +224,7 @@ function switchPageManager(page){
         last_page = PageManager.CLIENTS
     }
     const lp = document.getElementById(getPageManager(last_page));
-    console.log(getPageManager(last_page), page, lp)
     if (lp) lp.classList.remove("show");
-    console.log(lp)
 
     const _page_ = document.getElementById(getPageManager(page));
     if (!_page_)return

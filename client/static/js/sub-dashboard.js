@@ -135,7 +135,6 @@ function switchManagerTab(viewId) {
     });
 
     document.querySelectorAll('.md-tab-item').forEach(tab => {
-        console.log(tab.dataset.tab, viewId, tab.dataset.tab == viewId)
         tab.classList.toggle('md-tab-selected', parseInt(tab.dataset.tab) === viewId);
     });
 }

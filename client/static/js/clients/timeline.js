@@ -16,7 +16,8 @@ function hideTimeline(){
 }
 
 const c_timeline = {
-    selectedWorkerId: null
+    selectedWorkerId: getCurrentManagerId(),
+    filterTimelineWorker:{}
 }
 
 function getScheduleStatusName(stat){
@@ -31,12 +32,16 @@ function getScheduleStatusName(stat){
     return ''
 }
 
-function getScheduleIconStatus(stat){
+function getScheduleIconStatus(order){
+    const stat = order.stat;
     switch (stat) {
         case StateOrder.CANCELED:
             return 'cancel'
         case StateOrder.CLOSED:
-            return "loading"
+            if (isClientDateOrderInRangeHour(order.date)){
+                return "loading"
+            }
+            return "closed"
         case StateOrder.DONE:
             return "done"
     }   
@@ -50,11 +55,8 @@ function getOrderWorkerIds(order){
     return workers
 }
 
-function isTimelineOrderForWorker(order){
-    if (c_timeline.selectedWorkerId == null){
-        return true;
-    }
-    return getOrderWorkerIds(order).includes(c_timeline.selectedWorkerId);
+function isTimelineOrderForWorker(day, order){
+    return order.workers.includes(c_timeline.filterTimelineWorker[day])
 }
 
 function getTimelineOrders(){
@@ -73,10 +75,11 @@ function getTimelineOrders(){
             orders: orders
                 .filter(order => {
                     const date = Number(order.date);
-                    return date >= from && date < to && isTimelineOrderForWorker(order);
+                    return date >= from && date < to && isTimelineOrderForWorker(i, order);
                 })
                 .sort((a, b) => Number(a.date || 0) - Number(b.date || 0))
         });
+        c_timeline.filterTimelineWorker[i] = getCurrentManagerId();
     }
 
     return days;
@@ -91,13 +94,10 @@ function getTimelineDateTitle(date){
     });
 }
 
-function getTimelineSelectedWorkerText(){
-    if (c_timeline.selectedWorkerId == "all"){
-        return "כל העובדים";
-    }
+function getTimelineSelectedWorkerName(day = 0){
     const workers = Array.isArray(c_runtime.workers) ? c_runtime.workers : [];
-    const worker = workers.find(worker => String(worker.employee_id) == String(c_timeline.selectedWorkerId));
-    return worker?.username || "כל העובדים";
+    const worker = workers.find(worker => worker == c_timeline.filterTimelineWorker[day]);
+    return worker?.username || "-";
 }
 
 function closeTimelineWorkerFilters(){
@@ -112,7 +112,7 @@ function createTimelineWorkerFilter(){
 
     const selected = document.createElement("span");
     selected.className = "viewFilterSelected";
-    selected.textContent = getTimelineSelectedWorkerText();
+    selected.textContent = getTimelineSelectedWorkerName();
     selected.onclick = (e) => {
         e.stopPropagation();
         const options = filter.querySelector(".filter-options");
@@ -215,6 +215,16 @@ function appendScheduleMeta(parent, iconClass, text){
     parent.appendChild(item);
 }
 
+
+function isClientDateOrderInRangeHour(date) {
+    const now = Date.now();
+    const start = new Date(date).getTime();
+    const end = start + (60 * 60 * 1000); // +1 hour
+
+    return now >= start && now <= end;
+}
+
+
 async function createScheduleCard(order) {
     // const title = document.createElement("span")
     // title.className = 'schedule-card-title'
@@ -252,8 +262,9 @@ async function createScheduleCard(order) {
     info.append(name, meta);
 
     const _icon = document.createElement("i");
-    _icon.className = "icon icon-32" + (order.stat&StateOrder.CLOSED?" loading":"");
-    _icon.innerHTML = await icon(getScheduleIconStatus(order.stat));
+    _icon.className = "icon icon-32" + ((order.stat&StateOrder.CLOSED)&&isClientDateOrderInRangeHour(order.date)?" loading":"");
+    
+    _icon.innerHTML = await icon(getScheduleIconStatus(order));
 
     header.append(info, _icon);
 

@@ -51,7 +51,6 @@ function openSocielMedia(social){
         default:
             break;
     }
-    console.log(link)
 
     open(link, "_blank")
     

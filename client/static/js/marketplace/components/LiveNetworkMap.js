@@ -231,7 +231,6 @@ function renderMapMarkers(jobs) {
     liveNetworkLayer.clearLayers();
     liveNetworkMarkersByJobId = {};
     jobs.forEach((job) => {
-        console.log(job)
         const marker = L.marker(job.approximateCoordinates, {
             icon: createMarkerIcon(job)
         })
