@@ -286,7 +286,7 @@ def get_register_action(**breq):
 
         case RegisterApi.level1:
             # otp
-            if not register.otpcode or ShortSession.get_otp() != register.otpcode:
+            if not register.otpcode or ShortSession.get_otp() != register.otpcode:...
             # done
             null = 'unknown'
             manager = manager_auth(register.o_phone, register.password)
