@@ -2,7 +2,7 @@ import base64
 import os
 from time import sleep
 
-from flask import render_template
+from flask import render_template, request
 
 import api.databases.company as companies
 from api.data.orders import DataOrders
@@ -14,18 +14,19 @@ from api.databases.clients import ClientProfile
 from api.databases.crads import ApiCards, Cards
 from api.databases.employee import ApiEmployee, Employee
 from api.databases.general import get_columns_no_instance
+from api.databases.limit_api import get_arls, is_limit_for_otp
 from api.databases.manager import ApiManager, manager_auth, \
     update_time_alive, get_list_manager_no_pwd
 from api.databases.orders import CleanOrder
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril, ManagerPermissions, cleaneril_db, \
     ManagerAccountStat, CompanyTaxType
-from api.general import is_logo_app_valid
+from api.general import is_logo_app_valid, get_client_ip
 from api.ptc import special_things, SJson, ShortSession
 from api.routes import cil_struct
 from api.routes.cil_struct import ReportsDataAnalyze
 from api.routes.general import set_session_data_admin
 from api.routes.ptc import Pages, ApiCall, ApiUploadFile, RegisterApi, ReportsApi, SubscriptionApi, SubscriptionStat
-from api.sms_019.otp import OTP019
+from api.sms_019.otp import OTP019, is_valid_otp
 from api.validator import core_msg, company
 
 
@@ -258,7 +259,7 @@ def get_app_reports_api(**breq) -> dict:
 def get_register_action(**breq):
     action = int(breq.get("action", -1))
     register = cil_struct.Register().build(**breq)
-
+    print(get_client_ip())
     match action:
         case RegisterApi.level0:
             o_phone = company.phone(register.o_phone)
@@ -271,10 +272,11 @@ def get_register_action(**breq):
                 ShortSession.set_admin_details(manager, _company)
                 if _company.register_level == RegisterApi.DONE:
                     return SJson.auto_code(core_msg.ServerCode.Register.e_account_exist)
-                elif _company.register_level != RegisterApi.level2:
+                elif _company.register_level != RegisterApi.level1 and managers.is_phone_verified(manager.manager_id):
                     return SJson.auto_code(core_msg.ServerCode.success, **{'level':_company.register_level.bit_length()})
             else:
-                sleep(2)
+                if is_limit_for_otp(get_client_ip()):
+                    return SJson.auto_code(core_msg.ServerCode.General.access_denied)
                 otp = OTP019(company.normalize_phone(register.o_phone))
                 otp_response = otp.create_otp()
                 if otp_response.status != 0:
@@ -285,9 +287,6 @@ def get_register_action(**breq):
 
 
         case RegisterApi.level1:
-            # otp
-            if not register.otpcode or ShortSession.get_otp() != register.otpcode:
-                ...
             # done
             null = 'unknown'
             manager = manager_auth(register.o_phone, register.password)
@@ -299,14 +298,27 @@ def get_register_action(**breq):
             if manager:
                 if _company.register_level == RegisterApi.DONE:
                     return SJson.auto_code(core_msg.ServerCode.Register.e_account_exist)
+            # otp
+            otp_code = ShortSession.get_otp()
+            if not is_valid_otp(register.otpcode) or otp_code != str(register.otpcode):
+                managers.delete_by_manager_id(manager.manager_id)
+                companies.delete_company(manager.manager_id)
+                return SJson.auto_code(core_msg.ServerCode.Integration.otpcode_invalid)
+
+            otp019 = OTP019(company.normalize_phone(register.o_phone))
+            response = otp019.validate_opt(otp_code)
+            if response.status:
+                return SJson.auto_code(core_msg.ServerCode.Integration.otpcode_invalid, **{"notice":response.message})
 
             ShortSession.set_admin_details(manager, _company)
+            managers.phone_verified(manager)
+            _company.register_level = RegisterApi.level2
 
         case RegisterApi.level2:
             manager_id = ShortSession.manager_id()
             manager = ApiManager.get_managers(manager_id=manager_id).first()
             _company = companies.get_companies(manager_id=manager_id).first()
-            if not manager or( not _company or _company.register_level != RegisterApi.level2):
+            if not manager or( not _company or _company.register_level != RegisterApi.level2 or not managers.is_phone_verified(manager_id)):
                 return SJson.auto_code(core_msg.ServerCode.General.access_denied)
             vat_code = company.is_valid_israeli_id(register.vat_code)
             if vat_code:return SJson.auto_code(vat_code)
@@ -332,7 +344,7 @@ def get_register_action(**breq):
             # validate upload
             manager_id = ShortSession.manager_id()
             _company = companies.get_companies(manager_id=manager_id).first()
-            if not _company or _company.register_level != RegisterApi.level3:
+            if not _company or _company.register_level != RegisterApi.level3 or not managers.is_phone_verified(manager_id):
                 return SJson.auto_code(core_msg.ServerCode.General.access_denied)
 
             _stat_ = api_upload_file(ApiUploadFile.LOGO,**breq)
@@ -344,7 +356,7 @@ def get_register_action(**breq):
             manager_id = ShortSession.manager_id()
             company_id = ShortSession.company_id()
             _company = companies.get_companies(company_id=company_id).first()
-            if not _company or _company.register_level != RegisterApi.level4:
+            if not _company or _company.register_level != RegisterApi.level4 or not managers.is_phone_verified(manager_id):
                 return SJson.auto_code(core_msg.ServerCode.General.access_denied)
 
             subscription = subscriptions.create_manager_subscription(manager_id,company_id, register.sub_type,

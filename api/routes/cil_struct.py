@@ -302,7 +302,8 @@ class Register:
 
     def build(self, **data):
         struct_builder(self, **data)
-        self.otpcode = int(self.otpcode)
+        if self.otpcode:
+            self.otpcode = int(self.otpcode)
         return self
 
 

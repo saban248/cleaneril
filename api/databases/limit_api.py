@@ -2,7 +2,7 @@ import time
 from datetime import datetime
 
 from api.databases.general import get_columns
-from api.databases.ptc import cleaneril_db, get_max_requests_arl, APIRateLimitStat, get_cooldown_arl
+from api.databases.ptc import cleaneril_db, get_max_requests_arl, APIRateLimitStat, get_cooldown_arl, APIRateLimitTypes
 from api.ptc import generate_hex
 from api.validator import core_msg
 
@@ -30,7 +30,7 @@ def exist_by_ip(ip:str) -> bool:
 
 def create_arl(ip:str, limit_type:int):
     if exist_by_ip(ip):
-        update_atl(ip, limit_type)
+        update_arl(ip, limit_type)
     limit = APIRateLimit()
     limit.limit_id = "arl"+generate_hex(14)
     limit.ip = ip
@@ -38,37 +38,51 @@ def create_arl(ip:str, limit_type:int):
     limit.requests = 0
     limit.created_at = time.time()
     limit.stat = APIRateLimitStat.ACCESS
+    cleaneril_db.session.add(limit)
+    cleaneril_db.session.commit()
 
     return limit
 
 
-def update_atl(ip:str, limit_type:int):
+def update_arl(ip:str, limit_type:int):
     arl:APIRateLimit = get_arls(ip=ip).first()
     if not arl:
-        return core_msg.ServerCode.General.something_wrong
+        if not create_arl(ip, limit_type):raise OSError()
+        return update_arl(ip, limit_type)
 
     if arl.stat & APIRateLimitStat.DENIED:
         if arl.cooldown_at < (time.time()-arl.cooldown):
-            arl.requests = 0
-            arl.stat = APIRateLimitStat.ACCESS
+            reset_arl_limit(ip)
+            return core_msg.ServerCode.success
         else:
             return core_msg.ServerCode.General.access_denied
     elif arl.max_requests >= get_max_requests_arl(limit_type):
         arl.stat = APIRateLimitStat.DENIED
         arl.cooldown_at = time.time()
+        cleaneril_db.session.commit()
         return core_msg.ServerCode.General.access_denied
 
     arl.requests += 1
     arl.stat = APIRateLimitStat.ACCESS
-
+    cleaneril_db.session.commit()
     return core_msg.ServerCode.success
 
 
-def reset_arl_limit(ip:str, limit_type:int):
+def reset_arl_limit(ip:str):
     arl:APIRateLimit = get_arls(ip=ip).first()
     if not arl:
         return core_msg.ServerCode.General.something_wrong
 
     arl.requests = 0
+    arl.stat = APIRateLimitStat.ACCESS
+
+    cleaneril_db.session.commit()
+    return core_msg.ServerCode.success
 
 
+
+def is_limit_for_otp(ip:str):
+    arl:APIRateLimit|None = get_arls(ip=ip).first()
+    if not arl:return False
+
+    return bool(not update_arl(ip, APIRateLimitTypes.OTP))

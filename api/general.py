@@ -3,8 +3,10 @@ import io
 import magic
 from PIL import Image
 
+from api.databases.ptc import ServerConfig
 from api.ptc import LOGO_APP_FILE_ALLOWED
 from api.validator import core_msg
+from flask import request
 
 
 def is_logo_app_valid(buffer:bytes):
@@ -21,3 +23,14 @@ def is_logo_app_valid(buffer:bytes):
         return __error__
 
     return core_msg.ServerCode.success
+
+
+
+
+def get_client_ip() -> str:
+    ip_address_fwd = request.headers.get("X-Forwarded-For")
+    real_ip =  request.headers.get("X-Real-IP")
+    if ServerConfig.DEV_MODE:
+        return request.remote_addr
+
+    return real_ip or ip_address_fwd

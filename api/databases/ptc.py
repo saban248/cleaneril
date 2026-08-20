@@ -108,6 +108,7 @@ class CompanyTaxType(IntFlag):
 
 class APIRateLimitTypes(IntFlag):
     OTP         = 1<<0
+    REGISTER    = 1<<1
 
 
 class APIRateLimitStat(IntFlag):
@@ -120,6 +121,8 @@ def get_max_requests_arl(flag:int):
     match flag:
         case APIRateLimitTypes.OTP:
             return 4
+        case APIRateLimitTypes.REGISTER:
+            return 3
 
     return 0
 
@@ -128,6 +131,8 @@ def get_cooldown_arl(flag:int):
     match flag:
         case APIRateLimitTypes.OTP:
             return 30#sec
+        case APIRateLimitTypes.REGISTER:
+            return 5
 
 
     return 0#sec

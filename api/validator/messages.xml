@@ -56,5 +56,8 @@
     <msg code="18" lang="en"></msg>
     <msg code="18" lang="he">חיבור לספק זה כבר קיים במערכת</msg>
 
+    <msg code="19" lang="en"></msg>
+    <msg code="19" lang="he">קוד אימות לא תואם</msg>
+
 
 </messages>

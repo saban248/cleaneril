@@ -1,7 +1,6 @@
 from datetime import time
 from typing import Union
 
-from docutils.languages import fa
 
 from api.databases import company as companies
 from api.databases.ptc import cleaneril_db, ManagerPermissions, ManagerAccountStat, CompanyTaxType
@@ -115,6 +114,13 @@ def delete_manager(username:str, password:str, **kwargs):
     return core_msg.ServerCode.success
 
 
+def delete_by_manager_id(manager_id:str):
+    manager = ApiManager.get_managers(manager_id=manager_id).first()
+    if not manager:return core_msg.ServerCode.General.something_wrong
+    cleaneril_db.session.delete(manager)
+    cleaneril_db.session.commit()
+    return core_msg.ServerCode.success
+
 def delete_manager_account(manager_id:str):
     manager = ApiManager.get_managers(manager_id=manager_id).first()
     company = companies.get_companies(manager_id=manager_id).first()
@@ -158,4 +164,28 @@ def get_list_manager_no_pwd():
         del m['password']
 
     return managers
+
+
+def phone_verified(manager_id:str|Manager):
+    if isinstance(manager_id, Manager):
+        manager_id.phone_verified = True
+        cleaneril_db.session.commit()
+
+    elif isinstance(manager_id, str):
+        manager = ApiManager.get_managers(manager_id=manager_id).first()
+        if not manager:return core_msg.ServerCode.General.something_wrong
+        manager.phone_verified = True
+        cleaneril_db.session.commit()
+
+    return core_msg.ServerCode.success
+
+
+def is_phone_verified(manager_id:str):
+    manager = ApiManager.get_managers(manager_id=manager_id).first()
+    if not manager:return False
+
+    return manager.phone_verified
+
+
+
 

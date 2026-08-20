@@ -131,7 +131,7 @@ function doOtp(t){
     }
 
     onApiCall(t);
-    apiPost(ApiRoute.register, {action: RegisterApi.level1, otp: otp, o_phone: o_phone,
+    apiPost(ApiRoute.register, {action: RegisterApi.level1, otpcode: otp, o_phone: o_phone,
         password:pwd1, mid: csrf}).then(res => {
         onApiCall(t, true);
         if (!res.success) {
