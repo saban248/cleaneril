@@ -94,7 +94,15 @@ class ShortSession:
     def logout():
         session.clear()
 
-
+    @staticmethod
+    def set_otp(code:int):
+        session["otpcode"] = code
+    @staticmethod
+    def get_otp():
+        code = session.get("otpcode")
+        if not code:return 0
+        del session["otpcode"]
+        return code
 
 class SJson:
     msg_json = {"success":None, "title":None, "notice":None, "code":0}

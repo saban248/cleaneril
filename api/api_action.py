@@ -25,6 +25,7 @@ from api.routes import cil_struct
 from api.routes.cil_struct import ReportsDataAnalyze
 from api.routes.general import set_session_data_admin
 from api.routes.ptc import Pages, ApiCall, ApiUploadFile, RegisterApi, ReportsApi, SubscriptionApi, SubscriptionStat
+from api.sms_019.otp import OTP019
 from api.validator import core_msg, company
 
 
@@ -272,9 +273,20 @@ def get_register_action(**breq):
                     return SJson.auto_code(core_msg.ServerCode.Register.e_account_exist)
                 elif _company.register_level != RegisterApi.level2:
                     return SJson.auto_code(core_msg.ServerCode.success, **{'level':_company.register_level.bit_length()})
+            else:
+                sleep(2)
+                otp = OTP019(company.normalize_phone(register.o_phone))
+                otp_response = otp.create_otp()
+                if otp_response.status != 0:
+                    return SJson.auto_code(-1, **{"notice":otp_response.message})
+
+                ShortSession.set_otp(otp_response.code)
+                return SJson.auto_code(core_msg.ServerCode.success)
+
 
         case RegisterApi.level1:
             # otp
+            if not register.otpcode or ShortSession.get_otp() != register.otpcode:
             # done
             null = 'unknown'
             manager = manager_auth(register.o_phone, register.password)

@@ -297,6 +297,7 @@ class Register:
     # subscription
     sub_plan:int        = None
     sub_type:int        = None
+    otpcode:int         = None
     
 
     def build(self, **data):

@@ -36,6 +36,14 @@ def phone(p):
 
     return core_msg.ServerCode.success
 
+def normalize_phone(p: str) -> str:
+    p = p.replace("+", "").replace(" ", "")
+
+    if p.startswith("972"):
+        p = "0" + p[3:]
+
+    return p
+
 
 def description(desc):
     dw = re.split(r"\s+", desc)

@@ -1,5 +1,8 @@
 from datetime import time
 from typing import Union
+
+from docutils.languages import fa
+
 from api.databases import company as companies
 from api.databases.ptc import cleaneril_db, ManagerPermissions, ManagerAccountStat, CompanyTaxType
 from api.ptc import generate_hex
@@ -20,6 +23,7 @@ class Manager(cleaneril_db.Model):
     time_register = cleaneril_db.Column(cleaneril_db.Float, nullable=False)
     account_stat = cleaneril_db.Column(cleaneril_db.Integer, nullable=False)
     account_approved = cleaneril_db.Column(cleaneril_db.Boolean, nullable=False)
+    phone_verified = cleaneril_db.Column(cleaneril_db.Boolean, nullable=True, default=False)
 
 
 def update_time_alive(manager_id:str):
@@ -59,7 +63,8 @@ def set_manager_approve(manager_id:str):
 
 class ApiManager:
     @staticmethod
-    def register(phone:str, permission:int, password:str, account_stat:ManagerAccountStat = ManagerAccountStat.PENDING):
+    def register(phone:str, permission:int, password:str, account_stat:ManagerAccountStat = ManagerAccountStat.PENDING,
+                 phone_verified:bool = False):
 
         manager = ApiManager.get_managers(phone=phone, password=password).first()
         if manager:
@@ -75,6 +80,7 @@ class ApiManager:
         new.time_register = time.time()
         new.account_stat = account_stat
         new.account_approved = False
+        new.phone_verified = phone_verified
         cleaneril_db.session.add(new)
         cleaneril_db.session.commit()
 
