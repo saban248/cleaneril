@@ -145,7 +145,7 @@ body{
     align-items: center;
     gap: 6px;
     margin-top: 12px;
-    font-size: 14px;
+    font-size: 12px;
     color: #777;
     direction: rtl;
 }
@@ -155,21 +155,16 @@ body{
     align-items: center;
     justify-content: center;
     gap: 4px;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
     color: #333;
     direction: ltr;
 }
 
 .count-sms span {
-    min-width: 28px;
+    min-width: 20px;
     text-align: center;
     font-variant-numeric: tabular-nums;
-}
-
-.count-sms span:first-child::after {
-    content: ":";
-    margin-left: 4px;
 }
 
 

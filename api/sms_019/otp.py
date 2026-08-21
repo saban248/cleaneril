@@ -24,7 +24,7 @@ class OTP019:
         self.phone = phone
 
     def create_otp(self) -> s019.OTPSendResponse:
-        return s019.OTPSendResponse(0, 565656, "ok")
+        # return s019.OTPSendResponse(0, 565656, "ok")
         data = s019.OTPSendRequest(s019.SendOTP(s019.User(SMS019Config.username), self.phone, SMS019Config.SOURCE_PHONE))
         request = requests.post(SMS019Config.URL_API, json=data.asdict(), headers=API019_HEADERS)
         try:

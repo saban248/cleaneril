@@ -1,5 +1,7 @@
 from dataclasses import dataclass, asdict
 
+from api.sms_019.ptc import OTP_MESSAGE
+
 
 @dataclass(slots=True)
 class User:
@@ -13,6 +15,7 @@ class SendOTP:
     source: str
     max_tries: int = 4
     code:int = 0
+    text:str = OTP_MESSAGE
 
 
 @dataclass(slots=True)

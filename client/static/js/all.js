@@ -352,3 +352,28 @@ function createBoxloading(container){
     container.innerHTML = `<div class="box-loading"></div>`
 }
 
+
+function createCountdown(element, seconds) {
+    const span = document.createElement("span");
+    element.appendChild(span);
+
+    let remaining = seconds;
+    function update() {
+        const minutes = Math.floor(remaining / 60);
+        const secs = remaining % 60;
+
+        span.textContent = `${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+
+        if (remaining <= 0) {
+            clearInterval(timer);
+            return;
+        }
+
+        remaining--;
+    }
+
+    update();
+    const timer = setInterval(update, 1000);
+
+    return span;
+}

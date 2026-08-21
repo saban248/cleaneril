@@ -7,7 +7,7 @@ from time import sleep
 from flask import Request, session
 
 from api.databases.general import get_columns_as_dict
-from api.databases.ptc import ManagerPermissions, ManagerAccountStat
+from api.databases.ptc import ManagerPermissions, ManagerAccountStat, ServerConfig
 from api.routes.ptc import RegisterApi
 from api.validator import core_msg
 
@@ -99,11 +99,16 @@ class ShortSession:
     @staticmethod
     def set_otp(code:int):
         session["otpcode"] = code
+        session["otpcode_mr"] = 0
     @staticmethod
     def get_otp():
         code = session.get("otpcode")
         if not code:return 0
-        del session["otpcode"]
+        if session.get("otpcode_mr", 0) >= ServerConfig.OTPCODE_MAX_REQUEST:
+            del session["otpcode"]
+            del session["otpcode_mr"]
+            return core_msg.ServerCode.General.access_denied
+        session['otpcode_mr'] += 1
         return code
 
 class SJson:

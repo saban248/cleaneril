@@ -114,9 +114,12 @@ function doRegister(t){
             else{
                 const level = res.level?res.level:LEVELS.AUTH
                 completeRegsiterLevel(level)
+                const counterSms = document.getElementById("counterSms")
+                createCountdown(counterSms, 60)
                 csrf.value = res.mid;
             }
             onApiCall(t, true)
+            showToast(res.notice, ToastStat.DONE)
         }
     )
 }

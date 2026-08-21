@@ -3,6 +3,11 @@ from dataclasses import dataclass
 from api.databases.ptc import ServerConfig
 
 
+OTP_MESSAGE = """
+cleanerIL OTP
+קוד אימות #[code]
+"""
+
 def get_sms019_url_api():
     if ServerConfig.DEV_MODE:
         return SMS019Config.URL_API_TEST

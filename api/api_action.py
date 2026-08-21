@@ -265,7 +265,7 @@ def get_register_action(**breq):
             pwd = company.password(register.password)
             if pwd:return SJson.auto_code(pwd)
             manager = manager_auth(register.o_phone, register.password)
-            if manager:
+            if manager and manager.phone_verified:
                 _company: companies.Company = companies.get_companies(manager_id=manager.manager_id).first()
                 ShortSession.set_admin_details(manager, _company)
                 if _company.register_level == RegisterApi.DONE:
@@ -303,16 +303,20 @@ def get_register_action(**breq):
             # otp
             if managers.is_phone_verified(manager.manager_id):
                 return SJson.auto_code(core_msg.ServerCode.Integration.already_verified)
-            otp_code = str(ShortSession.get_otp())
-            if not is_valid_otp(register.otpcode) or otp_code != str(register.otpcode):
+            otp_code = ShortSession.get_otp()
+            if otp_code == core_msg.ServerCode.General.access_denied:
                 managers.delete_by_manager_id(manager.manager_id)
                 companies.delete_company(manager.manager_id)
+            if not is_valid_otp(register.otpcode):
                 return SJson.auto_code(core_msg.ServerCode.Integration.otpcode_invalid)
 
-            # otp019 = OTP019(company.normalize_phone(register.o_phone))
-            # response = otp019.validate_opt(otp_code)
-            # if response.status:
-            #     return SJson.auto_code(core_msg.ServerCode.Integration.otpcode_invalid, **{"notice":response.message})
+            if not is_valid_otp(register.otpcode) or otp_code != str(register.otpcode):
+                return SJson.auto_code(core_msg.ServerCode.Integration.otpcode_invalid)
+
+            otp019 = OTP019(company.normalize_phone(register.o_phone))
+            response = otp019.validate_opt(otp_code)
+            if response.status:
+                return SJson.auto_code(core_msg.ServerCode.Integration.otpcode_invalid, **{"notice":response.message})
 
             ShortSession.set_admin_details(manager, _company)
             managers.phone_verified(manager)

@@ -14,6 +14,7 @@ cleaneril = Flask(FILE_NAME_DB, template_folder=os.path.join("client", "pages"),
 
 class ServerConfig:
     DEV_MODE = True
+    OTPCODE_MAX_REQUEST = 5
     DOMAIN = 'havraka-bdaka.com'
     URL = "https://"+DOMAIN
     DEFAULT_GPSE = 50
@@ -130,7 +131,7 @@ def get_max_requests_arl(flag:int):
 def get_cooldown_arl(flag:int):
     match flag:
         case APIRateLimitTypes.OTP:
-            return 60*30#30min
+            return 5#30min
         case APIRateLimitTypes.REGISTER:
             return 60*5#5min
 
