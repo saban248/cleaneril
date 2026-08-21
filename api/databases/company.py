@@ -105,6 +105,7 @@ def change_logo(manager_id:str, logo_filename:str):
 
 def delete_company(manager_id:str):
     company:Company = get_companies(manager_id=manager_id).first()
+    if not company:return core_msg.ServerCode.General.something_wrong
     cleaneril_db.session.delete(company)
     cleaneril_db.session.commit()
     return core_msg.ServerCode.success

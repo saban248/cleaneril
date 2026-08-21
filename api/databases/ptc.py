@@ -130,9 +130,9 @@ def get_max_requests_arl(flag:int):
 def get_cooldown_arl(flag:int):
     match flag:
         case APIRateLimitTypes.OTP:
-            return 30#sec
+            return 60*30#30min
         case APIRateLimitTypes.REGISTER:
-            return 5
+            return 60*5#5min
 
 
     return 0#sec

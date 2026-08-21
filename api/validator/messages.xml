@@ -59,5 +59,11 @@
     <msg code="19" lang="en"></msg>
     <msg code="19" lang="he">קוד אימות לא תואם</msg>
 
+    <msg code="20" lang="en"></msg>
+    <msg code="20" lang="he">פעולת האימות כבר הושלמה</msg>
+
+    <msg code="21" lang="en"></msg>
+    <msg code="21" lang="he">הגעת למקסימום בקשות אימות, אנא המתן {min} דקות</msg>
+
 
 </messages>

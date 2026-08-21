@@ -104,7 +104,12 @@ function doRegister(t){
     apiPost(ApiRoute.register, data).then(
         res =>{
             if (!res.success){
-                showToast(res.notice, ToastStat.ERROR)
+                if (res.code == CODES.reachhOtpLimit){
+                    showToast(`אנא המתן ${res.cooldown} דקות`, ToastStat.ERROR)
+                    
+                }else{
+                    showToast(res.notice, ToastStat.ERROR)
+                }
             }
             else{
                 const level = res.level?res.level:LEVELS.AUTH

@@ -1,7 +1,8 @@
 
 
 const CODES = {
-    registerNotFinished:16
+    registerNotFinished:16,
+    reachhOtpLimit:21
 }
 const message = {
     EfetchClients: "שגיאה בהצגת לקוחות",

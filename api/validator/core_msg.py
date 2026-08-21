@@ -69,6 +69,8 @@ class ServerCode:
     class Integration:
         already_exist = 18
         otpcode_invalid = 19
+        already_verified = 20
+        reach_otp_limit = 21
 
 
 

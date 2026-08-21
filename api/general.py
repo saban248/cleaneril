@@ -1,4 +1,5 @@
 import io
+from idlelib.rpc import LOCALHOST
 
 import magic
 from PIL import Image
@@ -31,6 +32,6 @@ def get_client_ip() -> str:
     ip_address_fwd = request.headers.get("X-Forwarded-For")
     real_ip =  request.headers.get("X-Real-IP")
     if ServerConfig.DEV_MODE:
-        return request.remote_addr
+        return request.remote_addr or LOCALHOST
 
-    return real_ip or ip_address_fwd
+    return (real_ip or ip_address_fwd) or LOCALHOST
