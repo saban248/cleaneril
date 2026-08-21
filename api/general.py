@@ -1,11 +1,10 @@
 import io
-from idlelib.rpc import LOCALHOST
 
 import magic
 from PIL import Image
 
 from api.databases.ptc import ServerConfig
-from api.ptc import LOGO_APP_FILE_ALLOWED
+from api.ptc import LOGO_APP_FILE_ALLOWED, LOCALHOST
 from api.validator import core_msg
 from flask import request
 

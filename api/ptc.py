@@ -15,6 +15,7 @@ CONTENT_TYPE_DATA = "multipart/form-data"
 CONTENT_TYPE_FORM = "application/x-www-form-urlencoded"
 CONTENT_TYPE_JSON = "application/json"
 CONTENT_TYPE_ARGS = "a"
+LOCALHOST = "127.0.0.1"
 
 LOGO_APP_FILE_ALLOWED = {
     "image/png",
