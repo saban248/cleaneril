@@ -31,6 +31,11 @@ function buildFilterOptions(containerId, items, onSelect) {
 function switchFilterOptions(_id){
     const off = document.getElementById(_id).classList.contains("show")
     for (cls of c_sub.filterMenuOn){
+        const menu = document.getElementById(cls)
+        if (!menu){
+            c_sub.filterMenuOn = c_sub.filterMenuOn.filter(m=>m!=cls)
+            break
+        }
         document.getElementById(cls).classList.remove("show")
     }
     if (off){

@@ -104,31 +104,24 @@ function getTimelineSelectedWorkerName(day){
     return worker?.username||"-";
 }
 
-function closeTimelineWorkerFilters(){
-    document.querySelectorAll(".schedule-worker-filter .filter-options.show").forEach(menu => {
-        menu.classList.remove("show");
-    });
+function switchTimelineWorkerFilters(day){
+    switchFilterOptions("mf-wtl"+day)
 }
 
 function createTimelineWorkerFilter(day){
     const filter = document.createElement("div");
-    filter.className = "action-search";
+    filter.className = "filter-item";
 
     const selected = document.createElement("span");
     selected.className = "viewFilterSelected";
     selected.textContent = getTimelineSelectedWorkerName(day);
     selected.onclick = (e) => {
-        e.stopPropagation();
-        const options = filter.querySelector(".filter-options");
-        const isOpen = options.classList.contains("show");
-        closeTimelineWorkerFilters();
-        if (!isOpen){
-            options.classList.add("show");
-        }
+        switchTimelineWorkerFilters(day)
     }
 
     const options = document.createElement("div");
     options.className = "filter-options";
+    options.id = "mf-wtl"+day
 
     const addOption = (workerId, day, text, iconClass) => {
         const option = document.createElement("div");
@@ -143,11 +136,8 @@ function createTimelineWorkerFilter(day){
         option.append(iconEl, textEl);
         option.onclick = (e, wid=workerId, d=day) => {
             e.stopPropagation();
-            // const wid = e.target.dataset.wid;
-            // const d = e.target.dataset.day;
             c_timeline.filterTimelineWorker[d] = wid;
             textEl.textContent = getTimelineSelectedWorkerName(d);
-            closeTimelineWorkerFilters();
             renderTimeLine(d);
         }
         options.appendChild(option);
@@ -162,9 +152,6 @@ function createTimelineWorkerFilter(day){
     return filter;
 }
 
-document.addEventListener("click", () => {
-    closeTimelineWorkerFilters();
-});
 
 function createTimelineWorkerFilterControl(day){
     return createTimelineWorkerFilter(day);
@@ -190,6 +177,7 @@ async function createTimelineDaySection(day, ordersDay){
 
     const title = document.createElement("span");
     title.textContent = getTimelineDateTitle(ordersDay.date);
+    
     separator.append(title, createTimelineWorkerFilterControl(day));
 
     const list = document.createElement("div");
@@ -316,10 +304,13 @@ async function renderTimeLine(specificDay = -1){
         const section = document.getElementById("scheduleDaySection"+specificDay)
         const newSection = await createTimelineDaySection(specificDay, days[specificDay])
         section.replaceWith(newSection)
+        switchFilterOptions('mf-wtl'+specificDay)
     }else{
         parent.replaceChildren()
         for (const [index, day] of days.entries()){
             parent.appendChild(await createTimelineDaySection(index, day))
+            switchFilterOptions('mf-wtl'+index)
+            
         }
     }
     if (specificDay!=-1){
