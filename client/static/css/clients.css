@@ -654,7 +654,7 @@
     position: sticky;
     right: 0;
     z-index: 2;
-    align-self: flex-start;
+    align-self: stretch;
     padding: 7px 12px;
     border-radius: 4px;
     color: #425553;
@@ -664,6 +664,7 @@
     display: flex;
     align-items: baseline;
     gap: 8px;
+    justify-content: space-between;
 }
 
 .schedule-worker-filter{

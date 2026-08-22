@@ -141,11 +141,10 @@ function createTimelineWorkerFilter(day){
         iconEl.className = iconClass;
         textEl.textContent = text;
         option.append(iconEl, textEl);
-        option.onclick = (e) => {
+        option.onclick = (e, wid=workerId, d=day) => {
             e.stopPropagation();
-            const wid = e.target.dataset.wid;
-            const d = e.target.dataset.day;
-            console.log(d, wid)
+            // const wid = e.target.dataset.wid;
+            // const d = e.target.dataset.day;
             c_timeline.filterTimelineWorker[d] = wid;
             textEl.textContent = getTimelineSelectedWorkerName(d);
             closeTimelineWorkerFilters();
