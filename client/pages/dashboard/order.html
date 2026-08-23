@@ -97,7 +97,10 @@
             <span>פריטים שהוזמנו</span>
             {% if editor%}
                 <div class="cih-action">
-                    <i class="fa-solid fa-circle-plus" onclick="addItemClientOrder()"></i>
+                    <button class="ci-add-item" type="button" onclick="addItemClientOrder()" aria-label="הוספת פריט" title="הוספת פריט">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>הוספת פריט</span>
+                    </button>
                 </div>
             {% endif %}
         </div>

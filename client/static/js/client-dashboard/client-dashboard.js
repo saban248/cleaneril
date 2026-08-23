@@ -791,16 +791,61 @@ function addItemClientOrder(name, price) {
     div.append(inputName, inputPrice, trash, filter);
     items.appendChild(div);
     c_runtime.items_ordered[div.id] = {name:name||'unknown',price:price||0}
+    if (!name && !price) animateNewOrderItem(div)
+}
+
+function animateNewOrderItem(item){
+    const input = item.querySelector('.c-input-item-name')
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+        input?.focus()
+        return
+    }
+    const button = document.querySelector('.ci-add-item')
+    if (!button){
+        input?.focus()
+        return
+    }
+
+    const buttonBox = button.getBoundingClientRect()
+    const itemBox = item.getBoundingClientRect()
+    const startX = buttonBox.left + buttonBox.width / 2 - 10
+    const startY = buttonBox.top + buttonBox.height / 2 - 10
+    const endX = itemBox.left + 12 - startX
+    const endY = itemBox.top + itemBox.height / 2 - 10 - startY
+    const flyItem = document.createElement('span')
+    flyItem.className = 'item-order-fly'
+    flyItem.innerHTML = '<i class="fa-solid fa-plus"></i>'
+    flyItem.style.left = `${startX}px`
+    flyItem.style.top = `${startY}px`
+    flyItem.style.setProperty('--fly-mid-x', `${endX * .55}px`)
+    flyItem.style.setProperty('--fly-mid-y', `${endY * .55 - 18}px`)
+    flyItem.style.setProperty('--fly-x', `${endX}px`)
+    flyItem.style.setProperty('--fly-y', `${endY}px`)
+    document.body.appendChild(flyItem)
+    item.style.opacity = '0'
+    window.setTimeout(()=>{
+        flyItem.remove()
+        item.style.opacity = ''
+        item.classList.add('item-order-landed')
+        window.setTimeout(()=> item.classList.remove('item-order-landed'), 160)
+        input?.focus()
+    }, 390)
 }
 
 function deleteItemClientOrder(id_order){
     const parent = document.getElementById(id_order)
-    if (!parent)return
+    if (!parent || parent.dataset.removing)return
+    parent.dataset.removing = 'true'
     const element = document.getElementById(id_order+"-price")
     element.value  = 0
     mainSyncTotalPrice(element)
     delete c_runtime.items_ordered[id_order]
-    parent.remove()
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+        parent.remove()
+        return
+    }
+    parent.classList.add('item-order-evaporating')
+    window.setTimeout(()=> parent.remove(), 280)
 }
 
 async function deleteReceiptFromDashbaord(receipt_id = c_runtime.currentInvoiceIdView){

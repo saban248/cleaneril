@@ -137,7 +137,7 @@ def duplicate_clean_order(manager_id:str, client_id:str, order_id:str):
 
     copy = CleanOrder(**{ c.name: getattr(original, c.name) for c in CleanOrder.__table__.columns if c.name != "key"
                           and  c.name != 'order_id'})
-    copy.order_id = generate_hex(16)
+    copy.order_id = generate_hex(10)
     copy.date = time.time()
     cleaneril_db.session.add(copy)
     cleaneril_db.session.commit()
