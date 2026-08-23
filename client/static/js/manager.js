@@ -22,7 +22,8 @@ const c_runtime = {
     currentWorkerIdView:null,
     currentUPermission:null,
     currentManagerIdView:null,
-    clientsReports:{}
+    clientsReports:{},
+    products:[]
 }
 
 

@@ -732,6 +732,15 @@ function editOrdersClient(){
 
 }
 
+function onSearchProductToOrder(index, value){
+    const items = []
+    for (const product of c_runtime.products){
+        if (!product.raw.includes(value))continue;
+        items.push({text:product.raw, icon:'fa-solid fa-barcode'})
+    }
+    buildFilterOptions("mf-sp"+index, items, (value)=>{console.log(value)})
+
+}
 function addItemClientOrder(name, price) {
     const items = document.getElementById("items-ordered");
 
@@ -744,6 +753,10 @@ function addItemClientOrder(name, price) {
     if (name){
         inputName.value = name;
     }
+    inputName.addEventListener('input', (e)=>{
+        const value = e.target.value;
+        onSearchProductToOrder(div.id, value)
+    })
 
 
     const inputPrice = document.createElement("input");
@@ -759,7 +772,11 @@ function addItemClientOrder(name, price) {
     trash.classList = "fa-solid fa-trash-can trash-order"
     trash.onclick = ()=>{deleteItemClientOrder(div.id)}
 
-    div.append(inputName, inputPrice, trash);
+    const filter = document.createElement("div")
+    filter.className = 'filter-options'
+    filter.id = 'mf-sp'+div.id
+    
+    div.append(inputName, inputPrice, trash, filter);
     items.appendChild(div);
     c_runtime.items_ordered[div.id] = {name:name||'unknown',price:price||0}
 }
