@@ -749,6 +749,7 @@ function onSelectProductToOrder(index, product){
     const inputPrice = document.getElementById(`${index}-price`)
     inputName.value = product.raw;
     inputPrice.value = product.price;
+    mainSyncTotalPrice(inputPrice)
 }
 function addItemClientOrder(name, price) {
     const items = document.getElementById("items-ordered");
@@ -795,7 +796,7 @@ function deleteItemClientOrder(id_order){
     const parent = document.getElementById(id_order)
     if (!parent)return
     const element = document.getElementById(id_order+"-price")
-    element.value = -parseInt(element.innerText)
+    element.value  = 0
     mainSyncTotalPrice(element)
     delete c_runtime.items_ordered[id_order]
     parent.remove()
