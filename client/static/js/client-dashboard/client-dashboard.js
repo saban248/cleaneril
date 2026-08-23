@@ -710,6 +710,7 @@ function searchClientNewOrder(e){
             items.push({text:order.fullname, value:order.order_id, icon:"fa-solid fa-user"})
         
     }
+    
     buildFilterOptions("mf-sc",items,(orderId)=>{onSelectClientNewOrder(get_order_by_order_id(orderId))})
 
 }
@@ -734,13 +735,13 @@ function editOrdersClient(){
 
 function onSearchProductToOrder(index, value){
     const items = []
-
-    for (const product of c_runtime.products.filter(p=>p.orderType==c_clients.cot_selected)){
-        if (!product.raw.includes(value))continue;
+    const max = 5
+    for (const product of c_runtime.products.filter(p =>p.raw.includes(value)).slice(0, max)){
         items.push({text:product.raw, icon:'fa-solid fa-barcode', value:product.key})
     }
+    
     buildFilterOptions("mf-sp"+index, items, 
-        (pk)=>{onSelectProductToOrder(index,getCILProductByKey(pk))})
+        (pk)=>{onSelectProductToOrder(index,getCILProductByKey(pk))},true)
 
 }
 

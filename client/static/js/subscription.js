@@ -7,7 +7,7 @@ const c_sub = {
 } 
 
 
-function buildFilterOptions(containerId, items, onSelect) {
+function buildFilterOptions(containerId, items, onSelect, show = false) {
     const container = document.getElementById(containerId);
     container.innerHTML = "";
 
@@ -28,10 +28,10 @@ function buildFilterOptions(containerId, items, onSelect) {
 
         container.appendChild(option);
     }
-    switchFilterOptions(containerId)
+    switchFilterOptions(containerId, show)
 }
 
-function switchFilterOptions(_id){
+function switchFilterOptions(_id, show = false){
     const off = document.getElementById(_id).classList.contains("show")
     for (cls of c_sub.filterMenuOn){
         const menu = document.getElementById(cls)
@@ -41,7 +41,7 @@ function switchFilterOptions(_id){
         }
         document.getElementById(cls).classList.remove("show")
     }
-    if (off){
+    if (off && !show){
         
         return
     }
