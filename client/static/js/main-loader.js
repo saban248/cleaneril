@@ -52,6 +52,12 @@ async function fetchMyManager() {
 }
 
 
+async function fetchAppProducts() {
+    const data = {action:ApiCall}//null
+    c_runtime.products = CleanerILProducts
+}
+
+
 document.addEventListener("DOMContentLoaded", async function (){
     await fetchOrders();
     await fetchInvoice();
@@ -62,6 +68,7 @@ document.addEventListener("DOMContentLoaded", async function (){
     await fetchCompanies();
     await fetchSubscriptions();
     await fetchMySubscription();
+    await fetchAppProducts()
     if (typeof renderSubscriptionTable === "function"){
         renderSubscriptionTable();
     }

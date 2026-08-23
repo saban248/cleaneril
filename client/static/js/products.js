@@ -31,3 +31,7 @@ const CleanerILProducts = [
     },
 
 ]
+
+function getCILProductByKey(key){
+    return c_runtime.products.find(p=>p.key==key)
+}

@@ -21,7 +21,10 @@ function buildFilterOptions(containerId, items, onSelect) {
             <span>${item.text}</span>
         `;
 
-        option.addEventListener("click", () => onSelect(item.value));
+        option.addEventListener("click", () => {
+            onSelect(item.value)
+            switchFilterOptions(containerId)
+        });
 
         container.appendChild(option);
     }

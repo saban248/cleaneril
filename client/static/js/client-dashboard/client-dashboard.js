@@ -734,12 +734,21 @@ function editOrdersClient(){
 
 function onSearchProductToOrder(index, value){
     const items = []
-    for (const product of c_runtime.products){
-        if (!product.raw.includes(value))continue;
-        items.push({text:product.raw, icon:'fa-solid fa-barcode'})
-    }
-    buildFilterOptions("mf-sp"+index, items, (value)=>{console.log(value)})
 
+    for (const product of c_runtime.products.filter(p=>p.orderType==c_clients.cot_selected)){
+        if (!product.raw.includes(value))continue;
+        items.push({text:product.raw, icon:'fa-solid fa-barcode', value:product.key})
+    }
+    buildFilterOptions("mf-sp"+index, items, 
+        (pk)=>{onSelectProductToOrder(index,getCILProductByKey(pk))})
+
+}
+
+function onSelectProductToOrder(index, product){
+    const inputName = document.getElementById(`${index}-name`)
+    const inputPrice = document.getElementById(`${index}-price`)
+    inputName.value = product.raw;
+    inputPrice.value = product.price;
 }
 function addItemClientOrder(name, price) {
     const items = document.getElementById("items-ordered");
@@ -755,6 +764,7 @@ function addItemClientOrder(name, price) {
     }
     inputName.addEventListener('input', (e)=>{
         const value = e.target.value;
+        if (!value || value == '')return
         onSearchProductToOrder(div.id, value)
     })
 
