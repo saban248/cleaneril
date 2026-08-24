@@ -131,7 +131,7 @@
             <textarea class="c-input-notes {% if not editor %}dis-notes{% endif %}" placeholder="הכנס הערות..." id="client-notes">{{order.notes}}</textarea>
         </div>
     </div>
-    <div class="prices{% if order.off%} price-off-price{%endif%}">
+    <div class="prices{% if order.off%} price-off-price{%endif%}{% if editor %} editor-prices{% endif %}">
         <div class="{% if not editor %} m-price{%endif%}">                         
             {% if not editor %}
                 {% if order.off%}
@@ -167,7 +167,7 @@
         {%endif%}          
     </div>
     {% if editor %}
-    <div class="prices{% if order.off%} price-off-price{%endif%}">
+    <div class="prices{% if order.off%} price-off-price{%endif%}{% if editor %} editor-prices{% endif %}">
         <div class="off-price">
             <span>קבלן / עובד שמבצע מטעמך</span>
             <div class="worker-select" id="pws">

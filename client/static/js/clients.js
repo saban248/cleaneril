@@ -17,6 +17,7 @@ function mainSyncTotalPrice(element){
     if (currentValue !== '' && !/^\d+$/.test(currentValue)) return;
     if (currentValue == ''){currentValue = 0}
     const clientPrice = document.getElementById("client-price")
+    const clientVat = document.getElementById("client-vat")
     const __items_ordered = document.getElementById('items-ordered').children.length;
     let total = 0
     for (let i=0; i < __items_ordered; i++){
@@ -27,6 +28,8 @@ function mainSyncTotalPrice(element){
     }
 
     clientPrice.value = total+parseInt(currentValue)
+    clientVat.placeholder = clientPrice.value;
+
 }
 
 function compareVatOfPrice(t){

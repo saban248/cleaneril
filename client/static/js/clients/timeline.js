@@ -295,7 +295,6 @@ async function createScheduleCard(order) {
 }
 
 async function renderTimeLine(specificDay = -1){
-
     const parent = document.getElementById("scsItems")
     const days = getTimelineOrders()
     hideTimelineEmpty()
@@ -310,10 +309,9 @@ async function renderTimeLine(specificDay = -1){
         for (const [index, day] of days.entries()){
             parent.appendChild(await createTimelineDaySection(index, day))
             switchFilterOptions('mf-wtl'+index)
-            
         }
     }
-    if (specificDay!=-1){
+    if (specificDay==-1){
         parent.scrollTo({left: parent.scrollWidth, behavior: "smooth"})
     }
 }
