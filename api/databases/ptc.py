@@ -13,7 +13,7 @@ cleaneril = Flask(FILE_NAME_DB, template_folder=os.path.join("client", "pages"),
                   static_folder=os.path.join("client", "static"))
 
 class ServerConfig:
-    DEV_MODE = True
+    DEV_MODE = False
     OTPCODE_MAX_REQUEST = 5
     DOMAIN = 'havraka-bdaka.com'
     URL = "https://"+DOMAIN
