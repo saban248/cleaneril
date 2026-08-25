@@ -584,6 +584,23 @@ async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid
         }
     } catch (err) {
         console.error("Sharing failed:", err);
+        if (err?.name === "AbortError") {
+            closeToast(toastId);
+            return;
+        }
+        if (CONFIG.IMG_ORDER) {
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(CONFIG.IMG_ORDER);
+            link.href = url;
+            link.download = `order_${oid}.png`;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+            showToast("התמונה הורדה במקום שיתוף", ToastStat.DONE, toastId);
+            return;
+        }
         showToast("שגיאה ביצירת השיתוף", ToastStat.ERROR, toastId);
     }
 }

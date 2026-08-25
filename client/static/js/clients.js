@@ -28,7 +28,9 @@ function mainSyncTotalPrice(element){
     }
 
     clientPrice.value = total+parseInt(currentValue)
-    clientVat.placeholder = clientPrice.value;
+    if (clientVat){
+        clientVat.placeholder = clientPrice.value;
+    }
 
 }
 
@@ -120,7 +122,7 @@ async function publishCleanOrder(order_id, state){
 
     const notes = document.getElementById('client-notes').value;
     const price = document.getElementById('client-price').value;
-    const vat = Boolean(document.getElementById('client-vat').checked)
+    const vat = Boolean(document.getElementById('client-vat')?.checked)
     const offPrice = document.getElementById('client-off-price').value;
     const expense = document.getElementById("client-expense").value;
     const profitSharing = ft(document.getElementById("profitSharing").value);
@@ -595,7 +597,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 async function prepareOrderImage() {
     const element = document.getElementById("the-client-card");
-    if (!element) return;
+    CONFIG.IMG_ORDER = null;
+    if (!element || typeof html2canvas !== "function") return null;
     try {
         const canvas = await html2canvas(element, {
             scale: 3,
@@ -603,13 +606,18 @@ async function prepareOrderImage() {
         });
 
         const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+        if (!blob) {
+            throw new Error("Could not create the order image");
+        }
         CONFIG.IMG_ORDER = blob;
+        return blob;
 
     } catch (err) {
         showToast(err,ToastStat.ERROR)
         console.error("Image preparation failed:", err);
         CONFIG.IMG_ORDER = null;
-    } finally {}
+        return null;
+    }
 }
 
 

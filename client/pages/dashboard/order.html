@@ -160,10 +160,12 @@
             <span>תשלום לקבלן באחוזים (ספציפית על עיסקה זו)</span>
             <input class="c-input-fn price-all" type="tel" id="profitSharing" value="{{order.profit_sharing}}">
         </div>
+        {% if company.vat_company%}
         <div class="off-price">
             <span>הוסף מע"מ</span>
             <input class="checkbox" type="checkbox" id="client-vat" onclick="compareVatOfPrice(this)">
         </div>
+        {% endif %}
         {%endif%}          
     </div>
     {% if editor %}

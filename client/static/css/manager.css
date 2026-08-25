@@ -1161,9 +1161,9 @@
 .editor-prices .off-price{
     min-width: 0;
     padding: 8px;
-    border: 1px solid #e7eeee7d;
+    border: 1px solid #e7eeee3f;
     border-radius: 7px;
-    background: #fbfdfd;
+    background: #ffffff;
 }
 .editor-prices .off-price>span{
     margin-bottom: 3px;
@@ -1174,7 +1174,7 @@
     width: 100%;
     box-sizing: border-box;
     padding: 6px 7px;
-    border: 1px solid #dbe5e5;
+    border: 1px solid #dbe5e583;
     border-radius: 5px;
     background: #fff;
     color: #3f6464;
@@ -1237,7 +1237,6 @@
 }
 .price-all{
     font-size: 1.7rem;
-    color: rgb(63, 152, 36);
     text-align: end;
     font-family: 'Inter', system-ui, sans-serif;
     font-weight: 600;
