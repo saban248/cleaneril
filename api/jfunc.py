@@ -8,6 +8,7 @@ from api.databases.employee import Employee
 from api.databases.ptc import StateOrder, cleaneril, ManagerPermissions
 from api.routes.cil_struct import Invoice
 from api.routes.ptc import PaymentInvoice, InvoiceAboutDeleted, CleanOrderType
+from api.databases.ptc import ServerConfig
 
 
 # jinja functions
@@ -90,7 +91,11 @@ def payment_type_text(flag):
 
 @cleaneril.template_filter("vatop")
 def vat_of_price(price):
-    return float(f'{price*0.18:.2f}')
+    return float(f'{price+ price*(ServerConfig.VAT_IL/100):.2f}')
+
+@cleaneril.template_filter("vatoponly")
+def vat_of_price_only(price):
+    return float(f'{price*(ServerConfig.VAT_IL/100):.2f}')
 
 @cleaneril.template_filter("zfill4")
 def zfill_number(number):
@@ -150,3 +155,5 @@ def match_nums_words(nums, str1, str2):
                 return True
 
     return False
+
+print(vat_of_price(300))

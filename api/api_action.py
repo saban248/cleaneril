@@ -445,7 +445,8 @@ def get_worker_template(manager, worker_id:str, edit:bool = True, **_):
 def get_invoice_template(manager_id:str, receipt):
     _company = companies.get_companies(manager_id=manager_id).first()
     order = CleanOrder(**receipt.data)
-    return render_template(Pages.invoice.f_dashboard, company=_company, invoice=receipt, order=order)
+    return render_template(Pages.invoice.f_dashboard, company=_company, invoice=receipt, order=order,
+                           vat_number=ServerConfig.VAT_IL)
 
 
 def get_manager_dashboard_template(manager_id:str):

@@ -135,10 +135,18 @@
         <div class="{% if not editor %} m-price{%endif%}">                         
             {% if not editor %}
                 {% if order.off%}
-                    <span class="price-all {{order.off}}">{{order.price-order.off_price}}<span style="color: #6e6e6e;font-size: 1.1rem;">₪</span></span>
+                    <span class="price-all">{{(order.price-order.off_price)|vatop}}<span style="color: #6e6e6e;font-size: 1.1rem;">₪</span></span>
                 {%endif%}
-                <span class="price-all {% if order.off%}price-all-off{%endif%}">{{order.price}}<span id='spnprice' style="color: #6e6e6e;font-size: 1.1rem;">₪</span></span>
-                <!-- <span class="p-vat">כולל מע"מ</span>  -->
+                <span class="price-all {% if order.off%}price-all-off{%endif%}">
+                    {% if not order.vat %}
+                        {{order.price}}
+                    {%else%}
+                        {{order.price|vatop}}
+                    {% endif %}
+                    <span id='spnprice' style="color: #6e6e6e;font-size: 1.1rem;">₪</span></span>
+                {% if order.vat%}
+                <span class="p-vat">כולל מע"מ</span> 
+                {% endif%}
 
             {%else%}
                 <div class="off-price">
@@ -184,10 +192,18 @@
         <div class="off-price">
             <span>סוג תשלום</span>
             <div class="pay-group" id="payGroup" data-tp="2">
-                <button data-tp="1">העברה</button>
-                <button data-tp="2" id="tp-default">מזומן</button>
-                <button data-tp="4">צ'ק</button>
-                <button data-tp="8">אחר</button>
+                <button data-tp="1">
+                    <span>העברה</span>
+                </button>
+                <button data-tp="2" id="tp-default">
+                    <span>מזומן</span>
+                </button>
+                <button data-tp="4">
+                    <span>צ'ק</span>
+                </button>
+                <button data-tp="8">
+                    <span>אחר</span>
+                </button>
                 <div class="indicator"></div>
             </div>
         </div>

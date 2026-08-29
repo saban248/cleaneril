@@ -398,18 +398,14 @@
 
 .pay-group button.active {
     color: rgb(189, 233, 205);
+    display: flex;
+    direction: ltr;
+    align-items: center;
+}
+.pay-group button.active > :not(i){
+    flex: 1;
 }
 
-.pay-group .indicator {
-    position: absolute;
-    top: 4px;
-    bottom: 4px;
-    background: rgb(29, 50, 36);
-    color: rgb(189, 233, 205);
-    width: 0;
-    border-radius: 8px;
-    transition: all 0.25s ease;
-}
 
 .type-clean-order{
     display: none;

@@ -427,7 +427,8 @@ async function onLoadEditClient(oid){
     let paymentState = 0;
     const group = document.getElementById("payGroup");
     const buttons = group.querySelectorAll("button");
-    const indicator = group.querySelector(".indicator");
+    const icon = document.createElement("i")
+    icon.className = "fa-solid fa-circle-check"
     buttons.forEach(btn => {
         btn.addEventListener("click", () => {
             const value = Number(btn.dataset.tp);
@@ -435,17 +436,9 @@ async function onLoadEditClient(oid){
             group.dataset.tp = value;
             buttons.forEach(b => b.classList.remove("active"));
             btn.classList.add("active");
-            moveIndicator(btn);
+            btn.appendChild(icon)
         });
     });
-
-    function moveIndicator(btn) {
-        const rect = btn.getBoundingClientRect();
-        const parentRect = group.getBoundingClientRect();
-
-        indicator.style.left = (rect.left - parentRect.left) + "px";
-        indicator.style.width = rect.width + "px";
-    }
 
     setTimeout( ()=> {
         if (!order){
@@ -455,6 +448,13 @@ async function onLoadEditClient(oid){
         const pt = order.payment_type
         group.querySelector(`[data-tp="${pt}"]`).click();
     }, 500);
+
+    const clientVat = document.getElementById("client-vat")
+    console.log(order)
+    if (clientVat && order.vat){
+        clientVat.checked = true;
+        compareVatOfPrice(clientVat)
+    }
 
 }
 

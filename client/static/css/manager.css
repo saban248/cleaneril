@@ -1089,7 +1089,6 @@
     display: flex;
     row-gap: 10px;
     flex-direction: column;
-    margin-bottom: 20px;
     justify-content:center;
     border-top: 1px solid #dfdfdf;
     padding-top: 5px;
@@ -1154,7 +1153,7 @@
 .editor-prices{
     display: grid;
     grid-template-columns: 1fr;
-    gap: 8px;
+    gap: 0px;
     padding-top: 10px;
     border-top: 0;
 }
@@ -1219,12 +1218,9 @@
     background: #f4f9f9;
 }
 .editor-prices .pay-group button.active{
-    border-color: #557777 !important;
+    border: 2px solid #557777 !important;
     color: #fff;
-    background: #557777;
-}
-.editor-prices .pay-group .indicator{
-    display: none;
+    background: #5ba4a4;
 }
 @media (max-width: 480px){
     .editor-prices{

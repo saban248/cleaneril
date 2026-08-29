@@ -1,9 +1,10 @@
 {% macro render_invoice(invoice, editor=False) %}
+{% set nameTypeOfInvoice = "קבלה" if not invoice.is_vat else "חשבונית מס" %}
 <div class="main-invoice">
     <div class="head-invoice">
 
         <div class="title-invoice">
-            קבלה
+            {{nameTypeOfInvoice}}
         </div>
         <div class="logo-invoice">
             <img  class="logo-self-invoice" src="/static/images/logo/{{company.logo_path}}">
@@ -11,7 +12,7 @@
     </div>
     <div class="info-invoice">
         <div class="from-invoice">
-            <span class="tit">קבלה מאת:</span>
+            <span class="tit">{{nameTypeOfInvoice}} מאת:</span>
             <span class="from">{{company.company_name}}</span>
             <span class="tim">{{company.company_VAT}}</span>
             <span class="website">havraka-bdaka.com</span>
@@ -19,14 +20,14 @@
             
         </div>
         <div class="to-invoice">
-            <span class="tit">קבלה עבור:</span>
+            <span class="tit">{{nameTypeOfInvoice}} עבור:</span>
             <span class="to">{{order.fullname}}</span>
             <span class="tim">{{order.address}}</span>
             <span class="tip">{{order.phone}}</span>
         </div>
         <div class="matadata-invoice">
             <div class="mii">
-                <span>מספר קבלה:</span>
+                <span>מספר {{nameTypeOfInvoice}}:</span>
                 <span>{{invoice.key | zfill4}}</span>
             </div>
             <div class="mii">
@@ -87,15 +88,15 @@
                     <span>{{order.price-order.off_price}}₪</span>
                 </div>
                 <div class="mii">
-                    <span>מע"מ 18%:</span>
-                    <span>{{(order.price-order.off_price) | vatop}}₪</span>
+                    <span>מע"מ {{vat_number}}%:</span>
+                    <span>{{(order.price-order.off_price) | vatoponly}}₪</span>
                 </div>
             {% endif %}
         </div>
         <div class="balance-due">
             <span>סה״כ שולם</span>
-            {% if invoice.vat%}
-                <span>{{(order.price-order.off_price) + (order.price-order.off_price) | vatop}}₪</span>
+            {% if invoice.is_vat%}
+                <span>{{(order.price-order.off_price) | vatop}}₪</span>
             {%else%}
                 <span>{{order.price-order.off_price}}₪</span>
             {%endif%}
@@ -103,7 +104,9 @@
         </div>
     </div>
     <div class="invoice-footer">
+        {% if company.vat_company == 0%}
         <span class="about-vat">עוסק פטור – אינו גובה מע״מ</span>
+        {% endif %}
         <span class="invoice-signature">חתימה: {{invoice.receipt_id}}</span>
         <span>מסמך ממוחשב</span>
     </div>
