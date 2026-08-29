@@ -450,8 +450,7 @@ async function onLoadEditClient(oid){
     }, 500);
 
     const clientVat = document.getElementById("client-vat")
-    console.log(order)
-    if (clientVat && order.vat){
+    if (clientVat && order && order?.vat){
         clientVat.checked = true;
         compareVatOfPrice(clientVat)
     }

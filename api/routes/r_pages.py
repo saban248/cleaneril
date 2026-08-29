@@ -11,6 +11,7 @@ from api.databases.ptc import cleaneril, ServerConfig
 from api.ptc import special_things, ShortSession, get_dictionary_http
 from api.routes import cil_struct
 from api.routes.ptc import RoutePages, Pages
+from api.ptc import POV_ABOUTS
 
 
 @cleaneril.route(RoutePages.home.path, methods=['GET'])
@@ -54,11 +55,13 @@ def dashboard():
 
 @cleaneril.route(RoutePages.create_account.path, methods=['GET'])
 def create_account():
-    # e_invalid = SJson.error()
-    # if  ShortSession.is_admin(session):
-    #     return redirect(url_for("auth"))
-
     return render_template(Pages.register.html)
+
+
+
+@cleaneril.route(RoutePages.pov.path, methods=['GET'])
+def public_order_verifiction():
+    return render_template(Pages.pov.html2, abouts=POV_ABOUTS)
 
 
 @cleaneril.route(RoutePages.terms.path, methods=["GET"])
@@ -86,3 +89,4 @@ def icons(filename:str):
         abort(404)
 
     return send_from_directory(ServerConfig.ICONS_FOLDER, filename)
+

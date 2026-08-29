@@ -144,6 +144,7 @@ class RoutePages(RoutePagesBase):
     create_account = 1<<3
     terms = 1<<4
     subscription = 1<<5
+    pov = 1<<6
 
 
 class RouteApi(RoutePagesBase):
@@ -190,6 +191,7 @@ class Pages(IntFlag):
     invoice = 6
     manager =7
     subscription = 8
+    pov = 9
 
     def __str__(self):
         return self.__repr__()
@@ -217,6 +219,10 @@ class Pages(IntFlag):
     @property
     def path(self):
         return self.__root__
+
+    @property
+    def ashthml(self):
+        return self.path+'.html'
 
     @property
     def f_dashboard(self):

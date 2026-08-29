@@ -1,8 +1,6 @@
 import binascii
 import os
-import threading
 from copy import deepcopy
-from time import sleep
 
 from flask import Request, session
 
@@ -33,6 +31,10 @@ special_things = [
      "חיטוי מלא לריפוד שלכם"]
 
 
+POV_ABOUTS = [
+    "כדי לוודא את מקור ההזמנה, חפש בתחתית את מזהה הזמנה והגש אותה להלן",
+    "אין אפשרות לקבל את פרטי ההזמנה במלואה, במקרה של צורך משפטי ניתן לפנות אלינו"
+]
 
 
 class ShortSession:
