@@ -157,6 +157,7 @@ class RouteApi(RoutePagesBase):
     marketplace = 1<<6
     integrations = 1<<7
     integrations_callback = integrations|(1<<8)
+    papi = 1<<9
 
 
 class RegisterApi(IntFlag):
@@ -238,6 +239,10 @@ class Pages(IntFlag):
             second = other.name
 
         return os.path.join(first, second)
+
+class PublicApiCall(IntFlag):
+    clean_order_verify = 1
+
 
 class ApiCall(IntFlag):
 

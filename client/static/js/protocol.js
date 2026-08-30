@@ -582,6 +582,9 @@ function getCompanyIsVatText(flag){
 }
 
 
+const PublicApi ={
+    cleanOrderVerifiction:1
+}
 
 
 window.SocialMedia = SocialMedia;

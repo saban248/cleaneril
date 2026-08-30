@@ -24,11 +24,16 @@ from api.ptc import special_things, SJson, ShortSession
 from api.routes import cil_struct
 from api.routes.cil_struct import ReportsDataAnalyze
 from api.routes.general import set_session_data_admin
-from api.routes.ptc import Pages, ApiCall, ApiUploadFile, RegisterApi, ReportsApi, SubscriptionApi, SubscriptionStat
+from api.routes.ptc import Pages, ApiCall, ApiUploadFile, RegisterApi, ReportsApi, SubscriptionApi, SubscriptionStat, PublicApiCall
 from api.sms_019.otp import OTP019, is_valid_otp
 from api.validator import core_msg, company
 
 
+def get_public_api_action(**breq):
+    action = int(breq.get("action", -1))
+    match action:
+        case PublicApiCall.clean_order_verify:
+            order = cil_struck
 def get_api_action(**breq) -> dict:
     action = int(breq.get("action", -1))
     manager = ShortSession.manager()

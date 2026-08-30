@@ -46,6 +46,12 @@ def api():
     return sjson
 
 
+@cleaneril.route(RouteApi.papi.path, methods=["POST"])
+def public_api():
+    breq = get_dictionary_http(request)
+    sjson = get_public_api_action(**breq)
+    return sjson
+
 @cleaneril.route(RouteApi.up_image.path, methods=["POST"])
 def up_image():
     data = request.json
