@@ -33,7 +33,10 @@ def get_public_api_action(**breq):
     action = int(breq.get("action", -1))
     match action:
         case PublicApiCall.clean_order_verify:
-            order = cil_struck
+            order = cil_struct.CleanOrder().build(**breq)
+
+            order:CleanOrder = orders.get_clean_orders(key=)
+
 def get_api_action(**breq) -> dict:
     action = int(breq.get("action", -1))
     manager = ShortSession.manager()
