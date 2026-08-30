@@ -301,7 +301,8 @@ const ApiUploadFile = {
 const ToastStat = {
     LOAD:1<<0,
     DONE:1<<1,
-    ERROR:1<<2
+    ERROR:1<<2,
+    INFO:1<<3
 }
 
 

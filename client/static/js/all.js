@@ -10,9 +10,11 @@ function getIconByStatToast(stat){
             return `fa-solid fa-circle-notch fa-spin tc-icon tci-${stat}`;
         case ToastStat.ERROR:
             return `fa-solid fa-triangle-exclamation tc-icon tci-${stat}`
-        default:
-            return '';
+        case ToastStat.INFO:
+            return 'fa-solid fa-circle-info';
     }
+
+    return ''
 }
 
 function showToast(text, stat = ToastStat.LOAD, id=null){

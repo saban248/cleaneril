@@ -134,8 +134,10 @@
     <div class="prices{% if order.off%} price-off-price{%endif%}{% if editor %} editor-prices{% endif %}">
         <div class="{% if not editor %} m-price{%endif%}">                         
             {% if not editor %}
+                {% set priceAllVat = (order.price-order.off_price)|vatop%}
+                {% set priceAllNoVat = (order.price-order.off_price)%}
                 {% if order.off%}
-                    <span class="price-all">{{(order.price-order.off_price)|vatop}}<span style="color: #6e6e6e;font-size: 1.1rem;">₪</span></span>
+                    <span class="price-all">{% if order.vat%}{{priceAllVat}}{%else%}{{priceAllNoVat}}{%endif%}<span style="color: #6e6e6e;font-size: 1.1rem;">₪</span></span>
                 {%endif%}
                 <span class="price-all {% if order.off%}price-all-off{%endif%}">
                     {% if not order.vat %}
