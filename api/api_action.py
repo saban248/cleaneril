@@ -8,7 +8,7 @@ from api.data.orders import DataOrders
 from api.data.ptc import AnalyticsData, ClientReports
 from api.databases import invoice, manager as managers, subscriptions, limit_api
 from api.databases import orders, clients
-from api.databases.bridge import on_create_order_create_client
+from api.databases.bridge import on_create_order_create_client, get_pov_details_response
 from api.databases.clients import ClientProfile
 from api.databases.crads import ApiCards, Cards
 from api.databases.employee import ApiEmployee, Employee
@@ -31,11 +31,16 @@ from api.validator import core_msg, company
 
 def get_public_api_action(**breq):
     action = int(breq.get("action", -1))
+    success = core_msg.ServerCode.success
+    error = core_msg.ServerCode.General.something_wrong
     match action:
         case PublicApiCall.clean_order_verify:
-            order = cil_struct.CleanOrder().build(**breq)
-
-            order:CleanOrder = orders.get_clean_orders(key=)
+            pa = cil_struct.PublicApi().build(**breq)
+            order:CleanOrder = orders.get_clean_orders(order_id=pa.oi, key=pa.key).first()
+            if not order:
+                return SJson.auto_code(error)
+            response = get_pov_details_response(order)
+            return SJson.auto_code(success, **response.__dict__)
 
 def get_api_action(**breq) -> dict:
     action = int(breq.get("action", -1))

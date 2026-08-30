@@ -1,6 +1,7 @@
 import json
 import os
 import sqlite3
+from dataclasses import dataclass
 
 from api.databases import orders, clients, company
 from api.databases.clients import ClientProfile
@@ -141,4 +142,24 @@ def upgrade_manager_to_phone():
         comp = company.get_companies(manager_id=m.manager_id).first()
         m.phone = comp.owner_phone
         cleaneril_db.session.commit()
+
+
+@dataclass
+class PovDetails:
+    company_name: str = str()
+    company_phone:str = str()
+
+
+
+def get_pov_details_response(order:CleanOrder) -> PovDetails:
+    pov_details = PovDetails()
+    _company = company.get_companies(manager_id=order.manager_id).first()
+    if not _company:return pov_details
+    _manager = ApiManager.get_managers(manager_id=order.manager_id).first()
+    if not _manager:return pov_details
+    pov_details.company_name = _company.company_name
+    pov_details.company_phone = _company.company_phone
+
+    return pov_details
+
 

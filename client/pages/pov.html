@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="/static/css/pov.css">
+
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -36,9 +37,10 @@
                         {% endfor %}
                 </div>
                 <form id="verify-form" novalidate>
-                    <label for="order-id">מזהה ההזמנה</label>
+                    <label for="cleanOrderId">מזהה ההזמנה</label>
                     <div class="input-row">
-                        <input id="cleanOrderId" name="order_id" type="text" inputmode="text" autocomplete="off" maxlength="80" placeholder="example: 250-854c58c243f4085" required aria-describedby="order-hint">
+                        <i class="fa-solid fa-circle-check tc-icon tci-2" id="orderIdVerified"></i>
+                        <input id="cleanOrderId" name="order_id" type="text" inputmode="text" autocomplete="off" maxlength="500" placeholder="example: 250-854c58c243f4085" required aria-describedby="order-hint">
                         <button type="submit" id="verify-button">
                             <span>אימות הזמנה</span>
                         </button>

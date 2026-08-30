@@ -2,7 +2,8 @@ from flask import request
 
 import api.databases.company as companies
 from api import cardcom
-from api.api_action import get_api_action, api_upload_file, get_register_action, get_subscription_api
+from api.api_action import get_api_action, api_upload_file, get_register_action, get_subscription_api, \
+    get_public_api_action
 from api.databases.bridge import fix_order_to_client
 from api.databases.manager import manager_auth, update_time_alive
 from api.databases.ptc import cleaneril, ManagerAccountStat, cleaneril_db

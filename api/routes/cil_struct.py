@@ -374,3 +374,15 @@ class Subscription:
     def build(self, **data):
         struct_builder(self, **data)
         return self
+
+
+@dataclass
+class PublicApi:
+    oi:str = None
+    key:int = None
+
+    def build(self, **data):
+        struct_builder(self, **data)
+        if self.key is not None and str(self.key).isdigit():
+            self.key = int(self.key)
+        return self
