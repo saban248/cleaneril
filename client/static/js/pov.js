@@ -120,7 +120,7 @@ async function showOrderVerified(){
                     <i class="fa-solid fa-square-phone-flip"></i>
                     <div>
                         <dt>מספר העסק</dt>
-                        <dd href="tel:${data.company_phone}">${data.company_phone}</dd>
+                        <a href="tel:${data.company_phone}">${data.company_phone}</a>
                     </div>
                 </div>
                 <div class="order-verified-item" aria-label="סטטוס הזמנה">

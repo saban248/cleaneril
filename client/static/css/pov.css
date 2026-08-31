@@ -447,13 +447,14 @@ input:disabled{
     font-weight: 600;
 }
 
-.order-verified-item div dd {
+.order-verified-item div dd , .order-verified-item div a{
     margin: 3px 0 0;
     direction: ltr;
     text-align: right;
     color: #155d50;
     font-size: 12px;
     word-break: break-all;
+	text-decoration: none;
 }
 .verified-company-label { width: 100%; color: #65827a; font-size: 11px; font-weight: 600; }
 .verified-company strong { color: #155d50; font-size: 14px; }
