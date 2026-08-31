@@ -339,8 +339,9 @@ input:disabled{
 	 text-decoration:none;
 }
 .verified-order-details {
-	margin-top: 22px;
+	margin-top: 15px;
 	padding: 20px;
+	padding-top: 15px;
 	display: flex;
 	flex-direction: column;
 	column-gap: 13px;
@@ -348,13 +349,16 @@ input:disabled{
 	border: 1px solid #bfe1d7;
 	border-radius: 12px;
 	background: white;
+	justify-content: space-between;
 	color: #155d50;
 	animation: verified-order-in .25s ease-out;
+	min-height: 300px;
 }
 .verified-order-header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	border-bottom: 1px solid #14635220;
 
 }
 .verified-order-header>div{
@@ -376,7 +380,7 @@ input:disabled{
 	padding: 7px;
 	border-radius: 5px;
 	box-shadow: 0 2px 11px #7fffe759;
-	font-size: 14px;
+	font-size: 12px;
 	cursor: pointer;
 	position: relative;
 }
@@ -395,28 +399,28 @@ input:disabled{
 
 .verified-order-kicker { font-size: 11px; font-weight: 700; }
 .verified-order-copy h2 { margin-top: 2px; font-size: 17px; }
-.verified-order-copy > p:last-child { margin-top: 0px; color: #4a746b; font-size: 11px; line-height: 1.5; }
-.verified-order-id {
+.verified-order-copy > p:last-child { 
+	margin-top: 0px; color: #4a746b; 
+	font-size: 11px; line-height: 1.5; 
+}
+
+.order-verified-items{
+	margin-top: 10px;
+	display: flex;
+	flex-direction: column;
+}
+.order-verified-item{
 	grid-column: 1 / -1;
 	margin: 5px 0 0;
 	padding: 12px;
 	border-radius: 8px;
 	background: #fff;
-	border: 1px solid #d6ebe4;
+	border: 1px solid #d6ebe468;
 }
-.verified-order-id dt { color: #65827a; font-size: 11px; font-weight: 600; }
-.verified-order-id dd { margin: 5px 0 0; direction: ltr; text-align: right; color: #155d50; font-size: 14px; font-weight: 700; word-break: break-all; }
-.verified-company {
-	grid-column: 1 / -1;
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 5px 10px;
-	padding: 12px;
-	border-radius: 8px;
-	background: #fff;
-	border: 1px solid #d6ebe4;
-}
+
+.order-verified-item dt { color: #65827aa1; font-size: 11px; font-weight: 600; }
+.order-verified-item dd { margin: 3px 0 0; direction: ltr; text-align: right; color: #155d50; font-size: 12px;  word-break: break-all; }
+
 .verified-company-label { width: 100%; color: #65827a; font-size: 11px; font-weight: 600; }
 .verified-company strong { color: #155d50; font-size: 14px; }
 .verified-company-phone { display: inline-flex; align-items: center; gap: 5px; color: #177a68; font-size: 13px; }
@@ -439,10 +443,10 @@ input:disabled{
 		 display:none;
 	}
 	 main {
-		 padding:18px 16px 35px;
+		 padding:5px 5px 5px;
 	}
 	 .verify-card {
-		 padding:30px 23px;
+		 padding:10px;
 		 border-radius:20px;
 	}
 	 .input-row {
@@ -453,6 +457,9 @@ input:disabled{
 	}
 	 button {
 		 width:100%;
+	}
+	.verified-order-details{
+		padding: 10px;
 	}
 }
  

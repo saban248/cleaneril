@@ -161,5 +161,3 @@ def get_pov_details_response(order:CleanOrder) -> PovDetails:
     pov_details.company_phone = _company.company_phone
 
     return pov_details
-
-
