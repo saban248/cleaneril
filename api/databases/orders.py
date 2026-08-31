@@ -100,7 +100,7 @@ def create_clean_order(manager_id:str, client_id:str, response, update:bool = Fa
     else:
         order = CleanOrder()
         order.client_id = client_id
-        order.order_id = generate_hex(10)
+        order.order_id = generate_hex(10).lower()
         order.manager_id = manager_id
 
     order.stat = response.s

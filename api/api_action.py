@@ -1,5 +1,6 @@
 import base64
 import os
+from time import sleep
 
 from flask import render_template, session
 
@@ -30,6 +31,7 @@ from api.validator import core_msg, company
 
 
 def get_public_api_action(**breq):
+    sleep(1.5)
     action = int(breq.get("action", -1))
     success = core_msg.ServerCode.success
     error = core_msg.ServerCode.General.something_wrong

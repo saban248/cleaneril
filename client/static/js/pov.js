@@ -90,7 +90,7 @@ async function showOrderVerified(){
             <div class="verified-order-header" aria-hidden="true">
                 <div>
                     <i class="icon icon-24">${await icon("verify")}</i>
-                    <span>מאומת</span>
+                    <p>משוייך לעסק ב-cleanerIL</p>
                 </div>
                 <span class="close-verified" onclick="closeOrderVerified()">
                     <i class="fa-solid fa-arrow-rotate-left"></i>
@@ -99,7 +99,6 @@ async function showOrderVerified(){
             </div>
             <div class="verified-order-copy">
                 <h2 id="verified-order-title">פרטי ההזמנה</h2>
-                <p>משוייך לעסק ב-cleanerIL</p>
             </div>
             <div class="order-verified-items">
                 <div class="order-verified-item" aria-label="מספר ההזמנה ייחודי">

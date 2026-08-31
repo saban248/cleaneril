@@ -1,6 +1,8 @@
 
 
-
+.cleaneril-logo.w > svg > g>path:first-child {
+  fill: white;
+}
 .cleaneril-list{
     display: grid;
     grid-template-columns: 1fr;

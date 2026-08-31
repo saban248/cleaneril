@@ -107,7 +107,7 @@
  main::before {
 	 width:520px;
 	 height:520px;
-	 background:#d7eee7;
+	 background:#d7e2ee;
 	 top:-260px;
 	 right:-220px;
 	 opacity:.72;
@@ -145,7 +145,6 @@
  .badge svg {
 	 width:15px;
 	 height:15px;
-     border-left: 1px solid #163c3831;
 }
 #page-title{
     padding-bottom: 20px !important;
@@ -412,12 +411,11 @@ input:disabled{
     display: grid;
     grid-template-columns: 40px 1fr;
     align-items: center;
-
     margin: 5px 0 0;
     padding: 12px;
-
     border-radius: 8px;
     background: #fff;
+	padding-right: 0px;
 }
 
 .order-verified-item > i {
