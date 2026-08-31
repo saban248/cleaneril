@@ -1,10 +1,12 @@
 const c_pov = {
-    publicCleanOrderVerified:{}
+    publicCleanOrderVerified:{},
+    orderId:null,
+    authShow:false
 }
 
 document.addEventListener("DOMContentLoaded", ()=>{
-    form = document.getElementById('verify-form'),
-    input = document.getElementById('cleanOrderId'),
+    form = document.getElementById('verify-form');
+    input = document.getElementById('cleanOrderId');
 
     document.getElementById('year').textContent = new Date().getFullYear();
     input.addEventListener('input', () => {
@@ -18,9 +20,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
         doCleanOrderVerifiction(event)
 
     });
-
-
-
+    onInitPovCheckURLParams()
 })
 
 
@@ -58,7 +58,12 @@ function onResponseVerifiction(success = true){
     input.disabled = true;
     btn.children[0].textContent = 'הצג פרטים'
     btn.type = "button";
-    btn.onclick = showOrderVerified;
+    if (!c_pov.authShow){
+        btn.onclick = showOrderVerified;
+    }
+    else{
+        showOrderVerified()
+    }
     
 
 }
@@ -92,7 +97,7 @@ async function showOrderVerified(){
                     <i class="icon icon-24">${await icon("verify")}</i>
                     <p>משוייך לעסק ב-cleanerIL</p>
                 </div>
-                <span class="close-verified" onclick="closeOrderVerified()">
+                <span class="close-verified" onclick="newVerify()">
                     <i class="fa-solid fa-arrow-rotate-left"></i>
                    <span>בדיקה נוספת</span>
                 </span>
@@ -105,7 +110,7 @@ async function showOrderVerified(){
                     <i class="fa-solid fa-fingerprint"></i>
                     <div>
                         <dt>מזהה</dt>
-                        <dd id="verified-order-value">${input.value.toLocaleUpperCase()}</dd>
+                        <dd id="verified-order-value">${c_pov.orderId}</dd>
                     </div>
                 </div>
                 <div class="order-verified-item" aria-label="פרטי הספק">
@@ -132,19 +137,35 @@ async function showOrderVerified(){
             </div>
         </section>
     `);
+
+    addOrderIdToUrlParams()
+}
+
+function addOrderIdToUrlParams(){
+    const orderId = c_pov.orderId?.trim();
+    if (!orderId) return;
+
+    const url = new URL(window.location.href);
+    url.searchParams.set("orderId", orderId);
+    window.history.replaceState({}, "", url);
 }
 
 
-function closeOrderVerified(){
-    location.reload()
+function newVerify(){
+    const url = new URL(window.location.href);
+    url.searchParams.delete("orderId");
+    window.history.replaceState({}, "", url);
+    window.location.reload();
 }
+
 
 
 async function doCleanOrderVerifiction(event){
     removeResult()
-    event.preventDefault()
+    if (event)event.preventDefault()
     const input = document.getElementById("cleanOrderId")
-    const [key, orderId] = input.value.trim().split("-");
+    const rawValue = input.value;
+    const [key, orderId] = rawValue.trim().split("-");
 
     if (!key || !orderId) {
         input.focus();
@@ -161,6 +182,7 @@ async function doCleanOrderVerifiction(event){
                 // Supports both a flat JSON response and a {data: PovDetails} wrapper.
                 showIsValidOrderID()
                 c_pov.publicCleanOrderVerified = res
+                c_pov.orderId = rawValue;
             }
             onResponseVerifiction(res.success)
 
@@ -168,4 +190,15 @@ async function doCleanOrderVerifiction(event){
     )
 
 
+}
+
+
+function onInitPovCheckURLParams(){
+    const url = new URL(window.location.href);
+    const orderId = url.searchParams.get("orderId");
+    input = document.getElementById('cleanOrderId');
+    if (!orderId)return
+    input.value = orderId
+    c_pov.authShow = true;
+    doCleanOrderVerifiction()
 }
