@@ -84,6 +84,13 @@ function getOrderStatText(s){
     return "לא ידוע";
 }
 
+function getOrderStatIcon(s){
+    if (s & StateOrder.WAIT) return 'fa-solid fa-circle-question';
+    if (s & StateOrder.CLOSED) return  'fa-solid fa-hourglass-half';
+    if (s & StateOrder.CANCELED) return 'fa-regular fa-circle-xmark';
+    if (s & StateOrder.DONE) return 'fa-solid fa-circle-check';
+    return 'fa-solid fa-border-none'
+}
 
 const CalanderClients = {
     TOMORROW:   1<<0,

@@ -148,6 +148,8 @@ def upgrade_manager_to_phone():
 class PovDetails:
     company_name: str = str()
     company_phone:str = str()
+    stat:int          = -1
+    date:float          = 0.0
 
 
 
@@ -159,5 +161,7 @@ def get_pov_details_response(order:CleanOrder) -> PovDetails:
     if not _manager:return pov_details
     pov_details.company_name = _company.company_name
     pov_details.company_phone = _company.company_phone
+    pov_details.stat = order.stat
+    pov_details.date = order.date
 
     return pov_details

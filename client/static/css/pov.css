@@ -352,7 +352,6 @@ input:disabled{
 	justify-content: space-between;
 	color: #155d50;
 	animation: verified-order-in .25s ease-out;
-	min-height: 300px;
 }
 .verified-order-header {
 	display: flex;
@@ -409,18 +408,53 @@ input:disabled{
 	display: flex;
 	flex-direction: column;
 }
-.order-verified-item{
-	grid-column: 1 / -1;
-	margin: 5px 0 0;
-	padding: 12px;
-	border-radius: 8px;
-	background: #fff;
-	border: 1px solid #d6ebe468;
+.order-verified-item {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    align-items: center;
+
+    margin: 5px 0 0;
+    padding: 12px;
+
+    border-radius: 8px;
+    background: #fff;
 }
 
-.order-verified-item dt { color: #65827aa1; font-size: 11px; font-weight: 600; }
-.order-verified-item dd { margin: 3px 0 0; direction: ltr; text-align: right; color: #155d50; font-size: 12px;  word-break: break-all; }
+.order-verified-item > i {
+	grid-column: 1;
+    grid-row: 1;
+    justify-self: center;
+    align-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 15px;
+    border-radius: 50%;
+	outline: 1px solid #14635216;
+	font-size: 18px !important;
+}
 
+.order-verified-item > div {
+    grid-column: 2;
+    min-width: 0;
+}
+
+.order-verified-item div dt {
+    color: #65827aa1;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.order-verified-item div dd {
+    margin: 3px 0 0;
+    direction: ltr;
+    text-align: right;
+    color: #155d50;
+    font-size: 12px;
+    word-break: break-all;
+}
 .verified-company-label { width: 100%; color: #65827a; font-size: 11px; font-weight: 600; }
 .verified-company strong { color: #155d50; font-size: 14px; }
 .verified-company-phone { display: inline-flex; align-items: center; gap: 5px; color: #177a68; font-size: 13px; }
