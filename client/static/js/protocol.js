@@ -92,6 +92,14 @@ function getOrderStatIcon(s){
     return 'fa-solid fa-border-none'
 }
 
+function getOrderStatIconColor(s){
+    if (s & StateOrder.WAIT) return '#638390';
+    if (s & StateOrder.CLOSED) return  '#a2a954';
+    if (s & StateOrder.CANCELED) return 'rgb(182, 104, 104)';
+    if (s & StateOrder.DONE) return '#5fbb98';
+    return 'fa-solid fa-border-none'
+}
+
 const CalanderClients = {
     TOMORROW:   1<<0,
     DAY:        1<<1,

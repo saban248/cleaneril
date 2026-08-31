@@ -76,7 +76,13 @@ async function showOrderVerified(){
     const input = document.getElementById("cleanOrderId");
     const orderStatText = getOrderStatText(data.stat).replace("!", "")
     const orderStatIcon = getOrderStatIcon(data.stat)
-    const orderDate = 
+    const orderStatIconColor = getOrderStatIconColor(data.stat)
+    const orderDate = new Date(data.date * 1000).toLocaleDateString("he-IL", {
+        weekday: "long",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+    });
     input.remove()
     form.replaceChildren()
     form.insertAdjacentHTML("afterend", `
@@ -118,10 +124,10 @@ async function showOrderVerified(){
                     </div>
                 </div>
                 <div class="order-verified-item" aria-label="סטטוס הזמנה">
-                    <i class="${orderStatIcon}"></i>
+                    <i class="${orderStatIcon}" style="color:${orderStatIconColor} !important;"></i>
                     <div>
                         <dt>מצב הזמנה</dt>
-                        <dd>${orderStatText} בתאריך ${}</dd>
+                        <dd>${orderStatText} בתאריך ${orderDate}</dd>
                     </div>
                 </div>
             </div>
