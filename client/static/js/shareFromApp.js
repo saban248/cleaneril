@@ -11,7 +11,9 @@ function canvasToBlob(canvas, type = "image/png", quality = 1) {
 }
 
 
+
 async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid = c_runtime.currentClientIdView) {
+    alert()
     if (isCantExitEditOrder()){
         if (!(await askAboutExitEditOrder())){return}
     }
@@ -27,7 +29,7 @@ async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid
         showToast(message.EShareOrderFailed, ToastStat.ERROR, toastId);
         return;
     }
-    const order = getOrderByOrderId(oid)
+    const order = get_order_by_order_id(oid)
     const shareData = {
         title: `הזמנת ${getCleanOrderTypeText(order.order_type)}`,
         text: `הזמנת  ${getCleanOrderTypeText(order.type_order)} `,
@@ -40,38 +42,36 @@ async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid
             logging: false
         });
 
-        canvas.toBlob(async (blob) => {
-            if (!blob) {
-                showToast("שגיאה בהמרת התמונה", ToastStat.ERROR, toastId);
+        const blob = await canvasToBlob(canvas);
+        if (!blob) {
+            showToast("שגיאה ביצירת התמונה", ToastStat.ERROR, toastId);
+            return;
+        }
+
+        const fileName = `order_${oid}.png`;
+        const file = new File([blob], fileName, { type: "image/png" });
+        try {
+            if (!navigator.canShare || !navigator.canShare({ files: [file] })) {
+                downloadFile(blob, fileName);
+                showToast("שיתוף קבצים אינו נתמך - התמונה הורדה", ToastStat.DONE, toastId);
+                return
+            }
+            await navigator.share({
+                title: "פרטי הזמנה",
+                text: `סיכום הזמנה עבור ${order.fullname}`,
+                files: [file]
+            });
+            showToast("שותף בהצלחה", ToastStat.DONE, toastId);
+        } catch (shareErr) {
+            console.error("Sharing failed:", shareErr);
+            if (shareErr?.name === "AbortError") {
+                closeToast(toastId);
                 return;
             }
-
-            const client = get_client_by_order_id(oid);
-            const fileName = `order_${oid}.png`;
-            const file = new File([blob], fileName, { type: "image/png" });
-
-            try {
-                if (!navigator.canShare || !navigator.canShare({ files: [file] })) {
-                    downloadFile(blob, fileName);
-                    showToast("שיתוף קבצים אינו נתמך - התמונה הורדה", ToastStat.DONE, toastId);
-                    return
-                }
-                await navigator.share({
-                    title: "פרטי הזמנה",
-                    text: `סיכום הזמנה עבור ${client?.fullname || 'לקוח'}`,
-                    files: [file]
-                });
-                showToast("שותף בהצלחה", ToastStat.DONE, toastId);
-            } catch (shareErr) {
-                console.error("Sharing failed:", shareErr);
-                if (shareErr?.name === "AbortError") {
-                    closeToast(toastId);
-                    return;
-                }
-                downloadFile(blob, fileName);
-                showToast("התמונה הורדה במקום שיתוף", ToastStat.DONE, toastId);
-            }
-        }, "image/png", 1);
+            downloadFile(blob, fileName);
+            showToast("התמונה הורדה במקום שיתוף", ToastStat.DONE, toastId);
+        }
+        
 
     } catch (err) {
         console.error("Capture failed:", err);

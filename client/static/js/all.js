@@ -245,11 +245,13 @@ const messageEl = document.getElementById("modalMessage");
 const btnConfirm = document.getElementById("btnConfirm");
 const btnCancel = document.getElementById("btnCancel");
 
-function showAsk({ title, msg }) {
+function showAsk({ title, msg, cbConfirm, cbCancel }) {
     if (titleEl) titleEl.textContent = title || (typeof message !== 'undefined' ? message.notice : '');
     if (messageEl) messageEl.textContent = msg;
 
     if (modal) modal.classList.remove("hide");
+    if (cbConfirm) btnConfirm.onclick = () => { cbConfirm(); closeAsk(true); };
+    if (cbCancel) btnCancel.onclick = () => { cbCancel(); closeAsk(false); };
     return new Promise((resolve) => {
         if (modal) {
             modal.__ask_resolver = resolve;
