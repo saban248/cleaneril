@@ -7,57 +7,74 @@ async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid
         return;
     }
 
-    const toastId = showToast("", ToastStat.LOAD);
+    const toastId = showToast("מכין...", ToastStat.LOAD);
 
     try {
-        // Ensure the order view is rendered for the capture
         await showClientOrder(oid);
-        await sleep(300); // Wait for layout and rendering to finish
-        await prepareOrderImage();
+        await sleep(500);
 
-        if (!CONFIG.IMG_ORDER) {
-            showToast(message.EneedRefresh, ToastStat.ERROR, toastId)
-            return
+        const orderElement = document.getElementById('the-client-card');
+        if (!orderElement) {
+            showToast("לא ניתן למצוא את תצוגת ההזמנה", ToastStat.ERROR, toastId);
+            return;
         }
 
-        const client = get_client_by_order_id(oid);
-        const fileName = `order_${oid}.png`;
-        const file = new File([CONFIG.IMG_ORDER], fileName, { type: "image/png" });
+        const canvas = await html2canvas(orderElement, {
+            scale: 2,
+            allowTaint: true,
+            useCORS: true,
+            logging: false
+        });
 
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            await navigator.share({
-                title: "פרטי הזמנה",
-                text: `סיכום הזמנה עבור ${client?.fullname || 'לקוח'}`,
-                files: [file]
-            });
-            showToast("שותף בהצלחה", ToastStat.DONE, toastId);
-        } else {
-            // Fallback to download if sharing files is not supported
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(CONFIG.IMG_ORDER);
-            link.download = fileName;
-            link.click();
-            showToast("שיתוף קבצים אינו נתמך - התמונה הורדה", ToastStat.DONE, toastId);
-        }
+        canvas.toBlob(async (blob) => {
+            if (!blob) {
+                showToast("שגיאה בהמרת התמונה", ToastStat.ERROR, toastId);
+                return;
+            }
+
+            const client = get_client_by_order_id(oid);
+            const fileName = `order_${oid}.png`;
+            const file = new File([blob], fileName, { type: "image/png" });
+
+            try {
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        title: "פרטי הזמנה",
+                        text: `סיכום הזמנה עבור ${client?.fullname || 'לקוח'}`,
+                        files: [file]
+                    });
+                    showToast("שותף בהצלחה", ToastStat.DONE, toastId);
+                } else {
+                    // Fallback to download if sharing files is not supported
+                    downloadFile(blob, fileName);
+                    showToast("שיתוף קבצים אינו נתמך - התמונה הורדה", ToastStat.DONE, toastId);
+                }
+            } catch (shareErr) {
+                console.error("Sharing failed:", shareErr);
+                if (shareErr?.name === "AbortError") {
+                    closeToast(toastId);
+                    return;
+                }
+                downloadFile(blob, fileName);
+                showToast("התמונה הורדה במקום שיתוף", ToastStat.DONE, toastId);
+            }
+        }, "image/png", 0.95);
+
     } catch (err) {
-        console.error("Sharing failed:", err);
-        if (err?.name === "AbortError") {
-            closeToast(toastId);
-            return;
-        }
-        if (CONFIG.IMG_ORDER) {
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(CONFIG.IMG_ORDER);
-            link.href = url;
-            link.download = `order_${oid}.png`;
-            link.style.display = 'none';
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-            setTimeout(() => URL.revokeObjectURL(url), 1000);
-            showToast("התמונה הורדה במקום שיתוף", ToastStat.DONE, toastId);
-            return;
-        }
-        showToast("שגיאה ביצירת השיתוף", ToastStat.ERROR, toastId);
+        console.error("Capture failed:", err);
+        showToast("שגיאה ביצירת התמונה", ToastStat.ERROR, toastId);
     }
+}
+
+// Helper function to download file
+function downloadFile(blob, fileName) {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
