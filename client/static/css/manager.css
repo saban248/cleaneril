@@ -987,10 +987,10 @@
 .ci-body{
 
 }
-.items-ordered,#items-ordered{
+.items-ordered{
     display: flex;
     flex-direction: column;
-    row-gap: 5px;
+    row-gap: 3px;
 
 }
 .header{

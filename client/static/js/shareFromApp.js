@@ -23,7 +23,8 @@ async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid
             scale: 2,
             allowTaint: true,
             useCORS: true,
-            logging: false
+            logging: false,
+            backgroundColor: '#ffffff'
         });
 
         canvas.toBlob(async (blob) => {
@@ -34,20 +35,21 @@ async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid
 
             const client = get_client_by_order_id(oid);
             const fileName = `order_${oid}.png`;
-            const file = new File([blob], fileName, { type: "image/png" });
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
             try {
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                // Try Web Share API first (works on iOS with HTTPS)
+                if (navigator.canShare && navigator.canShare({ files: [new File([blob], fileName, { type: "image/png" })] })) {
                     await navigator.share({
                         title: "פרטי הזמנה",
                         text: `סיכום הזמנה עבור ${client?.fullname || 'לקוח'}`,
-                        files: [file]
+                        files: [new File([blob], fileName, { type: "image/png" })]
                     });
                     showToast("שותף בהצלחה", ToastStat.DONE, toastId);
                 } else {
-                    // Fallback to download if sharing files is not supported
-                    downloadFile(blob, fileName);
-                    showToast("שיתוף קבצים אינו נתמך - התמונה הורדה", ToastStat.DONE, toastId);
+                    // Fallback to download
+                    downloadFile(blob, fileName, isIOS);
+                    showToast("התמונה הורדה", ToastStat.DONE, toastId);
                 }
             } catch (shareErr) {
                 console.error("Sharing failed:", shareErr);
@@ -55,8 +57,8 @@ async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid
                     closeToast(toastId);
                     return;
                 }
-                downloadFile(blob, fileName);
-                showToast("התמונה הורדה במקום שיתוף", ToastStat.DONE, toastId);
+                downloadFile(blob, fileName, isIOS);
+                showToast("התמונה הורדה", ToastStat.DONE, toastId);
             }
         }, "image/png", 0.95);
 
@@ -66,15 +68,28 @@ async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid
     }
 }
 
-// Helper function to download file
-function downloadFile(blob, fileName) {
+// Helper function to download file with iOS support
+function downloadFile(blob, fileName, isIOS = false) {
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = fileName;
-    link.style.display = 'none';
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    
+    if (isIOS) {
+        // iOS specific: open in new window to trigger download
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            const newWindow = window.open();
+            newWindow.document.write(`<img src="${reader.result}" style="max-width: 100%; height: auto;"/>`);
+        };
+        reader.readAsDataURL(blob);
+    } else {
+        // Desktop/Android: use traditional download
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+    }
+    
+    setTimeout(() => URL.revokeObjectURL(url), 100);
 }
