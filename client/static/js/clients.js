@@ -3,7 +3,8 @@ const configClients = {
 }
 const clientsView = {
     ORDERS:1<<0,
-    TIMELINE:1<<1
+    TIMELINE:1<<1,
+    TRASH:1<<2
 }
 
 
@@ -628,27 +629,35 @@ function shareOrderToClientAsLink(cid){
 // ===== Workers Schedule Functions =====
 
 function switchClientsView(view) {
-    const ordersView = document.getElementById("listClients");
-    const scheduleView = document.getElementById("workersScheduleView");
-    const ordersTab = document.getElementById("tab-orders");
-    const scheduleTab = document.getElementById("tab-schedule");
+    const containers = ["listClients", "workersScheduleView", "listOrdersTrash"];
+    const viewtabsItems = document.getElementById("viewtabs-items");
+    for (tab of viewtabsItems.children){tab.classList.remove("active") }
+    
+    h = (el) => {document.getElementById(el).classList.add("hide");document.getElementById(el).classList.remove("show")}
+    s = (el) => {document.getElementById(el).classList.add("show");document.getElementById(el).classList.remove("hide")}
+    for (const container of containers) {
+        h(container);
+    }
+    const ge = (t) => document.getElementById(`viewtab-${t}`)
     
     switch (view) {
         case (clientsView.ORDERS):
-            ordersView.classList.remove('hide');
-            scheduleView.classList.remove('show');
-            ordersTab.classList.add('active');
-            scheduleTab.classList.remove('active');
+            ge(view).classList.add("active")
+            s("listClients")
             break
         case (clientsView.TIMELINE):
-            ordersView.classList.add('hide');
-            scheduleView.classList.add('show');
-            ordersTab.classList.remove('active');
-            scheduleTab.classList.add('active');
+            ge(view).classList.add("active")
+            s("workersScheduleView")
             renderTimeLine()
+            break
+        case (clientsView.TRASH):
+            ge(view).classList.add("active")
+            s("listOrdersTrash")
+
             break
     }
 }
+
 
 
 async function fetchClients() {

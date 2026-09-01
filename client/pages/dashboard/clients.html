@@ -39,14 +39,18 @@
                 <input class="c-input-fn seacrh-input" type="text" placeholder="שם, פאלפון, תאריך" id="searchClient" oninput="doSearchClientsLocal(this)">
             </div>
         </div>
-            <div class="view-tabs-clients">
-                <button class="view-tab-btn active" id="tab-orders" onclick="switchClientsView(clientsView.ORDERS)">
+            <div class="view-tabs-clients" id="viewtabs-items">
+                <button class="view-tab-btn active" id="viewtab-1" onclick="switchClientsView(clientsView.ORDERS)">
                     <i class="fa-solid fa-list"></i>
                     הכל 
                 </button>
-                <button class="view-tab-btn" id="tab-schedule" onclick="switchClientsView(clientsView.TIMELINE)">
+                <button class="view-tab-btn" id="viewtab-2" onclick="switchClientsView(clientsView.TIMELINE)">
                     <i class="fa-solid fa-people-group"></i>
                     לו"ז 
+                </button>
+                <button class="view-tab-btn" id="viewtab-4" onclick="switchClientsView(clientsView.TRASH)">
+                    <i class="fa-solid fa-trash"></i>
+                    אשפה 
                 </button>
             </div>
         <div class="cleaneril-list list-clients" id="listClients">
@@ -69,6 +73,7 @@
                 </div>
             </div>
         </div>
+        <div class="cleaneril-list list-clients" id="listOrdersTrash"></div>
         
     <div id="clientMenu" class="client-menu-action">
         

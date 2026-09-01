@@ -3,7 +3,7 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="robots" content="noindex, follow">
     <meta name="theme-color" content="#123f3a">
     <title>אימות הזמנה | CleanerIL</title>
@@ -28,14 +28,6 @@
             <section class="verify-card" aria-labelledby="page-title" data-verify-url="/api/public/orders/verify">
                 <div class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4.5 5v6.2c0 4.9 3.2 9.4 7.5 10.8 4.3-1.4 7.5-5.9 7.5-10.8V5L12 2Z"/><path d="m8.6 12 2.2 2.2 4.7-4.7"/></svg></div>
                 <h1 id="page-title">בדיקת מקור הזמנה</h1>
-                <div class="infos">
-                    {% for about in abouts %}
-                        <div class="info">
-                            <i class="fa-solid fa-circle-info"></i>
-                            <p>{{about}}</p>
-                        </div>
-                        {% endfor %}
-                </div>
                 <form id="verify-form" novalidate>
                     <label for="cleanOrderId">מזהה ההזמנה</label>
                     <div class="input-row">
@@ -47,7 +39,15 @@
                     </div>
                 </form>
                 <div class="result" id="verify-result" role="status" aria-live="polite"></div>
-                <p class="support">לא מצאתם את המזהה או יש ספק לגבי ההזמנה? <a href="/contact">צרו קשר עם השירות</a>.</p>
+                <div class="infos">
+                    {% for about in abouts %}
+                        <div class="info">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <p>{{about}}</p>
+                        </div>
+                        {% endfor %}
+                </div>
+                <!-- <p class="support"><a href="/contact">צרו קשר עם השירות</a>.</p> -->
             </section>
         </main>
         <footer>© <span id="year"></span> CleanerIL · מערכת אימות הזמנות</footer>
