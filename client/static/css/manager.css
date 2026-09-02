@@ -1005,6 +1005,17 @@
 .ordered{
     position: relative;
 }
+.osummary{
+    margin-top:4px;
+    border-top: 1px solid #b4b4b434;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.osummary > span:last-child{
+    font-weight: lighter;
+    color: #313131ba;
+    font-size: 11px;
+}
 
 .item-ordered{
     display: flex;

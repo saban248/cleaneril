@@ -120,6 +120,12 @@
                             {%endif%}
                         </div>
                     {%endfor%}
+                    {% if not editor %}
+                        <div class="ordered osummary" id="summary">
+                            <span class="s-item-name" id="{{k}}-name">סיכום</span>
+                            <span class="s-item-price" id="{{k}}-price">{{order.items.items()|length}} פריטים</span>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
 
