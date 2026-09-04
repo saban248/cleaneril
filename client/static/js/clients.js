@@ -1,12 +1,16 @@
-const configClients = {
-    timelineRefresh:false
-}
 const clientsView = {
     ORDERS:1<<0,
     TIMELINE:1<<1,
     TRASH:1<<2
 }
 
+
+
+const configClients = {
+    timelineRefresh:false,
+    currentView:clientsView.ORDERS,
+    refreshView:false
+}
 
 
 const magicWordSearchOrder = [
@@ -653,9 +657,9 @@ function switchClientsView(view) {
         case (clientsView.TRASH):
             ge(view).classList.add("active")
             s("listOrdersTrash")
-
             break
     }
+    configClients.currentView = view;
 }
 
 
@@ -788,4 +792,23 @@ function createOrderItem(client_id, order, actions = true, callback) {
         div.innerHTML = html
     }
     return div;
+}
+
+
+async function reloadOnPageClients(){
+    if (configClients.refreshView)return
+    const toast = showToast("מרענן...");
+    configClients.refreshView = true;
+    if (configClients.currentView == clientsView.ORDERS){
+        await fetchClients()
+        await fetchOrders()
+    }
+    else if (configClients.currentView == clientsView.TRASH){
+        await fetchOrders()
+        await fetchOrdersDeleted()
+        
+    }
+    closeToast(toast)
+    configClients.refreshView = false;
+
 }
