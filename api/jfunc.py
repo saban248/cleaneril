@@ -178,4 +178,3 @@ def match_nums_words(nums, str1, str2):
 
     return False
 
-print(vat_of_price(300))

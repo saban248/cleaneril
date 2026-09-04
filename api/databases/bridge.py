@@ -69,6 +69,8 @@ def on_create_order_create_client(order:CleanOrder):
         order.client_id = client.client_id
     cleaneril_db.session.commit()
 
+    return client
+
 
 def fix_order_to_client():
     for order in orders.get_clean_orders():

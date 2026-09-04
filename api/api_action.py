@@ -7,7 +7,7 @@ from flask import render_template, session
 import api.databases.company as companies
 from api.data.orders import DataOrders
 from api.data.ptc import AnalyticsData, ClientReports
-from api.databases import invoice, manager as managers, subscriptions, limit_api
+from api.databases import invoice, manager as managers, subscriptions, limit_api, client_history
 from api.databases import orders, clients
 from api.databases.bridge import on_create_order_create_client, get_pov_details_response
 from api.databases.clients import ClientProfile
@@ -19,7 +19,7 @@ from api.databases.manager import ApiManager, manager_auth, \
     update_time_alive, get_list_manager_no_pwd
 from api.databases.orders import CleanOrder
 from api.databases.ptc import StateDocument, ServerConfig, cleaneril, ManagerPermissions, cleaneril_db, \
-    ManagerAccountStat, CompanyTaxType, APIRateLimitTypes
+    ManagerAccountStat, CompanyTaxType, APIRateLimitTypes, ClientHistory
 from api.general import is_logo_app_valid, get_client_ip
 from api.ptc import special_things, SJson, ShortSession
 from api.routes import cil_struct
@@ -64,8 +64,12 @@ def get_api_action(**breq) -> dict:
             return SJson.auto_code(__success__, **template)
         case ApiCall.order_save:
             r_order = cil_struct.CleanOrder().build(**breq)
+            history_description = client_history.create_description_order_changed(manager_id, r_order)
             order = orders.update_clean_order(manager_id, r_order.client_id,r_order)
-            on_create_order_create_client(order)
+            client = on_create_order_create_client(order)
+            client_history.create_history(manager_id, client.client_id, r_order.oi,
+                                          ClientHistory.Entity.ORDER,ClientHistory.Action.CHANGED,
+                                          history_description)
             return SJson.auto_code(__success__)
         case ApiCall.order_new:
             r_order = cil_struct.CleanOrder().build(**breq)
@@ -226,11 +230,11 @@ def get_api_action(**breq) -> dict:
         case ApiCall.client_reports:
             order = cil_struct.CleanOrder().build(**breq)
             ana = DataOrders(order.client_id, manager_id)
-
+            history = client_history.get_histories(False, manager_id=manager_id, client_id=order.client_id)
             packet = ClientReports(len(ana.wait_client()), len(ana.cancel_client()), len(ana.closed_client()), len(ana.done_client()),
                                    ana.get_place_client(), ana.get_total_funds_client(), ana.get_total_income_client(),
                                    ana.get_total_off_price_client(), ana.get_total_expenses_client(), 0,
-                                   ana.get_average_income_orders_client(), ana.get_total_closed_orders_balance())
+                                   ana.get_average_income_orders_client(), ana.get_total_closed_orders_balance(),history)
 
             return SJson.auto_code(__success__, **{"reports":packet.build()})
 

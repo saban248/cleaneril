@@ -2,7 +2,7 @@ import binascii
 import ipaddress
 import os
 from datetime import timedelta
-from enum import IntFlag
+from enum import IntFlag, IntEnum
 
 from flask import Flask
 from flask_migrate import Migrate
@@ -137,4 +137,15 @@ def get_cooldown_arl(flag:int):
 
 
     return 0#sec
+
+
+class ClientHistory:
+    class Entity(IntEnum):
+        ORDER = 1
+        INVOICE = 2
+
+    class Action(IntEnum):
+        CHANGED = 1
+        DELETED = 2
+        CREATED = 3
 

@@ -204,6 +204,41 @@ function buildClientReportEvents(orders, receipts){
     });
 }
 
+function renderClientHistory(histories){
+    if (!histories){
+        return `<div class="client-report-empty">אין אירועים להצגה</div>`
+    }
+
+    const Html = histories.map(function(event){
+        const entityTitle = getClientHistoryEntityTitle(event.entity)
+        const actionText = getClientHistoryActionText(event.action)
+        const entityIcon = getClientHistoryEntityIcon(event.entity)
+        const createdAt = new Date(event.created_at * 1000).toLocaleDateString("he-IL", {
+            weekday: "long",
+            hour: "2-digit",
+            minute: "2-digit",
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+
+        });
+        return `
+            <div class="client-report-event client-report-event-${event.entity}">
+                <div class="client-report-event-icon">
+                    <i class="${entityIcon}"></i>
+                </div>
+                <div class="client-report-event-content">
+                    <strong>${entityTitle} ${actionText}</strong>
+                    <small>${createdAt}</small>
+                    <span>${reportEscapeHtml(event.description)}</span>
+                </div>
+                <div class="client-report-event-amount">${reportMoney(event.amount)}</div>
+            </div>
+        `;
+    }).join("");
+
+    return Html
+}
 async function renderClientSummaryReport(){
     const parent = document.getElementById("client-reports");
     if (!parent){
@@ -215,8 +250,6 @@ async function renderClientSummaryReport(){
     }
     const data = c_runtime.clientsReports[c_runtime.currentClientIdView];
     const order = get_order_by_order_id(c_runtime.currentOrderIdView);
-    const orders = getOrdersByClientId(c_runtime.currentClientIdView);
-    const receipts = getReceiptsByOrderId(c_runtime.currentOrderIdView);
     if (!data){
         parent.innerHTML = `
             <div class="client-report-empty">
@@ -229,24 +262,7 @@ async function renderClientSummaryReport(){
 
     const clientName = order.fullname || "-";
     const clientInitial = order.fullname ? order.fullname.charAt(0).toUpperCase() : "?";
-
-    // const eventHtml = events.slice(0, 12).map(function(event){
-    //     return `
-    //         <div class="client-report-event client-report-event-${event.type}">
-    //             <div class="client-report-event-icon">
-    //                 <i class="${event.icon}"></i>
-    //             </div>
-    //             <div class="client-report-event-content">
-    //                 <strong>${reportEscapeHtml(event.title)}</strong>
-                    
-    //                 <span>${reportEscapeHtml(event.text)}</span>
-    //                 <small>${reportDate(event.date)}</small>
-    //             </div>
-    //             <div class="client-report-event-amount">${reportMoney(event.amount)}</div>
-    //         </div>
-    //     `;
-    // }).join("");
-
+    const clientHistory = renderClientHistory(data.history)
     parent.innerHTML = `
         <div class="client-report">
             <div class="client-report-profile">
@@ -351,7 +367,7 @@ async function renderClientSummaryReport(){
                     <small>עדכון אחרון: ${reportDate(0?.date)}</small>
                 </div>
                 <div class="client-report-events">
-                    ${0 || `<div class="client-report-empty">אין אירועים להצגה</div>`}
+                    ${clientHistory}
                 </div>
             </div>
         </div>

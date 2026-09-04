@@ -47,6 +47,7 @@ class ClientReports:
     orders_count:int= None
     ave_income:float= None
     balance:int     = None
+    history:dict    = None
 
     def build(self):
         self.orders_count = self.wait+self.canceled+self.closed+self.done

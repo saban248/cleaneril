@@ -603,6 +603,58 @@ const PublicApi ={
     cleanOrderVerifiction:1
 }
 
+class ClientHistory {
+    static Entity = Object.freeze({
+        ORDER: 1,
+        INVOICE: 2
+    });
+
+    static Action = Object.freeze({
+        CHANGED: 1,
+        DELETED: 2,
+        CREATED: 3
+    });
+}
+
+function getClientHistoryEntityTitle(entity) {
+    switch (entity) {
+        case ClientHistory.Entity.ORDER:
+            return "הזמנה";
+
+        case ClientHistory.Entity.INVOICE:
+            return "חשבונית";
+
+        default:
+            return "לא ידוע";
+    }
+}
+function getClientHistoryEntityIcon(entity) {
+    switch (entity) {
+        case ClientHistory.Entity.ORDER:
+            return "fa-solid fa-file-invoice";
+        case ClientHistory.Entity.INVOICE:
+            return "fa-solid fa-receipt";
+        default:
+            return "fa-solid fa-question";
+    }
+
+}
+
+function getClientHistoryActionText(action){
+    switch (action) {
+        case ClientHistory.Action.CHANGED:
+            return "השתנתה";
+
+        case ClientHistory.Action.CREATED:
+            return "נוצרה";
+
+        case ClientHistory.Action.DELETED:
+            return 'נמחקה'
+        default:
+            return "";
+    }
+}
+
 
 window.SocialMedia = SocialMedia;
 window.PageManager = PageManager;
