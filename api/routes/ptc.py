@@ -280,6 +280,8 @@ class ApiCall(IntFlag):
     my_manager      = 31
     duplicate_clean_order = 33
     client_reports = 34
+    list_orders_deleted = 35
+
 
 
 class ReportsApi(IntFlag):

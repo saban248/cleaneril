@@ -457,14 +457,37 @@
 }
 .tco-body{
     padding-top: 4px;
+    padding-right: 4px;
+    max-height: min(90vh, 400px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     align-items: center;
     row-gap: 8px;
     column-gap: 10px;
     align-items: stretch;
 
+}
+.tco-body{
+    scrollbar-width: thin;
+    scrollbar-color: #b4b4b4 transparent;
+}
+.tco-body::-webkit-scrollbar{
+    width: 7px;
+}
+.tco-body::-webkit-scrollbar-track{
+    background: transparent;
+}
+.tco-body::-webkit-scrollbar-thumb{
+    border: 2px solid transparent;
+    border-radius: 10px;
+    background-clip: padding-box;
+    background-color: #9bb8ad;
+}
+.tco-body::-webkit-scrollbar-thumb:hover{
+    background-color: #6f9989;
 }
 .tco-item.is-hidden{
     display: none !important;
@@ -476,7 +499,7 @@
     cursor: pointer;
     transition: 80ms ease;
     flex: 1;
-    background: linear-gradient(180deg, #fdfefe 0%, #f3f7f5 100%);
+    background: linear-gradient(180deg, #fdfefe 0%, #fbfffd 100%);
     box-shadow: 0 2px 5px rgba(49, 66, 59, 0.05);
 }
 .tco-item:hover,
@@ -484,6 +507,7 @@
 .tco-item:focus{
     transform: translateY(-1px);
     box-shadow: 0 3px 7px rgba(49, 66, 59, 0.08);
+    border: 1px solid #97b1b2;
 }
 .tco-item.selected{
     border: 1px solid #31423b98;

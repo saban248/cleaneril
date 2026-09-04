@@ -69,6 +69,7 @@ document.addEventListener("DOMContentLoaded", async function (){
     await fetchSubscriptions();
     await fetchMySubscription();
     await fetchAppProducts()
+    await fetchOrdersDeleted()
     if (typeof renderSubscriptionTable === "function"){
         renderSubscriptionTable();
     }

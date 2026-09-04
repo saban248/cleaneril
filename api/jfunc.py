@@ -121,6 +121,28 @@ def title_clean_order_type(flag):
             return "הזמנת ניקוי ריפודים"
         case CleanOrderType.AIR_CONDITIONER:
             return "הזמנת ניקוי מזגנים"
+        case CleanOrderType.WINDOWS:
+            return "הזמנת ניקוי חלונות"
+        case CleanOrderType.CARPET:
+            return "הזמנת ניקוי שטיחים"
+        case CleanOrderType.MATTRESS:
+            return "הזמנת ניקוי מזרנים"
+        case CleanOrderType.CURTAINS:
+            return "הזמנת ניקוי וילונות"
+        case CleanOrderType.TILES:
+            return "הזמנת ניקוי רצפות"
+        case CleanOrderType.POLISH:
+            return "הזמנת פוליש"
+        case CleanOrderType.PRESSURE_WASH:
+            return "הזמנת שטיפה בלחץ"
+        case CleanOrderType.SOLAR_PANELS:
+            return "הזמנת ניקוי פאנלים סולאריים"
+        case CleanOrderType.OFFICE:
+            return "הזמנת ניקוי משרדים"
+        case CleanOrderType.HOUSE:
+            return "הזמנת ניקוי בתים"
+        case CleanOrderType.POST_RENOVATION:
+            return "הזמנת ניקוי אחרי שיפוץ"
         case CleanOrderType.GENERAL:
             return "הזמנת ניקוי כללי"
 

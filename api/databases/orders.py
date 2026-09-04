@@ -36,15 +36,18 @@ class CleanOrder(cleaneril_db.Model):
     order_type = cleaneril_db.Column(cleaneril_db.Integer, nullable=False)
     marketplace_shared = cleaneril_db.Column(cleaneril_db.Boolean, nullable=False)
     date_done = cleaneril_db.Column(cleaneril_db.Float, nullable=False)
+    deleted = cleaneril_db.Column(cleaneril_db.Boolean, nullable=False, default=False)
+    time_deleted = cleaneril_db.Column(cleaneril_db.Float, nullable=False)
 
 
 
-
-def get_clean_orders(source:bool = True, **kwargs):
+def get_clean_orders(source:bool = True, deleted:bool = False, **kwargs):
+    kwargs.update({"deleted":deleted})
     return get_columns(CleanOrder, source, **kwargs)
 
 
-def get_clean_order_latest(source = True, **kwargs):
+def get_clean_order_latest(source = True, deleted:bool = False, **kwargs):
+    kwargs.update({"deleted": deleted})
     if source:
         return get_latest_columns(CleanOrder, source, lambda o:o.date, **kwargs)
 
@@ -92,6 +95,10 @@ def get_clean_order_done(manager_id:str):return get_clean_order_by_stat(manager_
 def get_clean_order_canceled(manager_id:str):return get_clean_order_by_stat(manager_id, StateOrder.CANCELED)
 def get_clean_order_wait(manager_id:str):return get_clean_order_by_stat(manager_id, StateOrder.WAIT)
 def get_clean_order_closed(manager_id:str):return get_clean_order_by_stat(manager_id, StateOrder.CLOSED)
+
+def get_clean_order_deleted(source:bool = True, **kwargs):
+    return get_clean_orders(source,True,**kwargs)
+
 
 def create_clean_order(manager_id:str, client_id:str, response, update:bool = False) -> CleanOrder:
     if update:
@@ -150,9 +157,11 @@ def update_clean_order(manager_id:str, client_id:str, response):
 
 
 def delete_clean_order(mid:str, order_id:str):
-    order = get_clean_orders(manager_id=mid, order_id=order_id).first()
+    order:CleanOrder = get_clean_orders(manager_id=mid, order_id=order_id).first()
     if not order:return core_msg.ServerCode.General.something_wrong
-    delete_column(CleanOrder, order)
+    order.deleted = True
+    order.time_deleted = time.time()
+    cleaneril_db.session.commit()
     return core_msg.ServerCode.success
 
 

@@ -683,14 +683,30 @@ async function fetchOrders(){
                 return
             }
             c_runtime.orders = res.orders;
-            loadListClientsHtml()
+            loadListClientsHtml("listClients")
             reslove(res);
         }
     ))
 }
 
-function loadListClientsHtml(){
-    const parent = document.getElementById("listClients")
+async function fetchOrdersDeleted(){
+    const listOrdersTrashId = "listOrdersTrash"
+    const data = {action:ApiCall.list_orders_deleted}
+    await apiPost(ApiRoute.api, data).then(
+        (res) =>{
+            if (!res.success){
+                showToast(res.notice, ToastStat.ERROR)
+                return
+            }
+            loadListClientsHtml(listOrdersTrashId, res.orders)
+            
+        }
+    )
+
+}
+
+function loadListClientsHtml(elementId, ordersList){
+    const parent = document.getElementById(elementId)
     const iid = "iel-orders-main"
     const iel = "icon-empty-list"
     const icon = document.getElementById(iid);
@@ -711,7 +727,8 @@ function loadListClientsHtml(){
     icon.style.display = 'none';
     parent.classList.remove(iel)
 
-    c_runtime.orders.forEach(order => {
+    const orders = ordersList||c_runtime.orders
+    orders.forEach(order => {
         const el = createOrderItem(order.client_id, order);
         parent.appendChild(el);
     });
