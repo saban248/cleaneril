@@ -205,7 +205,7 @@ function buildClientReportEvents(orders, receipts){
 }
 
 function renderClientHistory(histories){
-    if (!histories){
+    if (!histories.length){
         return `<div class="client-report-empty">אין אירועים להצגה</div>`
     }
 
