@@ -299,7 +299,8 @@ const ApiCall = {
     my_manager:31,
     duplicate_order:33,
     client_reports:34,
-    list_orders_deleted:35
+    list_orders_deleted:35,
+    order_restore:36,
 }
 
 const ReportsApi = {

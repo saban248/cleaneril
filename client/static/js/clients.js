@@ -4,6 +4,11 @@ const clientsView = {
     TRASH:1<<2
 }
 
+const itemOrderModes = {
+    all:1<<0,
+    trash:1<<1,
+    dashboard:1<<2
+}
 
 
 const configClients = {
@@ -180,11 +185,22 @@ function closeSearchClients(t){
     doSearchClientsLocal()
 }
 
-function doSearchClientsLocal(){
+function searchOnOrders(){
     const input = document.getElementById("searchClient")
     const value = input.value.toLowerCase();
-    for (const order of c_runtime.orders){
-        const order_id = order.order_id+'main'
+    let parentID = null;
+    let listOrders = []
+    if (configClients.currentView == clientsView.ORDERS){
+        parentID = "listClients"
+        listOrders = c_runtime.orders
+    }
+    else if (configClients.currentView == clientsView.TRASH){
+        parentID = "listOrdersTrash"
+        listOrders = c_runtime.ordersDeleled;
+    }
+
+    for (const order of listOrders){
+        const order_id = order.order_id+parentID;
         const phone = cleanPhoneJustNumbers(order.phone).includes(value);
         const name = order.fullname.toLowerCase().includes(value);
         const date = dateFloatToYMD(order.date).includes(value);
@@ -193,7 +209,6 @@ function doSearchClientsLocal(){
         const stat = order.stat&c_runtime.state_client_selected
         const MWOffPrice = value.includes(magicWordSearchOrder[0]) && order.off_price
         const MWReceipt = value.includes(magicWordSearchOrder[1]) && getReceiptsByOrderId(order.order_id)
-        // const MWClientRepeat = value.includes(magicWordSearchOrder[2] && get_)
         if ((value == ''||phone||name||date||cid||MWOffPrice||MWReceipt) && stat){
             element?.classList.remove("hide")
         }
@@ -201,6 +216,13 @@ function doSearchClientsLocal(){
             element?.classList.add("hide")
         }
     }
+
+
+
+}
+function doSearchClientsLocal(){
+    return searchOnOrders();
+    
 }
 function sortedClientsByState(){
     const parent = document.getElementById("listClients")
@@ -348,6 +370,7 @@ const menuItemsClient = [
 ]
 
 function openMenuClient(t, cid, oid) {
+    console.log("openMenuClient", t, cid, oid)
     const menu = document.getElementById("clientMenu")
     if (menu.classList.contains("show")) {
         menu.classList.remove("show")
@@ -633,6 +656,7 @@ function shareOrderToClientAsLink(cid){
 // ===== Workers Schedule Functions =====
 
 function switchClientsView(view) {
+    
     const containers = ["listClients", "workersScheduleView", "listOrdersTrash"];
     const viewtabsItems = document.getElementById("viewtabs-items");
     for (tab of viewtabsItems.children){tab.classList.remove("active") }
@@ -687,7 +711,7 @@ async function fetchOrders(){
                 return
             }
             c_runtime.orders = res.orders;
-            loadListClientsHtml("listClients")
+            loadListClientsHtml(itemOrderModes.all,"listClients", c_runtime.orders)
             reslove(res);
         }
     ))
@@ -702,14 +726,15 @@ async function fetchOrdersDeleted(){
                 showToast(res.notice, ToastStat.ERROR)
                 return
             }
-            loadListClientsHtml(listOrdersTrashId, res.orders)
+            c_runtime.ordersDeleled = res.orders;
+            loadListClientsHtml(itemOrderModes.trash, listOrdersTrashId, res.orders)
             
         }
     )
 
 }
 
-function loadListClientsHtml(elementId, ordersList){
+function loadListClientsHtml(mode, elementId, ordersList){
     const parent = document.getElementById(elementId)
     const iid = "iel-orders-main"
     const iel = "icon-empty-list"
@@ -731,27 +756,34 @@ function loadListClientsHtml(elementId, ordersList){
     icon.style.display = 'none';
     parent.classList.remove(iel)
 
-    const orders = ordersList||c_runtime.orders
-    orders.forEach(order => {
-        const el = createOrderItem(order.client_id, order);
+    ordersList.forEach(order => {
+        const el = createOrderItem(mode, elementId, order.client_id, order);
         parent.appendChild(el);
     });
     doSearchClientsLocal()
 }
-function createOrderItem(client_id, order, actions = true, callback) {
+function createOrderItem(mode, parentID, client_id, order, actions = true, callback) {
     const div = document.createElement("div");
     div.className = "client-item"
     div.dataset.stat = order.stat;
     div.dataset.key = order.key;
-    if (!actions){
-        div.id = order.order_id+"dashbaord";
-        div.onclick = () => callback()
-    }else{
-        div.id = order.order_id+'main'
-        div.ondblclick = () => openClientDashbaord(client_id, order.order_id);
+    div.id = order.order_id+parentID;
+    if (mode != itemOrderModes.trash){
+        if (!actions){
+            div.onclick = () => callback()
+        }else{
+            div.ondblclick = () => openClientDashbaord(client_id, order.order_id);
+        }
     }
 
+    div.innerHTML = createOrderItemHTML(mode, client_id, order)
+    return div
+}
 
+function createOrderItemHTML(mode, clientId, order){
+    const openMenu = `<i class="fa-solid fa-bars menu-client" onclick="openMenuClient(event.target, '${clientId}', '${order.order_id}')"></i>`
+    const openDashboard = `<i class="fa-solid fa-eye menu-client" onclick="openClientDashbaord('${clientId}', '${order.order_id}')"></i>`
+    const restore = `<i class="fa-solid fa-trash-restore menu-client" onclick="restoreOrder('${order.order_id}')"></i>`
     var html = `
         <div class="avatar client-state-${order.stat}">
         ${order.fullname?.[0] || "?"}
@@ -774,24 +806,15 @@ function createOrderItem(client_id, order, actions = true, callback) {
             </div>
         </div>
         </div>
-    `;
-    if (actions){
-        const orderActions = `
         <div class="client-footer">
-            <i class="fa-solid fa-eye no-mobile"></i>
-            <i class="fa-solid fa-bars menu-client"></i>
+            ${mode == itemOrderModes.all? openDashboard+openMenu:''}
+            ${mode == itemOrderModes.trash? restore:''}
+            
         </div>
-        `;
-        html += orderActions;
-        div.innerHTML = html
-        const icons = div.querySelectorAll(".client-footer i");
-        icons[1].onclick = (e) => openMenuClient(e.target, client_id, order.order_id);
-        icons[0].onclick = () => openClientDashbaord(c_runtime.currentClientIdView, order.order_id);
-    }
-    else{
-        div.innerHTML = html
-    }
-    return div;
+    `;
+
+    return html;
+
 }
 
 
@@ -812,3 +835,8 @@ async function reloadOnPageClients(){
     configClients.refreshView = false;
 
 }
+
+document.addEventListener("DOMContentLoaded", function (){
+    switchClientsView(clientsView.ORDERS)
+
+})

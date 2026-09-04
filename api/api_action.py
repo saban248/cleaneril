@@ -148,8 +148,13 @@ def get_api_action(**breq) -> dict:
             return SJson.auto_code(__success__, **_orders)
 
         case ApiCall.list_orders_deleted:
-            _orders = {"orders":orders.get_clean_order_deleted(False, manager_id=manager_id)}
+            _orders = {"orders":orders.get_clean_order_deleted(False, mid=manager_id)}
             return SJson.auto_code(__success__, **_orders)
+        case ApiCall.order_restore:
+            order = cil_struct.CleanOrder().build(**breq)
+            stat = orders.restore_clean_order(manager_id, order.oi)
+            return SJson.auto_code(stat)
+
         case ApiCall.invoice_view:
             inv = cil_struct.Invoice().build(**breq)
             receipt = invoice.get_receipts(manager_id=manager_id, receipt_id=inv.iid).first()

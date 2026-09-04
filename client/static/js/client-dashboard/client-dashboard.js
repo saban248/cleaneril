@@ -153,7 +153,7 @@ function createListClientOrders(){
             continue;
         }
 
-        const element = createOrderItem(order.client_id, order, false, async ()=>{
+        const element = createOrderItem(itemOrderModes.dashboard, "listClientOrders", order.client_id, order, false, async ()=>{
             await showClientOrder(order.order_id)
             createListClientOrders()
         });

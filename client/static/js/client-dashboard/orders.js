@@ -76,3 +76,18 @@ async function abortOrderEdit(){
     await showClientOrder()
     switchMenuActionClientCard()
 }
+
+async function restoreOrder(orderId){
+    const data = {action:ApiCall.order_restore, oi:orderId}
+    await apiPost(ApiRoute.api, data).then(
+        async (res) =>{
+            if (!res.success){
+                showToast(res.notice, ToastStat.ERROR);
+                return
+            }
+            await fetchOrders()
+            await reloadOnPageClients()
+            showToast(res.notice, ToastStat.DONE);
+        }
+    )
+}

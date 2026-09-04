@@ -2,7 +2,7 @@ import time
 
 from sqlalchemy import JSON, inspect
 
-from api.databases.general import get_columns, get_latest_columns, delete_column
+from api.databases.general import get_columns, get_latest_columns, delete_column, get_columns_as_dict
 from api.databases.ptc import cleaneril_db, StateOrder
 from api.ptc import generate_hex
 from api.validator import core_msg
@@ -96,8 +96,19 @@ def get_clean_order_canceled(manager_id:str):return get_clean_order_by_stat(mana
 def get_clean_order_wait(manager_id:str):return get_clean_order_by_stat(manager_id, StateOrder.WAIT)
 def get_clean_order_closed(manager_id:str):return get_clean_order_by_stat(manager_id, StateOrder.CLOSED)
 
-def get_clean_order_deleted(source:bool = True, **kwargs):
-    return get_clean_orders(source,True,**kwargs)
+def get_clean_order_deleted(source:bool = True, mid:str = None, **kwargs):
+    _orders = (
+        CleanOrder.query
+        .filter(
+            CleanOrder.manager_id == mid,
+            CleanOrder.deleted == True,
+            CleanOrder.time_deleted >= (time.time() - (30 * 24 * 60 * 60)),
+        ))
+    if kwargs:
+        _orders = _orders.filter_by(**kwargs)
+    if source:
+        return _orders
+    return get_columns_as_dict(_orders)
 
 
 def create_clean_order(manager_id:str, client_id:str, response, update:bool = False) -> CleanOrder:
@@ -164,6 +175,13 @@ def delete_clean_order(mid:str, order_id:str):
     cleaneril_db.session.commit()
     return core_msg.ServerCode.success
 
+def restore_clean_order(mid:str, order_id:str):
+    order:CleanOrder = get_clean_orders(manager_id=mid, order_id=order_id, deleted=True).first()
+    if not order:return core_msg.ServerCode.General.something_wrong
+    order.deleted = False
+    order.time_deleted = 0
+    cleaneril_db.session.commit()
+    return core_msg.ServerCode.success
 
 def set_clean_order_stat(mid:str, order_id:str, stat:StateOrder):
     order:CleanOrder = get_clean_orders(manager_id=mid, order_id=order_id).first()

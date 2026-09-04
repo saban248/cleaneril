@@ -12,6 +12,7 @@ const c_runtime = {
     blockPublishClient:false,
     blockRenderReceiptImg:false,
     orders:[],
+    ordersDeleled:[],
     showClientsFrom:new Date().getFullYear()-1,
     invoices:[],
     clients:[],
