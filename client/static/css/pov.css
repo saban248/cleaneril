@@ -252,7 +252,7 @@ input:disabled{
 }
 .input-row > button:hover {
 	 background:var(--green-dark);
-     color: #146352;
+     color: white;
 	 box-shadow:0 8px 16px #177a6830;
      outline:1px solid #146352;
 }
