@@ -261,7 +261,14 @@ input:disabled{
 }
 .input-row > button:disabled {
 	 cursor:wait;
-	 opacity:.72;
+	 opacity:.90;
+	 background:linear-gradient(110deg, var(--green) 35%, #55a997 50%, var(--green) 65%);
+	 background-size:220% 100%;
+	 animation:disabled-button-wave .5s linear infinite;
+}
+@keyframes disabled-button-wave {
+	 from { background-position: 100% 0; }
+	 to { background-position: -100% 0; }
 }
 .input-row i{
 	display: none;

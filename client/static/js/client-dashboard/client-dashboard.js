@@ -52,6 +52,8 @@ function showClientDashboard(){
     mainEdit.classList.add('show');
 }
 function hideClientDashboard(){
+    const orderClientTemate = document.getElementById("client-template-dashboard")
+    orderClientTemate.replaceChildren()
     const mainEdit = document.getElementById("client-editor")
     mainEdit.classList.remove('show');
 
