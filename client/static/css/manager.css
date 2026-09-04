@@ -383,6 +383,12 @@
     transform: scale(1);
     pointer-events: auto;
 }
+.main-edit-client, .ce-body{
+    background: rgba(255, 255, 255, 0.364);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
 .ce-head{
     padding: 10px;
     display: flex;
@@ -390,20 +396,20 @@
     margin-left: 10%;
     margin-right: 10%;
     column-gap: 20px;
-    min-height: 50px;
+    align-items: center;
 }
 .ce-head > i {
+    box-sizing: border-box;
     width: 40px;
     height: 40px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 10px;
     border-radius: 50%;
     background: #ebebeb;
     box-shadow: 0 0 11px #ebebeb;
-    font-size: 1.35rem;
+    font-size: 1.4rem;
+    line-height: 20px;
     cursor: pointer;
+    text-align: center;
     transition:
         background 300ms,
         box-shadow 300ms,
@@ -414,6 +420,26 @@
     outline: 1px solid #adadad;
     box-shadow: 0 4px 11px #cecccc;
 }
+
+.main-client-dashbaord-card-action{
+    display: flex;
+    justify-content:space-between;
+    align-items: center;
+    column-gap: 10px;
+    flex: 1;
+    border: 1px solid #adadad52;
+    border-radius: 10px;
+    padding: 0 10px;
+    scrollbar-width: none;       
+    -ms-overflow-style: none;
+    overflow-x: scroll;
+    overflow-y: none;
+    min-height: 50px;
+}
+.main-client-dashbaord-card-action::-webkit-scrollbar {
+  display: none;
+}
+
 .ce-body{
     display: flex;
     justify-content: center;

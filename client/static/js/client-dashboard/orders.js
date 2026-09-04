@@ -70,3 +70,9 @@ function getOrdersByClientId(clientId){
 }
 
 
+async function abortOrderEdit(){
+    c_clients.order_edit = false;
+    c_clients.enterCard = false;
+    await showClientOrder()
+    switchMenuActionClientCard()
+}

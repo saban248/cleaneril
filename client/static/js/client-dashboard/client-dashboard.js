@@ -219,7 +219,9 @@ function switchClientCardAction(){
     const AView = document.getElementById("clientCardAViews");
     const ainto = document.getElementById("actionIntoCard");
     // return from card
-    const arfc = document.getElementById("arfc")
+    const arfc = document.getElementById("arfc");
+    // close client dashboard
+    const accd = document.getElementById("accd");
     const SpecificId = (c_clients.currentCard == clientCardsView.ORDER && c_runtime.currentOrderIdView !=null)
             || (c_clients.currentCard == clientCardsView.RECEIPT && c_runtime.currentInvoiceIdView !=null)
 
@@ -230,6 +232,7 @@ function switchClientCardAction(){
             hide(ainto)
         }
         show(arfc)
+        hide(accd)
         hide(AView)
     }
     else if (!IS_MOBILE){
@@ -239,12 +242,14 @@ function switchClientCardAction(){
             hide(ainto)
         }      
         show(AView)
+        show(accd)
         hide(arfc)
     }
     else{
         hide(ainto)
         show(AView)
         hide(arfc)
+        show(accd)
     }
 }
 async function switchViewClientDashboard(v = c_clients.currentCard, fetch = true, back = false){
