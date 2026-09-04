@@ -328,6 +328,8 @@ function switchMenuActionClientCard(){
     const apcoc = document.getElementById("apcoc")
     // publish clean order done
     const apcod = document.getElementById("apcod");
+    // cancel edit order
+    const aceo = document.getElementById("aceo")
 
     const s = (element) => element.classList.remove("hide")||element.classList.add("show")
     const h = (element) => element.classList.remove("show")||element.classList.add("hide")
@@ -336,9 +338,9 @@ function switchMenuActionClientCard(){
         case clientCardsView.ORDER:
             if (c_clients.new_order||c_clients.order_edit){
                 h(asop);h(aeeo);h(adoc);h(adco);h(acoi)
-                s(apcocan);s(apcow);s(apcoc);s(apcod)
+                s(apcocan);s(apcow);s(apcoc);s(apcod);s(aceo)
             }else{
-                h(apcocan);h(apcow);h(apcoc);h(apcod)
+                h(apcocan);h(apcow);h(apcoc);h(apcod);h(aceo)
                 s(asop);s(aeeo);s(adoc);s(adco);
                 if (receipt){h(acoi)}else{s(acoi)}
             }

@@ -390,14 +390,29 @@
     margin-left: 10%;
     margin-right: 10%;
     column-gap: 20px;
+    min-height: 50px;
 }
-.ce-head > i{
-    font-size: 2rem;
-    padding: 10px;
-    border-radius: 50% ;
-    border: 1px solid #ddd;
-    background: rgb(199, 199, 199);
+.ce-head > i {
+    width: 40px;
+    height: 40px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #ebebeb;
+    box-shadow: 0 0 11px #ebebeb;
+    font-size: 1.35rem;
     cursor: pointer;
+    transition:
+        background 300ms,
+        box-shadow 300ms,
+        transform 200ms;
+}
+.ce-head > i:hover,
+.ce-head > i:active{
+    outline: 1px solid #adadad;
+    box-shadow: 0 4px 11px #cecccc;
 }
 .ce-body{
     display: flex;
@@ -925,7 +940,9 @@
 }
 .s-item-price{
     color: #557777;
-    font-size: 1rem;
+    font-size: .90rem;
+    font-family: "IBM Plex Sans", sans-serif;
+    font-variant-numeric: tabular-nums;
 }
 .cd-item{
     position: relative;
@@ -1006,15 +1023,19 @@
     position: relative;
 }
 .osummary{
+    font-weight: lighter;
     margin-top:4px;
-    border-top: 1px solid #b4b4b434;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    /* border-top: 1px solid #b4b4b434; */
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.osummary > span:first-child{
+    color: #3131318e;
+    font-size: 12px;
 }
 .osummary > span:last-child{
-    font-weight: lighter;
     color: #313131ba;
-    font-size: 11px;
+    font-size: 12px;
 }
 
 .item-ordered{
@@ -1170,7 +1191,7 @@
 }
 .editor-prices .off-price{
     min-width: 0;
-    padding: 8px;
+    padding: 8px 0px;
     border: 1px solid #e7eeee3f;
     border-radius: 7px;
     background: #ffffff;
