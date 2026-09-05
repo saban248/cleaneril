@@ -17,13 +17,13 @@ function canvasToBlob(canvas, type = "image/png", quality = 1) {
     });
 }
 
-async function initshareOrderToClientAsPhoto(){
+function initshareOrderToClientAsPhoto(){
     const order = get_order_by_order_id(c_runtime.currentOrderIdView);
     mainShareData.title = `הזמנת ${getCleanOrderTypeText(order.order_type)}`;
     mainShareData.text =  getTtextShareCleanOrder(order.order_type, order.date*1000);
     mainShareData.files = []
 
-    await shareOrderToClientAsPhoto(c_runtime.currentOrderIdView, c_runtime.currentClientIdView);
+    shareOrderToClientAsPhoto(c_runtime.currentOrderIdView, c_runtime.currentClientIdView);
     const content = `
     <div class="share-order-to-client">
         <div>
@@ -73,17 +73,17 @@ async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid
                 showToast(message.EShareOrderFailed, ToastStat.DONE, toastId);
                 return
             }
-            toastBody.appendChild(shareButton);
         } catch (shareErr) {
-            showToast(message.EShareOrderFailed, ToastStat.ERROR, toastId);
+            showToast(shareErr.message, ToastStat.ERROR, toastId);
         }
 
     } catch (err) {
         showToast(message.EShareOrderFailed, ToastStat.ERROR, toastId);
     }
+    showToast("מוכן לשיתוף", ToastStat.DONE, toastId);
 }
 
-async function doNavigate(mainShareData){
+async function doNavigate(){
     try {
         await navigator.share(mainShareData);
     } catch (shareErr) {
