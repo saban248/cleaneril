@@ -209,7 +209,7 @@ function renderClientHistory(histories){
         return `<div class="client-report-empty">אין אירועים להצגה</div>`
     }
 
-    const Html = histories.map(function(event){
+    const Html = histories.slice(0, 5).map(function(event){
         const entityTitle = getClientHistoryEntityTitle(event.entity)
         const actionText = getClientHistoryActionText(event.action)
         const entityIcon = getClientHistoryEntityIcon(event.entity)
@@ -230,7 +230,7 @@ function renderClientHistory(histories){
                 <div class="client-report-event-content">
                     <strong>${entityTitle} ${actionText}</strong>
                     <small>${createdAt}</small>
-                    <span>${reportEscapeHtml(event.description)}</span>
+                    <span>${event.description?"שינויים: ":""}${event.description}</span>
                 </div>
                 <div class="client-report-event-amount">${reportMoney(event.amount)}</div>
             </div>
@@ -364,7 +364,11 @@ async function renderClientSummaryReport(){
             <div class="client-report-section">
                 <div class="client-report-section-head">
                     <span>סיכום פעילות</span>
-                    <small>עדכון אחרון: ${reportDate(0?.date)}</small>
+                    <div>
+                        <small>הצג הכל</small>
+                        <i class="fa-solid fa-chevron-right fa-rotate-180"></i>
+                    </div>
+                    
                 </div>
                 <div class="client-report-events">
                     ${clientHistory}

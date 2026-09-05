@@ -26,7 +26,6 @@
 }
 
 .viewFilterSelected{
-    margin-top: 5px;
     border-radius: 9px;
     padding: 6px 8px;
     font-size: 11px;
@@ -62,7 +61,7 @@
     min-width: 120px;
     padding: 5px;
     box-shadow: 0 12px 20px rgba(15, 23, 42, 0.08);
-    z-index: 20;
+    z-index: 999;
 }
 
 .filter-options.show{

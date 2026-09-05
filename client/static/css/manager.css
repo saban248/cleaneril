@@ -197,25 +197,6 @@
 }
 
 
-.create-card{
-    border-radius: 50%;
-    padding: 5px;
-    font-size: 1rem;
-    width: 20px;
-    height: 20px;
-    background: #1a4678;
-    color: white;
-    cursor: pointer;
-    text-align: center;
-    transition: all 200ms;
-    
-}
-.create-card:active,
-.create-card:hover{
-    outline: 10px;
-    box-shadow: 0 0 11px #939393;
-    transform: scale(1.2);
-}
 .page-body{
     margin-top: .5rem;
     margin-left: 20%;
@@ -276,7 +257,6 @@
 
 
 .menu-actions-clients, .menu-actions-workers, .menu-actions-subscriptions{
-    margin-bottom: 10px;
     display: flex;
     column-gap: 5px;
     align-items: center;
@@ -307,17 +287,19 @@
 
 }
 .action-search > i{
-    font-size: 1.1rem;
-    padding: 10px;
+    display: none;
+    place-items: center;
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    padding: 0 !important;
+    border: 0;
     border-radius: 50%;
-    box-shadow: 0 0 11px #ebebeb;
-    background: #ebebeb;
-    transition: 300ms;
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-    text-align: center;
-    border: 1;
+    background: transparent;
+    color: #5f6368;
+    box-shadow: none;
+    font-size: 14px;
+    transition: transform .2s ease, background-color .2s ease, color .2s ease, border-color .2s ease;
 }
 .action-search > i, .action-search > input{
     box-shadow: 0 0 11px #ebebeb;
@@ -329,6 +311,9 @@
     transform: scale(1.09);
 }
 
+.action-search > i.show{
+    display: inline-grid !important;
+}
 .ac1, .ac2, .ac3, .ac4, .sc1, .sc2, .sc4{
     word-break: keep-all;
 }
@@ -872,16 +857,33 @@
     justify-content: space-between;
     align-items: end;
     gap: 10px;
-    border-bottom: 1px solid #eeeeee;
-    padding-bottom: 8px;
 }
+
 .client-report-section-head>span{
     font-weight: bold;
     color: #313131;
 }
-.client-report-section-head>small{
+.client-report-section-head>div{
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+.client-report-section-head>div:hover,
+.client-report-section-head>div:active{
+    outline: 1px solid #00000026;
+    border-radius: 4px;
+}
+.client-report-section-head>div>small{
     color: #5f6060;
     font-size: .68rem;
+    text-align: center;
+    padding: 0;
+}
+.client-report-section-head>div>i{
+    font-size: 7px;
+
 }
 .client-report-events{
     display: flex;

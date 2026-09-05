@@ -782,7 +782,7 @@ function createOrderItem(mode, parentID, client_id, order, actions = true, callb
 
 function createOrderItemHTML(mode, clientId, order){
     const openMenu = `<i class="fa-solid fa-bars menu-client" onclick="openMenuClient(event.target, '${clientId}', '${order.order_id}')"></i>`
-    const openDashboard = `<i class="fa-solid fa-eye menu-client" onclick="openClientDashbaord('${clientId}', '${order.order_id}')"></i>`
+    const openDashboard = `<i class="fa-solid fa-eye menu-client no-mobile" onclick="openClientDashbaord('${clientId}', '${order.order_id}')"></i>`
     const restore = `<i class="fa-solid fa-trash-restore menu-client" onclick="restoreOrder('${order.order_id}')"></i>`
     var html = `
         <div class="avatar client-state-${order.stat}">

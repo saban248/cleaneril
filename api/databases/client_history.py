@@ -68,6 +68,7 @@ def create_history(mid:str, cid:str, oid:str, entity:int = 0, action:int = 0, de
 
 def get_histories(source:bool = True, **kwargs):
     history = get_columns(ClientHistory, source, **kwargs)
+    history.reverse()
     return history
 
 

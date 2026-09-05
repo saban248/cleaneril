@@ -970,6 +970,69 @@
     color: #6c5422;
 }
 
+.menu-actions-clients{
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    min-height: 48px;
+    padding: 4px 6px;
+    border-bottom: 1px solid #dadce0;
+    background: #fff;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.menu-actions-clients::-webkit-scrollbar{
+    display: none;
+}
+.menu-actions-clients:has(.filter-options.show){
+    overflow: visible;
+}
+
+
+.menu-actions-clients > .create-card,
+.menu-actions-clients > .btn-r-show-calendar{
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: #5f6368;
+    box-shadow: none;
+    font-size: 14px;
+    flex-shrink: 0;
+    transition: transform .2s ease, background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+
+.menu-actions-clients > .create-card{
+    border-radius: 9px;
+    background: #e6f4ea;
+    color: #137333;
+    box-shadow: none;
+}
+
+.menu-actions-clients > .create-card:hover,
+.menu-actions-clients > .btn-r-show-calendar:hover{
+    outline: none;
+    border-color: transparent;
+    background: #f1f3f4;
+    color: #202124;
+    transform: none;
+    box-shadow: none;
+}
+
+.menu-actions-clients > .create-card:hover{
+    background: #ccead6;
+    color: #137333;
+}
+
 @media (max-width: 768px) {
     .count-stat{
         position: absolute;
@@ -982,7 +1045,8 @@
         background: rgb(75, 75, 75);
     }
     .menu-actions-clients{
-        justify-content: space-between !important;
+        gap: 7px;
+        padding: 6px;
     }
     .no-mobile{
         display: none !important;

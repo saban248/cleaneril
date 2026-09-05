@@ -9,11 +9,12 @@
                <i class="fa-solid fa-circle-plus"></i>
             </div>
             <i class="fa-solid fa-arrows-rotate btn-r-show-calendar" onclick="reloadOnPageClients()"></i>
+            <div class="action-search">
+                <i class="fa-solid fa-circle-xmark"  onclick="closeSearchClients(this)"></i>
+                <i class="fa-solid fa-magnifying-glass show" onclick="openSearchInput('searchClient', this)"></i>
+                <input class="c-input-fn seacrh-input" type="text" placeholder="שם, פאלפון, תאריך" id="searchClient" oninput="doSearchClientsLocal(this)">
+            </div>
             <div class="filter-item">
-                <span class="filter-label">
-                    <i class="fa-solid fa-filter"></i>
-                    סינון 
-                </span>
                 <span class="viewFilterSelected" id="viewOrderStatFilter" onclick="switchFilterOptions('mf-cs')">הכל</span>
                 <div class="filter-options" id="mf-cs">
                     <div class="filter-option" onclick="selectClientsState(StateOrder.DONE, this)" data-s="8"> 
@@ -33,11 +34,6 @@
                         <span>בוטל</span>
                     </div>
                 </div>
-            </div>
-            <div class="action-search">
-                <i class="fa-solid fa-circle-xmark" style="display: none;" onclick="closeSearchClients(this)"></i>
-                <i class="fa-solid fa-magnifying-glass" onclick="openSearchInput('searchClient', this)"></i>
-                <input class="c-input-fn seacrh-input" type="text" placeholder="שם, פאלפון, תאריך" id="searchClient" oninput="doSearchClientsLocal(this)">
             </div>
         </div>
             <div class="view-tabs-clients" id="viewtabs-items">

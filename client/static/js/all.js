@@ -17,7 +17,7 @@ function getIconByStatToast(stat){
     return ''
 }
 
-function showToast(text, stat = ToastStat.LOAD, id=null){
+function showToast(text, stat = ToastStat.LOAD, id=null, timeout = 6000){
     let toast = null;
     let icon = null;
     let head = null;
@@ -57,7 +57,7 @@ function showToast(text, stat = ToastStat.LOAD, id=null){
     if (icon) icon.className = getIconByStatToast(stat);
     if (body) body.innerText = text;
 
-    setTimeout(()=>{toast?.click()}, 6000)
+    setTimeout(()=>{toast?.click()}, timeout);
     return __id;
 }
 function closeToast(id){
@@ -305,8 +305,8 @@ function closeSearchInput(id, t){
     const parent = t.parentElement;
     if (parent && parent.children.length >= 2) {
         const [ix, io] = [parent.children[0], parent.children[1]];
-        if (ix) ix.style.display = "none";
-        if (io) io.style.display = "block";
+        if (ix) ix.classList.remove("show")
+        if (io) io.classList.add("show")
     }
 
     input.value = '';
@@ -318,8 +318,8 @@ function openSearchInput(id, t){
     const parent = t.parentElement;
     if (parent && parent.children.length >= 2) {
         const [ix, io] = [parent.children[0], parent.children[1]];
-        if (ix) ix.style.display = "block";
-        if (io) io.style.display = "none";
+        if (ix) ix.classList.add("show")
+        if (io) io.classList.remove("show")
     }
 }
 

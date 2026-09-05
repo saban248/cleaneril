@@ -13,7 +13,6 @@ function canvasToBlob(canvas, type = "image/png", quality = 1) {
 
 
 async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid = c_runtime.currentClientIdView) {
-    alert()
     if (isCantExitEditOrder()){
         if (!(await askAboutExitEditOrder())){return}
     }
@@ -22,7 +21,7 @@ async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid
         return;
     }
 
-    const toastId = showToast("מכין...", ToastStat.LOAD);
+    const toastId = showToast("מכין...", ToastStat.LOAD, null, 1000*23);
     await showClientOrder(oid);
     const orderElement = document.getElementById('the-client-card');
     if (!orderElement) {
@@ -32,7 +31,8 @@ async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid
     const order = get_order_by_order_id(oid)
     const shareData = {
         title: `הזמנת ${getCleanOrderTypeText(order.order_type)}`,
-        text: `הזמנת  ${getCleanOrderTypeText(order.type_order)} `,
+        text: `הזמנת  ${getCleanOrderTypeText(order.order_type)} `,
+        files: []
     };
     try {
         const canvas = await html2canvas(orderElement, {
@@ -47,21 +47,42 @@ async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid
             showToast("שגיאה ביצירת התמונה", ToastStat.ERROR, toastId);
             return;
         }
-
         const fileName = `order_${oid}.png`;
-        const file = new File([blob], fileName, { type: "image/png" });
+        shareData.files.push(new File([blob], fileName, { type: "image/png" }));
         try {
-            if (!navigator.canShare || !navigator.canShare({ files: [file] })) {
-                downloadFile(blob, fileName);
-                showToast("שיתוף קבצים אינו נתמך - התמונה הורדה", ToastStat.DONE, toastId);
+            if (!navigator.canShare || !navigator.canShare(shareData)) {
+                showToast("שיתוף קבצים אינו נתמך", ToastStat.DONE, toastId);
                 return
             }
-            await navigator.share({
-                title: "פרטי הזמנה",
-                text: `סיכום הזמנה עבור ${order.fullname}`,
-                files: [file]
+
+            const toast = document.getElementById(toastId);
+            const toastBody = document.getElementById(`${toastId}body`);
+            if (!toast || !toastBody) {
+                downloadFile(blob, fileName);
+                showToast("התמונה הורדה במקום שיתוף", ToastStat.DONE, toastId);
+                return;
+            }
+
+            toastBody.innerText = "התמונה מוכנה לשיתוף";
+            const shareButton = document.createElement("button");
+            shareButton.type = "button";
+            shareButton.innerText = "שתף";
+            shareButton.addEventListener("click", async event => {
+                event.stopPropagation();
+                try {
+                    await navigator.share(shareData);
+                    closeToast(toastId);
+                } catch (shareErr) {
+                    console.error("Sharing failed:", shareErr);
+                    if (shareErr?.name === "AbortError") {
+                        closeToast(toastId);
+                        return;
+                    }
+                    downloadFile(blob, fileName);
+                    showToast("התמונה הורדה במקום שיתוף", ToastStat.DONE, toastId);
+                }
             });
-            showToast("שותף בהצלחה", ToastStat.DONE, toastId);
+            toastBody.appendChild(shareButton);
         } catch (shareErr) {
             console.error("Sharing failed:", shareErr);
             if (shareErr?.name === "AbortError") {
