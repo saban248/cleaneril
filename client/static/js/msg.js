@@ -37,8 +37,7 @@ function getTtextShareCleanOrder(orderType, date) {
         hour12: false
     });
 
-    return `הזמנת ניקוי ${orderTypeName} לתאריך ${formattedDate}, ${weekday} בשעה ${appointmentTime}
-    (: נתראה`;
+    return `הזמנת ניקוי ${orderTypeName} לתאריך ${formattedDate}, ${weekday} בשעה ${appointmentTime}\n נתראה:)`;
 }
 
 
