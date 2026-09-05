@@ -22,6 +22,24 @@ const message = {
     EShareOrderFailed:"לא ניתן למצוא את תצוגת ההזמנה",
     
 }
+function getTtextShareCleanOrder(orderType, date) {
+    const orderDate = new Date(date);
+    if (Number.isNaN(orderDate.getTime())) {
+        throw new TypeError("Invalid cleaning order date");
+    }
+
+    const orderTypeName = getCleanOrderTypeText(orderType);
+    const formattedDate = orderDate.toLocaleDateString("he-IL");
+    const weekday = orderDate.toLocaleDateString("he-IL", { weekday: "long" });
+    const appointmentTime = orderDate.toLocaleTimeString("he-IL", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+    });
+
+    return `הזמנת ניקוי ${orderTypeName} לתאריך ${formattedDate}, ${weekday} בשעה ${appointmentTime}
+    (: נתראה`;
+}
 
 
 const FeatureDetails = {

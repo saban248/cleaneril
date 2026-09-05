@@ -21,7 +21,7 @@ async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid
         return;
     }
 
-    const toastId = showToast("מכין...", ToastStat.LOAD, null, 1000*23);
+    const toastId = showToast("מכין...", ToastStat.LOAD, null , false);
     await showClientOrder(oid);
     const orderElement = document.getElementById('the-client-card');
     if (!orderElement) {
@@ -31,7 +31,7 @@ async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid
     const order = get_order_by_order_id(oid)
     const shareData = {
         title: `הזמנת ${getCleanOrderTypeText(order.order_type)}`,
-        text: `הזמנת  ${getCleanOrderTypeText(order.order_type)} `,
+        text: getTtextShareCleanOrder(order.order_type, order.date*1000),
         files: []
     };
     try {

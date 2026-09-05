@@ -17,7 +17,7 @@ function getIconByStatToast(stat){
     return ''
 }
 
-function showToast(text, stat = ToastStat.LOAD, id=null, timeout = 6000){
+function showToast(text, stat = ToastStat.LOAD, id=null, deleteToast = true){
     let toast = null;
     let icon = null;
     let head = null;
@@ -57,7 +57,7 @@ function showToast(text, stat = ToastStat.LOAD, id=null, timeout = 6000){
     if (icon) icon.className = getIconByStatToast(stat);
     if (body) body.innerText = text;
 
-    setTimeout(()=>{toast?.click()}, timeout);
+    deleteToast&&setTimeout(()=>{toast?.click()}, 6000);
     return __id;
 }
 function closeToast(id){
