@@ -3,7 +3,9 @@ const CONFIG = {
     WORKER_EDIT:false,
     WORKER_VIEW:false,
     CURRENT_PAGE:-1,
-    IMG_ORDER:0
+    IMG_ORDER:0,
+    DOMAIM:"havraka-bdaka.com",
+    URL:"https://havraka-bdaka.com",
 }
 const ManagerPermissions = {
     VIEW:1<<0,

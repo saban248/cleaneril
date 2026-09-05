@@ -19,7 +19,9 @@ const message = {
     IAboutCreateReceipt:`לפני שאתה מדפיס קבלה, האם כל הפרטים נכונים?.\n לא ניתן לשנות אחרי הדפסה`,
     Ilogout:"יוצא מהמערכת..",
     WDeleteManagerAccount:"למחוק לצמיתות את המנוי? ימחקו כל התונים",
-    EShareOrderFailed:"לא ניתן למצוא את תצוגת ההזמנה",
+    ETemplateOrderFailed:"לא ניתן למצוא את תצוגת ההזמנה",
+    ECreateOrderImgFailed:"לא ניתן ליצור תמונת הזמנה",
+    EShareOrderFailed:"לא ניתן לשתף את ההזמנה",
     
 }
 function getTtextShareCleanOrder(orderType, date) {
@@ -37,7 +39,9 @@ function getTtextShareCleanOrder(orderType, date) {
         hour12: false
     });
 
-    return `הזמנת ניקוי ${orderTypeName} לתאריך ${formattedDate}, ${weekday} בשעה ${appointmentTime}\n נתראה:)`;
+    const orderText = `הזמנת ניקוי ${orderTypeName} לתאריך ${formattedDate}, ${weekday} בשעה ${appointmentTime}\n\nנתראה:)`;
+    return orderText;    
+
 }
 
 

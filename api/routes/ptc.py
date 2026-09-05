@@ -242,6 +242,7 @@ class Pages(IntFlag):
 
 class PublicApiCall(IntFlag):
     clean_order_verify = 1
+    view_clean_order = 2
 
 
 class ApiCall(IntFlag):

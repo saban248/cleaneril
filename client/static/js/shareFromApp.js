@@ -1,3 +1,10 @@
+const mainShareData = {
+    title:'',
+    text:'',
+    files:[]
+}
+
+
 function canvasToBlob(canvas, type = "image/png", quality = 1) {
     return new Promise((resolve, reject) => {
         canvas.toBlob(blob => {
@@ -10,7 +17,25 @@ function canvasToBlob(canvas, type = "image/png", quality = 1) {
     });
 }
 
+async function initshareOrderToClientAsPhoto(){
+    const order = get_order_by_order_id(c_runtime.currentOrderIdView);
+    mainShareData.title = `הזמנת ${getCleanOrderTypeText(order.order_type)}`;
+    mainShareData.text =  getTtextShareCleanOrder(order.order_type, order.date*1000);
+    mainShareData.files = []
 
+    await shareOrderToClientAsPhoto(c_runtime.currentOrderIdView, c_runtime.currentClientIdView);
+    const content = `
+    <div class="share-order-to-client">
+        <div>
+            <span onclick="doNavigate()">שיתוף תמונה</span>
+        </div>
+        <div>
+            <span>שיתוף קישור</span>
+        </div>
+        <button type="button" class="btn btn-primary" id="share-order-to-client-btn">שתף הזמנה</button>
+    </div>`;
+    createEditModal("שיתוף הזמנה ללקוח",null, null, {content:content, save:false});
+}
 
 async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid = c_runtime.currentClientIdView) {
     if (isCantExitEditOrder()){
@@ -25,15 +50,9 @@ async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid
     await showClientOrder(oid);
     const orderElement = document.getElementById('the-client-card');
     if (!orderElement) {
-        showToast(message.EShareOrderFailed, ToastStat.ERROR, toastId);
+        showToast(message.ETemplateOrderFailed, ToastStat.ERROR, toastId);
         return;
     }
-    const order = get_order_by_order_id(oid)
-    const shareData = {
-        title: `הזמנת ${getCleanOrderTypeText(order.order_type)}`,
-        text: getTtextShareCleanOrder(order.order_type, order.date*1000),
-        files: []
-    };
     try {
         const canvas = await html2canvas(orderElement, {
             scale: 2,
@@ -44,63 +63,41 @@ async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid
 
         const blob = await canvasToBlob(canvas);
         if (!blob) {
-            showToast("שגיאה ביצירת התמונה", ToastStat.ERROR, toastId);
+            showToast(message.ECreateOrderImgFailed, ToastStat.ERROR, toastId);
             return;
         }
         const fileName = `order_${oid}.png`;
-        shareData.files.push(new File([blob], fileName, { type: "image/png" }));
+        mainShareData.files.push(new File([blob], fileName, { type: "image/png" }));
         try {
-            if (!navigator.canShare || !navigator.canShare(shareData)) {
-                showToast("שיתוף קבצים אינו נתמך", ToastStat.DONE, toastId);
+            if (!navigator.canShare || !navigator.canShare(mainShareData)) {
+                showToast(message.EShareOrderFailed, ToastStat.DONE, toastId);
                 return
             }
-
-            const toast = document.getElementById(toastId);
-            const toastBody = document.getElementById(`${toastId}body`);
-            if (!toast || !toastBody) {
-                downloadFile(blob, fileName);
-                showToast("התמונה הורדה במקום שיתוף", ToastStat.DONE, toastId);
-                return;
-            }
-
-            toastBody.innerText = "התמונה מוכנה לשיתוף";
-            const shareButton = document.createElement("button");
-            shareButton.type = "button";
-            shareButton.innerText = "שתף";
-            shareButton.addEventListener("click", async event => {
-                event.stopPropagation();
-                try {
-                    await navigator.share(shareData);
-                    closeToast(toastId);
-                } catch (shareErr) {
-                    console.error("Sharing failed:", shareErr);
-                    if (shareErr?.name === "AbortError") {
-                        closeToast(toastId);
-                        return;
-                    }
-                    downloadFile(blob, fileName);
-                    showToast("התמונה הורדה במקום שיתוף", ToastStat.DONE, toastId);
-                }
-            });
             toastBody.appendChild(shareButton);
         } catch (shareErr) {
-            console.error("Sharing failed:", shareErr);
-            if (shareErr?.name === "AbortError") {
-                closeToast(toastId);
-                return;
-            }
-            downloadFile(blob, fileName);
-            showToast("התמונה הורדה במקום שיתוף", ToastStat.DONE, toastId);
+            showToast(message.EShareOrderFailed, ToastStat.ERROR, toastId);
         }
-        
 
     } catch (err) {
-        console.error("Capture failed:", err);
-        showToast("שגיאה ביצירת התמונה", ToastStat.ERROR, toastId);
+        showToast(message.EShareOrderFailed, ToastStat.ERROR, toastId);
     }
 }
 
-// Helper function to download file
+async function doNavigate(mainShareData){
+    try {
+        await navigator.share(mainShareData);
+    } catch (shareErr) {
+        console.error("Sharing failed:", shareErr);
+        if (shareErr?.name === "AbortError") {
+            closeToast(toastId);
+            return;
+        }
+    }
+}
+
+
+
+
 function downloadFile(blob, fileName) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
