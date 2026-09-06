@@ -26,14 +26,14 @@ const CleanerILProducts = [
         orderType:CleanOrderType.AIR_CONDITIONER,
         title:"מיני מרכזי",
         raw:'מיני מרכזי 4-6 כ"ס סוללה+פילטרים',
-        key:5,
+        key:4,
         price:400
     },
     {   
         orderType:CleanOrderType.AIR_CONDITIONER,
         title:"תעלות מיני מרכזי / מרכזי",
         raw:'תעלת מיזוג אוויר ס.שרשור ',
-        key:9,
+        key:5,
         price:200
     },
     {
@@ -57,6 +57,28 @@ const CleanerILProducts = [
         key:8,
         price:360
     },
+    {
+        orderType:CleanOrderType.UPHOLSTERY,
+        title:"כורסא סוג בד רחיץ",
+        raw:'כורסא קטנה גב+מושב+ידיות',
+        key:9,
+        price:100
+    },
+    {
+        orderType:CleanOrderType.UPHOLSTERY,
+        title:"כורסא סוג בד רחיץ",
+        raw:'כורסא בינונית גב+מושב+ידיות',
+        key:10,
+        price:150
+    },
+    {
+        orderType:CleanOrderType.UPHOLSTERY,
+        title:"כורסא סוג בד רחיץ",
+        raw:'כורסא גדולה גב+מושב+ידיות',
+        key:11,
+        price:200
+    },
+
 
 
 
