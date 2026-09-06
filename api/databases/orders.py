@@ -143,6 +143,9 @@ def create_clean_order(manager_id:str, client_id:str, response, update:bool = Fa
     order.order_type = response.ot
     order.marketplace_shared = False
     order.date_done = time.time() if response.s == StateOrder.DONE else 0
+    order.deleted = False
+    order.time_deleted = 0
+
     cleaneril_db.session.add(order)
     cleaneril_db.session.commit()
     return order
