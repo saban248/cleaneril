@@ -1,6 +1,7 @@
 import time
+from dataclasses import dataclass
 
-from api.databases import orders
+from api.databases import orders, clients
 from api.databases.general import get_columns
 from api.databases.orders import CleanOrder
 from api.databases.ptc import cleaneril_db
@@ -13,6 +14,13 @@ def create_history_id():
     # protocol
     return "CH"+generate_hex(14)
 
+
+
+@dataclass
+class HistoryChange:
+    old:str     = None
+    new:str = None
+    database_key:str = None
 
 def create_description_order_changed(mid:str, order:cil_struct.CleanOrder):
     d = []
@@ -58,10 +66,13 @@ class ClientHistory(cleaneril_db.Model):
     action = cleaneril_db.Column(cleaneril_db.Integer, nullable=False)
     description = cleaneril_db.Column(cleaneril_db.Text, nullable=False)
     created_at = cleaneril_db.Column(cleaneril_db.Float, nullable=False)
+    reverse = cleaneril_db.Column(cleaneril_db.Boolean, nullable=False)
 
 
 def create_history(mid:str, cid:str, oid:str, entity:int = 0, action:int = 0, description:str = ""):
     history = ClientHistory()
+    client = clients.get_clients(manager_id=mid, client_id=cid).first()
+    if not client:return core_msg.ServerCode.General.something_wrong
     history.history_id = create_history_id()
     history.manager_id = mid
     history.client_id = cid

@@ -39,6 +39,7 @@ async function closeClientDashboard(){
 
     }
     hideClientDashboard()
+    delete c_runtime.clientsReports[c_runtime.currentClientIdView]
    c_clients.order_edit =  c_clients.new_order =false;
    c_clients.client_view =false;
    c_runtime.currentClientIdView = null;
@@ -60,6 +61,7 @@ function hideClientDashboard(){
 }
 
 async function openClientDashbaord(client_id = c_runtime.currentClientIdView, order_id = c_runtime.currentOrderIdView, fetch = true, switchView = false){
+    closeClientDashboard()
     if (switchView){
         switchPageManager(PageManager.CLIENTS)
     }

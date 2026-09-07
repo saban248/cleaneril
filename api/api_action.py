@@ -2,12 +2,13 @@ import base64
 import os
 from time import sleep
 
-from flask import render_template, session
+from flask import render_template
 
 import api.databases.company as companies
 from api.data.orders import DataOrders
 from api.data.ptc import AnalyticsData, ClientReports
-from api.databases import invoice, manager as managers, subscriptions, limit_api, client_history
+from api.databases import invoice, manager as managers, subscriptions, limit_api
+from api.databases.server_log import client_history
 from api.databases import orders, clients
 from api.databases.bridge import on_create_order_create_client, get_pov_details_response
 from api.databases.clients import ClientProfile
@@ -69,7 +70,7 @@ def get_api_action(**breq) -> dict:
             client = on_create_order_create_client(order)
             if history_description:
                 client_history.create_history(manager_id, client.client_id, r_order.oi,
-                                              ClientHistory.Entity.ORDER,ClientHistory.Action.CHANGED,
+                                              ClientHistory.Entity.ORDER, ClientHistory.Action.CHANGED,
                                               history_description)
             return SJson.auto_code(__success__)
         case ApiCall.order_new:
@@ -99,8 +100,9 @@ def get_api_action(**breq) -> dict:
             return SJson.auto_code(code)
         case ApiCall.order_delete:
             rroder = cil_struct.CleanOrder().build(**breq)
-            history = client_history.create_history(manager_id,rroder.client_id,rroder.oi, ClientHistory.Entity.ORDER,
-                                                    ClientHistory.Action.CHANGED)
+            order = orders.get_clean_orders(manager_id=manager_id, order_id=rroder.oi).first()
+            client_history.create_history(manager_id, order.client_id, order.order_id, ClientHistory.Entity.ORDER,
+                                          ClientHistory.Action.CHANGED, "הזמנה נמחקה")
             code = orders.delete_clean_order(manager_id, rroder.oi)
             return SJson.auto_code(code)
         case ApiCall.order_stat:

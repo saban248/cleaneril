@@ -255,7 +255,7 @@ async function renderClientSummaryReport(){
         await fetchClientReports(c_runtime.currentClientIdView);
     }
     else{
-        return
+        return;
     }
     createBoxloading(parent)
     const data = c_runtime.clientsReports[c_runtime.currentClientIdView];
@@ -378,7 +378,7 @@ async function renderClientSummaryReport(){
                 <div class="client-report-section-head">
                     <span>סיכום פעילות</span>
                     <div>
-                        <small>הצג הכל</small>
+                        <small>הצג הכל (${data.history.length})</small>
                         <i class="fa-solid fa-chevron-right fa-rotate-180"></i>
                     </div>
                     
