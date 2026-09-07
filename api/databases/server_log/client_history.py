@@ -18,21 +18,31 @@ def create_history_id():
 
 @dataclass
 class HistoryChange:
-    old:str     = None
-    new:str = None
+    old:str|int     = None
+    new:str|int = None
     database_key:str = None
+    description:str = None
 
 def create_description_order_changed(mid:str, order:cil_struct.CleanOrder):
-    d = []
+    hc = HistoryChange()
     old_order:CleanOrder = orders.get_clean_orders(manager_id=mid, order_id=order.oi).first()
-    if not old_order:return d
+    if not old_order:return hc
 
     if order.s != old_order.stat:
-        d.append("סטטוס הזמנה")
+        hc.description = "סטטוס הזמנה"
+        hc.database_key = "stat"
+        hc.new = order.s
+        hc.old = old_order.stat
     if int(order.price) != old_order.price:
-        d.append("מחיר")
+        hc.description = 'מחיר'
+        hc.database_key = "price"
+        hc.new = order.price
+        hc.old = old_order.price
     if order.address != old_order.address:
-        d.append("כתובת")
+        hc.description = "כתובת"
+        hc.database_key = "address"
+        hc.new = order.address
+        hc.old = old_order.address
     if order.i != old_order.items:
         print(order.i)
         print(old_order.items)
@@ -48,7 +58,6 @@ def create_description_order_changed(mid:str, order:cil_struct.CleanOrder):
     if order.workers != old_order.workers:
         d.append("שיוך עובד")
 
-    print(order.workers, old_order.workers)
     return ", ".join(d)
 
 
