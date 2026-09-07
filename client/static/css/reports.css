@@ -96,16 +96,17 @@
     box-shadow: 0 0 11px #ebebeb;
     background: #ebebeb;
     transition: 300ms;
-    width: 15px;
-    height: 15px;
+    width: 13px;
+    height: 13px;
     cursor: pointer;
     text-align: center;
-    font-size: 15px;
+    font-size: 13px;
 }
 .btn-r-show-calendar:hover, .create-card:hover{
     outline: 1px solid #adadad;
     transform: scale(1.09);
 }
+
 
 .calendar-container {
     z-index: 10000;

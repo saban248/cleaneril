@@ -239,15 +239,25 @@ function renderClientHistory(histories){
 
     return Html
 }
+async function reloadClientSummaryReport(t){
+    t.classList.add("spin")
+    delete c_runtime.clientsReports[c_runtime.currentClientIdView]
+    await renderClientSummaryReport()
+}
+
+
 async function renderClientSummaryReport(){
     const parent = document.getElementById("client-reports");
     if (!parent){
         return;
     }
-    createBoxloading(parent);
     if (!c_runtime.clientsReports[c_runtime.currentClientIdView]){
         await fetchClientReports(c_runtime.currentClientIdView);
     }
+    else{
+        return
+    }
+    createBoxloading(parent)
     const data = c_runtime.clientsReports[c_runtime.currentClientIdView];
     const order = get_order_by_order_id(c_runtime.currentOrderIdView);
     if (!data){
@@ -286,6 +296,9 @@ async function renderClientSummaryReport(){
                             <span class="rtf-number" id="fundsTotalIncome">${reportMoney(data.income)}</span>
                             <span class="rtf-shekel-icon">₪</span>
                         </div>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-arrows-rotate btn-r-show-calendar" onclick="reloadClientSummaryReport(this)"></i>
                     </div>
                 </div>
             </div>

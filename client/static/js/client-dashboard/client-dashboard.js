@@ -498,10 +498,8 @@ function hideClientReports(){
 
 async function showClientReports(){
     const parent = document.getElementById("client-reports")
-    if (typeof renderClientSummaryReport === "function"){
-        renderClientSummaryReport()
-    }
     parent.classList.add("show")
+    renderClientSummaryReport()
 }
 
 function editReceiptOrder(){

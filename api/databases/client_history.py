@@ -17,9 +17,10 @@ def create_history_id():
 def create_description_order_changed(mid:str, order:cil_struct.CleanOrder):
     d = []
     old_order:CleanOrder = orders.get_clean_orders(manager_id=mid, order_id=order.oi).first()
-    print(type(old_order.items), type(order.i))
     if not old_order:return d
 
+    if order.s != old_order.stat:
+        d.append("סטטוס הזמנה")
     if int(order.price) != old_order.price:
         d.append("מחיר")
     if order.address != old_order.address:
@@ -30,7 +31,16 @@ def create_description_order_changed(mid:str, order:cil_struct.CleanOrder):
         d.append("פריטי הזמנה")
     if order.date != old_order.date:
         d.append("תאריך")
+    if order.fn != old_order.fullname:
+        d.append("שם לקוח")
+    if order.op != old_order.off_price:
+        d.append("הנחה")
+    if order.pt != old_order.payment_type:
+        d.append("סוג תשלום")
+    if order.workers != old_order.workers:
+        d.append("שיוך עובד")
 
+    print(order.workers, old_order.workers)
     return ", ".join(d)
 
 

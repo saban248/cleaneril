@@ -67,9 +67,10 @@ def get_api_action(**breq) -> dict:
             history_description = client_history.create_description_order_changed(manager_id, r_order)
             order = orders.update_clean_order(manager_id, r_order.client_id,r_order)
             client = on_create_order_create_client(order)
-            client_history.create_history(manager_id, client.client_id, r_order.oi,
-                                          ClientHistory.Entity.ORDER,ClientHistory.Action.CHANGED,
-                                          history_description)
+            if history_description:
+                client_history.create_history(manager_id, client.client_id, r_order.oi,
+                                              ClientHistory.Entity.ORDER,ClientHistory.Action.CHANGED,
+                                              history_description)
             return SJson.auto_code(__success__)
         case ApiCall.order_new:
             r_order = cil_struct.CleanOrder().build(**breq)
@@ -98,6 +99,8 @@ def get_api_action(**breq) -> dict:
             return SJson.auto_code(code)
         case ApiCall.order_delete:
             rroder = cil_struct.CleanOrder().build(**breq)
+            history = client_history.create_history(manager_id,rroder.client_id,rroder.oi, ClientHistory.Entity.ORDER,
+                                                    ClientHistory.Action.CHANGED)
             code = orders.delete_clean_order(manager_id, rroder.oi)
             return SJson.auto_code(code)
         case ApiCall.order_stat:
