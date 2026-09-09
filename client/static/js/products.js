@@ -78,7 +78,41 @@ const CleanerILProducts = [
         key:11,
         price:200
     },
-
+    {
+        orderType:CleanOrderType.UPHOLSTERY,
+        title:"מזרן יחיד",
+        raw:"מזרן יחיד צד אחד",
+        key:12,
+        price:200
+    },
+    {
+        orderType:CleanOrderType.UPHOLSTERY,
+        title:"מזרן יחיד",
+        raw:"מזרן יחיד שני צדדים",
+        key:13,
+        price:250
+    },
+    {
+        orderType:CleanOrderType.UPHOLSTERY,
+        title:"מזרן זוגי",
+        raw:"מזרן זוגי צד אחד",
+        key:14,
+        price:300
+    },
+    {
+        orderType:CleanOrderType.UPHOLSTERY,
+        title:"מזרן זוגי",
+        raw:"מזרן זוגי שני צדדים",
+        key:15,
+        price:350
+    },
+    {
+        orderType:CleanOrderType.UPHOLSTERY,
+        title:"מזרן זוגי",
+        raw:"מזרן זוגי שני צדדים + שתן",
+        key:16,
+        price:400
+    },
 
 
 
