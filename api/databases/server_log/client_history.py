@@ -1,5 +1,5 @@
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 
 from api.databases import orders, clients
 from api.databases.general import get_columns
@@ -23,45 +23,28 @@ class HistoryChange:
     database_key:str = None
     description:str = None
 
-def create_description_order_changed(mid:str, order:cil_struct.CleanOrder):
-    hc = HistoryChange()
-    old_order:CleanOrder = orders.get_clean_orders(manager_id=mid, order_id=order.oi).first()
-    if not old_order:return hc
+def create_history_order_changed(mid: str, order: cil_struct.CleanOrder):
+    hcs: list[dict] = []
+    old_order: CleanOrder = orders.get_clean_orders(manager_id=mid, order_id=order.oi).first()
+    if not old_order:
+        return hcs
 
-    if order.s != old_order.stat:
-        hc.description = "סטטוס הזמנה"
-        hc.database_key = "stat"
-        hc.new = order.s
-        hc.old = old_order.stat
-    if int(order.price) != old_order.price:
-        hc.description = 'מחיר'
-        hc.database_key = "price"
-        hc.new = order.price
-        hc.old = old_order.price
-    if order.address != old_order.address:
-        hc.description = "כתובת"
-        hc.database_key = "address"
-        hc.new = order.address
-        hc.old = old_order.address
-    if order.i != old_order.items:
-        print(order.i)
-        print(old_order.items)
-        d.append("פריטי הזמנה")
-    if order.date != old_order.date:
-        d.append("תאריך")
-    if order.fn != old_order.fullname:
-        d.append("שם לקוח")
-    if order.op != old_order.off_price:
-        d.append("הנחה")
-    if order.pt != old_order.payment_type:
-        d.append("סוג תשלום")
-    if order.workers != old_order.workers:
-        d.append("שיוך עובד")
+    def add_change(database_key, description, old, new):
+        if old != new:
+            print(old, new)
+            hcs.append(asdict(HistoryChange(old, new, database_key, description)))
 
-    return ", ".join(d)
+    add_change("stat", "סטטוס הזמנה", old_order.stat, order.s)
+    add_change("price", "מחיר", old_order.price, order.price)
+    add_change("address", "כתובת", old_order.address, order.address)
+    add_change("items", "פריטי הזמנה", old_order.items, order.i)
+    add_change("date", "תאריך", old_order.date, order.date)
+    add_change("fullname", "שם לקוח", old_order.fullname, order.fn)
+    add_change("off_price", "הנחה", old_order.off_price, order.op)
+    add_change("payment_type", "סוג תשלום", old_order.payment_type, order.pt)
+    add_change("workers", "שיוך עובד", old_order.workers, order.workers)
 
-
-
+    return hcs
 
 
 class ClientHistory(cleaneril_db.Model):
@@ -73,12 +56,11 @@ class ClientHistory(cleaneril_db.Model):
     order_id = cleaneril_db.Column(cleaneril_db.String(32), nullable=False)
     entity = cleaneril_db.Column(cleaneril_db.Integer, nullable=False)
     action = cleaneril_db.Column(cleaneril_db.Integer, nullable=False)
-    description = cleaneril_db.Column(cleaneril_db.Text, nullable=False)
+    data = cleaneril_db.Column(cleaneril_db.JSON, nullable=False)
     created_at = cleaneril_db.Column(cleaneril_db.Float, nullable=False)
-    reverse = cleaneril_db.Column(cleaneril_db.Boolean, nullable=False)
 
 
-def create_history(mid:str, cid:str, oid:str, entity:int = 0, action:int = 0, description:str = ""):
+def create_history(mid:str, cid:str, oid:str, entity:int = 0, action:int = 0, data:list[HistoryChange] = None):
     history = ClientHistory()
     client = clients.get_clients(manager_id=mid, client_id=cid).first()
     if not client:return core_msg.ServerCode.General.something_wrong
@@ -88,7 +70,7 @@ def create_history(mid:str, cid:str, oid:str, entity:int = 0, action:int = 0, de
     history.order_id = oid
     history.entity = entity
     history.action = action
-    history.description = description
+    history.data = data if data is not None else []
     history.created_at = time.time()
     cleaneril_db.session.add(history)
     cleaneril_db.session.commit()

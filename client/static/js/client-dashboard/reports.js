@@ -2,17 +2,6 @@ const c_reports = {
     clientReportsTimeout: {},
 }
 
-function timeoutDeleteClientReports(clientId, sec=300){
-    if (c_reports.clientReportsTimeout[clientId]){
-        clearTimeout(c_reports.clientReportsTimeout[clientId]);
-    }
-    c_reports.clientReportsTimeout[clientId] = setTimeout(()=>{
-        if (c_runtime.clientsReports[clientId]){
-            delete c_runtime.clientsReports[clientId];
-        }
-    }, sec*1000)
-}
-
 async function fetchClientReports(clientId) {
     if (!clientId){
         clientId = c_runtime.currentClientIdView;
@@ -26,7 +15,6 @@ async function fetchClientReports(clientId) {
                 return
             }
             c_runtime.clientsReports[clientId] = res.reports;
-            timeoutDeleteClientReports(clientId);
             closeToast(toast);
         }
     )
@@ -222,29 +210,62 @@ function renderClientHistory(histories){
             year: "numeric",
 
         });
+        const changed = Object.values(event.data)?.map(d => d.description).join(", ")
         return `
-            <div class="client-report-event client-report-event-${event.entity}">
+            <div class="client-report-event client-report-event-${event.entity}" id="${event.history_id}">
                 <div class="client-report-event-icon">
                     <i class="${entityIcon}"></i>
                 </div>
                 <div class="client-report-event-content">
                     <strong>${entityTitle} ${actionText}</strong>
                     <small>${createdAt}</small>
-                    <span>${event.description?"שינויים: ":""}${event.description}</span>
+                    <span>${changed?"שינויים: ":"אין מידע"}${changed}</span>
                 </div>
-                <div class="client-report-event-amount">${reportMoney(event.amount)}</div>
+                <div class="client-report-event-amount">${event.data.length}</div>
+                <div class="client-report-event-action">
+                    <i class="fa-solid fa-trash btn-r-show-calendar" onclick="deleteClientHistory("${event.history_id}")></i>
+                    <i class="fa-solid fa-clock-rotate-left btn-r-show-calendar"></i>
+                    <i class="fa-solid fa-info btn-r-show-calendar"></i>
+                </div>
             </div>
         `;
     }).join("");
 
     return Html
 }
+function showClienthistoryAction(element){
+    const parent = element.querySelector(".client-report-event-action")
+    if (!parent)return
+    parent.classList.add("show")
+}
+
+function hideClienthistoryAction(element){
+    const parent = element.querySelector(".client-report-event-action")
+    if (!parent)return
+    parent.classList.remove("show")
+}
+
+
 async function reloadClientSummaryReport(t){
-    t.classList.add("spin")
     delete c_runtime.clientsReports[c_runtime.currentClientIdView]
     await renderClientSummaryReport()
 }
 
+
+function deleteClientHistory(historyId){
+    console.log(historyId)
+    const data = {action:ApiCall.history_delete, hid:historyId}
+    apiPost(ApiRoute.api, data).then(
+        (res) =>{
+            if (!res.success){
+                showToast(res.notice, ToastStat.ERROR)
+                return;
+            }
+            const nhis = c_runtime.clientsReports[c_runtime.currentClientIdView].history.filter(h=>h.history_id != historyId)
+            c_runtime.clientsReports[c_runtime.currentClientIdView].hisotry = nhis;
+        }
+    )
+}
 
 async function renderClientSummaryReport(){
     const parent = document.getElementById("client-reports");
@@ -390,5 +411,6 @@ async function renderClientSummaryReport(){
         </div>
     `;
 
+    parent.querySelectorAll(".client-report-event").forEach(el => enableSwipeRight(el, showClienthistoryAction, hideClienthistoryAction));
     renderClientReportProfileMap(order);
 }

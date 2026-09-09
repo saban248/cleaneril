@@ -65,13 +65,13 @@ def get_api_action(**breq) -> dict:
             return SJson.auto_code(__success__, **template)
         case ApiCall.order_save:
             r_order = cil_struct.CleanOrder().build(**breq)
-            history_description = client_history.create_description_order_changed(manager_id, r_order)
+            history_data = client_history.create_history_order_changed(manager_id, r_order)
             order = orders.update_clean_order(manager_id, r_order.client_id,r_order)
             client = on_create_order_create_client(order)
-            if history_description:
+            if history_data:
                 client_history.create_history(manager_id, client.client_id, r_order.oi,
                                               ClientHistory.Entity.ORDER, ClientHistory.Action.CHANGED,
-                                              history_description)
+                                              history_data)
             return SJson.auto_code(__success__)
         case ApiCall.order_new:
             r_order = cil_struct.CleanOrder().build(**breq)
@@ -102,7 +102,7 @@ def get_api_action(**breq) -> dict:
             rroder = cil_struct.CleanOrder().build(**breq)
             order = orders.get_clean_orders(manager_id=manager_id, order_id=rroder.oi).first()
             client_history.create_history(manager_id, order.client_id, order.order_id, ClientHistory.Entity.ORDER,
-                                          ClientHistory.Action.CHANGED, "הזמנה נמחקה")
+                                          ClientHistory.Action.CHANGED, [])
             code = orders.delete_clean_order(manager_id, rroder.oi)
             return SJson.auto_code(code)
         case ApiCall.order_stat:
@@ -242,6 +242,10 @@ def get_api_action(**breq) -> dict:
                                    ana.get_average_income_orders_client(), ana.get_total_closed_orders_balance(),history)
 
             return SJson.auto_code(__success__, **{"reports":packet.build()})
+        case ApiCall.history_delete:
+            h = cil_struct.ClientHistory().build(**breq)
+            history = client_history.delete_history(manager_id,h.hid)
+            return SJson.auto_code(history)
 
     return SJson.auto_code(__success__)
 

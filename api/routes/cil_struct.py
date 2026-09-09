@@ -386,3 +386,13 @@ class PublicApi:
         if self.key is not None and str(self.key).isdigit():
             self.key = int(self.key)
         return self
+
+
+
+@dataclass
+class ClientHistory:
+    hid:str     = None
+
+    def build(self, **data):
+        struct_builder(self, **data)
+        return self

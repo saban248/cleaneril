@@ -3,7 +3,7 @@ import json
 import os.path
 import time
 from dataclasses import dataclass
-from enum import Enum, IntFlag
+from enum import Enum, IntFlag, IntEnum
 
 from api.databases.general import unknown
 from api.databases.ptc import ServerConfig, StateOrder
@@ -245,44 +245,44 @@ class PublicApiCall(IntFlag):
     view_clean_order = 2
 
 
-class ApiCall(IntFlag):
-
-    card_editor = 1<<0
-    card_draft = 1<<1
-    card_delete = 1<<2
-    card_save = 1<<3
-    order_edit = 1 << 4
-    order_delete = 1 << 5
-    order_save = 1 << 6
-    client_view = 1<<7
-    order_stat = 1 << 8
-    api_reports = 1<<9
-    manager_settings = 1 << 10
-    order_workers = 1 << 11
-    worker_editor = 1<<12
-    worker_view = 1<<13
-    worker_save = 1<<14
-    worker_delete = 1<<15
-    calendar = 1<<16
-    orders_list = 1 << 17
-    invoice_view = 1<<18
-    invoice_create = 1<<19
-    invoice_list = 1<<20
-    order_view = 1 << 21
-    order_new  = 1<< 22
-    list_clients = 1<<23
-    invoice_delete = 1<<24
-    permissions     = 1<<25
-    list_managers   = 1<<26
-    list_companies = 1<<27
-    alive           = 1<<28
-    my_subscription = 1<<29
-    my_company      = 1<<30
-    my_manager      = 31
+class ApiCall(IntEnum):
+    card_editor = 1
+    card_draft = 2
+    card_delete = 3
+    card_save = 4
+    order_edit = 5
+    order_delete = 6
+    order_save = 7
+    client_view = 8
+    order_stat = 9
+    api_reports = 10
+    manager_settings = 11
+    order_workers = 12
+    worker_editor = 13
+    worker_view = 14
+    worker_save = 15
+    worker_delete = 16
+    calendar = 17
+    orders_list = 18
+    invoice_view = 19
+    invoice_create = 20
+    invoice_list = 21
+    order_view = 22
+    order_new = 23
+    list_clients = 24
+    invoice_delete = 25
+    permissions = 26
+    list_managers = 27
+    list_companies = 28
+    alive = 29
+    my_subscription = 30
+    my_company = 31
+    my_manager = 32
     duplicate_clean_order = 33
     client_reports = 34
     list_orders_deleted = 35
-    order_restore       = 36
+    order_restore = 36
+    history_delete = 37
 
 
 

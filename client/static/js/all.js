@@ -381,3 +381,59 @@ function createCountdown(element, seconds) {
 
     return span;
 }
+
+
+
+function enableSwipeRight(element, onSwipe = null, onClose = null, threshold = 100) {
+    let startX = 0;
+    let currentX = 0;
+    let swiping = false;
+    element.addEventListener("pointerdown", e => {
+        document.querySelectorAll(`.${element.classList[0]}.swiping`).forEach(el => {
+            if (el !== element) {
+                el.classList.remove("swiping");
+                el.style.transition = "transform 300ms ease";
+                el.style.transform = "translateX(0)";
+            }
+        });
+        startX = e.clientX;
+        currentX = 0;
+        swiping = true;
+        element.classList.add("swiping");
+        element.style.transition = "none";
+        element.setPointerCapture(e.pointerId);
+    });
+
+    element.addEventListener("pointermove", e => {
+        if (!swiping) return;
+
+        currentX = e.clientX - startX;
+
+        if (currentX > 0)
+            element.style.transform = `translateX(${currentX}px)`;
+    });
+
+    element.addEventListener("pointerup", e => {
+        if (!swiping) return;
+
+        swiping = false;
+        element.style.transition = "transform 300ms cubic-bezier(0.22, 1, 0.36, 1)";
+
+        if (currentX >= threshold) {
+            element.style.transform = "translateX(50%)";
+            onSwipe?.(element);
+        } else {
+            element.style.transform = "translateX(0)";
+            onClose?.(element);
+        }
+
+        currentX = 0;
+    });
+
+    element.addEventListener("pointercancel", () => {
+        swiping = false;
+        currentX = 0;
+        element.style.transition = "transform 300ms ease";
+        element.style.transform = "translateX(0)";
+    });
+}
