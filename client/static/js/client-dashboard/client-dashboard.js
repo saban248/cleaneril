@@ -38,15 +38,16 @@ async function closeClientDashboard(){
         }
 
     }
-    hideClientDashboard()
     delete c_runtime.clientsReports[c_runtime.currentClientIdView]
    c_clients.order_edit =  c_clients.new_order =false;
    c_clients.client_view =false;
    c_runtime.currentClientIdView = null;
    c_runtime.currentInvoiceIdView = null;
    c_runtime.currentOrderIdView = null;
+   hideClientDashboard()
 
 }
+
 
 function showClientDashboard(){
     const mainEdit = document.getElementById("client-editor")
@@ -61,10 +62,8 @@ function hideClientDashboard(){
 }
 
 async function openClientDashbaord(client_id = c_runtime.currentClientIdView, order_id = c_runtime.currentOrderIdView, fetch = true, switchView = false){
-    closeClientDashboard()
-    if (switchView){
         switchPageManager(PageManager.CLIENTS)
-    }
+    
     if (!client_id){
         client_id = get_client_by_order_id(order_id)?.client_id
     }
