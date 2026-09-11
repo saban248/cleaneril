@@ -276,7 +276,6 @@ async function reloadClientSummaryReport(t){
 
 
 function deleteClientHistory(historyId){
-    return
     const data = {action:ApiCall.history_delete, hid:historyId}
     const toast = showToast("מוחק..")
     apiPost(ApiRoute.api, data).then(
