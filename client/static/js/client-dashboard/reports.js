@@ -317,6 +317,42 @@ function showInfoClientHistory(historyId){
 
 }
 
+function showClientActivityExpand(){
+    const addExpand = (el)=>{el.classList.add("expand")}
+    const parent = document.getElementById("listClientActivity");
+    const profile = document.getElementsByClassName("client-report-profile")?.[0];
+    const gridData = document.getElementsByClassName("client-report-grid")?.[0];
+    const showAllActivity = document.getElementById("showAllActivity");
+    const parentSearchClientActivity = document.getElementById("parentSearchClientActivity");
+    const head = document.getElementsByClassName("client-report-section-head")?.[0];
+    const crshMenu = document.getElementById("crshMenu");
+    profile?.classList.add("hide");
+    gridData?.classList.add("hide");
+    showAllActivity.classList.add("hide")
+    parentSearchClientActivity.classList.add("show")
+    addExpand(parent);
+    addExpand(head)
+    addExpand(crshMenu)
+}
+
+function hideClientActivityExpand(){
+    const delExpand = (el)=>{el.classList.remove("expand")}
+    const parent = document.getElementById("listClientActivity");
+    const profile = document.getElementsByClassName("client-report-profile")?.[0];
+    const gridData = document.getElementsByClassName("client-report-grid")?.[0];
+    const head = document.getElementsByClassName("client-report-section-head")?.[0];
+    const showAllActivity = document.getElementById("showAllActivity");
+    const parentSearchClientActivity = document.getElementById("parentSearchClientActivity");
+    const crshMenu = document.getElementById("crshMenu");
+    delExpand(parent)
+    delExpand(head)
+    delExpand(crshMenu)
+    showAllActivity.classList.remove("hide")
+    profile?.classList.remove("hide");
+    gridData?.classList.remove("hide");
+    parentSearchClientActivity.classList.remove("show")
+}
+
 
 async function renderClientSummaryReport(){
     const parent = document.getElementById("client-reports");
@@ -445,11 +481,18 @@ async function renderClientSummaryReport(){
                 </div>
             </div>
 
-            <div class="client-report-section">
+            <div class="client-report-section" id="listClientActivity">
                 <div class="client-report-section-head">
-                    <span>פעילות</span>
-                    <div>
-                        <small id="clientReportEventsQuickLength">הצג הכל (${data.history.length})</small>
+                    <div class="crsh-menu" id="crshMenu">
+                        <span>פעילות</span>
+                        <i class="fa-solid fa-xmark btn-r-show-calendar" onclick="hideClientActivityExpand()"></i>
+                    </div>
+                    <div class="client-report-activity tco-search" id="parentSearchClientActivity">
+                        <i class="fa-solid fa-sliders"></i>
+                        <input type="text" id="tcoSearch" placeholder="סוג אירוע">
+                    </div>
+                    <div id="showAllActivity">
+                        <small id="clientReportEventsQuickLength" onclick="showClientActivityExpand()">הצג הכל (${data.history.length})</small>
                         <i class="fa-solid fa-chevron-right fa-rotate-180"></i>
                     </div>
                     

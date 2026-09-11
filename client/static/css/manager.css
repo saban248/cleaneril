@@ -852,38 +852,76 @@
     flex-direction: column;
     row-gap: 10px;
 }
+.client-report-section.expand{
+    margin-top: 1px;
+    padding-top: 1px;
+}
 .client-report-section-head{
     display: flex;
     justify-content: space-between;
     align-items: end;
     gap: 10px;
 }
+.client-report-section-head.expand{
+    flex-direction: column;
+    direction: rtl;
+    align-items: start;
+}
+.client-report-section-head.expand .client-report-activity,
+.client-report-section-head.expand .crsh-menu{
+    align-self: stretch;
+    width: 100%;
+    box-sizing: border-box;
+}
 
-.client-report-section-head>span{
+
+.crsh-menu{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.crsh-menu>i{
+    display: none;
+}
+.crsh-menu.expand>i{
+    display: inline-block;
+}
+
+.crsh-menu>span{
     font-weight: bold;
     color: #313131;
 }
-.client-report-section-head>div{
+#showAllActivity{
     display: flex;
     align-items: center;
     column-gap: 5px;
     padding: 5px 10px;
     cursor: pointer;
 }
-.client-report-section-head>div:hover,
-.client-report-section-head>div:active{
-    outline: 1px solid #00000026;
-    border-radius: 4px;
-}
-.client-report-section-head>div>small{
+#showAllActivity >small{
     color: #5f6060;
     font-size: .68rem;
     text-align: center;
     padding: 0;
 }
-.client-report-section-head>div>i{
+#showAllActivity >i{
     font-size: 7px;
-
+}
+#showAllActivity:active,
+#showAllActivity:hover{
+    outline: 1px solid #00000026;
+    border-radius: 4px;
+}
+.client-report-activity{
+    display: none !important;
+    margin-bottom: 0px !important;
+}
+.client-report-activity.show{
+    display: flex !important;
+}
+.client-report-activity > input{
+    width: 100%;
+    min-width: 0;
 }
 .client-report-events{
     display: flex;
@@ -902,6 +940,7 @@
     background: #fff;
     position: relative;
     overflow: visible;
+    -webkit-user-select:none;
     user-select: none;
     -webkit-user-select: none;
     z-index: 0 !important;

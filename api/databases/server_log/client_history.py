@@ -116,7 +116,7 @@ def restore_history(mid:str, history_id:str):
         print(order, current.database_key, current.old)
         setattr(order, current.database_key, current.old)
         cleaneril_db.session.commit()
-
+        
     stat = delete_history(mid, history_id)
     return stat or core_msg.ServerCode.success
 
