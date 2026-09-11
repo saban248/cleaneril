@@ -889,6 +889,7 @@
     display: flex;
     flex-direction: column;
     row-gap: 8px;
+    z-index: 1;
 }
 .client-report-event{
     border: 1px solid #e8ebef;
@@ -900,8 +901,10 @@
     align-items: center;
     background: #fff;
     position: relative;
+    overflow: visible;
     user-select: none;
     -webkit-user-select: none;
+    z-index: 0 !important;
 }
 .client-report-event-icon{
     width: 34px;
@@ -944,11 +947,24 @@
 .client-report-event-action{
     display: none;
     position: absolute;
-    left: -150px;
-    column-gap: 15px;
+    top: 50%;
+    right: calc(100% + 8px);
+    transform: translateY(-50%);
+    align-items: center;
+    column-gap: 12px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 10px 20px rgba(17, 24, 39, 0.12);
+    z-index: 3;
+    pointer-events: auto;
+    white-space: nowrap;
 }
 .client-report-event-action.show{
-    display:  flex !important;
+    display: flex !important;
+}
+.client-report-event-action > i{
+    cursor: pointer;
 }
 .client-report-event-action>.fa-trash{
     color: #cd4e4e;

@@ -192,9 +192,12 @@ function buildClientReportEvents(orders, receipts){
     });
 }
 
-function renderClientHistory(histories){
+async function renderClientHistory(histories){
     if (!histories.length){
-        return `<div class="client-report-empty">אין אירועים להצגה</div>`
+        return `<div class="client-report-empty">
+            <span>אין אירועים להצגה</span>
+            <i class="icon icon-48">${await icon("no-events")}</i>
+        </div>`
     }
 
     const Html = histories.slice(0, 5).map(function(event){
@@ -211,8 +214,9 @@ function renderClientHistory(histories){
 
         });
         const changed = Object.values(event.data)?.map(d => d.description).join(", ")
+        const hid = event.history_id;
         return `
-            <div class="client-report-event client-report-event-${event.entity}" id="${event.history_id}">
+            <div class="client-report-event client-report-event-${event.entity}" id="${hid}">
                 <div class="client-report-event-icon">
                     <i class="${entityIcon}"></i>
                 </div>
@@ -223,9 +227,9 @@ function renderClientHistory(histories){
                 </div>
                 <div class="client-report-event-amount">${event.data.length}</div>
                 <div class="client-report-event-action">
-                    <i class="fa-solid fa-trash btn-r-show-calendar" onclick="deleteClientHistory("${event.history_id}")></i>
-                    <i class="fa-solid fa-clock-rotate-left btn-r-show-calendar"></i>
-                    <i class="fa-solid fa-info btn-r-show-calendar"></i>
+                    <i class="fa-solid fa-trash btn-r-show-calendar" onclick="deleteClientHistory('${hid}')"></i>
+                    <i class="fa-solid fa-clock-rotate-left btn-r-show-calendar"onclick="restoreClientHistoryAction('${hid}')"></i>
+                    <i class="fa-solid fa-info btn-r-show-calendar" onclick="showInfoClientHistory('${hid}')"></i>
                 </div>
             </div>
         `;
@@ -233,16 +237,35 @@ function renderClientHistory(histories){
 
     return Html
 }
+
+async function createClientHistory(){
+    const lengthView = document.getElementById('clientReportEventsQuickLength');
+    const parent = document.getElementById("clientReportEventsQuick");
+    const histories = c_runtime.clientsReports[c_runtime.currentClientIdView].history;
+    parent.innerHTML = await renderClientHistory(histories)
+    const items = Object.values(parent.children);
+    lengthView.textContent = `הצג הכל (${histories.length})`
+    if (items[0].className.includes("empty"))return
+    items.forEach(el => enableSwipeRight(el, showClienthistoryAction, hideClienthistoryAction));
+}
+
 function showClienthistoryAction(element){
-    const parent = element.querySelector(".client-report-event-action")
-    if (!parent)return
-    parent.classList.add("show")
+    const parent = element.closest(".client-report-event");
+    if (!parent) return;
+    const action = parent.querySelector(".client-report-event-action");
+    if (!action) return;
+    parent.parentElement.querySelectorAll(".client-report-event-action").forEach(item => {
+        if (item !== action) item.classList.remove("show");
+    });
+    action.classList.add("show");
 }
 
 function hideClienthistoryAction(element){
-    const parent = element.querySelector(".client-report-event-action")
-    if (!parent)return
-    parent.classList.remove("show")
+    const parent = element.closest(".client-report-event");
+    if (!parent) return;
+    const action = parent.querySelector(".client-report-event-action");
+    if (!action) return;
+    action.classList.remove("show");
 }
 
 
@@ -253,19 +276,45 @@ async function reloadClientSummaryReport(t){
 
 
 function deleteClientHistory(historyId){
-    console.log(historyId)
+    return
     const data = {action:ApiCall.history_delete, hid:historyId}
+    const toast = showToast("מוחק..")
     apiPost(ApiRoute.api, data).then(
         (res) =>{
             if (!res.success){
-                showToast(res.notice, ToastStat.ERROR)
+                showToast(res.notice, ToastStat.ERROR, toast)
                 return;
             }
             const nhis = c_runtime.clientsReports[c_runtime.currentClientIdView].history.filter(h=>h.history_id != historyId)
-            c_runtime.clientsReports[c_runtime.currentClientIdView].hisotry = nhis;
+            c_runtime.clientsReports[c_runtime.currentClientIdView].history = nhis;
+            createClientHistory()
+            showToast(res.notice, ToastStat.DONE, toast)
+        }
+
+    )
+}
+
+async function restoreClientHistoryAction(historyId){
+    const ask = await showAsk({title:'שחזור שינויים', msg:"להמשיך?"})
+    if (!ask)return
+    const data = {action:ApiCall.history_restore, hid:historyId}
+    const toast = showToast("מאחזר..")
+    apiPost(ApiRoute.api, data).then(
+        (res) =>{
+            if (!res.success){
+                showToast(res.notice, ToastStat.ERROR, toast)
+                return;
+            }
+            showToast(res.notice, ToastStat.DONE, toast)
+            
         }
     )
 }
+
+function showInfoClientHistory(historyId){
+
+}
+
 
 async function renderClientSummaryReport(){
     const parent = document.getElementById("client-reports");
@@ -293,7 +342,6 @@ async function renderClientSummaryReport(){
 
     const clientName = order.fullname || "-";
     const clientInitial = order.fullname ? order.fullname.charAt(0).toUpperCase() : "?";
-    const clientHistory = renderClientHistory(data.history)
     parent.innerHTML = `
         <div class="client-report">
             <div class="client-report-profile">
@@ -397,20 +445,18 @@ async function renderClientSummaryReport(){
 
             <div class="client-report-section">
                 <div class="client-report-section-head">
-                    <span>סיכום פעילות</span>
+                    <span>פעילות</span>
                     <div>
-                        <small>הצג הכל (${data.history.length})</small>
+                        <small id="clientReportEventsQuickLength">הצג הכל (${data.history.length})</small>
                         <i class="fa-solid fa-chevron-right fa-rotate-180"></i>
                     </div>
                     
                 </div>
-                <div class="client-report-events">
-                    ${clientHistory}
+                <div class="client-report-events" id="clientReportEventsQuick">
                 </div>
             </div>
         </div>
     `;
-
-    parent.querySelectorAll(".client-report-event").forEach(el => enableSwipeRight(el, showClienthistoryAction, hideClienthistoryAction));
+    createClientHistory()
     renderClientReportProfileMap(order);
 }

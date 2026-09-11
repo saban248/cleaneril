@@ -303,7 +303,8 @@ const ApiCall = {
     client_reports: 34,
     list_orders_deleted: 35,
     order_restore: 36,
-    history_delete:37
+    history_delete:37,
+    history_restore:38
 };
 
 const ReportsApi = {

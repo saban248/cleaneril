@@ -383,12 +383,32 @@ function createCountdown(element, seconds) {
 }
 
 
+const swipeRightConfig = {
+    swiping:false,
+    startX:0,
+    currentX:0,
+    transition:'transform 300ms cubic-bezier(0.22, 1, 0.36, 1)',
+    transformEnd:'translateX(0)',
+    transformStart:'translateX(50%)'
+}
+function closeSwipeRight(){
+    swipeRightConfig.swiping = false;
+    swipeRightConfig.currentX = 0
+}
+
 
 function enableSwipeRight(element, onSwipe = null, onClose = null, threshold = 100) {
-    let startX = 0;
-    let currentX = 0;
-    let swiping = false;
+    const isActionMenuTarget = (target) => {
+        if (!target || !target.closest) return false;
+        return target.closest(".client-report-event-action") !== null;
+    };
+
     element.addEventListener("pointerdown", e => {
+        if (isActionMenuTarget(e.target)) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+        }
         document.querySelectorAll(`.${element.classList[0]}.swiping`).forEach(el => {
             if (el !== element) {
                 el.classList.remove("swiping");
@@ -396,44 +416,64 @@ function enableSwipeRight(element, onSwipe = null, onClose = null, threshold = 1
                 el.style.transform = "translateX(0)";
             }
         });
-        startX = e.clientX;
-        currentX = 0;
-        swiping = true;
+        swipeRightConfig.startX = e.clientX;
+        swipeRightConfig.currentX = 0;
+        swipeRightConfig.swiping = true;
         element.classList.add("swiping");
         element.style.transition = "none";
         element.setPointerCapture(e.pointerId);
     });
 
     element.addEventListener("pointermove", e => {
-        if (!swiping) return;
+        const isAction = isActionMenuTarget(e.target)
+        if (!swipeRightConfig.swiping || isAction) {
+            if (isAction) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            return;
+        }
 
-        currentX = e.clientX - startX;
+        swipeRightConfig.currentX = e.clientX - swipeRightConfig.startX;
 
-        if (currentX > 0)
-            element.style.transform = `translateX(${currentX}px)`;
+        if (swipeRightConfig.currentX > 0)
+            element.style.transform = `translateX(${swipeRightConfig.currentX}px)`;
     });
 
     element.addEventListener("pointerup", e => {
-        if (!swiping) return;
+        if (isActionMenuTarget(e.target)) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+        }
 
-        swiping = false;
-        element.style.transition = "transform 300ms cubic-bezier(0.22, 1, 0.36, 1)";
+        if (!swipeRightConfig.swiping) return;
 
-        if (currentX >= threshold) {
-            element.style.transform = "translateX(50%)";
+        swipeRightConfig.swiping = false;
+        element.style.transition = swipeRightConfig.transition
+
+        if (swipeRightConfig.currentX >= threshold) {
+            element.style.transform = swipeRightConfig.transformStart;
             onSwipe?.(element);
         } else {
-            element.style.transform = "translateX(0)";
+            element.style.transform = swipeRightConfig.transformEnd;
             onClose?.(element);
         }
 
-        currentX = 0;
+        swipeRightConfig.currentX = 0;
     });
 
+    element.addEventListener("click", e => {
+        if (isActionMenuTarget(e.target)) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    });     
+
     element.addEventListener("pointercancel", () => {
-        swiping = false;
-        currentX = 0;
+        swipeRightConfig.swiping = false;
+        swipeRightConfig.currentX = 0;
         element.style.transition = "transform 300ms ease";
-        element.style.transform = "translateX(0)";
+        element.style.transform = swipeRightConfig.transformEnd;
     });
 }

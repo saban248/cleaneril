@@ -245,8 +245,11 @@ def get_api_action(**breq) -> dict:
         case ApiCall.history_delete:
             h = cil_struct.ClientHistory().build(**breq)
             history = client_history.delete_history(manager_id,h.hid)
+            print(history)
             return SJson.auto_code(history)
-
+        case ApiCall.history_restore:
+            h = cil_struct.ClientHistory().build(**breq)
+            history = client_history.restore_history(manager_id,h.hid)
     return SJson.auto_code(__success__)
 
 

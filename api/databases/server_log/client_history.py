@@ -1,6 +1,8 @@
 import time
 from dataclasses import dataclass, asdict
 
+from sqlalchemy.orm import Query
+
 from api.databases import orders, clients
 from api.databases.general import get_columns
 from api.databases.orders import CleanOrder
@@ -80,6 +82,9 @@ def create_history(mid:str, cid:str, oid:str, entity:int = 0, action:int = 0, da
 
 def get_histories(source:bool = True, **kwargs):
     history = get_columns(ClientHistory, source, **kwargs)
+    if isinstance(history, Query):
+        if not history:return history
+        return history.order_by(ClientHistory.key.desc())
     history.reverse()
     return history
 
@@ -101,3 +106,8 @@ def delete_history(mid:str, history_id:str):
     cleaneril_db.session.delete(history)
     cleaneril_db.session.commit()
     return core_msg.ServerCode.success
+
+
+def restore_history(mid:str, history_id:str):
+    history:ClientHistory = get_histories(manager_id=mid, history_id=history_id).first()
+    if not history:return core_msg.ServerCode.General.something_wrong
