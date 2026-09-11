@@ -33,7 +33,6 @@ def create_history_order_changed(mid: str, order: cil_struct.CleanOrder):
 
     def add_change(database_key, description, old, new):
         if old != new:
-            print(old, new)
             hcs.append(asdict(HistoryChange(old, new, database_key, description)))
 
     add_change("stat", "סטטוס הזמנה", old_order.stat, order.s)
@@ -111,3 +110,14 @@ def delete_history(mid:str, history_id:str):
 def restore_history(mid:str, history_id:str):
     history:ClientHistory = get_histories(manager_id=mid, history_id=history_id).first()
     if not history:return core_msg.ServerCode.General.something_wrong
+    order:CleanOrder = orders.get_clean_orders(manager_id=mid, order_id=history.order_id, client_id=history.client_id).first()
+    for hc in history.data:
+        current = HistoryChange(**hc)
+        print(order, current.database_key, current.old)
+        setattr(order, current.database_key, current.old)
+        cleaneril_db.session.commit()
+
+    stat = delete_history(mid, history_id)
+    return stat or core_msg.ServerCode.success
+
+

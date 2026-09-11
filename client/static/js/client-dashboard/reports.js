@@ -304,6 +304,9 @@ async function restoreClientHistoryAction(historyId){
                 showToast(res.notice, ToastStat.ERROR, toast)
                 return;
             }
+            const nhis = c_runtime.clientsReports[c_runtime.currentClientIdView].history.filter(h=>h.history_id != historyId)
+            c_runtime.clientsReports[c_runtime.currentClientIdView].history = nhis;
+            createClientHistory()
             showToast(res.notice, ToastStat.DONE, toast)
             
         }
