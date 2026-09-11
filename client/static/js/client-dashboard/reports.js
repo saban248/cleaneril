@@ -1,5 +1,6 @@
 const c_reports = {
     clientReportsTimeout: {},
+    clientActivityViewShort:true
 }
 
 async function fetchClientReports(clientId) {
@@ -199,8 +200,11 @@ async function renderClientHistory(histories){
             <i class="icon icon-48">${await icon("no-events")}</i>
         </div>`
     }
-
-    const Html = histories.slice(0, 5).map(function(event){
+    let end = 5
+    if (!c_reports.clientActivityViewShort){
+        end = histories.length;
+    }
+    const Html = histories.slice(0, end).map(function(event){
         const entityTitle = getClientHistoryEntityTitle(event.entity)
         const actionText = getClientHistoryActionText(event.action)
         const entityIcon = getClientHistoryEntityIcon(event.entity)
@@ -333,6 +337,8 @@ function showClientActivityExpand(){
     addExpand(parent);
     addExpand(head)
     addExpand(crshMenu)
+    c_reports.clientActivityViewShort = false
+    createClientHistory()
 }
 
 function hideClientActivityExpand(){
@@ -351,6 +357,8 @@ function hideClientActivityExpand(){
     profile?.classList.remove("hide");
     gridData?.classList.remove("hide");
     parentSearchClientActivity.classList.remove("show")
+    c_reports.clientActivityViewShort = false
+    createClientHistory()
 }
 
 
@@ -489,7 +497,7 @@ async function renderClientSummaryReport(){
                     </div>
                     <div class="client-report-activity tco-search" id="parentSearchClientActivity">
                         <i class="fa-solid fa-sliders"></i>
-                        <input type="text" id="tcoSearch" placeholder="סוג אירוע">
+                        <input type="text" placeholder="סוג אירוע">
                     </div>
                     <div id="showAllActivity">
                         <small id="clientReportEventsQuickLength" onclick="showClientActivityExpand()">הצג הכל (${data.history.length})</small>
