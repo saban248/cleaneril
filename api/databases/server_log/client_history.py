@@ -24,6 +24,7 @@ class HistoryChange:
     new:str|int = None
     database_key:str = None
     description:str = None
+    reverse:bool = False
 
 def create_history_order_changed(mid: str, order: cil_struct.CleanOrder):
     hcs: list[dict] = []
@@ -33,7 +34,7 @@ def create_history_order_changed(mid: str, order: cil_struct.CleanOrder):
 
     def add_change(database_key, description, old, new):
         if old != new:
-            hcs.append(asdict(HistoryChange(old, new, database_key, description)))
+            hcs.append(asdict(HistoryChange(old, new, database_key, description, True)))
 
     add_change("stat", "סטטוס הזמנה", old_order.stat, order.s)
     add_change("price", "מחיר", old_order.price, order.price)
@@ -47,6 +48,8 @@ def create_history_order_changed(mid: str, order: cil_struct.CleanOrder):
 
     return hcs
 
+def create_history_desc(description:str) -> list:
+    return [asdict(HistoryChange(str(),str(),str(),description, False))]
 
 class ClientHistory(cleaneril_db.Model):
     __tablename__ = "client_history"
@@ -76,7 +79,7 @@ def create_history(mid:str, cid:str, oid:str, entity:int = 0, action:int = 0, da
     cleaneril_db.session.add(history)
     cleaneril_db.session.commit()
 
-    return history
+    return core_msg.ServerCode.success
 
 
 def get_histories(source:bool = True, **kwargs):
@@ -113,10 +116,10 @@ def restore_history(mid:str, history_id:str):
     order:CleanOrder = orders.get_clean_orders(manager_id=mid, order_id=history.order_id, client_id=history.client_id).first()
     for hc in history.data:
         current = HistoryChange(**hc)
-        print(order, current.database_key, current.old)
+        if not current.reverse:continue
         setattr(order, current.database_key, current.old)
         cleaneril_db.session.commit()
-        
+
     stat = delete_history(mid, history_id)
     return stat or core_msg.ServerCode.success
 

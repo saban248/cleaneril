@@ -60,7 +60,7 @@ def create_account():
 
 
 @cleaneril.route(RoutePages.pov.path, methods=['GET'])
-def public_order_verifiction():
+def public_order_verification():
     return render_template(Pages.pov.html2, abouts=POV_ABOUTS)
 
 

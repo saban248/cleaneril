@@ -218,6 +218,7 @@ async function renderClientHistory(histories){
 
         });
         const changed = Object.values(event.data)?.map(d => d.description).join(", ")
+        const reverse = Object.values(event.data).every(d => d.reverse === true);
         const hid = event.history_id;
         return `
             <div class="client-report-event client-report-event-${event.entity}" id="${hid}">
@@ -232,7 +233,7 @@ async function renderClientHistory(histories){
                 <div class="client-report-event-amount">${event.data.length}</div>
                 <div class="client-report-event-action">
                     <i class="fa-solid fa-trash btn-r-show-calendar" onclick="deleteClientHistory('${hid}')"></i>
-                    <i class="fa-solid fa-clock-rotate-left btn-r-show-calendar"onclick="restoreClientHistoryAction('${hid}')"></i>
+                    ${reverse? `<i class="fa-solid fa-clock-rotate-left btn-r-show-calendar"onclick="restoreClientHistoryAction('${hid}')"></i>`:''}
                     <i class="fa-solid fa-info btn-r-show-calendar" onclick="showInfoClientHistory('${hid}')"></i>
                 </div>
             </div>
@@ -243,8 +244,8 @@ async function renderClientHistory(histories){
 }
 
 async function createClientHistory(){
-    const lengthView = document.getElementById('clientReportEventsQuickLength');
-    const parent = document.getElementById("clientReportEventsQuick");
+    const lengthView = document.getElementById('clientReportEventsListLength');
+    const parent = document.getElementById("clientReportEventsList");
     const histories = c_runtime.clientsReports[c_runtime.currentClientIdView].history;
     parent.innerHTML = await renderClientHistory(histories)
     const items = Object.values(parent.children);
@@ -357,7 +358,7 @@ function hideClientActivityExpand(){
     profile?.classList.remove("hide");
     gridData?.classList.remove("hide");
     parentSearchClientActivity.classList.remove("show")
-    c_reports.clientActivityViewShort = false
+    c_reports.clientActivityViewShort = true
     createClientHistory()
 }
 
@@ -500,12 +501,12 @@ async function renderClientSummaryReport(){
                         <input type="text" placeholder="סוג אירוע">
                     </div>
                     <div id="showAllActivity">
-                        <small id="clientReportEventsQuickLength" onclick="showClientActivityExpand()">הצג הכל (${data.history.length})</small>
+                        <small id="clientReportEventsListLength" onclick="showClientActivityExpand()">הצג הכל (${data.history.length})</small>
                         <i class="fa-solid fa-chevron-right fa-rotate-180"></i>
                     </div>
                     
                 </div>
-                <div class="client-report-events" id="clientReportEventsQuick">
+                <div class="client-report-events" id="clientReportEventsList">
                 </div>
             </div>
         </div>

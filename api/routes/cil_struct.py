@@ -126,6 +126,7 @@ class CleanOrder:
     pt:int          = None
     pn:str          = None
     ot:int          = None
+    mid:str         = None
 
     def build(self, **data):
         struct_builder(self, **data)

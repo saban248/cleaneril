@@ -2,7 +2,7 @@ import base64
 import os
 from time import sleep
 
-from flask import render_template
+from flask import render_template, abort
 
 import api.databases.company as companies
 from api.data.orders import DataOrders
@@ -44,6 +44,17 @@ def get_public_api_action(**breq):
                 return SJson.auto_code(error)
             response = get_pov_details_response(order)
             return SJson.auto_code(success, **response.__dict__)
+        case PublicApiCall.view_clean_order:
+            od = cil_struct.CleanOrder().build(**breq)
+            order: CleanOrder = orders.get_clean_orders(manager_id=od.mid, order_id=od.oi).first()
+            if not order:
+                return SJson.auto_code(core_msg.ServerCode.General.something_wrong)
+            manager = ApiManager.get_managers(False, manager_id=order.manager_id)
+            if not manager:return SJson.auto_code(core_msg.ServerCode.General.something_wrong)
+
+            return get_client_order_template(manager[0], order, False)
+
+    return abort(404)
 
 def get_api_action(**breq) -> dict:
     action = int(breq.get("action", -1))
@@ -231,6 +242,8 @@ def get_api_action(**breq) -> dict:
             duplicate = orders.duplicate_clean_order(manager_id, order.client_id, order.oi)
             if duplicate is None:
                 return SJson.auto_code(core_msg.ServerCode.Orders.order_duplicate_not_exist)
+            client_history.create_history(manager_id, duplicate.client_id, order.oi, ClientHistory.Entity.ORDER,
+                                                    ClientHistory.Action.CREATED, client_history.create_history_desc('שיכפול הזמנה'))
             return SJson.auto_code(__success__, **{"order_id":duplicate.order_id})
         case ApiCall.client_reports:
             order = cil_struct.CleanOrder().build(**breq)
@@ -245,11 +258,11 @@ def get_api_action(**breq) -> dict:
         case ApiCall.history_delete:
             h = cil_struct.ClientHistory().build(**breq)
             history = client_history.delete_history(manager_id,h.hid)
-            print(history)
             return SJson.auto_code(history)
         case ApiCall.history_restore:
             h = cil_struct.ClientHistory().build(**breq)
             history = client_history.restore_history(manager_id,h.hid)
+            return SJson.auto_code(history)
     return SJson.auto_code(__success__)
 
 

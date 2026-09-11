@@ -47,7 +47,7 @@ def api():
     return sjson
 
 
-@cleaneril.route(RouteApi.papi.path, methods=["POST"])
+@cleaneril.route(RouteApi.papi.path, methods=["POST", "GET"])
 def public_api():
     breq = get_dictionary_http(request)
     sjson = get_public_api_action(**breq)
