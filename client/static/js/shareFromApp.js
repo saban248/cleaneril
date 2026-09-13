@@ -113,7 +113,6 @@ async function doNavigate(t, typeShare){
     } catch (shareErr) {
         console.error("Sharing failed:", shareErr);
             showToast(message.EShareOrderFailed, ToastStat.ERROR);
-        }
         
     }
 }
