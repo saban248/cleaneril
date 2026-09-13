@@ -145,7 +145,10 @@ class RoutePages(RoutePagesBase):
     terms = 1<<4
     subscription = 1<<5
     pov = 1<<6
+    public = 1<<7
 
+class PublicPage:
+    client_order_view = 1
 
 class RouteApi(RoutePagesBase):
     do_auth = 1<<0
@@ -292,6 +295,9 @@ class ReportsApi(IntFlag):
     orders = 1<<1
     graph_funds = 1<<2
     graph_orders = 1<<3
+
+
+
 
 
 

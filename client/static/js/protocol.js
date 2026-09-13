@@ -232,7 +232,8 @@ const mPermissions = {
 
 const PageRoute = {
     createAccount:"/create_account",
-    auth:"/auth"
+    auth:"/auth",
+    public:"/public"
 }
 const ApiRoute = {
     auth:"do_auth",
@@ -242,7 +243,8 @@ const ApiRoute = {
     logout:"logout",
     subs:"subscription",
     marketplace:'marketplace',
-    integrations:'integrations'
+    integrations:'integrations',
+    papi:"papi"
 }
 const RegisterApi = {
     level0:1<<5,
@@ -604,7 +606,8 @@ function getCompanyIsVatText(flag){
 
 
 const PublicApi ={
-    cleanOrderVerifiction:1
+    cleanOrderVerifiction:1,
+    viewCleanOrder:2
 }
 
 class ClientHistory {

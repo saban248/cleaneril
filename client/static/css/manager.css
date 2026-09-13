@@ -1199,13 +1199,14 @@
     padding-bottom: 20px;
 }
 .notes-content{
+    field-sizing: content;
     
 }
-.c-input-notes{
+.c-input-notes {
     margin-top: 10px;
     border-radius: 15px;
     border: 1px solid #ececec;
-    min-height: 50px;
+    min-height: 70px;
     color: #5f6060;
     font-size: .75rem;
     padding: 10px;
@@ -1214,6 +1215,8 @@
     overflow: hidden;
     resize: none;
     direction: rtl;
+    box-sizing: border-box;
+}
 }
 .dis-notes{
     pointer-events: none;

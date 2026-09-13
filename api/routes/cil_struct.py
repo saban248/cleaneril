@@ -107,6 +107,7 @@ class Client:
 class CleanOrder:
     client_id:str           = None
     oi:str              = None
+    koi:int             = None
     s:StateOrder       = None
     phone:str               = None
     o:bool              = None

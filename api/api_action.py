@@ -46,13 +46,14 @@ def get_public_api_action(**breq):
             return SJson.auto_code(success, **response.__dict__)
         case PublicApiCall.view_clean_order:
             od = cil_struct.CleanOrder().build(**breq)
-            order: CleanOrder = orders.get_clean_orders(manager_id=od.mid, order_id=od.oi).first()
+            order: CleanOrder = orders.get_clean_orders(key=od.koi,order_id=od.oi).first()
             if not order:
                 return SJson.auto_code(core_msg.ServerCode.General.something_wrong)
             manager = ApiManager.get_managers(False, manager_id=order.manager_id)
             if not manager:return SJson.auto_code(core_msg.ServerCode.General.something_wrong)
 
-            return get_client_order_template(manager[0], order, False)
+            return SJson.auto_code(core_msg.ServerCode.success,
+                                   **{"template":get_client_order_template(manager[0], order, False)})
 
     return abort(404)
 

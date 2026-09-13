@@ -22,6 +22,7 @@ const message = {
     ETemplateOrderFailed:"לא ניתן למצוא את תצוגת ההזמנה",
     ECreateOrderImgFailed:"לא ניתן ליצור תמונת הזמנה",
     EShareOrderFailed:"לא ניתן לשתף את ההזמנה",
+    EInvalidPublicOrderView:"הקישור לצפייה בהזמנה שגוי"
     
 }
 function getTtextShareCleanOrder(orderType, date) {

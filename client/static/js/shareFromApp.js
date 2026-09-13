@@ -28,16 +28,14 @@ async function initShareOrder() {
     mainShareData.text =  getTtextShareCleanOrder(order.order_type, order.date*1000);
     mainShareData.files = []
 
-    const stat = await shareOrderToClientAsPhoto(c_runtime.currentOrderIdView, c_runtime.currentClientIdView);
-    if (stat){return}
     const content = `
     <div class="share-order-to-client">
         <div class="share-app">
-            <div class="share-app-item" onclick="doNavigate(${ShareAppTypes.ORDER_PHOTO})">
+            <div class="share-app-item" onclick="shareOrderToClientAsPhoto('${c_runtime.currentOrderIdView}','${c_runtime.currentClientIdView}')">
                 <span>שיתוף תמונה</span>
                 <i class="icon icon-48">${await icon("picture")}</i>
             </div>
-            <div class="share-app-item" onclick="doNavigate(${ShareAppTypes.ORDER_LINK})">
+            <div class="share-app-item" onclick="createLinkClientOrder()">
                 <span>שיתוף קישור</span>
                 <i class="icon icon-48">${await icon("connection")}</i>
             </div>
@@ -76,7 +74,7 @@ async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid
         mainShareData.files.push(new File([blob], fileName, { type: "image/png" }));
         try {
             if (!navigator.canShare || !navigator.canShare(mainShareData)) {
-                showToast(message.EShareOrderFailed, ToastStat.DONE, toastId);
+                showToast(message.EShareOrderFailed, ToastStat.ERROR, toastId);
                 return 1
             }
         } catch (shareErr) {
@@ -89,6 +87,7 @@ async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid
         return 1
     }
     showToast("מוכן לשיתוף", ToastStat.DONE, toastId);
+    doNavigate()
     return 0
 }
 

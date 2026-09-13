@@ -1,7 +1,8 @@
 import os
+from time import sleep
 
 import markdown
-from flask import request, render_template, redirect, url_for, abort, send_from_directory
+from flask import request, render_template, redirect, url_for, abort, send_from_directory, render_template_string
 
 from api.databases import subscriptions
 from api.databases.crads import ApiCards
@@ -10,6 +11,7 @@ from api.databases.orders import CountOfOrderByStat
 from api.databases.ptc import cleaneril, ServerConfig
 from api.ptc import special_things, ShortSession, get_dictionary_http
 from api.routes import cil_struct
+from api.routes.pages import get_public_page_action
 from api.routes.ptc import RoutePages, Pages
 from api.ptc import POV_ABOUTS
 
@@ -90,3 +92,10 @@ def icons(filename:str):
 
     return send_from_directory(ServerConfig.ICONS_FOLDER, filename)
 
+
+@cleaneril.route(RoutePages.public.path, methods=['GET'])
+def public_pages():
+    # p,a,IDs
+    breq = get_dictionary_http(request)
+    page = get_public_page_action(**breq)
+    return page

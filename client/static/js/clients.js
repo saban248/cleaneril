@@ -622,36 +622,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-async function prepareOrderImage() {
-    const element = document.getElementById("the-client-card");
-    CONFIG.IMG_ORDER = null;
-    if (!element || typeof html2canvas !== "function") return null;
-    try {
-        const canvas = await html2canvas(element, {
-            scale: 3,
-            backgroundColor: "#fff",
-        });
 
-        const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
-        if (!blob) {
-            throw new Error("Could not create the order image");
-        }
-        CONFIG.IMG_ORDER = blob;
-        return blob;
-
-    } catch (err) {
-        showToast(err,ToastStat.ERROR)
-        console.error("Image preparation failed:", err);
-        CONFIG.IMG_ORDER = null;
-        return null;
-    }
-}
-
-
-
-function shareOrderToClientAsLink(cid){
-    
-}
 
 // ===== Workers Schedule Functions =====
 
