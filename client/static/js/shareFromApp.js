@@ -102,7 +102,10 @@ async function doNavigate(t, typeShare){
             stat = createLinkClientOrder()
             break;
     }
-    if (stat){return}
+    if (stat){
+        showToast(message.EShareOrderFailed, ToastStat.ERROR);
+        return
+    }
     try {
         await navigator.share(mainShareData);
         closeEditModal()
@@ -110,9 +113,10 @@ async function doNavigate(t, typeShare){
     } catch (shareErr) {
         console.error("Sharing failed:", shareErr);
         if (shareErr?.name === "AbortError") {
-            closeToast(toastId);
+            showToast(message.EShareOrderFailed, ToastStat.ERROR);
             return;
         }
+        
     }
 }
 

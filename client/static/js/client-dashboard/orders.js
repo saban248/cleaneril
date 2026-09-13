@@ -34,7 +34,8 @@ function createLinkClientOrder(){
     const order = get_order_by_order_id(c_runtime.currentOrderIdView);
     if (!order){return 1}
     const link = `${CONFIG.URL}/${PageRoute.public}?p=1&oi=${order.order_id}&koi=${order.key}`
-    mainShareData.text + `\n\n${link}`;
+    mainShareData.text += `\n\n${link}`;
+    mainShareData.files = []
     
     return 0
 }
