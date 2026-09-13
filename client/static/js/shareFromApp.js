@@ -31,11 +31,11 @@ async function initShareOrder() {
     const content = `
     <div class="share-order-to-client">
         <div class="share-app">
-            <div class="share-app-item" onclick="shareOrderToClientAsPhoto('${c_runtime.currentOrderIdView}','${c_runtime.currentClientIdView}')">
+            <div class="share-app-item" onclick="doNavigate(this, ${ShareAppTypes.ORDER_PHOTO})">
                 <span>שיתוף תמונה</span>
                 <i class="icon icon-48">${await icon("picture")}</i>
             </div>
-            <div class="share-app-item" onclick="createLinkClientOrder()">
+            <div class="share-app-item" onclick="doNavigate(this, ${ShareAppTypes.ORDER_LINK})">
                 <span>שיתוף קישור</span>
                 <i class="icon icon-48">${await icon("connection")}</i>
             </div>
@@ -87,11 +87,22 @@ async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid
         return 1
     }
     showToast("מוכן לשיתוף", ToastStat.DONE, toastId);
-    doNavigate()
     return 0
 }
 
-async function doNavigate(){
+async function doNavigate(t, typeShare){
+    let stat = 1
+    t.class
+    switch (typeShare) {
+        case ShareAppTypes.ORDER_PHOTO:
+            stat = await shareOrderToClientAsPhoto(c_runtime.currentOrderIdView, c_runtime.currentClientIdView);
+            break;
+    
+        case ShareAppTypes.ORDER_LINK:
+            stat = createLinkClientOrder()
+            break;
+    }
+    if (stat){return}
     try {
         await navigator.share(mainShareData);
         closeEditModal()
