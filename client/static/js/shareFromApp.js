@@ -22,12 +22,12 @@ function canvasToBlob(canvas, type = "image/png", quality = 1) {
     });
 }
 
-async function initShareOrder() {
+async function initShareOrder(shareType) {
     const order = get_order_by_order_id(c_runtime.currentOrderIdView);
     mainShareData.title = `הזמנת ${getCleanOrderTypeText(order.order_type)}`;
     mainShareData.text =  getTtextShareCleanOrder(order.order_type, order.date*1000);
     mainShareData.files = []
-
+    await shareOrderToClientAsPhoto(`${order.order_id}`)
     const content = `
     <div class="share-order-to-client">
         <div class="share-app">
@@ -45,19 +45,19 @@ async function initShareOrder() {
     
 }
 
-async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid = c_runtime.currentClientIdView) {
+async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView) {
     if (isCantExitEditOrder()){
         if (!(await askAboutExitEditOrder())){return}
     }
 
-    const toastId = showToast("מכין...", ToastStat.LOAD, null , false);
     await showClientOrder(oid);
     const orderElement = document.getElementById('the-client-card');
     if (!orderElement) {
-        showToast(message.ETemplateOrderFailed, ToastStat.ERROR, toastId);
+        showToast(message.ETemplateOrderFailed, ToastStat.ERROR);
         return 1
     }
     try {
+        if (!mainShareData.files.length == 0)return 0
         const canvas = await html2canvas(orderElement, {
             scale: 2,
             allowTaint: true,
@@ -67,34 +67,34 @@ async function shareOrderToClientAsPhoto(oid = c_runtime.currentOrderIdView, cid
 
         const blob = await canvasToBlob(canvas);
         if (!blob) {
-            showToast(message.ECreateOrderImgFailed, ToastStat.ERROR, toastId);
+            showToast(message.ECreateOrderImgFailed, ToastStat.ERROR);
             return 1
         }
         const fileName = `order_${oid}.png`;
         mainShareData.files.push(new File([blob], fileName, { type: "image/png" }));
         try {
             if (!navigator.canShare || !navigator.canShare(mainShareData)) {
-                showToast(message.EShareOrderFailed, ToastStat.ERROR, toastId);
+                showToast(message.EShareOrderFailed, ToastStat.ERROR);
                 return 1
             }
         } catch (shareErr) {
-            showToast(shareErr.message, ToastStat.ERROR, toastId);
+            showToast(shareErr.message, ToastStat.ERROR);
             return 1
         }
 
     } catch (err) {
-        showToast(message.EShareOrderFailed, ToastStat.ERROR, toastId);
+        showToast(message.EShareOrderFailed, ToastStat.ERROR);
         return 1
     }
-    showToast("מוכן לשיתוף", ToastStat.DONE, toastId);
+    showToast("מוכן לשיתוף", ToastStat.DONE);
     return 0
 }
 
 async function doNavigate(t, typeShare){
     let stat = 1
-    t.class
     switch (typeShare) {
         case ShareAppTypes.ORDER_PHOTO:
+            
             stat = await shareOrderToClientAsPhoto(c_runtime.currentOrderIdView, c_runtime.currentClientIdView);
             break;
     
@@ -103,6 +103,9 @@ async function doNavigate(t, typeShare){
             break;
     }
     if (stat){
+        return
+    }
+    if (!navigator.share){
         showToast(message.EShareOrderFailed, ToastStat.ERROR);
         return
     }
@@ -112,8 +115,9 @@ async function doNavigate(t, typeShare){
         mainShareData.files = []
     } catch (shareErr) {
         console.error("Sharing failed:", shareErr);
+        if (shareErr?.name !== "AbortError"){
             showToast(message.EShareOrderFailed, ToastStat.ERROR);
-        
+        }
     }
 }
 
