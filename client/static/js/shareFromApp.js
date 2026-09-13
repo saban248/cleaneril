@@ -112,9 +112,7 @@ async function doNavigate(t, typeShare){
         mainShareData.files = []
     } catch (shareErr) {
         console.error("Sharing failed:", shareErr);
-        if (shareErr?.name === "AbortError") {
             showToast(message.EShareOrderFailed, ToastStat.ERROR);
-            return;
         }
         
     }
